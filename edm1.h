@@ -234,7 +234,7 @@ template <typename TB> class Compv {
     template <typename T, typename... T2> void to_comp(vector<T>& var1, vector<T2>&... var2)
     {
       for (int i = 0; i < ref_lngth; ++i) {
-        if (var1[i] != ref_vec[i] & comp_v[i] != 0) {
+        if (var1[i % ref_lngth] != ref_vec[i] & comp_v[i] != 0) {
           comp_v[i] = 0;
         };
       };
@@ -274,5 +274,118 @@ template <typename TB> class Compv {
 
     ~Compv() {}; 
 };
+
+bool any(vector<bool> &x) {
+  for (vector<bool>::iterator i = x.begin(); i != x.end(); ++i) {
+    if (*i == 1) {
+      return 1;
+    };
+  };
+  return 0;
+};
+
+bool all(vector<bool> &x) {
+  for (vector<bool>::iterator i = x.begin(); i != x.end(); ++i) {
+    if (*i == 0) {
+      return 0;
+    };
+  };
+  return 1;
+};
+
+template <typename T, typename T2> vector<bool> comp2(vector<T> &x, vector<T2> &x2) {
+  vector<bool> rtn_v;
+  rtn_v.resize(x.size(), 1);
+  int n = x2.size();
+  for (int i = 0; i < x.size(); ++i) {
+    if (x[i] != x2[i % n]) {
+      rtn_v[i] = 0;
+    };
+  };
+  return rtn_v;
+};
+
+int int_lngth(int &x) {
+  float x2 = x;
+  int i = 0;
+  while (x2 >= 1) {
+    x2 /= 10;
+    i +=1;
+  };
+  return i;
+}
+
+int edm1_si(string &x) {
+  int rtn = int(x[0]) - 48;
+  int n = x.size();
+  for (int i = 1; i < n; ++i) {
+    rtn *= 10;
+    rtn += (int(x[i]) - 48);
+  };
+  return rtn;
+}
+
+float edm1_sf2(string &x) {
+  float rtn = int(x[0]) - 48;
+  int n = x.size();
+  int i = 1;
+  int m = 1;
+  while (int(x[i]) != 46) {
+    rtn *= 10;
+    rtn += (int(x[i]) - 48);
+    i += 1;
+  };
+  i += 1;
+  while (i < n) {
+    m *= 10;
+    rtn *= 10;
+    rtn += (int(x[i]) - 48);
+    i += 1;
+  };
+  return rtn / m;
+};
+
+float edm1_sf(string &x) {
+  float rtn = int(x[0]) - 48;
+  int n = x.size();
+  int i = 1;
+  int m = 1;
+  while (int(x[i]) != 46) {
+    rtn *= 10;
+    rtn += (int(x[i]) - 48);
+    i += 1;
+  };
+  i += 1;
+  float c;
+  while (i < n) {
+    m *= 10;
+    rtn += (float(x[i]) - 48) / m;
+    i += 1;
+  };
+  return rtn;
+};
+
+double edm1_sd(string &x) {
+  double rtn = int(x[0]) - 48;
+  int n = x.size();
+  int i = 1;
+  int m = 1;
+  while (int(x[i]) != 46) {
+    rtn *= 10;
+    rtn += (int(x[i]) - 48);
+    i += 1;
+  };
+  i += 1;
+  while (i < n) {
+    m *= 10;
+    rtn *= 10;
+    rtn += (int(x[i]) - 48);
+    i += 1;
+  };
+  return rtn / m;
+};
+
+
+
 
 
