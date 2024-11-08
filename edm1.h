@@ -385,6 +385,85 @@ double edm1_sd(string &x) {
   return rtn / m;
 };
 
+template <typename T> void sort_desc_in(vector<T> &x) {
+  int n = x.size();
+  int i = 1;
+  T ref;
+  while (i < n) {
+    if (x[i] > x[i - 1]) {
+      ref = x[i];
+      x[i] = x[i - 1];
+      x[i - 1] = ref;
+      if (i > 1) {
+        i-= 1;
+      };
+    } else {
+      i+= 1;
+    };
+  };
+};
+
+template <typename T> void sort_asc_in(vector<T> &x) {
+  int n = x.size();
+  int i = 1;
+  T ref;
+  while (i < n) {
+    if (x[i] < x[i - 1]) {
+      ref = x[i];
+      x[i] = x[i - 1];
+      x[i - 1] = ref;
+      if (i > 1) {
+        i-= 1;
+      };
+    } else {
+      i+= 1;
+    };
+  };
+};
+
+template <typename T> vector<T> sort_asc_out(vector<T> &x) {
+  vector<T> rtn = x;
+  int n = x.size();
+  int i = 1;
+  T ref;
+  while (i < n) {
+    if (rtn[i] < rtn[i - 1]) {
+      ref = rtn[i];
+      rtn[i] = rtn[i - 1];
+      rtn[i - 1] = ref;
+      if (i > 1) {
+        i -= 1;
+      } else {
+        i += 1;
+      };
+    } else {
+      i += 1;
+    };
+  };
+  return rtn;
+};
+
+template <typename T> vector<T> sort_desc_out(vector<T> &x) {
+  vector<T> rtn = x;
+  int n = x.size();
+  int i = 1;
+  T ref;
+  while (i < n) {
+    if (rtn[i] > rtn[i - 1]) {
+      ref = rtn[i];
+      rtn[i] = rtn[i - 1];
+      rtn[i - 1] = ref;
+      if (i > 1) {
+        i -= 1;
+      } else {
+        i += 1;
+      };
+    } else {
+      i += 1;
+    };
+  };
+  return rtn;
+};
 
 
 
