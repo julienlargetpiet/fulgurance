@@ -1,44 +1,30 @@
 #include <iostream>
-#include <stdexcept>
-#include <typeinfo>
 #include <vector>
 #include <fstream>
-#include <ctime>
-#include <list>
-#include <stack>
-#include <queue>
-#include <deque>
-#include <algorithm>
-#include <tgmath.h>
-#include <set>
-#include <map>
-#include <algorithm>
-
-using namespace std;
 
 template <typename T> float mod(T &dividend, T &divider) {
   int x = dividend / divider;
   return dividend - x * divider;
 };
 
-template <typename T> T sum(vector<T> &x) {
+template <typename T> T sum(std::vector<T> &x) {
   T rtn = 0;
-  for (typename vector<T>::iterator it = x.begin(); it != x.end(); ++it) {
+  for (typename std::vector<T>::iterator it = x.begin(); it != x.end(); ++it) {
     rtn += *it;
   }
   return rtn;
 };
 
-template <typename T> T mean(vector<T> &x) {
+template <typename T> T mean(std::vector<T> &x) {
   float rtn = 0;
-  for (typename vector<T>::iterator it = x.begin(); it != x.end(); ++it) {
+  for (typename std::vector<T>::iterator it = x.begin(); it != x.end(); ++it) {
     rtn += *it;
   }
   return rtn / x.size();
 };
 
-template <typename T, typename T2> int matchl(vector<T> &source, T2 &ptrn) {
-  for (typename vector<T>::iterator i = source.begin(); i != source.end(); ++i) {
+template <typename T, typename T2> int matchl(std::vector<T> &source, T2 &ptrn) {
+  for (typename std::vector<T>::iterator i = source.begin(); i != source.end(); ++i) {
     if (*i == ptrn) {
       return 1;
     };
@@ -46,9 +32,9 @@ template <typename T, typename T2> int matchl(vector<T> &source, T2 &ptrn) {
   return 0;
 };
 
-template <typename T, typename T2> int match(vector<T> &source, T2 &ptrn) {
+template <typename T, typename T2> int match(std::vector<T> &source, T2 &ptrn) {
   int cnt = 0;
-  for (typename vector<T>::iterator i = source.begin(); i != source.end(); ++i) {
+  for (typename std::vector<T>::iterator i = source.begin(); i != source.end(); ++i) {
     if (*i == ptrn) {
       return cnt;
     };
@@ -57,9 +43,9 @@ template <typename T, typename T2> int match(vector<T> &source, T2 &ptrn) {
   return -1;
 };
 
-template <typename T> T min(vector<T> &x) {
+template <typename T> T min(std::vector<T> &x) {
   T rtn = x[0];
-  for (typename vector<T>::iterator it = x.begin() + 1; it != x.end(); ++it) {
+  for (typename std::vector<T>::iterator it = x.begin() + 1; it != x.end(); ++it) {
     if (rtn > *it) {
       rtn = *it;
     };
@@ -67,9 +53,9 @@ template <typename T> T min(vector<T> &x) {
   return rtn;
 };
 
-template <typename T> T max(vector<T> &x) {
+template <typename T> T max(std::vector<T> &x) {
   T rtn = x[0];
-  for (typename vector<T>::iterator it = x.begin() + 1; it != x.end(); ++it) {
+  for (typename std::vector<T>::iterator it = x.begin() + 1; it != x.end(); ++it) {
     if (rtn < *it) {
       rtn = *it;
     };
@@ -77,11 +63,11 @@ template <typename T> T max(vector<T> &x) {
   return rtn;
 };
 
-template <typename T> T match_max(vector<T> &x) {
+template <typename T> T match_max(std::vector<T> &x) {
   T cvl = x[0];
   int i = 1;
   int rtn = 0;
-  for (typename vector<T>::iterator it = x.begin() + 1; it != x.end(); ++it) {
+  for (typename std::vector<T>::iterator it = x.begin() + 1; it != x.end(); ++it) {
     if (cvl < *it) {
       cvl = *it;
       rtn = i;
@@ -91,11 +77,11 @@ template <typename T> T match_max(vector<T> &x) {
   return rtn;
 };
 
-template <typename T> T match_min(vector<T> &x) {
+template <typename T> T match_min(std::vector<T> &x) {
   T cvl = x[0];
   int i = 1;
   int rtn = 0;
-  for (typename vector<T>::iterator it = x.begin() + 1; it != x.end(); ++it) {
+  for (typename std::vector<T>::iterator it = x.begin() + 1; it != x.end(); ++it) {
     if (cvl > *it) {
       cvl = *it;
       rtn = i;
@@ -105,10 +91,10 @@ template <typename T> T match_min(vector<T> &x) {
   return rtn;
 };
 
-template <typename T, typename T2> auto grep(vector<T> &source, T2 &ptrn) {
-  vector<int> rtn;
+template <typename T, typename T2> auto grep(std::vector<T> &source, T2 &ptrn) {
+  std::vector<int> rtn;
   int i = 0;
-  for (typename vector<T>::iterator it = source.begin(); it != source.end(); ++it) {
+  for (typename std::vector<T>::iterator it = source.begin(); it != source.end(); ++it) {
     if (*it == ptrn) {
       rtn.push_back(i);
     };
@@ -120,12 +106,13 @@ template <typename T, typename T2> auto grep(vector<T> &source, T2 &ptrn) {
   return rtn;
 };
 
-template <typename T> vector<T> unique(vector<T> &x) {
-  vector<T> rtn = {x[0]};
+template <typename T> std::vector<T> unique(std::vector<T> &x) {
+  std::vector<T> rtn = {x[0]};
+  typename std::vector<T>::iterator it2;
   bool evr;
-  for (typename vector<T>::iterator it = x.begin() + 1; it != x.end(); ++it) {
+  for (typename std::vector<T>::iterator it = x.begin() + 1; it != x.end(); ++it) {
     evr = 0;
-    for (typename vector<T>::iterator it2 = rtn.begin(); it2 != rtn.end(); ++it2) {
+    for (it2 = rtn.begin(); it2 != rtn.end(); ++it2) {
        if (*it2 == *it) {
          evr = 1;
          break;
@@ -138,12 +125,11 @@ template <typename T> vector<T> unique(vector<T> &x) {
   return rtn;
 };
 
-
-template <typename T, typename T2> vector<int> grepl(vector<T> &source, T2 &ptrn) {
-  vector<int> rtn;
+template <typename T, typename T2> std::vector<int> grepl(std::vector<T> &source, T2 &ptrn) {
+  std::vector<int> rtn;
   rtn.resize(source.size());
   int i = 0;
-  for (typename vector<T>::iterator it = source.begin(); it != source.end(); ++it) {
+  for (typename std::vector<T>::iterator it = source.begin(); it != source.end(); ++it) {
     if (*it == ptrn) {
       rtn[i] = 1;
     } else {
@@ -154,9 +140,9 @@ template <typename T, typename T2> vector<int> grepl(vector<T> &source, T2 &ptrn
   return rtn;
 };
 
-template <typename T> vector<T> reverse_out(vector<T> &x) {
+template <typename T> std::vector<T> reverse_out(std::vector<T> &x) {
   const int n = x.size() / 2;
-  vector<T> rtn;
+  std::vector<T> rtn;
   rtn.resize(x.size());
   if (x.size() % 2 != 0) {
     rtn[n] = x[n];
@@ -169,7 +155,7 @@ template <typename T> vector<T> reverse_out(vector<T> &x) {
   return rtn;
 };
 
-template <typename T> void reverse_in(vector<T> &x) {
+template <typename T> void reverse_in(std::vector<T> &x) {
   const int n = x.size() / 2;
   const int spv = x.size() - 1;
   T ref;
@@ -180,8 +166,8 @@ template <typename T> void reverse_in(vector<T> &x) {
   };
 };
 
-template <typename T> vector<T> rep_from_var(T &x, int &hmn) {
-  vector<T> rtn;
+template <typename T> std::vector<T> rep_from_var(T &x, int &hmn) {
+  std::vector<T> rtn;
   rtn.resize(hmn);
   for (int i = 0; i < hmn; ++i) {
     rtn[i] = x;
@@ -189,8 +175,8 @@ template <typename T> vector<T> rep_from_var(T &x, int &hmn) {
   return rtn;
 };
 
-template <typename T> vector<T> rep(T x, int hmn) {
-  vector<T> rtn;
+template <typename T> std::vector<T> rep(T x, int hmn) {
+  std::vector<T> rtn;
   rtn.resize(hmn);
   for (int i = 0; i < hmn; ++i) {
     rtn[i] = x;
@@ -198,8 +184,8 @@ template <typename T> vector<T> rep(T x, int hmn) {
   return rtn;
 };
 
-template <typename T> vector<T> reverse_out_standard(vector<T> &x) {
-  vector<T> rtn;
+template <typename T> std::vector<T> reverse_out_standard(std::vector<T> &x) {
+  std::vector<T> rtn;
   const int n = x.size();
   rtn.resize(n);
   const int spv = n - 1;
@@ -209,9 +195,9 @@ template <typename T> vector<T> reverse_out_standard(vector<T> &x) {
   return rtn;
 };
 
-template <typename T, typename T2, typename T3> vector<T> seq(T from, T2 const &to, T3 const &by) {
+template <typename T, typename T2, typename T3> std::vector<T> seq(T from, T2 const &to, T3 const &by) {
   const int n = (to - from) / by;
-  vector<T> rtn;
+  std::vector<T> rtn;
   rtn.resize(n + 1);
   rtn[0] = from;
   from += by;
@@ -224,14 +210,14 @@ template <typename T, typename T2, typename T3> vector<T> seq(T from, T2 const &
 
 template <typename TB> class Compv {
   private: 
-    vector<TB> ref_vec;
-    vector<bool> comp_v;
+    std::vector<TB> ref_vec;
+    std::vector<bool> comp_v;
     int ref_lngth;
  
   public:
     void to_comp() {};
      
-    template <typename T, typename... T2> void to_comp(vector<T>& var1, vector<T2>&... var2)
+    template <typename T, typename... T2> void to_comp(std::vector<T>& var1, std::vector<T2>&... var2)
     {
       for (int i = 0; i < ref_lngth; ++i) {
         if (var1[i % ref_lngth] != ref_vec[i] & comp_v[i] != 0) {
@@ -242,16 +228,16 @@ template <typename TB> class Compv {
     };
 
     void assign_comp_v() {
-      for (vector<bool>::iterator i = comp_v.begin(); i != comp_v.end(); ++i) {
+      for (std::vector<bool>::iterator i = comp_v.begin(); i != comp_v.end(); ++i) {
         *i = 1;
       };
     };
 
-    vector<bool> access_comp_v() {
+    std::vector<bool> access_comp_v() {
       return comp_v;
     };
 
-    void reinitiate(vector<TB> &x) {
+    void reinitiate(std::vector<TB> &x) {
       ref_lngth = x.size();
       for (int i = 0; i < ref_lngth; ++i) {
         comp_v[i] = 1;
@@ -266,7 +252,7 @@ template <typename TB> class Compv {
       }
     };
 
-    Compv(vector<TB> &x) {
+    Compv(std::vector<TB> &x) {
       ref_lngth = x.size();
       comp_v.resize(ref_lngth, 1);
       ref_vec = x;
@@ -275,8 +261,8 @@ template <typename TB> class Compv {
     ~Compv() {}; 
 };
 
-bool any(vector<bool> &x) {
-  for (vector<bool>::iterator i = x.begin(); i != x.end(); ++i) {
+bool any(std::vector<bool> &x) {
+  for (std::vector<bool>::iterator i = x.begin(); i != x.end(); ++i) {
     if (*i == 1) {
       return 1;
     };
@@ -284,8 +270,8 @@ bool any(vector<bool> &x) {
   return 0;
 };
 
-bool all(vector<bool> &x) {
-  for (vector<bool>::iterator i = x.begin(); i != x.end(); ++i) {
+bool all(std::vector<bool> &x) {
+  for (std::vector<bool>::iterator i = x.begin(); i != x.end(); ++i) {
     if (*i == 0) {
       return 0;
     };
@@ -293,8 +279,8 @@ bool all(vector<bool> &x) {
   return 1;
 };
 
-template <typename T, typename T2> vector<bool> comp2(vector<T> &x, vector<T2> &x2) {
-  vector<bool> rtn_v;
+template <typename T, typename T2> std::vector<bool> comp2(std::vector<T> &x, std::vector<T2> &x2) {
+  std::vector<bool> rtn_v;
   rtn_v.resize(x.size(), 1);
   int n = x2.size();
   for (int i = 0; i < x.size(); ++i) {
@@ -315,7 +301,7 @@ int int_lngth(int &x) {
   return i;
 }
 
-int edm1_si(string &x) {
+int edm1_si(std::string &x) {
   int rtn = int(x[0]) - 48;
   int n = x.size();
   for (int i = 1; i < n; ++i) {
@@ -325,7 +311,7 @@ int edm1_si(string &x) {
   return rtn;
 }
 
-float edm1_sf2(string &x) {
+float edm1_sf2(std::string &x) {
   float rtn = int(x[0]) - 48;
   int n = x.size();
   int i = 1;
@@ -345,7 +331,7 @@ float edm1_sf2(string &x) {
   return rtn / m;
 };
 
-float edm1_sf(string &x) {
+float edm1_sf(std::string &x) {
   float rtn = int(x[0]) - 48;
   int n = x.size();
   int i = 1;
@@ -365,7 +351,7 @@ float edm1_sf(string &x) {
   return rtn;
 };
 
-double edm1_sd(string &x) {
+double edm1_sd(std::string &x) {
   double rtn = int(x[0]) - 48;
   int n = x.size();
   int i = 1;
@@ -385,7 +371,7 @@ double edm1_sd(string &x) {
   return rtn / m;
 };
 
-template <typename T> void sort_desc_in(vector<T> &x) {
+template <typename T> void sort_desc_in(std::vector<T> &x) {
   int n = x.size();
   int i = 1;
   T ref;
@@ -403,7 +389,7 @@ template <typename T> void sort_desc_in(vector<T> &x) {
   };
 };
 
-template <typename T> void sort_asc_in(vector<T> &x) {
+template <typename T> void sort_asc_in(std::vector<T> &x) {
   int n = x.size();
   int i = 1;
   T ref;
@@ -421,8 +407,8 @@ template <typename T> void sort_asc_in(vector<T> &x) {
   };
 };
 
-template <typename T> vector<T> sort_asc_out(vector<T> &x) {
-  vector<T> rtn = x;
+template <typename T> std::vector<T> sort_asc_out(std::vector<T> &x) {
+  std::vector<T> rtn = x;
   int n = x.size();
   int i = 1;
   T ref;
@@ -443,8 +429,8 @@ template <typename T> vector<T> sort_asc_out(vector<T> &x) {
   return rtn;
 };
 
-template <typename T> vector<T> sort_desc_out(vector<T> &x) {
-  vector<T> rtn = x;
+template <typename T> std::vector<T> sort_desc_out(std::vector<T> &x) {
+  std::vector<T> rtn = x;
   int n = x.size();
   int i = 1;
   T ref;
@@ -465,10 +451,10 @@ template <typename T> vector<T> sort_desc_out(vector<T> &x) {
   return rtn;
 };
 
-template <typename T> vector<vector<T>> t(vector<vector<T>> &x) {
+template <typename T> std::vector<std::vector<T>> t(std::vector<std::vector<T>> &x) {
   int nrow = x.size();
   int ncol = x[0].size();
-  vector<vector<T>> matr;
+  std::vector<std::vector<T>> matr;
   matr.resize(ncol);
   int i2;
   for (int i = 0; i < ncol; ++i) {
@@ -480,7 +466,7 @@ template <typename T> vector<vector<T>> t(vector<vector<T>> &x) {
   return matr; 
 };
 
-template <typename T> void t_in_square(vector<vector<T>> &x) {
+template <typename T> void t_in_square(std::vector<std::vector<T>> &x) {
   T ref;
   int n  = x.size();
   int i2;
@@ -493,37 +479,38 @@ template <typename T> void t_in_square(vector<vector<T>> &x) {
   };
 };
 
-template <typename T> void print_matr(vector<vector<T>> &x) {
+template <typename T> void print_matr(std::vector<std::vector<T>> &x) {
   int i;
   int i2;
   int i3;
   int lngth;
   int n = x.size();
   int n2 = x[0].size();
-  cout << "   ";
+  std::cout << "   ";
   for (i = 0; i < n; ++i) {
-    lngth = to_string(i).length();
+    lngth = std::to_string(i).length();
     for (i3 = 0; i3 < 8 - lngth; ++i3) {
-      cout << " ";
+      std::cout << " ";
     };
-    cout << "[" << i << "]";
+    std::cout << "[" << i << "]";
   };
-  cout << endl;
+  std::cout << "\n";
   for (int i2 = 0; i2 < n2; ++i2) {
-    cout << ":" << i2 << ":";
+    std::cout << ":" << i2 << ":";
     for (i = 0; i < n; ++i) {
       if (i != 0) {
-        for (i3 = 0; i3 < to_string(i2).length() - 1; ++i3) {
-          cout << " "; 
+        for (i3 = 0; i3 < std::to_string(i2).length() - 1; ++i3) {
+          std::cout << " "; 
         };
       };
-      lngth = to_string(x[i][i2]).length() + to_string(i2).length() - 1;
+      lngth = std::to_string(x[i][i2]).length() + std::to_string(i2).length() - 1;
       for (i3 = 0; i3 < 10 - lngth; ++i3) {
-        cout << " ";
+        std::cout << " ";
       };
-      cout << x[i][i2];
+      std::cout << x[i][i2];
     };
-    cout << endl;
+    std::cout << "\n";
   };
 };
+
 
