@@ -480,5 +480,50 @@ template <typename T> vector<vector<T>> t(vector<vector<T>> &x) {
   return matr; 
 };
 
+template <typename T> void t_in_square(vector<vector<T>> &x) {
+  T ref;
+  int n  = x.size();
+  int i2;
+  for (int i = 0; i < n; ++i) {
+    for (i2 = i + i; i2 < n; ++i2) {
+      ref = x[i][i2];
+      x[i][i2] = x[i2][i];
+      x[i2][i] = ref;
+    };
+  };
+};
 
+template <typename T> void print_matr(vector<vector<T>> &x) {
+  int i;
+  int i2;
+  int i3;
+  int lngth;
+  int n = x.size();
+  int n2 = x[0].size();
+  cout << "   ";
+  for (i = 0; i < n; ++i) {
+    lngth = to_string(i).length();
+    for (i3 = 0; i3 < 8 - lngth; ++i3) {
+      cout << " ";
+    };
+    cout << "[" << i << "]";
+  };
+  cout << endl;
+  for (int i2 = 0; i2 < n2; ++i2) {
+    cout << ":" << i2 << ":";
+    for (i = 0; i < n; ++i) {
+      if (i != 0) {
+        for (i3 = 0; i3 < to_string(i2).length() - 1; ++i3) {
+          cout << " "; 
+        };
+      };
+      lngth = to_string(x[i][i2]).length() + to_string(i2).length() - 1;
+      for (i3 = 0; i3 < 10 - lngth; ++i3) {
+        cout << " ";
+      };
+      cout << x[i][i2];
+    };
+    cout << endl;
+  };
+};
 
