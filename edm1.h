@@ -465,6 +465,20 @@ template <typename T> vector<T> sort_desc_out(vector<T> &x) {
   return rtn;
 };
 
+template <typename T> vector<vector<T>> t(vector<vector<T>> &x) {
+  int nrow = x.size();
+  int ncol = x[0].size();
+  vector<vector<T>> matr;
+  matr.resize(ncol);
+  int i2;
+  for (int i = 0; i < ncol; ++i) {
+    matr[i].resize(nrow);
+    for (i2 = 0; i2 < nrow; ++i2) {
+      matr[i][i2] = x[i2][i];
+    };
+  };
+  return matr; 
+};
 
 
 
