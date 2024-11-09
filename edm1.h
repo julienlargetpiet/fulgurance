@@ -513,4 +513,17 @@ template <typename T> void print_matr(std::vector<std::vector<T>> &x) {
   };
 };
 
+template <typename T> void abs_matrin(std::vector<std::vector<T>> &x) {
+  typename std::vector<T>::iterator i2;
+  for (typename std::vector<std::vector<T>>::iterator i = x.begin(); i != x.end(); ++i) {
+    for (i2 = i->begin(); i2 != i->end(); ++i2) {
+      if (*i2 < 0) {
+        *i2 *= -1;
+      };
+    };
+  };
+};
+
+
+
 
