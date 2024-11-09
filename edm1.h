@@ -524,6 +524,19 @@ template <typename T> void abs_matrin(std::vector<std::vector<T>> &x) {
   };
 };
 
-
+template <typename T> std::vector<std::vector<T>> abs_matrout(std::vector<std::vector<T>> &x) {
+  std::vector<std::vector<T>> rtn = x;
+  int i2 = 0;
+  int n = x.size();
+  int n2 = x[0].size();
+  for (int i = 0; i < n; ++i) {
+    for (i2 = 0; i2 < n2; ++i2) {
+      if (x[i][i2] < 0) {
+        rtn[i][i2] = -1 * x[i][i2];
+      };
+    };
+  };
+  return rtn;
+};
 
 
