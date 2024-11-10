@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <typeinfo>
 #include <fstream>
 
 template <typename T> float mod(T &dividend, T &divider) {
@@ -537,6 +538,114 @@ template <typename T> std::vector<std::vector<T>> abs_matrout(std::vector<std::v
     };
   };
   return rtn;
+};
+
+template <typename T> void abs_vin(std::vector<T> &x) {
+  for (typename std::vector<T>::iterator i = x.begin(); i != x.end(); ++i) {
+    if (*i < 0) {
+      *i *= -1;
+    };
+  };
+};
+
+template <typename T> std::vector<T> abs_vout(std::vector<T> &x) {
+  std::vector<T> rtn = x;
+  for (typename std::vector<T>::iterator i = rtn.begin(); i != rtn.end(); ++i) {
+    if (*i < 0) {
+      *i *= -1;
+    };
+  };
+  return rtn;
+};
+
+template <typename T> std::vector<T> abs_voutb(std::vector<T> &x) { //index approach
+  std::vector<T> rtn = x;
+  int n = x.size();
+  for (int i = 0; i < n; ++i) {
+    if (x[i] < 0) {
+      rtn[i] *= -1;
+    };
+  };
+  return rtn;
+};
+
+template <typename T> void print_nvec(std::vector<T> &x) {
+  int n = x.size();
+  int r = 1;
+  int i;
+  int cmax = 1;
+  int cl;
+  for (i = 0; i < n; ++i) {
+    cl = std::to_string(x[i]).length();
+    if (cl > cmax) {
+      cmax = cl;
+    };
+  }; 
+  int ref_delta = std::to_string(n).length();
+  for (i = 0; i < ref_delta - 1; ++i) {
+    std::cout << " ";
+  };
+  std::cout << ":" << 0 << ": ";
+  for (i = 0; i < n; ++i) {
+    if ((i + 1) % 25 == 0) {
+      std::cout << "\n";
+      for (cl = 0; cl < ref_delta - std::to_string(r * 25).length(); ++cl) {
+        std::cout << " ";
+      };
+      std::cout << ":" << r * 25 << ": ";
+      r += 1;
+      if ((i + 1) == n) {
+        std::cout << x[i];
+      };
+    } else {
+      std::cout << x[i] << " ";
+      for (cl = 0; cl < cmax - std::to_string(x[i]).length(); ++cl) {
+        std::cout << " ";
+      };
+    };
+  };
+  std::cout << "\n";
+};
+
+void print_svec(std::vector<std::string> &x) {
+  int n = x.size();
+  int r = 1;
+  int i;
+  int cmax = 1;
+  int cl;
+  std::string ref_str;
+  for (i = 0; i < n; ++i) {
+    ref_str = x[i];
+    cl = ref_str.length();
+    if (cl > cmax) {
+      cmax = cl;
+    };
+  }; 
+  int ref_delta = std::to_string(n).length();
+  for (i = 0; i < ref_delta - 1; ++i) {
+    std::cout << " ";
+  };
+  std::cout << ":" << 0 << ": ";
+  for (i = 0; i < n; ++i) {
+    if ((i + 1) % 18 == 0) {
+      std::cout << "\n";
+      for (cl = 0; cl < ref_delta - std::to_string(r * 18).length(); ++cl) {
+        std::cout << " ";
+      };
+      std::cout << ":" << r * 18 << ": ";
+      r += 1;
+      if ((i + 1) == n) {
+        std::cout << x[i];
+      };
+    } else {
+      std::cout << x[i] << " ";
+      ref_str = x[i];
+      for (cl = 0; cl < cmax - ref_str.length(); ++cl) {
+        std::cout << " ";
+      };
+    };
+  };
+  std::cout << "\n";
 };
 
 
