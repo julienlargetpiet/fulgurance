@@ -639,4 +639,31 @@ void print_svec(const std::vector<std::string> &x) {
   std::cout << "\n";
 };
 
+template <typename T, typename T2> double cor(const std::vector<T> &x, const std::vector<T2> &x2) {
+  double m1 = x[0];
+  double m2 = x2[0];
+  int n = x.size();
+  int i;
+  for (i = 1; i < n; ++i) {
+    m1 += x[i];
+    m2 += x2[i];
+  };
+  m1 /= n;
+  m2 /= n;
+  double c1 = (x[0] - m1);
+  double c2 = (x2[0] - m2);
+  double d1 = c1 * c2;
+  double s1 = c1 * c1;
+  double s2 = c2 * c2;
+  for (i = 1; i < n; ++i) {
+    c1 = (x[i] - m1);
+    c2 = (x2[i] - m2);
+    d1 += (c1 * c2);
+    s1 += (c1 * c1);
+    s2 += (c2 * c2);
+  };
+  std::cout << std::to_string(d1) << "\n";
+  double rtn = d1 / sqrt(s1 * s2);
+  return rtn;
+};
 
