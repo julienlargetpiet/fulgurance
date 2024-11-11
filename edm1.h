@@ -668,3 +668,30 @@ template <typename T, typename T2> double cor(const std::vector<T> &x, const std
   return rtn;
 };
 
+template <typename T, typename T2> std::string collapse(const std::vector<T> &x, const T2 &sep) {
+  std::string rtn;
+  const typename std::vector<T>::const_iterator n = x.end() - 1;
+  for (typename std::vector<T>::const_iterator i = x.begin(); i != n; ++i) {
+    rtn += std::to_string(*i);
+    rtn += sep;
+  };
+  rtn += std::to_string(*(n + 1));
+  return rtn;
+};
+
+std::vector<std::string> split(const std::string &x, const char &sep) {
+  std::vector<std::string> rtn;
+  const int n = x.length();
+  std::string cur;
+  for (int i = 0; i < n; ++i) {
+    if (!(x[i] == sep)) {
+      cur += x[i];
+    } else {
+      rtn.push_back(cur);
+      cur = "";
+    };
+  };
+  rtn.push_back(cur);
+  return rtn;
+};
+
