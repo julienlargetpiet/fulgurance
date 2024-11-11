@@ -2,6 +2,7 @@
 #include <vector>
 #include <typeinfo>
 #include <fstream>
+#include <math.h>
 
 template <typename T> float mod(T &dividend, T &divider) {
   int x = dividend / divider;
