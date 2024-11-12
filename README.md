@@ -1,16 +1,3 @@
-<!DOCTYPE html>
-<head>
-<title>Documentation</title>
-<style>table { font-family: arial, sans-serif; border-collapse: collapse; width: 50%; }
- td, th { border: 1px solid #dddddd; text-algn: left; padding: 8px; }
- code { font-family: Consolas, "courrier new"; color: #ac3a3a; padding: 2px; }
- div.Div { border: 1px solid black; background-color: #f1f1f1; text-align: left; max-width: 500px; margin-left: 20px; }
- hr.hr { border: dotted 2px; }
- div.Div2 { background-color: #2c4786; text-align: center; width: 100%; padding: 0px 0px; margin: 0; color: white; top: 0px; font-size: 25px; }
- </style>
-</head>
-<body>
-<div class="Div2"><i><b>test_doc</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
 <div class="Div"><a><i>Tabel Of Contents</i></a><br><br><ul>
 <a href="#ma_fonction" style="margin-left:20px;">ma_fonction</a>
 <br>
