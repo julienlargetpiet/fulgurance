@@ -1,4 +1,4 @@
 # fulgurance
 
-<p style="color: blue;">oui</p>
+<p style="font-color: blue;">oui</p>
 
