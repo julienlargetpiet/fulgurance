@@ -637,7 +637,7 @@ from </th><th> is the starting value</th></tr>
 <h3 style="color:#2c4786;">Comparisons to booleans </h3>
 <h2 id="comp2" style="test-align: left;">comp2</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T, typename T2> std::vector<bool> comp2(const std::vector<T> &x, const std::vector<T2> &x2) </code></div>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; comp2(const std::vector&lt;T&gt; &x, const std::vector&lt;T2&gt; &x2) </code></div>
 <h3>#Description</h3>
 <p>Returns a boolean vector of 2 stl vectors that will be compared elements by elements. The vectors should not necessarily be the same size. The output boolean vector will be the same size as the first stl vector argument.</p>
 <h3>#Arguments</h3>
@@ -647,9 +647,9 @@ x </th><th> is an stl vector </th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<unsigned int> vec = {1, 5, 2};</code>
-<br><code>std::vector<unsigned int> vecb = {1, 5, 22};</code>
-<br><code>std::vector<bool> out = comp2(vec, vecb);</code>
+<div class = "Div"><code>std::vector&lt;unsigned int&gt; vec = {1, 5, 2};</code>
+<br><code>std::vector&lt;unsigned int&gt; vecb = {1, 5, 22};</code>
+<br><code>std::vector&lt;bool&gt; out = comp2(vec, vecb);</code>
 <br><code>1 1 0</code>
 <br><code>vec = {1, 5, 2, 1, 5, 2};</code>
 <br><code>out = comp2(vec, vecb);</code>
@@ -984,7 +984,7 @@ x </th><th> is a matrix as 2D stl vector (int, float, double, bool)</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<std::vector<int>> matr = {{1, 2, 3}, {4, -5, 6}, {-7, 8, -9}};</code>
+<div class = "Div"><code>std::vector&lt;std::vector&lt;int&gt;&gt; matr = {{1, 2, 3}, {4, -5, 6}, {-7, 8, -9}};</code>
 <br><code>print_matr(matr); // another function from this library to print matrix as 2D stl vector</code>
 <br><code>          [0]       [1]       [2]</code>
 <br><code>:0:         1         4        -7</code>
