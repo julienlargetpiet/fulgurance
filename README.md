@@ -804,7 +804,7 @@ x </th><th> stl vector (int, float, double, bool) </th></tr>
 <h3 style="color:#2c4786;">Collapse (vector to string)</h3>
 <h2 id="ncollapse" style="test-align: left;">ncollapse</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T, typename T2> std::string ncollapse(const std::vector<T> &x, const T2 &sep)</code></div>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; std::string ncollapse(const std::vector&lt;T&gt; &x, const T2 &sep)</code></div>
 <h3>#Description</h3>
 <p>Collapses all elements from an stl vector (int, float, double, bool) to a string with a given separator.</p>
 <h3>#Arguments</h3>
@@ -814,7 +814,7 @@ x </th><th> is an stl vector (int, float, double, bool)</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<int> vec = {5, 7, 22, 879};</code>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {5, 7, 22, 879};</code>
 <br><code>char sep = "-";</code>
 <br><code>std::string out = ncollapse(vec, sep);</code>
 <br><code>"5-7-22-879"</code>
@@ -827,7 +827,7 @@ x </th><th> is an stl vector (int, float, double, bool)</th></tr>
 <hr class="hr">
 <h2 id="scollapse" style="test-align: left;">scollapse</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> std::string scollapse(const std::vector<std::string> &x, const T &sep)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; std::string scollapse(const std::vector&lt;std::string&gt; &x, const T &sep)</code></div>
 <h3>#Description</h3>
 <p>Collapses all elements from an stl string vector to a string with a given separator.</p>
 <h3>#Arguments</h3>
@@ -837,7 +837,7 @@ x </th><th> is an stl vector (stl string)</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<std::string> vec = {"yess", "no", "maybe"};</code>
+<div class = "Div"><code>std::vector&lt;std::string&gt; vec = {"yess", "no", "maybe"};</code>
 <br><code>char sep = "-";</code>
 <br><code>std::string out = ncollapse(vec, sep);</code>
 <br><code>"yess-no-maybe"</code>
@@ -851,7 +851,7 @@ x </th><th> is an stl vector (stl string)</th></tr>
 <h3 style="color:#2c4786;">Split (string to vector)</h3>
 <h2 id="split" style="test-align: left;">split</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::vector<std::string> split(const std::string &x, const char &sep)</code></div>
+<div class="Div"><code>std::vector&lt;std::string&gt; split(const std::string &x, const char &sep)</code></div>
 <h3>#Description</h3>
 <p>Returns a stl vector of stl strings that are part of the input stl string. The input string must have a separator to differenciate elements for the output stl vector.</p>
 <h3>#Arguments</h3>
@@ -863,7 +863,7 @@ x </th><th> is a stl string</th></tr>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::string test = "y-e-ss";</code>
 <br><code>char sep = '-';</code>
-<br><code>std::vector<std::string> out = split(test, sep);</code>
+<br><code>std::vector&lt;std::string&gt; out = split(test, sep);</code>
 <br><code>{"y", "e", "ss"}</code>
 </div>
 <br>
@@ -872,7 +872,7 @@ x </th><th> is a stl string</th></tr>
 <h2 style="color:#2c4786;">Transposition</h2>
 <h2 id="t" style="test-align: left;">t</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> std::vector<std::vector<T>> t(const std::vector<std::vector<T>> &x)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;std::vector&lt;T&gt;&gt; t(const std::vector&lt;std::vector&lt;T&gt;&gt; &x)</code></div>
 <h3>#Description</h3>
 <p>Retursn the transpose of a matrix as 2D stl vector (int, float, double, bool).</p>
 <h3>#Arguments</h3>
@@ -881,13 +881,13 @@ x </th><th> is a 2D stl vector (int, float, double, bool)</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<std::vector<int>> matr = {{1, 2, 3}, {4, 5, 6}};</code>
+<div class = "Div"><code>std::vector&lt;std::vector&lt;int&gt;&gt; matr = {{1, 2, 3}, {4, 5, 6}};</code>
 <br><code>print_matr(matr); // another function from this library to print matrix as 2D stl vector</code>
 <br><code>          [0]       [1]</code>
 <br><code>:0:         1         4</code>
 <br><code>:1:         2         5</code>
 <br><code>:2:         3         6</code>
-<br><code>std::vector<std::vector<int>> out = t(matr);</code>
+<br><code>std::vector&lt;std::vector&lt;int&gt;&gt; out = t(matr);</code>
 <br><code>print_matr(out);</code>
 <br><code>          [0]       [1]       [2]</code>
 <br><code>:0:         1         2         3</code>
@@ -897,7 +897,7 @@ x </th><th> is a 2D stl vector (int, float, double, bool)</th></tr>
 <hr class="hr">
 <h2 id="t_in_square" style="test-align: left;">t_in_square</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> void t_in_square(std::vector<std::vector<T>> &x)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; void t_in_square(std::vector&lt;std::vector&lt;T&gt;&gt; &x)</code></div>
 <h3>#Description</h3>
 <p>Transforms the input <b>square</b> matrix as 2D stl vector (int, float, double, bool) to its transpose.</p>
 <h3>#Arguments</h3>
@@ -906,7 +906,7 @@ x </th><th> is a 2D stl vector (int, float, double, bool)</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<std::vector<int>> matr = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};</code>
+<div class = "Div"><code>std::vector&lt;std::vector&lt;int&gt;&gt; matr = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};</code>
 <br><code>print_matr(matr); // another function from this library to print matrix as 2D stl vector</code>
 <br><code></code>
 <br><code>          [0]       [1]       [2]</code>
@@ -928,7 +928,7 @@ x </th><th> is a 2D stl vector (int, float, double, bool)</th></tr>
 <h2 style="color:#2c4786;">Print</h2>
 <h2 id="print_matr" style="test-align: left;">print_matr</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> void print_matr(const std::vector<std::vector<T>> &x) </code></div>
+<div class="Div"><code>template &lt;typename T&gt; void print_matr(const std::vector&lt;std::vector&lt;T&gt;&gt; &x) </code></div>
 <h3>#Description</h3>
 <p>Print a matrix as 2D stl vector.</p>
 <h3>#Arguments</h3>
@@ -937,7 +937,7 @@ x </th><th> is a 2D stl vector</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<std::vector<int>> matr = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};</code>
+<div class = "Div"><code>std::vector&lt;std::vector&lt;int&gt;&gt; matr = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};</code>
 <br><code>print_matr(matr);</code>
 <br><code>          [0]       [1]       [2]</code>
 <br><code>:0:         1         4         7</code>
@@ -949,7 +949,7 @@ x </th><th> is a 2D stl vector</th></tr>
 <h2 style="color:#2c4786;">Absolute values</h2>
 <h2 id="abs_matrin" style="test-align: left;">abs_matrin</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> void abs_matrin(std::vector<std::vector<T>> &x) </code></div>
+<div class="Div"><code>template &lt;typename T&gt; void abs_matrin(std::vector&lt;std::vector&lt;T&gt;&gt; &x) </code></div>
 <h3>#Description</h3>
 <p>Transforms all the values of the cells from a matrix as 2D stl vector (int, float, double, bool) to absolute values.</p>
 <h3>#Arguments</h3>
@@ -958,7 +958,7 @@ x </th><th> is a matrix as 2D stl vector (int, float, double, bool)</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<std::vector<int>> matr = {{1, 2, 3}, {4, -5, 6}, {-7, 8, -9}};</code>
+<div class = "Div"><code>std::vector&lt;std::vector&lt;int&gt;&gt; matr = {{1, 2, 3}, {4, -5, 6}, {-7, 8, -9}};</code>
 <br><code>print_matr(matr); // another function from this library to print matrix as 2D stl vector</code>
 <br><code>          [0]       [1]       [2]</code>
 <br><code>:0:         1         4        -7</code>
@@ -975,7 +975,7 @@ x </th><th> is a matrix as 2D stl vector (int, float, double, bool)</th></tr>
 <hr class="hr">
 <h2 id="abs_matrout" style="test-align: left;">abs_matrout</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> void abs_matrout(std::vector<std::vector<T>> &x) </code></div>
+<div class="Div"><code>template &lt;typename T&gt; void abs_matrout(std::vector&lt;std::vector&lt;T&gt;&gt; &x) </code></div>
 <h3>#Description</h3>
 <p>Returns a marix as 2D stl vector (int, float, double, bool) with only absolute values from a matrix as 2D stl vector (int, float, double, bool). </p>
 <h3>#Arguments</h3>
@@ -990,7 +990,7 @@ x </th><th> is a matrix as 2D stl vector (int, float, double, bool)</th></tr>
 <br><code>:0:         1         4        -7</code>
 <br><code>:1:         2        -5         8</code>
 <br><code>:2:         3         6        -9</code>
-<br><code>std::vector<std::vector<int>> out = abs_matrout(matr);</code>
+<br><code>std::vector&lt;std::vector&lt;int&gt;&gt; out = abs_matrout(matr);</code>
 <br><code>print_matr(out);</code>
 <br><code>          [0]       [1]       [2]</code>
 <br><code>:0:         1         4         7</code>
