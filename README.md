@@ -1,5 +1,4 @@
 <body>
-<img src="logo.jpg">
 <div class="Div2"><i><b>Documentation</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
 <div class="Div"><a><i>Table Of Contents</i></a><br><br><ul>
 <b><li style="margin-left:20px; color: #2c4786;">Commun functions  </li></b>
