@@ -1,6 +1,8 @@
 <body>
 <div class="Div2"><i><b>Documentation</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
 <div class="Div"><a><i>Table Of Contents</i></a><br><br><ul>
+<a href="#INTRODUCTION" style="margin-left:0px;">INTRODUCTION</a>
+<br>
 <b><li style="margin-left:20px; color: #2c4786;">Commun functions  </li></b>
 <b><li style="margin-left:40px; color: #2c4786;">On elements</li></b>
 <b><li style="margin-left:60px; color: #2c4786;">Standard operations</li></b>
@@ -116,7 +118,8 @@
 <a href="#abs_matrout" style="margin-left:60px;">abs_matrout</a>
 <br>
 </ul><br></div>
-<h1 style="color:#2c4786;">Commun functions  </h1>
+<br><hr><h1><b id="INTRODUCTION">INTRODUCTION:</b></h1>
+<p>Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a></p><h1 style="color:#2c4786;">Commun functions  </h1>
 <h2 style="color:#2c4786;">On elements</h2>
 <h3 style="color:#2c4786;">Standard operations</h3>
 <h2 id="mod" style="test-align: left;">mod</h2>
