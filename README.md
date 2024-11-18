@@ -1,6 +1,8 @@
 <body>
 <div class="Div2"><i><b>Documentation</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
-<div class="Div"><a><i>Table Of Contents</i></a><br><br><ul>
+<div class="container">
+<div class="Divb">
+<div class="box1"><a><i>Table Of Contents</i></a><br><br><ul>
 <a href="#INTRODUCTION" style="margin-left:0px;">INTRODUCTION</a>
 <br>
 <b><li style="margin-left:20px; color: #2c4786;">Commun functions  </li></b>
@@ -11,13 +13,13 @@
 <a href="#int_lngth" style="margin-left:80px;">int_lngth</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">String to int, float, double</li></b>
-<a href="#edm1_si" style="margin-left:80px;">edm1_si</a>
+<a href="#si" style="margin-left:80px;">si</a>
 <br>
-<a href="#edm1_sf" style="margin-left:80px;">edm1_sf</a>
+<a href="#sf" style="margin-left:80px;">sf</a>
 <br>
-<a href="#edm1_sf2" style="margin-left:80px;">edm1_sf2</a>
+<a href="#sf2" style="margin-left:80px;">sf2</a>
 <br>
-<a href="#edm1_sd" style="margin-left:80px;">edm1_sd</a>
+<a href="#sd" style="margin-left:80px;">sd</a>
 <br>
 <b><li style="margin-left:40px; color: #2c4786;">On std::vector&lt;Type&gt;</li></b>
 <b><li style="margin-left:60px; color: #2c4786;">Statisticals functions</li></b>
@@ -117,8 +119,11 @@
 <br>
 <a href="#abs_matrout" style="margin-left:60px;">abs_matrout</a>
 <br>
-</ul><br></div>
-<br><hr><h1><b id="INTRODUCTION">INTRODUCTION:</b></h1>
+</ul><br>
+</div>
+</div>
+<div class="box2">
+<br><hr><h1 style="color: #2c4786;"><b id="INTRODUCTION">INTRODUCTION:</b></h1>
 <p>Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a></p><h1 style="color:#2c4786;">Commun functions  </h1>
 <h2 style="color:#2c4786;">On elements</h2>
 <h3 style="color:#2c4786;">Standard operations</h3>
@@ -159,9 +164,9 @@ x </th><th> is an int</th></tr>
 <br>
 <hr class="hr">
 <h3 style="color:#2c4786;">String to int, float, double</h3>
-<h2 id="edm1_si" style="test-align: left;">edm1_si</h2>
+<h2 id="si" style="test-align: left;">si</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>int edm1_si(const std::string &x)</code></div>
+<div class="Div"><code>int si(const std::string &x)</code></div>
 <h3>#Description</h3>
 <p>Returns a std::string that can be converted to an int, to an int.</p>
 <h3>#Arguments</h3>
@@ -171,14 +176,14 @@ x </th><th> is a stl string that can be converted to an int</th></tr>
 <br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::string a = "341";</code>
-<br><code>int out = edm1_si(a);</code>
+<br><code>int out = si(a);</code>
 <br><code>341</code>
 </div>
 <br>
 <hr class="hr">
-<h2 id="edm1_sf" style="test-align: left;">edm1_sf</h2>
+<h2 id="sf" style="test-align: left;">sf</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>float edm1_sf(const std::string &x)</code></div>
+<div class="Div"><code>float sf(const std::string &x)</code></div>
 <h3>#Description</h3>
 <p>Returns a converted std::string that can be converted to a float, to a float. Produces the same results than <code>stof</code>.</p>
 <h3>#Arguments</h3>
@@ -188,14 +193,14 @@ x </th><th> is a stl string that can be converted to a float</th></tr>
 <br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::string a = "44.23";</code>
-<br><code>float out = edm1_sf2(a);</code>
+<br><code>float out = sf(a);</code>
 <br><code>44.23</code>
 </div>
 <br>
 <hr class="hr">
-<h2 id="edm1_sf2" style="test-align: left;">edm1_sf2</h2>
+<h2 id="sf2" style="test-align: left;">sf2</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>float edm1_sf2(const std::string &x)</code></div>
+<div class="Div"><code>float sf2(const std::string &x)</code></div>
 <h3>#Description</h3>
 <p>Returns a converted std::string that can be converted to a float, to a float. Uses another algorithm than <code>edm1_sf</code>.</p>
 <h3>#Arguments</h3>
@@ -205,12 +210,12 @@ x </th><th> is a stl string that can be converted to a float</th></tr>
 <br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::string a = "44.23";</code>
-<br><code>float out = edm1_sf2(a);</code>
+<br><code>float out = sf2(a);</code>
 <br><code>44.23</code>
 </div>
 <br>
 <hr class="hr">
-<h2 id="edm1_sd" style="test-align: left;">edm1_sd</h2>
+<h2 id="sd" style="test-align: left;">sd</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>double edm1_sd(const std::string &x)</code></div>
 <h3>#Description</h3>
@@ -222,7 +227,7 @@ x </th><th> is a stl string</th></tr>
 <br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::string a = "4566.132214";</code>
-<br><code>double out = edm1_sd(a);</code>
+<br><code>double out = sd(a);</code>
 <br><code>4566.132214</code>
 </div>
 <br>
@@ -999,5 +1004,6 @@ x </th><th> is a matrix as 2D stl vector (int, float, double, bool)</th></tr>
 </div>
 <br>
 <hr class="hr">
+</div>
+</div>
 </body>
-
