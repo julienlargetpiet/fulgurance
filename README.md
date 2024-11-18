@@ -1,5 +1,5 @@
 <body>
-<div class="Div2"><i><b>Documentation</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
+<div class="Div2"><i><b>README</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
 <div class="container">
 <div class="Divb">
 <div class="box1"><a><i>Table Of Contents</i></a><br><br><ul>
@@ -129,7 +129,7 @@
 </div>
 <div class="box2">
 <br><hr><h1 style="color: #2c4786;"><b id="INTRODUCTION">INTRODUCTION:</b></h1>
-<p>Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a></p><p>In current development.</p><p>This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_extended part.</p><h2 style="color: #2c4786;">Philosophy</h2><p>Matrices and dataframes implementation are classes. All functions that will transform 'voidly' (internaly) the relative data are built in the classes. All functions that copy and transform the relative data are extern to classes.</p><p>Also, all the functions relative to matrices classes exist for more standard type of matrices that is stl 2D vectors.</p><br>
+<p>Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a></p><p>In current development.</p><p>This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_extended part.</p><p>The main branch provides algorithms developped on the top of stl vector, but a deque version is coming.</p><h2 style="color: #2c4786;">Philosophy</h2><p>Matrices and dataframes implementation are classes. All functions that will transform 'voidly' (internaly) the relative data are built in the classes. All functions that copy and transform the relative data are extern to classes.</p><p>Also, all the functions relative to matrices classes exist for more standard type of matrices that is stl 2D vectors.</p><br>
 <hr>
 <h1 style="color:#2c4786;">Commun functions  </h1>
 <h2 style="color:#2c4786;">On elements</h2>
@@ -1064,8 +1064,8 @@ x </th><th> is a stl string</th></tr>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::string teste = "(o((ldjf)de)po(m()()m)po)()()";</code>
 <br><code>std::vector<std::vector<unsigned int>> out = Parser_tokenizer_full(teste);</code>
-<br><code>5 1 0 0 1 4 2 2 3 3 4 5 6 6 7 7 </code>
-<br><code>0 2 3 8 11 14 16 17 18 19 21 24 25 26 27 28 </code>
+<br><code>{5 1 0 0 1 4 2 2 3 3 4 5 6 6 7 7}</code>
+<br><code>{0 2 3 8 11 14 16 17 18 19 21 24 25 26 27 28}</code>
 </div>
 <br>
 <hr class="hr">

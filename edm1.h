@@ -7,6 +7,7 @@
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
 //@I This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_extended part.
+//@I The main branch provides algorithms developped on the top of stl vector, but a deque version is coming.
 //@G2 Philosophy
 //@I Matrices and dataframes implementation are classes. All functions that will transform 'voidly' (internaly) the relative data are built in the classes. All functions that copy and transform the relative data are extern to classes.
 //@I Also, all the functions relative to matrices classes exist for more standard type of matrices that is stl 2D vectors.
@@ -1472,10 +1473,11 @@ template <typename T> std::vector<std::vector<T>> abs_matrout(const std::vector<
 //@X
 //@D Returns a 2d stl vectors. First vector is the pair of each parenthesis. Second stl vector is the index of each parenthesis. Takes a stl string as input. 
 //@A x : is a stl string
+//@X
 //@E std::string teste = "(o((ldjf)de)po(m()()m)po)()()";
 //@E std::vector<std::vector<unsigned int>> out = Parser_tokenizer_full(teste);
-//@E 5 1 0 0 1 4 2 2 3 3 4 5 6 6 7 7 
-//@E 0 2 3 8 11 14 16 17 18 19 21 24 25 26 27 28 
+//@E {5 1 0 0 1 4 2 2 3 3 4 5 6 6 7 7}
+//@E {0 2 3 8 11 14 16 17 18 19 21 24 25 26 27 28}
 //@X
 
 std::vector<std::vector<unsigned int>> Parser_tokenizer_full(std::string &x) {
