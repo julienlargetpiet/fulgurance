@@ -1465,3 +1465,54 @@ template <typename T> std::vector<std::vector<T>> abs_matrout(const std::vector<
   return rtn;
 };
 
+//@L1 Fulgurance Extended
+
+//@T Parser_tokenizer_full
+//@U std::vector<std::vector<unsigned int>> Parser_tokenizer_full(std::string &x)
+//@X
+//@D Returns a 2d stl vectors. First vector is the pair of each parenthesis. Second stl vector is the index of each parenthesis. Takes a stl string as input. 
+//@A x : is a stl string
+//@E std::string teste = "(o((ldjf)de)po(m()()m)po)()()";
+//@E std::vector<std::vector<unsigned int>> out = Parser_tokenizer_full(teste);
+//@E 5 1 0 0 1 4 2 2 3 3 4 5 6 6 7 7 
+//@E 0 2 3 8 11 14 16 17 18 19 21 24 25 26 27 28 
+//@X
+
+std::vector<std::vector<unsigned int>> Parser_tokenizer_full(std::string &x) {
+  std::vector<unsigned int> num_par;
+  std::vector<int> cur_val;
+  std::vector<unsigned int> idx_vec;
+  int i2;
+  unsigned int cur_num = 0;
+  const unsigned int n = x.length();
+  bool alrd;
+  for (int i = 0; i < n; ++i) {
+    if (x[i] == '(') {
+      idx_vec.push_back(i);
+      num_par.push_back(0);
+      for (i2 = 0; i2 < cur_val.size(); ++i2) {
+        cur_val[i2] += 1;
+      };
+      cur_val.push_back(1);
+    } else if (x[i] == ')') {
+        idx_vec.push_back(i);
+        i2 = cur_val.size() - 1;
+        num_par.push_back(0);
+        cur_val.push_back(1);
+        alrd = 0;
+        while (i2 > -1) {
+          cur_val[i2] -= 1;
+          if (cur_val[i2] == 0 & !alrd) {
+            num_par[i2] = cur_num;
+            num_par[num_par.size() - 1] = cur_num;
+            cur_val[cur_val.size() - 1] = 0;
+            cur_num += 1;
+            alrd = 1;
+          };
+          i2 -= 1;
+        };
+    };
+  };
+  return {num_par, idx_vec};
+};
+

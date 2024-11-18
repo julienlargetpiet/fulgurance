@@ -121,6 +121,9 @@
 <br>
 <a href="#abs_matrout" style="margin-left:60px;">abs_matrout</a>
 <br>
+<b><li style="margin-left:20px; color: #2c4786;">Fulgurance Extended</li></b>
+<a href="#Parser_tokenizer_full" style="margin-left:40px;">Parser_tokenizer_full</a>
+<br>
 </ul><br>
 </div>
 </div>
@@ -1047,6 +1050,22 @@ x </th><th> is a matrix as 2D stl vector (int, float, double, bool)</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h1 style="color:#2c4786;">Fulgurance Extended</h1>
+<h2 id="Parser_tokenizer_full" style="test-align: left;">Parser_tokenizer_full</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector<std::vector<unsigned int>> Parser_tokenizer_full(std::string &x)</code></div>
+<h3>#Description</h3>
+<p>Returns a 2d stl vectors. First vector is the pair of each parenthesis. Second stl vector is the index of each parenthesis. Takes a stl string as input. </p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is a stl string</th></tr>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string teste = "(o((ldjf)de)po(m()()m)po)()()";</code>
+<br><code>std::vector<std::vector<unsigned int>> out = Parser_tokenizer_full(teste);</code>
+<br><code>5 1 0 0 1 4 2 2 3 3 4 5 6 6 7 7 </code>
+<br><code>0 2 3 8 11 14 16 17 18 19 21 24 25 26 27 28 </code>
+</table>
+<br>
 </div>
 </div>
 </body>
