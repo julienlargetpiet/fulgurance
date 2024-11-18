@@ -1059,13 +1059,16 @@ x </th><th> is a matrix as 2D stl vector (int, float, double, bool)</th></tr>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> is a stl string</th></tr>
+</table>
+<br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::string teste = "(o((ldjf)de)po(m()()m)po)()()";</code>
 <br><code>std::vector<std::vector<unsigned int>> out = Parser_tokenizer_full(teste);</code>
 <br><code>5 1 0 0 1 4 2 2 3 3 4 5 6 6 7 7 </code>
 <br><code>0 2 3 8 11 14 16 17 18 19 21 24 25 26 27 28 </code>
-</table>
+</div>
 <br>
+<hr class="hr">
 </div>
 </div>
 </body>
