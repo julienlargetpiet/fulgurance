@@ -111,6 +111,8 @@
 <br>
 <a href="#t_in_square" style="margin-left:60px;">t_in_square</a>
 <br>
+<a href="#t_in" style="margin-left:60px;">t_in</a>
+<br>
 <b><li style="margin-left:40px; color: #2c4786;">Print</li></b>
 <a href="#print_matr" style="margin-left:60px;">print_matr</a>
 <br>
@@ -124,7 +126,9 @@
 </div>
 <div class="box2">
 <br><hr><h1 style="color: #2c4786;"><b id="INTRODUCTION">INTRODUCTION:</b></h1>
-<p>Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a></p><h1 style="color:#2c4786;">Commun functions  </h1>
+<p>Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a></p><p>In current development.</p><p>This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_extended part.</p><h2 style="color: #2c4786;">Philosophy</h2><p>Matrices and dataframes implementation are classes. All functions that will transform 'voidly' (internaly) the relative data are built in the classes. All functions that copy and transform the relative data are extern to classes.</p><p>Also, all the functions relative to matrices classes exist for more standard type of matrices that is stl 2D vectors.</p><br>
+<hr>
+<h1 style="color:#2c4786;">Commun functions  </h1>
 <h2 style="color:#2c4786;">On elements</h2>
 <h3 style="color:#2c4786;">Standard operations</h3>
 <h2 id="mod" style="test-align: left;">mod</h2>
@@ -601,19 +605,22 @@ x </th><th> is an stl vector</th></tr>
 <h3 style="color:#2c4786;">Repetition of elements</h3>
 <h2 id="rep" style="test-align: left;">rep</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; rep(const T x, const int hmn)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; rep(const std::vector&lt;T&gt; &x, const std::vector&lt;int&gt; &hmn)</code></div>
 <h3>#Description</h3>
-<p>Returns a stl vector of an elements repeted multiple times.</p>
+<p>Returns a stl vector of elements repeted multiple times relatively to an int stl vector.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-x </th><th> is the element that will be repeated</th></tr>
-<tr><th>hmn </th><th> is the length of the returne stl vector</th></tr>
+x </th><th> is a stl vector containing all the elements that will be repeated</th></tr>
+<tr><th>hmn </th><th> is a stl int vector containing all the times each element will be repeated </th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::string a = "yess";</code>
-<br><code>std::vector&lt;std::string&gt; = rep(a, 5)</code>
-<br><code>{"yess", "yess", "yess", "yess", "yess"}</code>
+<div class = "Div"><code>std::vector&lt;std::string&gt; vec;</code>
+<br><code>std::vector&lt;int&gt; hmn = {4, 2, 7};</code>
+<br><code>std::vector&lt;std::string&gt; elmnts = {"ok", "ko", "ok2"};</code>
+<br><code>vec = rep(elmnts, hmn);</code>
+<br><code>print_svec(vec);</code>
+<br><code>:0: ok  ok  ok  ok  ko  ko  ok2 ok2 ok2 ok2 ok2 ok2 ok2 </code>
 </div>
 <br>
 <hr class="hr">
@@ -927,6 +934,42 @@ x </th><th> is a 2D stl vector (int, float, double, bool)</th></tr>
 <br><code>:0:         1         2         3</code>
 <br><code>:1:         4         5         6</code>
 <br><code>:2:         7         8         9</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="t_in" style="test-align: left;">t_in</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template <typename T> void t_in(std::vector<std::vector<T>> &x)</code></div>
+<h3>#Description</h3>
+<p>Transforms a matrix as 2D stl vector to its transpose</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is a matrix as a 2D stl vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector<std::vector<int>> matr = {{1, 2, 3, 88, 90}, {4, -5, 6, 78, -7}, {-7, 8, -9, 12, 478}};</code>
+<br><code>print_matr(matr);</code>
+<br><code>          [0]       [1]       [2]</code>
+<br><code>:0:         1         4        -7</code>
+<br><code>:1:         2        -5         8</code>
+<br><code>:2:         3         6        -9</code>
+<br><code>:3:        88        78        12</code>
+<br><code>:4:        90        -7       478</code>
+<br><code>t_in(matr);</code>
+<br><code>print_matr(matr);</code>
+<br><code>          [0]       [1]       [2]       [3]       [4]</code>
+<br><code>:0:         1         2         3        88        90</code>
+<br><code>:1:         4        -5         6        78        -7</code>
+<br><code>:2:        -7         8        -9        12       478</code>
+<br><code>t_in(matr);</code>
+<br><code>print_matr(matr);</code>
+<br><code>          [0]       [1]       [2]</code>
+<br><code>:0:         1         4        -7</code>
+<br><code>:1:         2        -5         8</code>
+<br><code>:2:         3         6        -9</code>
+<br><code>:3:        88        78        12</code>
+<br><code>:4:        90        -7       478</code>
 </div>
 <br>
 <hr class="hr">

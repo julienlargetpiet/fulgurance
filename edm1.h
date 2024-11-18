@@ -5,6 +5,12 @@
 #include <math.h>
 
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
+//@I In current development.
+//@I This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_extended part.
+//@G2 Philosophy
+//@I Matrices and dataframes implementation are classes. All functions that will transform 'voidly' (internaly) the relative data are built in the classes. All functions that copy and transform the relative data are extern to classes.
+//@I Also, all the functions relative to matrices classes exist for more standard type of matrices that is stl 2D vectors.
+//@X
 
 //@L1 Commun functions  
 //@L2 On elements
@@ -727,22 +733,40 @@ template <typename T> std::vector<T> reverse_out_standard(const std::vector<T> &
 //@L3 Repetition of elements
 
 //@T rep
-//@U template &lt;typename T&gt; std::vector&lt;T&gt; rep(const T x, const int hmn)
+//@U template &lt;typename T&gt; std::vector&lt;T&gt; rep(const std::vector&lt;T&gt; &x, const std::vector&lt;int&gt; &hmn)
 //@X
-//@D Returns a stl vector of an elements repeted multiple times.
-//@A x : is the element that will be repeated
-//@A hmn : is the length of the returne stl vector
+//@D Returns a stl vector of elements repeted multiple times relatively to an int stl vector.
+//@A x : is a stl vector containing all the elements that will be repeated
+//@A hmn : is a stl int vector containing all the times each element will be repeated 
 //@X 
-//@E std::string a = "yess";
-//@E std::vector&lt;std::string&gt; = rep(a, 5)
-//@E {"yess", "yess", "yess", "yess", "yess"}
+//@E std::vector&lt;std::string&gt; vec;
+//@E std::vector&lt;int&gt; hmn = {4, 2, 7};
+//@E std::vector&lt;std::string&gt; elmnts = {"ok", "ko", "ok2"};
+//@E vec = rep(elmnts, hmn);
+//@E print_svec(vec);
+//@E :0: ok  ok  ok  ok  ko  ko  ok2 ok2 ok2 ok2 ok2 ok2 ok2 
 //@X
 
-template <typename T> std::vector<T> rep(const T &x, const int &hmn) {
+template <typename T> std::vector<T> rep(const std::vector<T> &x, const std::vector<int> &hmn) {
   std::vector<T> rtn;
-  rtn.resize(hmn);
-  for (int i = 0; i < hmn; ++i) {
-    rtn[i] = x;
+  unsigned int cnt = 0;
+  unsigned int i = 1;
+  T val = x[0];
+  bool no_stop = 1;
+  while (no_stop) {
+    if (i > hmn[cnt]) {
+      if (cnt + 1 != hmn.size()) {
+        cnt += 1;
+        val = x[cnt];
+        i = 1;
+        rtn.push_back(val);
+      } else {
+        no_stop = 0;
+      };
+    } else {
+      rtn.push_back(val);
+    };
+    i += 1;
   };
   return rtn;
 };
@@ -1241,6 +1265,85 @@ template <typename T> void t_in_square(std::vector<std::vector<T>> &x) {
       x[i][i2] = x[i2][i];
       x[i2][i] = ref;
     };
+  };
+};
+
+//@T t_in
+//@U template <typename T> void t_in(std::vector<std::vector<T>> &x)
+//@X 
+//@D Transforms a matrix as 2D stl vector to its transpose
+//@A x : is a matrix as a 2D stl vector
+//@X
+//@E std::vector<std::vector<int>> matr = {{1, 2, 3, 88, 90}, {4, -5, 6, 78, -7}, {-7, 8, -9, 12, 478}};
+//@E print_matr(matr);
+//@E           [0]       [1]       [2]
+//@E :0:         1         4        -7
+//@E :1:         2        -5         8
+//@E :2:         3         6        -9
+//@E :3:        88        78        12
+//@E :4:        90        -7       478
+//@E t_in(matr);
+//@E print_matr(matr);
+//@E           [0]       [1]       [2]       [3]       [4]
+//@E :0:         1         2         3        88        90
+//@E :1:         4        -5         6        78        -7
+//@E :2:        -7         8        -9        12       478
+//@E t_in(matr);
+//@E print_matr(matr);
+//@E           [0]       [1]       [2]
+//@E :0:         1         4        -7
+//@E :1:         2        -5         8
+//@E :2:         3         6        -9
+//@E :3:        88        78        12
+//@E :4:        90        -7       478
+//@X
+
+template <typename T> void t_in(std::vector<std::vector<T>> &x) {
+  const unsigned int ncol = x.size();
+  const unsigned int nrow = x[0].size();
+  unsigned int i2;
+  unsigned int i3;
+  std::vector<T> cur_vec;
+  T switchr;
+  if (nrow >= ncol) {
+    x.resize(nrow);
+    cur_vec.reserve(nrow);
+    for (int i = 0; i < ncol; ++i) {
+      cur_vec = x[i];
+      i3 = i + 1;
+      for (i2 = (i + 1); i2 < nrow; ++i2) {
+        if (i3 < ncol) {
+          switchr = x[i2][i];
+          x[i2][i] = cur_vec[i2];
+          x[i][i2] = switchr;
+        } else {
+          x[i2].push_back(cur_vec[i2]);
+        };
+        i3 += 1;
+      };
+      x[i].resize(ncol);
+    };
+  } else {
+    cur_vec.reserve(ncol);
+    for (int i = 0; i < ncol; ++i) {
+      cur_vec = {};
+      for (i3 = 0; i3 < ncol; ++i3) {
+        cur_vec.push_back(x[i3][i]);
+      };
+      i3 = i + 1;
+      for (i2 = (i + 1); i2 < ncol; ++i2) {
+        if (i3 < nrow) {
+          switchr = x[i][i2];
+          x[i][i2] = cur_vec[i2];
+          x[i2][i] = switchr;
+        } else {
+          x[i].push_back(cur_vec[i2]);
+        };
+        i3 += 1;
+      };
+      x[i].resize(ncol);
+    };
+    x.resize(nrow);
   };
 };
 
