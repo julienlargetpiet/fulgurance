@@ -4,6 +4,8 @@
 #include <fstream>
 #include <math.h>
 
+//@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
+
 //@L1 Commun functions  
 //@L2 On elements
 //@L3 Standard operations
@@ -49,18 +51,18 @@ int int_lngth(const int &x) {
 
 //@L3 String to int, float, double
 
-//@T edm1_si
-//@U int edm1_si(const std::string &x)
+//@T si
+//@U int si(const std::string &x)
 //@X
 //@D Returns a std::string that can be converted to an int, to an int.
 //@A x : is a stl string that can be converted to an int
 //@X
 //@E std::string a = "341";
-//@E int out = edm1_si(a);
+//@E int out = si(a);
 //@E 341
 //@X
 
-int edm1_si(const std::string &x) {
+int si(const std::string &x) {
   int rtn = int(x[0]) - 48;
   const int n = x.size();
   for (int i = 1; i < n; ++i) {
@@ -70,18 +72,18 @@ int edm1_si(const std::string &x) {
   return rtn;
 }
 
-//@T edm1_sf
-//@U float edm1_sf(const std::string &x)
+//@T sf
+//@U float sf(const std::string &x)
 //@X
 //@D Returns a converted std::string that can be converted to a float, to a float. Produces the same results than <code>stof</code>.
 //@A x : is a stl string that can be converted to a float
 //@X
 //@E std::string a = "44.23";
-//@E float out = edm1_sf2(a);
+//@E float out = sf(a);
 //@E 44.23
 //@X
 
-float edm1_sf(const std::string &x) { // same results as stof
+float sf(const std::string &x) { // same results as stof
   float rtn = int(x[0]) - 48;
   const int n = x.size();
   int i = 1;
@@ -100,18 +102,18 @@ float edm1_sf(const std::string &x) { // same results as stof
   return rtn;
 };
 
-//@T edm1_sf2
-//@U float edm1_sf2(const std::string &x)
+//@T sf2
+//@U float sf2(const std::string &x)
 //@X
 //@D Returns a converted std::string that can be converted to a float, to a float. Uses another algorithm than <code>edm1_sf</code>.
 //@A x : is a stl string that can be converted to a float
 //@X
 //@E std::string a = "44.23";
-//@E float out = edm1_sf2(a);
+//@E float out = sf2(a);
 //@E 44.23
 //@X
 
-float edm1_sf2(const std::string &x) {
+float sf2(const std::string &x) {
   float rtn = int(x[0]) - 48;
   const int n = x.size();
   int i = 1;
@@ -131,18 +133,18 @@ float edm1_sf2(const std::string &x) {
   return rtn / m;
 };
 
-//@T edm1_sd
+//@T sd
 //@U double edm1_sd(const std::string &x)
 //@X
 //@D Returns a converted std::string, that can be converted to a double, to a double.
 //@A x : is a stl string
 //@X 
 //@E std::string a = "4566.132214";
-//@E double out = edm1_sd(a);
+//@E double out = sd(a);
 //@E 4566.132214
 //@X
 
-double edm1_sd(const std::string &x) {
+double sd(const std::string &x) {
   double rtn = int(x[0]) - 48;
   const int n = x.size();
   int i = 1;
@@ -778,15 +780,15 @@ template <typename T, typename T2, typename T3> std::vector<T> seq(T from, T2 co
 //@L3 Comparisons to booleans 
 
 //@T comp2
-//@U template <typename T, typename T2> std::vector<bool> comp2(const std::vector<T> &x, const std::vector<T2> &x2) 
+//@U template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; comp2(const std::vector&lt;T&gt; &x, const std::vector&lt;T2&gt; &x2) 
 //@X
 //@D Returns a boolean vector of 2 stl vectors that will be compared elements by elements. The vectors should not necessarily be the same size. The output boolean vector will be the same size as the first stl vector argument.
 //@A x : is an stl vector 
 //@A x2 is an stl vector
 //@X
-//@E std::vector<unsigned int> vec = {1, 5, 2};
-//@E std::vector<unsigned int> vecb = {1, 5, 22};
-//@E std::vector<bool> out = comp2(vec, vecb);
+//@E std::vector&lt;unsigned int&gt; vec = {1, 5, 2};
+//@E std::vector&lt;unsigned int&gt; vecb = {1, 5, 22};
+//@E std::vector&lt;bool&gt; out = comp2(vec, vecb);
 //@E 1 1 0
 //@E vec = {1, 5, 2, 1, 5, 2};
 //@E out = comp2(vec, vecb);
@@ -1082,13 +1084,13 @@ template <typename T> std::vector<T> sort_ascout(const std::vector<T> &x) {
 //@L3 Collapse (vector to string)
 
 //@T ncollapse
-//@U template <typename T, typename T2> std::string ncollapse(const std::vector<T> &x, const T2 &sep)
+//@U template &lt;typename T, typename T2&gt; std::string ncollapse(const std::vector&lt;T&gt; &x, const T2 &sep)
 //@X
 //@D Collapses all elements from an stl vector (int, float, double, bool) to a string with a given separator.
 //@A x : is an stl vector (int, float, double, bool)
 //@A sep : is a char or string that will be the separator between the elements of x
 //@X
-//@E std::vector<int> vec = {5, 7, 22, 879};
+//@E std::vector&lt;int&gt; vec = {5, 7, 22, 879};
 //@E char sep = "-";
 //@E std::string out = ncollapse(vec, sep);
 //@E "5-7-22-879"
@@ -1110,13 +1112,13 @@ template <typename T, typename T2> std::string ncollapse(const std::vector<T> &x
 };
 
 //@T scollapse
-//@U template <typename T> std::string scollapse(const std::vector<std::string> &x, const T &sep)
+//@U template &lt;typename T&gt; std::string scollapse(const std::vector&lt;std::string&gt; &x, const T &sep)
 //@X
 //@D Collapses all elements from an stl string vector to a string with a given separator.
 //@A x : is an stl vector (stl string)
 //@A sep : is a char or string that will be the separator between the elements of x
 //@X
-//@E std::vector<std::string> vec = {"yess", "no", "maybe"};
+//@E std::vector&lt;std::string&gt; vec = {"yess", "no", "maybe"};
 //@E char sep = "-";
 //@E std::string out = ncollapse(vec, sep);
 //@E "yess-no-maybe"
@@ -1140,7 +1142,7 @@ template <typename T> std::string scollapse(const std::vector<std::string> &x, c
 //@L3 Split (string to vector)
 
 //@T split
-//@U std::vector<std::string> split(const std::string &x, const char &sep)
+//@U std::vector&lt;std::string&gt; split(const std::string &x, const char &sep)
 //@X
 //@D Returns a stl vector of stl strings that are part of the input stl string. The input string must have a separator to differenciate elements for the output stl vector.
 //@A x : is a stl string
@@ -1148,7 +1150,7 @@ template <typename T> std::string scollapse(const std::vector<std::string> &x, c
 //@X
 //@E std::string test = "y-e-ss";
 //@E char sep = '-';
-//@E std::vector<std::string> out = split(test, sep);
+//@E std::vector&lt;std::string&gt; out = split(test, sep);
 //@E {"y", "e", "ss"}
 //@X
 
@@ -1172,18 +1174,18 @@ std::vector<std::string> split(const std::string &x, const char &sep) {
 //@L2 Transposition
 
 //@T t
-//@U template <typename T> std::vector<std::vector<T>> t(const std::vector<std::vector<T>> &x)
+//@U template &lt;typename T&gt; std::vector&lt;std::vector&lt;T&gt;&gt; t(const std::vector&lt;std::vector&lt;T&gt;&gt; &x)
 //@X
 //@D Retursn the transpose of a matrix as 2D stl vector (int, float, double, bool).
 //@A x : is a 2D stl vector (int, float, double, bool)
 //@X
-//@E std::vector<std::vector<int>> matr = {{1, 2, 3}, {4, 5, 6}};
+//@E std::vector&lt;std::vector&lt;int&gt;&gt; matr = {{1, 2, 3}, {4, 5, 6}};
 //@E print_matr(matr); // another function from this library to print matrix as 2D stl vector
 //@E           [0]       [1]
 //@E :0:         1         4
 //@E :1:         2         5
 //@E :2:         3         6
-//@E std::vector<std::vector<int>> out = t(matr);
+//@E std::vector&lt;std::vector&lt;int&gt;&gt; out = t(matr);
 //@E print_matr(out);
 //@E           [0]       [1]       [2]
 //@E :0:         1         2         3
@@ -1206,12 +1208,12 @@ template <typename T> std::vector<std::vector<T>> t(const std::vector<std::vecto
 };
 
 //@T t_in_square
-//@U template <typename T> void t_in_square(std::vector<std::vector<T>> &x)
+//@U template &lt;typename T&gt; void t_in_square(std::vector&lt;std::vector&lt;T&gt;&gt; &x)
 //@X
 //@D Transforms the input <b>square</b> matrix as 2D stl vector (int, float, double, bool) to its transpose.
 //@A x : is a 2D stl vector (int, float, double, bool)
 //@X
-//@E std::vector<std::vector<int>> matr = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+//@E std::vector&lt;std::vector&lt;int&gt;&gt; matr = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
 //@E print_matr(matr); // another function from this library to print matrix as 2D stl vector
 //@E 
 //@E           [0]       [1]       [2]
@@ -1245,12 +1247,12 @@ template <typename T> void t_in_square(std::vector<std::vector<T>> &x) {
 //@L2 Print
 
 //@T print_matr
-//@U template <typename T> void print_matr(const std::vector<std::vector<T>> &x) 
+//@U template &lt;typename T&gt; void print_matr(const std::vector&lt;std::vector&lt;T&gt;&gt; &x) 
 //@X
 //@D Print a matrix as 2D stl vector.
 //@A x : is a 2D stl vector
 //@X
-//@E std::vector<std::vector<int>> matr = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+//@E std::vector&lt;std::vector&lt;int&gt;&gt; matr = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
 //@E print_matr(matr);
 //@E           [0]       [1]       [2]
 //@E :0:         1         4         7
@@ -1295,12 +1297,12 @@ template <typename T> void print_matr(const std::vector<std::vector<T>> &x) {
 //@L2 Absolute values
 
 //@T abs_matrin
-//@U template <typename T> void abs_matrin(std::vector<std::vector<T>> &x) 
+//@U template &lt;typename T&gt; void abs_matrin(std::vector&lt;std::vector&lt;T&gt;&gt; &x) 
 //@X
 //@D Transforms all the values of the cells from a matrix as 2D stl vector (int, float, double, bool) to absolute values.
 //@A x : is a matrix as 2D stl vector (int, float, double, bool)
 //@X
-//@E std::vector<std::vector<int>> matr = {{1, 2, 3}, {4, -5, 6}, {-7, 8, -9}};
+//@E std::vector&lt;std::vector&lt;int&gt;&gt; matr = {{1, 2, 3}, {4, -5, 6}, {-7, 8, -9}};
 //@E print_matr(matr); // another function from this library to print matrix as 2D stl vector
 //@E           [0]       [1]       [2]
 //@E :0:         1         4        -7
@@ -1326,18 +1328,18 @@ template <typename T> void abs_matrin(std::vector<std::vector<T>> &x) {
 };
 
 //@T abs_matrout
-//@U template <typename T> void abs_matrout(std::vector<std::vector<T>> &x) 
+//@U template &lt;typename T&gt; void abs_matrout(std::vector&lt;std::vector&lt;T&gt;&gt; &x) 
 //@X
 //@D Returns a marix as 2D stl vector (int, float, double, bool) with only absolute values from a matrix as 2D stl vector (int, float, double, bool). 
 //@A x : is a matrix as 2D stl vector (int, float, double, bool)
 //@X
-//@E std::vector<std::vector<int>> matr = {{1, 2, 3}, {4, -5, 6}, {-7, 8, -9}};
+//@E std::vector&lt;std::vector&lt;int&gt;&gt; matr = {{1, 2, 3}, {4, -5, 6}, {-7, 8, -9}};
 //@E print_matr(matr); // another function from this library to print matrix as 2D stl vector
 //@E           [0]       [1]       [2]
 //@E :0:         1         4        -7
 //@E :1:         2        -5         8
 //@E :2:         3         6        -9
-//@E std::vector<std::vector<int>> out = abs_matrout(matr);
+//@E std::vector&lt;std::vector&lt;int&gt;&gt; out = abs_matrout(matr);
 //@E print_matr(out);
 //@E           [0]       [1]       [2]
 //@E :0:         1         4         7
