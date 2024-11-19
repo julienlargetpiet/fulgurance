@@ -937,7 +937,7 @@ x </th><th> is an stl vector</th></tr>
 <h3>#Usage</h3>
 <div class="Div"><code>Rm_sharedv rm1(std::vector&lt;Type&gt; vec1);<br>rm1.to_comp(std::vector&lt;Type&gt; vec2, std::vector&lt;Type&gt; vec3);<br>rm1.result();<br>rm1.reinitiate(std::vector&lt;OtherType&gt; vec4);</code></div>
 <h3>#Description</h3>
-<p>Returns the initializer vector with the shared elements between an undefinite number of stl vectors, removed. This method is faster than finding commun elements between undefinite number of stl vectors and then removing the commun elements.</p>
+<p>Returns the initializer vector with the shared elements between this vector and an undefinite number of stl vectors, removed. This method is faster than finding commun elements between undefinite number of stl vectors and the initializer vector, and then removing the commun elements.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 ... </th><th> undefinite number of stl vectors</th></tr>
