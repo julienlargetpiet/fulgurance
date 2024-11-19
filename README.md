@@ -833,7 +833,7 @@ x </th><th> stl vector (int, float, double, bool) </th></tr>
 <h3 style="color:#2c4786;">Remove range of elements</h3>
 <h2 id="rm_ordered" style="test-align: left;">rm_ordered</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> void rm_ordered(std::vector<T> &x, std::vector<int> ids)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; void rm_ordered(std::vector&lt;T&gt; &x, std::vector&lt;int&gt; ids)</code></div>
 <h3>#Description</h3>
 <p>Remove elements from a stl vector. Keeps the vector sorted at a certain computational cost compared to <a href="#rm_unordered">rm_unordered</a>. The stl int vector provided for the indices of the element to be removed must be decreasingly sorted. The capacity of the vector is kept unchanged, so if you want to shrink it, consider doing <code>shrink_to_fit()</code> method.</p>
 <h3>#Arguments</h3>
@@ -843,8 +843,8 @@ x </th><th> is an stl vector</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<int> vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};</code>
-<br><code>std::vector<int> ids = {8, 5, 3, 2};</code>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};</code>
+<br><code>std::vector&lt;int&gt; ids = {8, 5, 3, 2};</code>
 <br><code>rm_ordered(vec, ids); </code>
 <br><code>print_nvec(vec);</code>
 <br><code>:0: 0 1 4 6 7 9</code>
@@ -853,7 +853,7 @@ x </th><th> is an stl vector</th></tr>
 <hr class="hr">
 <h2 id="rm_unordered" style="test-align: left;">rm_unordered</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> void rm_unordered(std::vector<T> &x, std::vector<int> ids) </code></div>
+<div class="Div"><code>template &lt;typename T&gt; void rm_unordered(std::vector&lt;T&gt; &x, std::vector&lt;int&gt; ids) </code></div>
 <h3>#Description</h3>
 <p>Remove elements from a stl vector. Does not keep the vector sorted for computational speed compared to <a href="#rm_ordered">rm_ordered</a>. The stl int vector provided for the indices of the element to be removed must be decreasingly sorted. The capacity of the vector is kept unchanged, so if you want to shrink it, consider doing <code>shrink_to_fit()</code> method.</p>
 <h3>#Arguments</h3>
@@ -863,8 +863,8 @@ x </th><th> is an stl vector</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<int> vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};</code>
-<br><code>std::vector<int> ids = {8, 5, 3, 2};</code>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};</code>
+<br><code>std::vector&lt;int&gt; ids = {8, 5, 3, 2};</code>
 <br><code>rm_unordered(vec, ids); </code>
 <br><code>print_nvec(vec);</code>
 <br><code>:0: 0 1 6 7 4 9 </code>
@@ -874,7 +874,7 @@ x </th><th> is an stl vector</th></tr>
 <h3 style="color:#2c4786;">Sets (Union - Diff - Removing shared elements)</h3>
 <h2 id="union2" style="test-align: left;">union2</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> std::vector<T> union2(std::vector<T> &x, std::vector<T> &x2)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; union2(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)</code></div>
 <h3>#Description</h3>
 <p>Returns the union of two stl vectors.</p>
 <h3>#Arguments</h3>
@@ -884,9 +884,9 @@ x </th><th> is an stl vector</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};</code>
-<br><code>std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};</code>
-<br><code>std::vector<int> out = union2(vec1, vec2);</code>
+<div class = "Div"><code>std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4};</code>
+<br><code>std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11};</code>
+<br><code>std::vector&lt;int&gt; out = union2(vec1, vec2);</code>
 <br><code>print_nvec(out);</code>
 <br><code>:0: 3  4  4  5  7  8  2  4  0  1  2  3  9  11 </code>
 </div>
@@ -894,7 +894,7 @@ x </th><th> is an stl vector</th></tr>
 <hr class="hr">
 <h2 id="intersect2" style="test-align: left;">intersect2</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> std::vector<T> union2(std::vector<T> &x, std::vector<T> &x2)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; union2(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)</code></div>
 <h3>#Description</h3>
 <p>Returns the commun elements of two stl vectors of the same type.</p>
 <h3>#Arguments</h3>
@@ -904,9 +904,9 @@ x </th><th> is an stl vector</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};</code>
-<br><code>std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};</code>
-<br><code>std::vector<int> out = intersect2(vec1, vec2);</code>
+<div class = "Div"><code>std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4};</code>
+<br><code>std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11};</code>
+<br><code>std::vector&lt;int&gt; out = intersect2(vec1, vec2);</code>
 <br><code>print_nvec(out);</code>
 <br><code>:0: 2 3 </code>
 </div>
@@ -914,7 +914,7 @@ x </th><th> is an stl vector</th></tr>
 <hr class="hr">
 <h2 id="diff2" style="test-align: left;">diff2</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> std::vector<T> diff2(std::vector<T> &x, std::vector<T> &x2)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; diff2(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)</code></div>
 <h3>#Description</h3>
 <p>Returns the elements that are in one of the stl vector but not in the intersection of all stl vectors.</p>
 <h3>#Arguments</h3>
@@ -924,9 +924,9 @@ x </th><th> is an stl vector</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};</code>
-<br><code>std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};</code>
-<br><code>std::vector<int> out = diff2(vec1, vec2);</code>
+<div class = "Div"><code>std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4};</code>
+<br><code>std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11};</code>
+<br><code>std::vector&lt;int&gt; out = diff2(vec1, vec2);</code>
 <br><code>print_nvec(out);</code>
 <br><code>:0: 9  4  4  5  7  8  11 4  0  1  </code>
 </div>
@@ -935,7 +935,7 @@ x </th><th> is an stl vector</th></tr>
 <h4 style="color:#2c4786;">Variadic / Indefinite number of arguments - Rm_sharedv Class</h4>
 <h2 id="Rm_sharedv.to_rm()" style="test-align: left;">Rm_sharedv.to_rm()</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>Rm_sharedv rm1(std::vector<Type> vec1);<br>rm1.to_comp(std::vector<Type> vec2, std::vector<Type> vec3);<br>rm1.result();<br>rm1.reinitiate(std::vector<OtherType> vec4);</code></div>
+<div class="Div"><code>Rm_sharedv rm1(std::vector&lt;Type&gt; vec1);<br>rm1.to_comp(std::vector&lt;Type&gt; vec2, std::vector&lt;Type&gt; vec3);<br>rm1.result();<br>rm1.reinitiate(std::vector&lt;OtherType&gt; vec4);</code></div>
 <h3>#Description</h3>
 <p>Returns the initializer vector with the shared elements between an undefinite number of stl vectors, removed. This method is faster than finding commun elements between undefinite number of stl vectors and then removing the commun elements.</p>
 <h3>#Arguments</h3>
@@ -944,12 +944,12 @@ x </th><th> is an stl vector</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};</code>
-<br><code>std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};</code>
-<br><code>std::vector<int> vec3 = {0, 1, 2, 3, 9, 11, 8};</code>
+<div class = "Div"><code>std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4};</code>
+<br><code>std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11};</code>
+<br><code>std::vector&lt;int&gt; vec3 = {0, 1, 2, 3, 9, 11, 8};</code>
 <br><code>Rm_sharedv obj1(vec1);</code>
 <br><code>obj1.to_rm(vec2, vec3);</code>
-<br><code>std::vector<int> out = obj1.result();</code>
+<br><code>std::vector&lt;int&gt; out = obj1.result();</code>
 <br><code>print_nvec(out);</code>
 <br><code>:0: 4 4 4 5 7 </code>
 <br><code>obj1.reinitiate(vec1);</code>
@@ -1086,7 +1086,7 @@ x </th><th> is a 2D stl vector (int, float, double, bool)</th></tr>
 <hr class="hr">
 <h2 id="t_in" style="test-align: left;">t_in</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> void t_in(std::vector<std::vector<T>> &x)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; void t_in(std::vector&lt;std::vector&lt;T&gt;&gt; &x)</code></div>
 <h3>#Description</h3>
 <p>Transforms a matrix as 2D stl vector to its transpose</p>
 <h3>#Arguments</h3>
@@ -1095,7 +1095,7 @@ x </th><th> is a matrix as a 2D stl vector</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<std::vector<int>> matr = {{1, 2, 3, 88, 90}, {4, -5, 6, 78, -7}, {-7, 8, -9, 12, 478}};</code>
+<div class = "Div"><code>std::vector&lt;std::vector&lt;int&gt;&gt; matr = {{1, 2, 3, 88, 90}, {4, -5, 6, 78, -7}, {-7, 8, -9, 12, 478}};</code>
 <br><code>print_matr(matr);</code>
 <br><code>          [0]       [1]       [2]</code>
 <br><code>:0:         1         4        -7</code>
@@ -1197,7 +1197,7 @@ x </th><th> is a matrix as 2D stl vector (int, float, double, bool)</th></tr>
 <h1 style="color:#2c4786;">Fulgurance Extended</h1>
 <h2 id="Parser_tokenizer_full" style="test-align: left;">Parser_tokenizer_full</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::vector<std::vector<unsigned int>> Parser_tokenizer_full(std::string &x)</code></div>
+<div class="Div"><code>std::vector&lt;std::vector&lt;unsigned int&gt;&gt; Parser_tokenizer_full(std::string &x)</code></div>
 <h3>#Description</h3>
 <p>Returns a 2d stl vectors. First vector is the pair of each parenthesis. Second stl vector is the index of each parenthesis. Takes a stl string as input. </p>
 <h3>#Arguments</h3>
@@ -1207,7 +1207,7 @@ x </th><th> is a stl string</th></tr>
 <br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::string teste = "(o((ldjf)de)po(m()()m)po)()()";</code>
-<br><code>std::vector<std::vector<unsigned int>> out = Parser_tokenizer_full(teste);</code>
+<br><code>std::vector&lt;std::vector&lt;unsigned int&gt;&gt; out = Parser_tokenizer_full(teste);</code>
 <br><code>{5 1 0 0 1 4 2 2 3 3 4 5 6 6 7 7}</code>
 <br><code>{0 2 3 8 11 14 16 17 18 19 21 24 25 26 27 28}</code>
 </div>
