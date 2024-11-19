@@ -7,6 +7,7 @@
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
 //@I This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_extended part.
+//@I The framework is developped with C++ 14 but should work properly with 11 and 17 and furthers.
 //@I The main branch provides algorithms developped on the top of stl vector, but a deque version is coming.
 //@G2 Philosophy
 //@I Matrices and dataframes implementation are classes. All functions that will transform 'voidly' (internaly) the relative data are built in the classes. All functions that copy and transform the relative data are extern to classes.
@@ -1147,6 +1148,177 @@ template <typename T> void rm_unordered(std::vector<T> &x, std::vector<int> ids)
     x.pop_back();
   };
 };
+
+//@L3 Sets (Union - Diff - Removing shared elements)
+
+//@T union2
+//@U template <typename T> std::vector<T> union2(std::vector<T> &x, std::vector<T> &x2)
+//@X
+//@D Returns the union of two stl vectors.
+//@A x : is an stl vector
+//@A x2 : is an stl vector
+//@X
+//@E std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};
+//@E std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};
+//@E std::vector<int> out = union2(vec1, vec2);
+//@E print_nvec(out);
+//@E :0: 3  4  4  5  7  8  2  4  0  1  2  3  9  11 
+//@X
+
+template <typename T> std::vector<T> union2(std::vector<T> &x, std::vector<T> &x2) {
+  std::vector<T> rtn_v = x;
+  const unsigned int n = x2.size();
+  for (unsigned int i = 0; i < n; ++i) {
+    rtn_v.push_back(x2[i]); 
+  };
+  return rtn_v;
+};
+
+//@T intersect2
+//@U template <typename T> std::vector<T> union2(std::vector<T> &x, std::vector<T> &x2)
+//@X
+//@D Returns the commun elements of two stl vectors of the same type.
+//@A x : is an stl vector
+//@A x2 : is an stl vector
+//@X
+//@E std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};
+//@E std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};
+//@E std::vector<int> out = intersect2(vec1, vec2);
+//@E print_nvec(out);
+//@E :0: 2 3 
+//@X
+
+template <typename T> std::vector<T> intersect2(std::vector<T> &x, std::vector<T> &x2) {
+  std::vector<T> rtn_v;
+  const unsigned int n = x.size();
+  for (int i = n - 1; i > -1; --i) {
+    for (T i2 : x2) {
+      if (i2 == x[i]) {
+        rtn_v.push_back(x[i]);
+        break;
+      };
+    };
+  };
+  return rtn_v;
+};
+
+//@T diff2
+//@U template <typename T> std::vector<T> diff2(std::vector<T> &x, std::vector<T> &x2)
+//@X
+//@D Returns the elements that are in one of the stl vector but not in the intersection of all stl vectors.
+//@A x : is an stl vector
+//@A x2 : is an stl vector
+//@X
+//@E std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};
+//@E std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};
+//@E std::vector<int> out = diff2(vec1, vec2);
+//@E print_nvec(out);
+//@E :0: 9  4  4  5  7  8  11 4  0  1  
+//@X
+
+template <typename T> std::vector<T> diff2(std::vector<T> &x, std::vector<T> &x2) {
+  std::vector<T> rtn_v = x;
+  std::vector<T> intersect_v;
+  unsigned int n = x2.size();
+  int i;
+  for (i = 0; i < n; ++i) {
+    rtn_v.push_back(x2[i]);
+  };
+  n = x.size();
+  for (i = 0; i < n; ++i) {
+    for (T i2 : x2) {
+      if (x[i] == i2) {
+        intersect_v.push_back(x[i]);
+        break;
+      };
+    }; 
+  };
+  n = rtn_v.size();
+  for (i = n - 1; i > -1; --i) {
+    for (T i2 : intersect_v) {
+      if (rtn_v[i] == i2) {
+        std::swap(rtn_v[i], rtn_v.back());
+        rtn_v.pop_back();
+        break;
+      };
+    };
+  };
+  return rtn_v;
+};
+
+//@L4 Variadic / Indefinite number of arguments - Rm_sharedv Class
+
+//@T Rm_sharedv.to_rm()
+//@U Rm_sharedv rm1(std::vector<Type> vec1);
+//@U rm1.to_comp(std::vector<Type> vec2, std::vector<Type> vec3);
+//@U rm1.result();
+//@U rm1.reinitiate(std::vector<OtherType> vec4);
+//@X
+//@D Returns the initializer vector with the shared elements between an undefinite number of stl vectors, removed. This method is faster than finding commun elements between undefinite number of stl vectors and then removing the commun elements.
+//@A ... : undefinite number of stl vectors
+//@X
+//@E std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};
+//@E std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};
+//@E std::vector<int> vec3 = {0, 1, 2, 3, 9, 11, 8};
+//@E Rm_sharedv obj1(vec1);
+//@E obj1.to_rm(vec2, vec3);
+//@E std::vector<int> out = obj1.result();
+//@E print_nvec(out);
+//@E :0: 4 4 4 5 7 
+//@E obj1.reinitiate(vec1);
+//@E out = obj1.result();
+//@E print_nvec(out);
+//@E :0: 3 4 4 5 7 8 2 4 
+//@X
+
+template <typename TB> class Rm_sharedv {
+  private: 
+    std::vector<TB> rtn_v;
+    int ref_lngth;
+
+  public:
+    void to_rm() { 
+      rtn_v.shrink_to_fit();
+    };
+     
+    template <typename T, typename... T2> void to_rm(std::vector<T>& var1, std::vector<T2>&... var2)
+    {
+      for (int i = ref_lngth; i > -1; --i) {
+        for (T i2 : var1) {
+          if (rtn_v[i] == i2) {
+            std::swap(rtn_v[i], rtn_v.back());
+            rtn_v.pop_back();
+            ref_lngth -= 1;
+            break;
+          };
+        };
+      };
+      to_union(var2...);
+    };
+
+    void reinitiate(std::vector<TB> &x) {
+      const unsigned int n = x.size();
+      if (n >= ref_lngth) {
+        rtn_v = x;
+      } else {
+        rtn_v = x;
+        rtn_v.shrink_to_fit();
+      };
+      ref_lngth = n - 1;
+    };
+
+    std::vector<TB> result() {
+      return rtn_v;
+    };
+
+    Rm_sharedv(std::vector<TB> &x) {
+      rtn_v = x;
+      ref_lngth = x.size() - 1;
+    };
+
+    ~Rm_sharedv() {}; 
+};
+
 
 //@L2 String and vectors conversions
 //@L3 Collapse (vector to string)

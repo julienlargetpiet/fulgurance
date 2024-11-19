@@ -101,6 +101,16 @@
 <br>
 <a href="#rm_unordered" style="margin-left:80px;">rm_unordered</a>
 <br>
+<b><li style="margin-left:60px; color: #2c4786;">Sets (Union - Diff - Removing shared elements)</li></b>
+<a href="#union2" style="margin-left:80px;">union2</a>
+<br>
+<a href="#intersect2" style="margin-left:80px;">intersect2</a>
+<br>
+<a href="#diff2" style="margin-left:80px;">diff2</a>
+<br>
+<b><li style="margin-left:80px; color: #2c4786;">Variadic / Indefinite number of arguments - Rm_sharedv Class</li></b>
+<a href="#Rm_sharedv.to_rm()" style="margin-left:100px;">Rm_sharedv.to_rm()</a>
+<br>
 <b><li style="margin-left:40px; color: #2c4786;">String and vectors conversions</li></b>
 <b><li style="margin-left:60px; color: #2c4786;">Collapse (vector to string)</li></b>
 <a href="#ncollapse" style="margin-left:80px;">ncollapse</a>
@@ -134,7 +144,7 @@
 </div>
 <div class="box2">
 <br><hr><h1 style="color: #2c4786;"><b id="INTRODUCTION">INTRODUCTION:</b></h1>
-<p>Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a></p><p>In current development.</p><p>This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_extended part.</p><p>The main branch provides algorithms developped on the top of stl vector, but a deque version is coming.</p><h2 style="color: #2c4786;">Philosophy</h2><p>Matrices and dataframes implementation are classes. All functions that will transform 'voidly' (internaly) the relative data are built in the classes. All functions that copy and transform the relative data are extern to classes.</p><p>Also, all the functions relative to matrices classes exist for more standard type of matrices that is stl 2D vectors.</p><br>
+<p>Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a></p><p>In current development.</p><p>This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_extended part.</p><p>The framework is developped with C++ 14 but should work properly with 11 and 17 and furthers.</p><p>The main branch provides algorithms developped on the top of stl vector, but a deque version is coming.</p><h2 style="color: #2c4786;">Philosophy</h2><p>Matrices and dataframes implementation are classes. All functions that will transform 'voidly' (internaly) the relative data are built in the classes. All functions that copy and transform the relative data are extern to classes.</p><p>Also, all the functions relative to matrices classes exist for more standard type of matrices that is stl 2D vectors.</p><br>
 <hr>
 <h1 style="color:#2c4786;">Commun functions  </h1>
 <h2 style="color:#2c4786;">On elements</h2>
@@ -858,6 +868,94 @@ x </th><th> is an stl vector</th></tr>
 <br><code>rm_unordered(vec, ids); </code>
 <br><code>print_nvec(vec);</code>
 <br><code>:0: 0 1 6 7 4 9 </code>
+</div>
+<br>
+<hr class="hr">
+<h3 style="color:#2c4786;">Sets (Union - Diff - Removing shared elements)</h3>
+<h2 id="union2" style="test-align: left;">union2</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template <typename T> std::vector<T> union2(std::vector<T> &x, std::vector<T> &x2)</code></div>
+<h3>#Description</h3>
+<p>Returns the union of two stl vectors.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector</th></tr>
+<tr><th>x2 </th><th> is an stl vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};</code>
+<br><code>std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};</code>
+<br><code>std::vector<int> out = union2(vec1, vec2);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 3  4  4  5  7  8  2  4  0  1  2  3  9  11 </code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="intersect2" style="test-align: left;">intersect2</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template <typename T> std::vector<T> union2(std::vector<T> &x, std::vector<T> &x2)</code></div>
+<h3>#Description</h3>
+<p>Returns the commun elements of two stl vectors of the same type.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector</th></tr>
+<tr><th>x2 </th><th> is an stl vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};</code>
+<br><code>std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};</code>
+<br><code>std::vector<int> out = intersect2(vec1, vec2);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 2 3 </code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="diff2" style="test-align: left;">diff2</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template <typename T> std::vector<T> diff2(std::vector<T> &x, std::vector<T> &x2)</code></div>
+<h3>#Description</h3>
+<p>Returns the elements that are in one of the stl vector but not in the intersection of all stl vectors.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector</th></tr>
+<tr><th>x2 </th><th> is an stl vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};</code>
+<br><code>std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};</code>
+<br><code>std::vector<int> out = diff2(vec1, vec2);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 9  4  4  5  7  8  11 4  0  1  </code>
+</div>
+<br>
+<hr class="hr">
+<h4 style="color:#2c4786;">Variadic / Indefinite number of arguments - Rm_sharedv Class</h4>
+<h2 id="Rm_sharedv.to_rm()" style="test-align: left;">Rm_sharedv.to_rm()</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>Rm_sharedv rm1(std::vector<Type> vec1);<br>rm1.to_comp(std::vector<Type> vec2, std::vector<Type> vec3);<br>rm1.result();<br>rm1.reinitiate(std::vector<OtherType> vec4);</code></div>
+<h3>#Description</h3>
+<p>Returns the initializer vector with the shared elements between an undefinite number of stl vectors, removed. This method is faster than finding commun elements between undefinite number of stl vectors and then removing the commun elements.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+... </th><th> undefinite number of stl vectors</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};</code>
+<br><code>std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};</code>
+<br><code>std::vector<int> vec3 = {0, 1, 2, 3, 9, 11, 8};</code>
+<br><code>Rm_sharedv obj1(vec1);</code>
+<br><code>obj1.to_rm(vec2, vec3);</code>
+<br><code>std::vector<int> out = obj1.result();</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 4 4 4 5 7 </code>
+<br><code>obj1.reinitiate(vec1);</code>
+<br><code>out = obj1.result();</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 3 4 4 5 7 8 2 4 </code>
 </div>
 <br>
 <hr class="hr">
