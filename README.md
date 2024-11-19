@@ -96,6 +96,11 @@
 <br>
 <a href="#sort_ascout" style="margin-left:80px;">sort_ascout</a>
 <br>
+<b><li style="margin-left:60px; color: #2c4786;">Remove range of elements</li></b>
+<a href="#rm_ordered" style="margin-left:80px;">rm_ordered</a>
+<br>
+<a href="#rm_unordered" style="margin-left:80px;">rm_unordered</a>
+<br>
 <b><li style="margin-left:40px; color: #2c4786;">String and vectors conversions</li></b>
 <b><li style="margin-left:60px; color: #2c4786;">Collapse (vector to string)</li></b>
 <a href="#ncollapse" style="margin-left:80px;">ncollapse</a>
@@ -654,7 +659,7 @@ from </th><th> is the starting value</th></tr>
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; comp2(const std::vector&lt;T&gt; &x, const std::vector&lt;T2&gt; &x2) </code></div>
 <h3>#Description</h3>
-<p>Returns a boolean vector of 2 stl vectors that will be compared elements by elements. The vectors should not necessarily be the same size. The output boolean vector will be the same size as the first stl vector argument.</p>
+<p>Returns a boolean vector of 2 stl vectors that will be compared elements by elements. The vectors should not necessarily be the same size. The output boolean vector will be the same size as the first stl vector argument. This is the prefered way when there are only 2 vectors to compare, compared to using Compv class.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> is an stl vector </th></tr>
@@ -812,6 +817,47 @@ x </th><th> stl vector (int, float, double, bool) </th></tr>
 <div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 5, 2, 1, 5, 22};</code>
 <br><code>std::&lt;int&gt; out = sort_ascout(vec);</code>
 <br><code>{1, 1, 2, 5, 5, 22}</code>
+</div>
+<br>
+<hr class="hr">
+<h3 style="color:#2c4786;">Remove range of elements</h3>
+<h2 id="rm_ordered" style="test-align: left;">rm_ordered</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template <typename T> void rm_ordered(std::vector<T> &x, std::vector<int> ids)</code></div>
+<h3>#Description</h3>
+<p>Remove elements from a stl vector. Keeps the vector sorted at a certain computational cost compared to <a href="#rm_unordered">rm_unordered</a>. The stl int vector provided for the indices of the element to be removed must be decreasingly sorted. The capacity of the vector is kept unchanged, so if you want to shrink it, consider doing <code>shrink_to_fit()</code> method.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector</th></tr>
+<tr><th>ids </th><th> is an stl int vector decreasingly sorted</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector<int> vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};</code>
+<br><code>std::vector<int> ids = {8, 5, 3, 2};</code>
+<br><code>rm_ordered(vec, ids); </code>
+<br><code>print_nvec(vec);</code>
+<br><code>:0: 0 1 4 6 7 9</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="rm_unordered" style="test-align: left;">rm_unordered</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template <typename T> void rm_unordered(std::vector<T> &x, std::vector<int> ids) </code></div>
+<h3>#Description</h3>
+<p>Remove elements from a stl vector. Does not keep the vector sorted for computational speed compared to <a href="#rm_ordered">rm_ordered</a>. The stl int vector provided for the indices of the element to be removed must be decreasingly sorted. The capacity of the vector is kept unchanged, so if you want to shrink it, consider doing <code>shrink_to_fit()</code> method.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector</th></tr>
+<tr><th>ids </th><th> is an stl int vector decreasingly sorted</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector<int> vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};</code>
+<br><code>std::vector<int> ids = {8, 5, 3, 2};</code>
+<br><code>rm_unordered(vec, ids); </code>
+<br><code>print_nvec(vec);</code>
+<br><code>:0: 0 1 6 7 4 9 </code>
 </div>
 <br>
 <hr class="hr">
