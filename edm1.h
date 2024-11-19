@@ -619,8 +619,6 @@ template <typename T, typename T2> std::vector<bool> grepl(const std::vector<T> 
   for (typename std::vector<T>::const_iterator it = source.begin(); it != source.end(); ++it) {
     if (*it == ptrn) {
       rtn[i] = 1;
-    } else {
-      rtn[i] = 0;
     };
     i++;
   };
@@ -807,7 +805,7 @@ template <typename T, typename T2, typename T3> std::vector<T> seq(T from, T2 co
 //@T comp2
 //@U template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; comp2(const std::vector&lt;T&gt; &x, const std::vector&lt;T2&gt; &x2) 
 //@X
-//@D Returns a boolean vector of 2 stl vectors that will be compared elements by elements. The vectors should not necessarily be the same size. The output boolean vector will be the same size as the first stl vector argument.
+//@D Returns a boolean vector of 2 stl vectors that will be compared elements by elements. The vectors should not necessarily be the same size. The output boolean vector will be the same size as the first stl vector argument. This is the prefered way when there are only 2 vectors to compare, compared to using Compv class.
 //@A x : is an stl vector 
 //@A x2 is an stl vector
 //@X
@@ -1105,6 +1103,51 @@ template <typename T> std::vector<T> sort_ascout(const std::vector<T> &x) {
   return rtn;
 };
 
+//@L3 Remove range of elements
+
+//@T rm_ordered
+//@U template <typename T> void rm_ordered(std::vector<T> &x, std::vector<int> ids)
+//@X
+//@D Remove elements from a stl vector. Keeps the vector sorted at a certain computational cost compared to <a href="#rm_unordered">rm_unordered</a>. The stl int vector provided for the indices of the element to be removed must be decreasingly sorted. The capacity of the vector is kept unchanged, so if you want to shrink it, consider doing <code>shrink_to_fit()</code> method.
+//@A x : is an stl vector
+//@A ids : is an stl int vector decreasingly sorted
+//@X
+//@E std::vector<int> vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+//@E std::vector<int> ids = {8, 5, 3, 2};
+//@E rm_ordered(vec, ids); 
+//@E print_nvec(vec);
+//@E :0: 0 1 4 6 7 9
+//@X
+
+template <typename T> void rm_ordered(std::vector<T> &x, std::vector<int> ids) {
+  const unsigned int n = ids.size();
+  for (unsigned int i = 0; i < n; ++i) {
+    x.erase(x.begin() + ids[i]);
+  };
+};
+
+//@T rm_unordered
+//@U template <typename T> void rm_unordered(std::vector<T> &x, std::vector<int> ids) 
+//@X
+//@D Remove elements from a stl vector. Does not keep the vector sorted for computational speed compared to <a href="#rm_ordered">rm_ordered</a>. The stl int vector provided for the indices of the element to be removed must be decreasingly sorted. The capacity of the vector is kept unchanged, so if you want to shrink it, consider doing <code>shrink_to_fit()</code> method.
+//@A x : is an stl vector
+//@A ids : is an stl int vector decreasingly sorted
+//@X
+//@E std::vector<int> vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+//@E std::vector<int> ids = {8, 5, 3, 2};
+//@E rm_unordered(vec, ids); 
+//@E print_nvec(vec);
+//@E :0: 0 1 6 7 4 9 
+//@X
+
+template <typename T> void rm_unordered(std::vector<T> &x, std::vector<int> ids) {
+  const unsigned int n = ids.size();
+  for (unsigned int i = 0; i < n; ++i) {
+    std::swap(x[ids[i]], x.back());
+    x.pop_back();
+  };
+};
+
 //@L2 String and vectors conversions
 //@L3 Collapse (vector to string)
 
@@ -1307,12 +1350,12 @@ template <typename T> void t_in(std::vector<std::vector<T>> &x) {
   std::vector<T> cur_vec;
   T switchr;
   if (nrow >= ncol) {
-    x.resize(nrow);
+    x.reserve(nrow);
     cur_vec.reserve(nrow);
     for (int i = 0; i < ncol; ++i) {
       cur_vec = x[i];
       i3 = i + 1;
-      for (i2 = (i + 1); i2 < nrow; ++i2) {
+      for (i2 = i3; i2 < nrow; ++i2) {
         if (i3 < ncol) {
           switchr = x[i2][i];
           x[i2][i] = cur_vec[i2];
@@ -1323,16 +1366,18 @@ template <typename T> void t_in(std::vector<std::vector<T>> &x) {
         i3 += 1;
       };
       x[i].resize(ncol);
+      x[i].shrink_to_fit();
     };
   } else {
     cur_vec.reserve(ncol);
-    for (int i = 0; i < ncol; ++i) {
+    for (int i = 0; i < nrow; ++i) {
+      x[i].reserve(5);
       cur_vec = {};
       for (i3 = 0; i3 < ncol; ++i3) {
         cur_vec.push_back(x[i3][i]);
       };
       i3 = i + 1;
-      for (i2 = (i + 1); i2 < ncol; ++i2) {
+      for (i2 = i3; i2 < ncol; ++i2) {
         if (i3 < nrow) {
           switchr = x[i][i2];
           x[i][i2] = cur_vec[i2];
@@ -1342,9 +1387,9 @@ template <typename T> void t_in(std::vector<std::vector<T>> &x) {
         };
         i3 += 1;
       };
-      x[i].resize(ncol);
     };
     x.resize(nrow);
+    x.shrink_to_fit();
   };
 };
 
