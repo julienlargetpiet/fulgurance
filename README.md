@@ -1,6 +1,5 @@
-
 <body>
-<div class="Div2"><i><b>R</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
+<div class="Div2"><i><b>README</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
 <div class="container">
 <div class="Divb">
 <div class="box1"><a><i>Table Of Contents</i></a><br><br><ul>
@@ -12,6 +11,10 @@
 <a href="#mod" style="margin-left:80px;">mod</a>
 <br>
 <a href="#int_lngth" style="margin-left:80px;">int_lngth</a>
+<br>
+<a href="#roundout" style="margin-left:80px;">roundout</a>
+<br>
+<a href="#roundin" style="margin-left:80px;">roundin</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">String to int, float, double</li></b>
 <a href="#si" style="margin-left:80px;">si</a>
@@ -196,6 +199,47 @@ x </th><th> is an int</th></tr>
 <div class = "Div"><code>int a = 896;</code>
 <br><code>int_lngth(a);</code>
 <br><code>3</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="roundout" style="test-align: left;">roundout</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template <typename T> T roundout(T &x, int n = 0)</code></div>
+<h3>#Description</h3>
+<p>Returns a rounded value with decimal precision.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an int, float, double</th></tr>
+<tr><th>n </th><th> is an int indicating the decimal precision, defaults to 0</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>float x = 34.476;</code>
+<br><code>float out = roundout(x, 2);</code>
+<br><code>34.48</code>
+<br><code>out = roundout(x);</code>
+<br><code>34</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="roundin" style="test-align: left;">roundin</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template <typename T> void roundin(T &x, int n = 0)</code></div>
+<h3>#Description</h3>
+<p>Transforms the input value to a rounded value with decimal precision.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an int, float, double</th></tr>
+<tr><th>n </th><th> is an int indicating the decimal precision, defaults to 0</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>float x = 34.476</code>
+<br><code>roundin(x, 2);</code>
+<br><code>34.48</code>
+<br><code>x = 67.754;</code>
+<br><code>roundin(x, 0);</code>
+<br><code>68</code>
 </div>
 <br>
 <hr class="hr">
@@ -1032,7 +1076,7 @@ x </th><th> is an stl vector</th></tr>
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename T&gt; void rm_shared_in(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)</code></div>
 <h3>#Description</h3>
-<p>Transforms the first stl input vector minus the its commun elements with the second stl vector of the same type. The returned vector has its capacity unchanged, so consider applying the <code>shrink_to_fit()</code> method to it if you want to free some memory.</p>
+<p>Transforms the first stl vector input removing its commun elements with the second stl vector of the same type. The returned vector has its capacity unchanged, so consider applying the <code>shrink_to_fit()</code> method to it if you want to free some memory.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> is an stl vector</th></tr>
@@ -1052,7 +1096,7 @@ x </th><th> is an stl vector</th></tr>
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; rm_shared_out(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)</code></div>
 <h3>#Description</h3>
-<p>Returns the first stl input vector minus the its commun elements with the second stl vector of the same type. The returned vector has its capacity unchanged, so consider applying the <code>shrink_to_fit()</code> method to it if you want to free some memory.</p>
+<p>Returns the first stl vector input minus the its commun elements with the second stl vector of the same type. The returned vector has its capacity unchanged, so consider applying the <code>shrink_to_fit()</code> method to it if you want to free some memory.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> is an stl vector</th></tr>
