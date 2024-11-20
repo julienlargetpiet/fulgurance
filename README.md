@@ -204,41 +204,45 @@ x </th><th> is an int</th></tr>
 <hr class="hr">
 <h2 id="roundout" style="test-align: left;">roundout</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> T roundout(T &x, int n = 0)</code></div>
+<div class="Div"><code>template <typename T> T roundout(T &x, int &n)</code></div>
 <h3>#Description</h3>
 <p>Returns a rounded value with decimal precision.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> is an int, float, double</th></tr>
-<tr><th>n </th><th> is an int indicating the decimal precision, defaults to 0</th></tr>
+<tr><th>n </th><th> is an int indicating the decimal precision</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>float x = 34.476;</code>
-<br><code>float out = roundout(x, 2);</code>
+<br><code>int n = 2;</code>
+<br><code>float out = roundout(x, n);</code>
 <br><code>34.48</code>
-<br><code>out = roundout(x);</code>
+<br><code>n = 0;</code>
+<br><code>out = roundout(x, n);</code>
 <br><code>34</code>
 </div>
 <br>
 <hr class="hr">
 <h2 id="roundin" style="test-align: left;">roundin</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> void roundin(T &x, int n = 0)</code></div>
+<div class="Div"><code>template <typename T> void roundin(T &x, int &n)</code></div>
 <h3>#Description</h3>
 <p>Transforms the input value to a rounded value with decimal precision.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> is an int, float, double</th></tr>
-<tr><th>n </th><th> is an int indicating the decimal precision, defaults to 0</th></tr>
+<tr><th>n </th><th> is an int indicating the decimal precision</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>float x = 34.476</code>
-<br><code>roundin(x, 2);</code>
+<br><code>int n = 2;</code>
+<br><code>roundin(x, n);</code>
 <br><code>34.48</code>
+<br><code>n = 0;</code>
 <br><code>x = 67.754;</code>
-<br><code>roundin(x, 0);</code>
+<br><code>roundin(x, n);</code>
 <br><code>68</code>
 </div>
 <br>

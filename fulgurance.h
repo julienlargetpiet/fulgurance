@@ -58,20 +58,22 @@ int int_lngth(const int &x) {
 }
 
 //@T roundout
-//@U template <typename T> T roundout(T &x, int n = 0)
+//@U template <typename T> T roundout(T &x, int &n)
 //@X
 //@D Returns a rounded value with decimal precision.
 //@A x : is an int, float, double
-//@A n : is an int indicating the decimal precision, defaults to 0
+//@A n : is an int indicating the decimal precision
 //@X
 //@E float x = 34.476;
-//@E float out = roundout(x, 2);
+//@E int n = 2;
+//@E float out = roundout(x, n);
 //@E 34.48
-//@E out = roundout(x);
+//@E n = 0;
+//@E out = roundout(x, n);
 //@E 34
 //@X
 
-template <typename T> T roundout(T &x, int n = 0) {
+template <typename T> T roundout(T &x, int &n) {
   unsigned int mlt = 1;
   for (unsigned int i = 0; i < n; ++i) {
     mlt *= 10;
@@ -80,21 +82,23 @@ template <typename T> T roundout(T &x, int n = 0) {
 };
 
 //@T roundin
-//@U template <typename T> void roundin(T &x, int n = 0)
+//@U template <typename T> void roundin(T &x, int &n)
 //@X
 //@D Transforms the input value to a rounded value with decimal precision.
 //@A x : is an int, float, double
-//@A n : is an int indicating the decimal precision, defaults to 0
+//@A n : is an int indicating the decimal precision
 //@X
 //@E float x = 34.476
-//@E roundin(x, 2);
+//@E int n = 2;
+//@E roundin(x, n);
 //@E 34.48
+//@E n = 0;
 //@E x = 67.754;
-//@E roundin(x, 0);
+//@E roundin(x, n);
 //@E 68
 //@X
 
-template <typename T> void roundin(T &x, int n = 0) {
+template <typename T> void roundin(T &x, int &n) {
   unsigned int mlt = 1;
   for (unsigned int i = 0; i < n; ++i) {
     mlt *= 10;
