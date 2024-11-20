@@ -1,5 +1,6 @@
+
 <body>
-<div class="Div2"><i><b>E</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
+<div class="Div2"><i><b>R</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
 <div class="container">
 <div class="Divb">
 <div class="box1"><a><i>Table Of Contents</i></a><br><br><ul>
@@ -116,6 +117,10 @@
 <br>
 <b><li style="margin-left:80px; color: #2c4786;">Variadic / Indefinite number of arguments - Diffv Class</li></b>
 <a href="#Diffv.to_diff()" style="margin-left:100px;">Diffv.to_diff()</a>
+<br>
+<a href="#rm_shared_in" style="margin-left:80px;">rm_shared_in</a>
+<br>
+<a href="#rm_shared_out" style="margin-left:80px;">rm_shared_out</a>
 <br>
 <b><li style="margin-left:80px; color: #2c4786;">Variadic / Indefinite number of arguments - Rm_sharedv Class</li></b>
 <a href="#Rm_sharedv.to_rm()" style="margin-left:100px;">Rm_sharedv.to_rm()</a>
@@ -1020,6 +1025,46 @@ x </th><th> is an stl vector</th></tr>
 <br><code>out = diff1.result();</code>
 <br><code>print_nvec(out);</code>
 <br><code>:0: 0 1 4 4 4 9 0 1 5 7 9 8 4 //same elements, different orders because the initializer vector is not the same </code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="rm_shared_in" style="test-align: left;">rm_shared_in</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void rm_shared_in(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)</code></div>
+<h3>#Description</h3>
+<p>Transforms the first stl input vector minus the its commun elements with the second stl vector of the same type. The returned vector has its capacity unchanged, so consider applying the <code>shrink_to_fit()</code> method to it if you want to free some memory.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector</th></tr>
+<tr><th>x2 </th><th> is an stl vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4, 11};</code>
+<br><code>std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11, 4};</code>
+<br><code>rm_shared_in(vec1, vec2);</code>
+<br><code>print_nvec(vec1);</code>
+<br><code>:0: 5 7 8 </code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="rm_shared_out" style="test-align: left;">rm_shared_out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; rm_shared_out(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)</code></div>
+<h3>#Description</h3>
+<p>Returns the first stl input vector minus the its commun elements with the second stl vector of the same type. The returned vector has its capacity unchanged, so consider applying the <code>shrink_to_fit()</code> method to it if you want to free some memory.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector</th></tr>
+<tr><th>x2 </th><th> is an stl vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4, 11};</code>
+<br><code>std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11, 4};</code>
+<br><code>std::vector&lt;int&gt; out = rm_shared_out(vec1, vec2);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 5 7 8 </code>
 </div>
 <br>
 <hr class="hr">
