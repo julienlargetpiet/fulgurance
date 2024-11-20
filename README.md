@@ -1,5 +1,5 @@
 <body>
-<div class="Div2"><i><b>README</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
+<div class="Div2"><i><b>E</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
 <div class="container">
 <div class="Divb">
 <div class="box1"><a><i>Table Of Contents</i></a><br><br><ul>
@@ -104,9 +104,18 @@
 <b><li style="margin-left:60px; color: #2c4786;">Sets (Union - Diff - Removing shared elements)</li></b>
 <a href="#union2" style="margin-left:80px;">union2</a>
 <br>
+<b><li style="margin-left:80px; color: #2c4786;">Variadic / Indefinite number of arguments - Unionv Class</li></b>
+<a href="#Unionv.to_union()" style="margin-left:100px;">Unionv.to_union()</a>
+<br>
 <a href="#intersect2" style="margin-left:80px;">intersect2</a>
 <br>
+<b><li style="margin-left:80px; color: #2c4786;">Variadic / Indefinite number of arguments - Intersectv Class</li></b>
+<a href="#Intersectv.to_intersect() " style="margin-left:100px;">Intersectv.to_intersect() </a>
+<br>
 <a href="#diff2" style="margin-left:80px;">diff2</a>
+<br>
+<b><li style="margin-left:80px; color: #2c4786;">Variadic / Indefinite number of arguments - Diffv Class</li></b>
+<a href="#Diffv.to_diff()" style="margin-left:100px;">Diffv.to_diff()</a>
 <br>
 <b><li style="margin-left:80px; color: #2c4786;">Variadic / Indefinite number of arguments - Rm_sharedv Class</li></b>
 <a href="#Rm_sharedv.to_rm()" style="margin-left:100px;">Rm_sharedv.to_rm()</a>
@@ -876,7 +885,7 @@ x </th><th> is an stl vector</th></tr>
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; union2(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)</code></div>
 <h3>#Description</h3>
-<p>Returns the union of two stl vectors.</p>
+<p>Returns the union of two stl vectors. Does not returns a stl vector with unique elements, so if you want it to return unique elements, make sure to enter unique stl vectors as input.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> is an stl vector</th></tr>
@@ -892,11 +901,37 @@ x </th><th> is an stl vector</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h4 style="color:#2c4786;">Variadic / Indefinite number of arguments - Unionv Class</h4>
+<h2 id="Unionv.to_union()" style="test-align: left;">Unionv.to_union()</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>Unionv union1(std::vector&lt;Type&gt; vec1);<br>union1.to_union(std::vector&lt;Type&gt; vec2, std::vector&lt;Type&gt; vec3);<br>union1.result();<br>union1.reinitiate(std::vector&lt;Type2&gt; vec4);<br>...</code></div>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+... </th><th> undefinite number of stl vector of the same type</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4, 11};</code>
+<br><code>std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11, 4};</code>
+<br><code>std::vector&lt;int&gt; vec3 = {0, 1, 2, 3, 11, 9};</code>
+<br><code>Unionv union1(vec1);</code>
+<br><code>union1.to_union(vec2, vec3, vec3);</code>
+<br><code>std::vector&lt;int&gt; out = union1.result();</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 3  4  4  5  7  8  2  4  11 0  1  2  3  9  11 4  0  1  2  3  11 9  0  1  </code>
+<br><code>union1.reinitiate(vec2);</code>
+<br><code>union1.to_union(vec1);</code>
+<br><code>out = union1.result();</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0  1  2  3  9  11 4  3  4  4  5  7  8  2  4  11 </code>
+</div>
+<br>
+<hr class="hr">
 <h2 id="intersect2" style="test-align: left;">intersect2</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; union2(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)</code></div>
 <h3>#Description</h3>
-<p>Returns the commun elements of two stl vectors of the same type.</p>
+<p>Returns the commun elements of two stl vectors of the same type. Does not returns a stl vector with unique elements, so if you want it to return unique elements, make sure to enter unique stl vectors as input.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> is an stl vector</th></tr>
@@ -912,11 +947,39 @@ x </th><th> is an stl vector</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h4 style="color:#2c4786;">Variadic / Indefinite number of arguments - Intersectv Class</h4>
+<h2 id="Intersectv.to_intersect() " style="test-align: left;">Intersectv.to_intersect() </h2>
+<h3>#Usage</h3>
+<div class="Div"><code>Intersectv intersect1(std::vector&lt;Type&gt; vec1);<br>intersect1.to_intersect(std::vector&lt;Type&gt; vec2, std::vector&lt;Type&gt; vec3);<br>intersect1.reinitiate(std::vector&lt;Type2&gt;);<br>...</code></div>
+<h3>#Description</h3>
+<p>Returns the commun elements of undefinite number of stl vectors of the same type. The returned vector can have extra capacity non initiated, to get rid of that consider applying it the <code>shrink_to_fit()</code> method. The returned vector does not return unique elements, so if you want unique elements, consider enter unique stl vectors as input.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+... </th><th> undefinite number of stl vectors</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4, 11};</code>
+<br><code>std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11, 4};</code>
+<br><code>std::vector&lt;int&gt; vec3 = {0, 1, 2, 3, 11, 9};</code>
+<br><code>Intersectv intersect1(vec1);</code>
+<br><code>intersect1.to_intersect(vec2, vec3);</code>
+<br><code>std::vector&lt;int&gt; out = intersect1.result();</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 3  2  11 </code>
+<br><code>intersect1.reinitiate(vec1);</code>
+<br><code>intersect1.to_intersect(vec2);</code>
+<br><code>out = intersect1.result();</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 3  4  4  2  4  11</code>
+</div>
+<br>
+<hr class="hr">
 <h2 id="diff2" style="test-align: left;">diff2</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; diff2(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)</code></div>
 <h3>#Description</h3>
-<p>Returns the elements that are in one of the stl vector but not in the intersection of all stl vectors.</p>
+<p>Returns the elements that are in one of the stl vector but not in the intersection of all stl vectors. Does not returns a stl vector with unique elements, so if you want it to return unique elements, make sure to enter unique stl vectors as input.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> is an stl vector</th></tr>
@@ -932,10 +995,38 @@ x </th><th> is an stl vector</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h4 style="color:#2c4786;">Variadic / Indefinite number of arguments - Diffv Class</h4>
+<h2 id="Diffv.to_diff()" style="test-align: left;">Diffv.to_diff()</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>Diffv diff1(std::vector&lt;Type&gt; vec1)<br>diff1.to_diff(std::vector&lt;Type&gt; vec2, std::vector&lt;Type&gt; vec2);<br>diff1.result();<br>diff1.reinitiate(std::vector&lt;Type2&gt; vec4);<br>...</code></div>
+<h3>#Description</h3>
+<p>Returs a stl vector of all the elements that are in one of the undefinite number of input stl vectors (of the same type) or more, but not in the intersection of all these stl vectors. Does not return a stl vector with unique elements, if you want it to return a stl vector with unique elements make sure that your input vectors contain unique elements. The returned vector can have more capacity than its size, to get rid of this unusable memory, you can apply the <code>shrink_to_fit()</code> method on it.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+... </th><th> undefinite number of stl vectors of the same type</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4, 11};</code>
+<br><code>std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11, 4};</code>
+<br><code>std::vector&lt;int&gt; vec3 = {0, 1, 2, 3, 11, 9};</code>
+<br><code>Diffv diff1(vec1);</code>
+<br><code>diff1.to_diff(vec2, vec3);</code>
+<br><code>std::vector&lt;int&gt; out = diff1.result();</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 9 4 4 5 7 8 9 4 4 0 1 0 1 </code>
+<br><code>diff1.reinitiate(vec3);</code>
+<br><code>diff1.to_diff(vec2, vec1);</code>
+<br><code>out = diff1.result();</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0 1 4 4 4 9 0 1 5 7 9 8 4 //same elements, different orders because the initializer vector is not the same </code>
+</div>
+<br>
+<hr class="hr">
 <h4 style="color:#2c4786;">Variadic / Indefinite number of arguments - Rm_sharedv Class</h4>
 <h2 id="Rm_sharedv.to_rm()" style="test-align: left;">Rm_sharedv.to_rm()</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>Rm_sharedv rm1(std::vector&lt;Type&gt; vec1);<br>rm1.to_comp(std::vector&lt;Type&gt; vec2, std::vector&lt;Type&gt; vec3);<br>rm1.result();<br>rm1.reinitiate(std::vector&lt;OtherType&gt; vec4);</code></div>
+<div class="Div"><code>Rm_sharedv rm1(std::vector&lt;Type&gt; vec1);<br>rm1.to_comp(std::vector&lt;Type&gt; vec2, std::vector&lt;Type&gt; vec3);<br>rm1.result();<br>rm1.reinitiate(std::vector&lt;OtherType&gt; vec4);<br>...</code></div>
 <h3>#Description</h3>
 <p>Returns the initializer vector with the shared elements between this vector and an undefinite number of stl vectors, removed. This method is faster than finding commun elements between undefinite number of stl vectors and the initializer vector, and then removing the commun elements.</p>
 <h3>#Arguments</h3>

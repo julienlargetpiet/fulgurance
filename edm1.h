@@ -1107,14 +1107,14 @@ template <typename T> std::vector<T> sort_ascout(const std::vector<T> &x) {
 //@L3 Remove range of elements
 
 //@T rm_ordered
-//@U template <typename T> void rm_ordered(std::vector<T> &x, std::vector<int> ids)
+//@U template &lt;typename T&gt; void rm_ordered(std::vector&lt;T&gt; &x, std::vector&lt;int&gt; ids)
 //@X
 //@D Remove elements from a stl vector. Keeps the vector sorted at a certain computational cost compared to <a href="#rm_unordered">rm_unordered</a>. The stl int vector provided for the indices of the element to be removed must be decreasingly sorted. The capacity of the vector is kept unchanged, so if you want to shrink it, consider doing <code>shrink_to_fit()</code> method.
 //@A x : is an stl vector
 //@A ids : is an stl int vector decreasingly sorted
 //@X
-//@E std::vector<int> vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-//@E std::vector<int> ids = {8, 5, 3, 2};
+//@E std::vector&lt;int&gt; vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+//@E std::vector&lt;int&gt; ids = {8, 5, 3, 2};
 //@E rm_ordered(vec, ids); 
 //@E print_nvec(vec);
 //@E :0: 0 1 4 6 7 9
@@ -1128,14 +1128,14 @@ template <typename T> void rm_ordered(std::vector<T> &x, std::vector<int> ids) {
 };
 
 //@T rm_unordered
-//@U template <typename T> void rm_unordered(std::vector<T> &x, std::vector<int> ids) 
+//@U template &lt;typename T&gt; void rm_unordered(std::vector&lt;T&gt; &x, std::vector&lt;int&gt; ids) 
 //@X
 //@D Remove elements from a stl vector. Does not keep the vector sorted for computational speed compared to <a href="#rm_ordered">rm_ordered</a>. The stl int vector provided for the indices of the element to be removed must be decreasingly sorted. The capacity of the vector is kept unchanged, so if you want to shrink it, consider doing <code>shrink_to_fit()</code> method.
 //@A x : is an stl vector
 //@A ids : is an stl int vector decreasingly sorted
 //@X
-//@E std::vector<int> vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-//@E std::vector<int> ids = {8, 5, 3, 2};
+//@E std::vector&lt;int&gt; vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+//@E std::vector&lt;int&gt; ids = {8, 5, 3, 2};
 //@E rm_unordered(vec, ids); 
 //@E print_nvec(vec);
 //@E :0: 0 1 6 7 4 9 
@@ -1152,15 +1152,15 @@ template <typename T> void rm_unordered(std::vector<T> &x, std::vector<int> ids)
 //@L3 Sets (Union - Diff - Removing shared elements)
 
 //@T union2
-//@U template <typename T> std::vector<T> union2(std::vector<T> &x, std::vector<T> &x2)
+//@U template &lt;typename T&gt; std::vector&lt;T&gt; union2(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)
 //@X
-//@D Returns the union of two stl vectors.
+//@D Returns the union of two stl vectors. Does not returns a stl vector with unique elements, so if you want it to return unique elements, make sure to enter unique stl vectors as input.
 //@A x : is an stl vector
 //@A x2 : is an stl vector
 //@X
-//@E std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};
-//@E std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};
-//@E std::vector<int> out = union2(vec1, vec2);
+//@E std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4};
+//@E std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11};
+//@E std::vector&lt;int&gt; out = union2(vec1, vec2);
 //@E print_nvec(out);
 //@E :0: 3  4  4  5  7  8  2  4  0  1  2  3  9  11 
 //@X
@@ -1174,16 +1174,80 @@ template <typename T> std::vector<T> union2(std::vector<T> &x, std::vector<T> &x
   return rtn_v;
 };
 
-//@T intersect2
-//@U template <typename T> std::vector<T> union2(std::vector<T> &x, std::vector<T> &x2)
+//@L4 Variadic / Indefinite number of arguments - Unionv Class
+
+//@T Unionv.to_union()
+//@U Unionv union1(std::vector&lt;Type&gt; vec1);
+//@U union1.to_union(std::vector&lt;Type&gt; vec2, std::vector&lt;Type&gt; vec3);
+//@U union1.result();
+//@U union1.reinitiate(std::vector&lt;Type2&gt; vec4);
+//@U ...
 //@X
-//@D Returns the commun elements of two stl vectors of the same type.
+//@A ... : undefinite number of stl vector of the same type
+//@X
+//@E std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4, 11};
+//@E std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11, 4};
+//@E std::vector&lt;int&gt; vec3 = {0, 1, 2, 3, 11, 9};
+//@E Unionv union1(vec1);
+//@E union1.to_union(vec2, vec3, vec3);
+//@E std::vector&lt;int&gt; out = union1.result();
+//@E print_nvec(out);
+//@E :0: 3  4  4  5  7  8  2  4  11 0  1  2  3  9  11 4  0  1  2  3  11 9  0  1  
+//@E union1.reinitiate(vec2);
+//@E union1.to_union(vec1);
+//@E out = union1.result();
+//@E print_nvec(out);
+//@E :0: 0  1  2  3  9  11 4  3  4  4  5  7  8  2  4  11 
+//@X
+
+template <typename TB> class Unionv{
+  private:
+    std::vector<TB> rtn_v;
+
+  public:
+   
+    void to_union() {};
+
+    template <typename T, typename... T2> void to_union(std::vector<T> &var1, std::vector<T2>&... var2) {
+      for (T i : var1) {
+        rtn_v.push_back(i);
+      };
+      to_union(var2...);
+    };
+
+    std::vector<TB> result() {
+      return rtn_v;
+    };
+
+    template <typename T> void reinitiate(std::vector<T> &x) {
+      if (rtn_v.size() > x.size()) {
+        rtn_v = x;
+        rtn_v.shrink_to_fit();
+      } else {
+        rtn_v = x;
+      };
+    };
+
+    Unionv (std::vector<TB> &x) {
+      rtn_v = x;
+    };
+
+    ~Unionv() {};
+
+};
+
+//@J3
+
+//@T intersect2
+//@U template &lt;typename T&gt; std::vector&lt;T&gt; union2(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)
+//@X
+//@D Returns the commun elements of two stl vectors of the same type. Does not returns a stl vector with unique elements, so if you want it to return unique elements, make sure to enter unique stl vectors as input.
 //@A x : is an stl vector
 //@A x2 : is an stl vector
 //@X
-//@E std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};
-//@E std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};
-//@E std::vector<int> out = intersect2(vec1, vec2);
+//@E std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4};
+//@E std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11};
+//@E std::vector&lt;int&gt; out = intersect2(vec1, vec2);
 //@E print_nvec(out);
 //@E :0: 2 3 
 //@X
@@ -1191,7 +1255,7 @@ template <typename T> std::vector<T> union2(std::vector<T> &x, std::vector<T> &x
 template <typename T> std::vector<T> intersect2(std::vector<T> &x, std::vector<T> &x2) {
   std::vector<T> rtn_v;
   const unsigned int n = x.size();
-  for (int i = n - 1; i > -1; --i) {
+  for (unsigned int i = 0; i < n; ++i) {
     for (T i2 : x2) {
       if (i2 == x[i]) {
         rtn_v.push_back(x[i]);
@@ -1202,16 +1266,108 @@ template <typename T> std::vector<T> intersect2(std::vector<T> &x, std::vector<T
   return rtn_v;
 };
 
-//@T diff2
-//@U template <typename T> std::vector<T> diff2(std::vector<T> &x, std::vector<T> &x2)
+//@L4 Variadic / Indefinite number of arguments - Intersectv Class
+
+//@T Intersectv.to_intersect() 
+//@U Intersectv intersect1(std::vector&lt;Type&gt; vec1);
+//@U intersect1.to_intersect(std::vector&lt;Type&gt; vec2, std::vector&lt;Type&gt; vec3);
+//@U intersect1.reinitiate(std::vector&lt;Type2&gt;);
+//@U ...
 //@X
-//@D Returns the elements that are in one of the stl vector but not in the intersection of all stl vectors.
+//@D Returns the commun elements of undefinite number of stl vectors of the same type. The returned vector can have extra capacity non initiated, to get rid of that consider applying it the <code>shrink_to_fit()</code> method. The returned vector does not return unique elements, so if you want unique elements, consider enter unique stl vectors as input.
+//@A ... : undefinite number of stl vectors
+//@X
+//@E std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4, 11};
+//@E std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11, 4};
+//@E std::vector&lt;int&gt; vec3 = {0, 1, 2, 3, 11, 9};
+//@E Intersectv intersect1(vec1);
+//@E intersect1.to_intersect(vec2, vec3);
+//@E std::vector&lt;int&gt; out = intersect1.result();
+//@E print_nvec(out);
+//@E :0: 3  2  11 
+//@E intersect1.reinitiate(vec1);
+//@E intersect1.to_intersect(vec2);
+//@E out = intersect1.result();
+//@E print_nvec(out);
+//@E :0: 3  4  4  2  4  11
+//@X
+
+template <typename TB> class Intersectv{
+  private:
+    std::vector<TB> rtn_v;
+    std::vector<TB> cur_intersect;
+    std::vector<TB> lst_intersect;
+    unsigned int cur_n;
+
+  public:
+
+    void to_intersect() { };
+
+    template <typename T, typename... T2> void to_intersect(std::vector<T> &var1, std::vector<T2>&... var2) {
+      lst_intersect = cur_intersect;
+      cur_n = lst_intersect.size();
+      cur_intersect = {};
+      rtn_v = {};
+      unsigned int i;
+
+      for (i = 0; i < cur_n; ++i) {
+        for (T i2 : var1) {
+          if (lst_intersect[i] == i2) {
+            cur_intersect.push_back(i2);
+            break;
+          };
+        };
+      };
+
+      cur_n = lst_intersect.size();
+
+      for (i = 0; i < cur_n; ++i) {
+        for (T i2 : cur_intersect) {
+          if (lst_intersect[i] == i2) {
+            rtn_v.push_back(i2);
+            break;
+          };
+        };
+      };
+
+      to_intersect(var2...);
+
+    };
+
+    template <typename T> void reinitiate(std::vector<T> &x) {
+      cur_intersect = x;
+      if (cur_n < x.size()) {
+        cur_n = x.size();
+      } else {
+        cur_intersect.shrink_to_fit();
+        cur_n = x.size();
+      };
+    };
+
+    std::vector<TB> result() {
+      return rtn_v;
+    };
+
+    Intersectv(std::vector<TB> &x) {
+      cur_intersect = x;
+      cur_n = x.size();
+    };
+
+  ~Intersectv() {};
+};
+
+//@J3
+
+//@T diff2
+//@U template &lt;typename T&gt; std::vector&lt;T&gt; diff2(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)
+//@X
+//@D Returns the elements that are in one of the stl vector but not in the intersection of all stl vectors. Does not returns a stl vector with unique elements, so if you want it to return unique elements, make sure to enter unique stl vectors as input.
 //@A x : is an stl vector
 //@A x2 : is an stl vector
 //@X
-//@E std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};
-//@E std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};
-//@E std::vector<int> out = diff2(vec1, vec2);
+//@E std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4};
+//@E std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11};
+//@E std::vector&lt;int&gt; out = diff2(vec1, vec2);
 //@E print_nvec(out);
 //@E :0: 9  4  4  5  7  8  11 4  0  1  
 //@X
@@ -1246,23 +1402,134 @@ template <typename T> std::vector<T> diff2(std::vector<T> &x, std::vector<T> &x2
   return rtn_v;
 };
 
+//@L4 Variadic / Indefinite number of arguments - Diffv Class
+
+//@T Diffv.to_diff()
+//@U Diffv diff1(std::vector&lt;Type&gt; vec1)
+//@U diff1.to_diff(std::vector&lt;Type&gt; vec2, std::vector&lt;Type&gt; vec2);
+//@U diff1.result();
+//@U diff1.reinitiate(std::vector&lt;Type2&gt; vec4);
+//@U ...
+//@X
+//@D Returs a stl vector of all the elements that are in one of the undefinite number of input stl vectors (of the same type) or more, but not in the intersection of all these stl vectors. Does not return a stl vector with unique elements, if you want it to return a stl vector with unique elements make sure that your input vectors contain unique elements. The returned vector can have more capacity than its size, to get rid of this unusable memory, you can apply the <code>shrink_to_fit()</code> method on it.
+//@A ... : undefinite number of stl vectors of the same type
+//@X
+//@E std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4, 11};
+//@E std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11, 4};
+//@E std::vector&lt;int&gt; vec3 = {0, 1, 2, 3, 11, 9};
+//@E Diffv diff1(vec1);
+//@E diff1.to_diff(vec2, vec3);
+//@E std::vector&lt;int&gt; out = diff1.result();
+//@E print_nvec(out);
+//@E :0: 9 4 4 5 7 8 9 4 4 0 1 0 1 
+//@E diff1.reinitiate(vec3);
+//@E diff1.to_diff(vec2, vec1);
+//@E out = diff1.result();
+//@E print_nvec(out);
+//@E :0: 0 1 4 4 4 9 0 1 5 7 9 8 4 //same elements, different orders because the initializer vector is not the same 
+//@X
+
+template <typename TB> class Diffv{
+  private:
+    std::vector<TB> final_intersect;
+    std::vector<TB> cur_intersect;
+    std::vector<TB> lst_intersect;
+    std::vector<TB> union_v;
+    unsigned int cur_n;
+
+  public:
+
+    void to_diff() { 
+      for (int i = union_v.size() - 1; i > -1; --i) {
+        for (auto i2 : final_intersect) {
+          if (i2 == union_v[i]) {
+            std::swap(union_v[i], union_v.back());
+            union_v.pop_back();
+            break;
+          };
+        };
+      };
+    };
+
+    template <typename T, typename... T2> void to_diff(std::vector<T> &var1, std::vector<T2>&... var2) {
+      lst_intersect = cur_intersect;
+      cur_n = lst_intersect.size();
+      cur_intersect = {};
+      final_intersect = {};
+      unsigned int i;
+
+      for (T i2 : var1) {
+        union_v.push_back(i2);
+      };
+
+      for (i = 0; i < cur_n; ++i) {
+        for (T i2 : var1) {
+          if (lst_intersect[i] == i2) {
+            cur_intersect.push_back(i2);
+            break;
+          };
+        };
+      };
+
+      cur_n = lst_intersect.size();
+
+      for (i = 0; i < cur_n; ++i) {
+        for (T i2 : cur_intersect) {
+          if (lst_intersect[i] == i2) {
+            final_intersect.push_back(i2);
+            break;
+          };
+        };
+      };
+
+      to_diff(var2...);
+
+    };
+
+    std::vector<TB> result() {
+      return union_v;
+    };
+
+    template <typename T> void reinitiate(std::vector<T> &x) {
+      cur_intersect = x;
+      union_v = x;
+      if (cur_n < x.size()) {
+        cur_n = x.size();
+      } else {
+        cur_intersect.shrink_to_fit();
+        union_v.shrink_to_fit();
+        cur_n = x.size();
+      };
+    };
+
+    Diffv(std::vector<TB> &x) {
+      cur_intersect = x;
+      union_v = x;
+      cur_n = x.size();
+    };
+
+  ~Diffv() {};
+};
+
+
 //@L4 Variadic / Indefinite number of arguments - Rm_sharedv Class
 
 //@T Rm_sharedv.to_rm()
-//@U Rm_sharedv rm1(std::vector<Type> vec1);
-//@U rm1.to_comp(std::vector<Type> vec2, std::vector<Type> vec3);
+//@U Rm_sharedv rm1(std::vector&lt;Type&gt; vec1);
+//@U rm1.to_comp(std::vector&lt;Type&gt; vec2, std::vector&lt;Type&gt; vec3);
 //@U rm1.result();
-//@U rm1.reinitiate(std::vector<OtherType> vec4);
+//@U rm1.reinitiate(std::vector&lt;OtherType&gt; vec4);
+//@U ...
 //@X
-//@D Returns the initializer vector with the shared elements between an undefinite number of stl vectors, removed. This method is faster than finding commun elements between undefinite number of stl vectors and then removing the commun elements.
+//@D Returns the initializer vector with the shared elements between this vector and an undefinite number of stl vectors, removed. This method is faster than finding commun elements between undefinite number of stl vectors and the initializer vector, and then removing the commun elements.
 //@A ... : undefinite number of stl vectors
 //@X
-//@E std::vector<int> vec1 = {3, 4, 4, 5, 7, 8, 2, 4};
-//@E std::vector<int> vec2 = {0, 1, 2, 3, 9, 11};
-//@E std::vector<int> vec3 = {0, 1, 2, 3, 9, 11, 8};
+//@E std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4};
+//@E std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11};
+//@E std::vector&lt;int&gt; vec3 = {0, 1, 2, 3, 9, 11, 8};
 //@E Rm_sharedv obj1(vec1);
 //@E obj1.to_rm(vec2, vec3);
-//@E std::vector<int> out = obj1.result();
+//@E std::vector&lt;int&gt; out = obj1.result();
 //@E print_nvec(out);
 //@E :0: 4 4 4 5 7 
 //@E obj1.reinitiate(vec1);
@@ -1298,10 +1565,8 @@ template <typename TB> class Rm_sharedv {
 
     void reinitiate(std::vector<TB> &x) {
       const unsigned int n = x.size();
-      if (n >= ref_lngth) {
-        rtn_v = x;
-      } else {
-        rtn_v = x;
+      rtn_v = x;
+      if (n < ref_lngth) {
         rtn_v.shrink_to_fit();
       };
       ref_lngth = n - 1;
@@ -1485,12 +1750,12 @@ template <typename T> void t_in_square(std::vector<std::vector<T>> &x) {
 };
 
 //@T t_in
-//@U template <typename T> void t_in(std::vector<std::vector<T>> &x)
+//@U template &lt;typename T&gt; void t_in(std::vector&lt;std::vector&lt;T&gt;&gt; &x)
 //@X 
 //@D Transforms a matrix as 2D stl vector to its transpose
 //@A x : is a matrix as a 2D stl vector
 //@X
-//@E std::vector<std::vector<int>> matr = {{1, 2, 3, 88, 90}, {4, -5, 6, 78, -7}, {-7, 8, -9, 12, 478}};
+//@E std::vector&lt;std::vector&lt;int&gt;&gt; matr = {{1, 2, 3, 88, 90}, {4, -5, 6, 78, -7}, {-7, 8, -9, 12, 478}};
 //@E print_matr(matr);
 //@E           [0]       [1]       [2]
 //@E :0:         1         4        -7
@@ -1686,13 +1951,13 @@ template <typename T> std::vector<std::vector<T>> abs_matrout(const std::vector<
 //@L1 Fulgurance Extended
 
 //@T Parser_tokenizer_full
-//@U std::vector<std::vector<unsigned int>> Parser_tokenizer_full(std::string &x)
+//@U std::vector&lt;std::vector&lt;unsigned int&gt;&gt; Parser_tokenizer_full(std::string &x)
 //@X
 //@D Returns a 2d stl vectors. First vector is the pair of each parenthesis. Second stl vector is the index of each parenthesis. Takes a stl string as input. 
 //@A x : is a stl string
 //@X
 //@E std::string teste = "(o((ldjf)de)po(m()()m)po)()()";
-//@E std::vector<std::vector<unsigned int>> out = Parser_tokenizer_full(teste);
+//@E std::vector&lt;std::vector&lt;unsigned int&gt;&gt; out = Parser_tokenizer_full(teste);
 //@E {5 1 0 0 1 4 2 2 3 3 4 5 6 6 7 7}
 //@E {0 2 3 8 11 14 16 17 18 19 21 24 25 26 27 28}
 //@X
