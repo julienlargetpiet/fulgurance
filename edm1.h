@@ -1511,6 +1511,61 @@ template <typename TB> class Diffv{
   ~Diffv() {};
 };
 
+//@J3
+
+//@T rm_shared_in
+//@U template &lt;typename T&gt; void rm_shared_in(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)
+//@X
+//@D Transforms the first stl vector input removing its commun elements with the second stl vector of the same type. The returned vector has its capacity unchanged, so consider applying the <code>shrink_to_fit()</code> method to it if you want to free some memory.
+//@A x : is an stl vector
+//@A x2 : is an stl vector
+//@X
+//@E std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4, 11};
+//@E std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11, 4};
+//@E rm_shared_in(vec1, vec2);
+//@E print_nvec(vec1);
+//@E :0: 5 7 8 
+//@X
+
+template <typename T> void rm_shared_in(std::vector<T> &x, std::vector<T> &x2) {
+  for (int i = x.size() - 1; i > -1; --i) {
+    for (T i2 : x2) {
+      if (i2 == x[i]) {
+        std::swap(x[i], x.back());
+        x.pop_back();
+        break;
+      };
+    };
+  };
+};
+
+//@T rm_shared_out
+//@U template &lt;typename T&gt; std::vector&lt;T&gt; rm_shared_out(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)
+//@X
+//@D Returns the first stl vector input minus the its commun elements with the second stl vector of the same type. The returned vector has its capacity unchanged, so consider applying the <code>shrink_to_fit()</code> method to it if you want to free some memory.
+//@A x : is an stl vector
+//@A x2 : is an stl vector
+//@X
+//@E std::vector&lt;int&gt; vec1 = {3, 4, 4, 5, 7, 8, 2, 4, 11};
+//@E std::vector&lt;int&gt; vec2 = {0, 1, 2, 3, 9, 11, 4};
+//@E std::vector&lt;int&gt; out = rm_shared_out(vec1, vec2);
+//@E print_nvec(out);
+//@E :0: 5 7 8 
+//@X
+
+template <typename T> std::vector<T> rm_shared_out(std::vector<T> &x, std::vector<T> &x2) {
+  std::vector<T> rtn_v = x;
+  for (int i = rtn_v.size() - 1; i > -1; --i) {
+    for (T i2 : x2) {
+      if (i2 == rtn_v[i]) {
+        std::swap(rtn_v[i], rtn_v.back());
+        rtn_v.pop_back();
+        break;
+      };
+    };
+  };
+  return rtn_v;
+};
 
 //@L4 Variadic / Indefinite number of arguments - Rm_sharedv Class
 
