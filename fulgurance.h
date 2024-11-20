@@ -57,6 +57,51 @@ int int_lngth(const int &x) {
   return i;
 }
 
+//@T roundout
+//@U template <typename T> T roundout(T &x, int n = 0)
+//@X
+//@D Returns a rounded value with decimal precision.
+//@A x : is an int, float, double
+//@A n : is an int indicating the decimal precision, defaults to 0
+//@X
+//@E float x = 34.476;
+//@E float out = roundout(x, 2);
+//@E 34.48
+//@E out = roundout(x);
+//@E 34
+//@X
+
+template <typename T> T roundout(T &x, int n = 0) {
+  unsigned int mlt = 1;
+  for (unsigned int i = 0; i < n; ++i) {
+    mlt *= 10;
+  };
+  return round(x * mlt) / mlt;
+};
+
+//@T roundin
+//@U template <typename T> void roundin(T &x, int n = 0)
+//@X
+//@D Transforms the input value to a rounded value with decimal precision.
+//@A x : is an int, float, double
+//@A n : is an int indicating the decimal precision, defaults to 0
+//@X
+//@E float x = 34.476
+//@E roundin(x, 2);
+//@E 34.48
+//@E x = 67.754;
+//@E roundin(x, 0);
+//@E 68
+//@X
+
+template <typename T> void roundin(T &x, int n = 0) {
+  unsigned int mlt = 1;
+  for (unsigned int i = 0; i < n; ++i) {
+    mlt *= 10;
+  };
+  x = round(x * mlt) / mlt;
+};
+
 //@L3 String to int, float, double
 
 //@T si
