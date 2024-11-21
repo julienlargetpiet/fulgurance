@@ -16,6 +16,8 @@
 <br>
 <a href="#roundin" style="margin-left:80px;">roundin</a>
 <br>
+<a href="#logn" style="margin-left:80px;">logn</a>
+<br>
 <b><li style="margin-left:60px; color: #2c4786;">String to int, float, double</li></b>
 <a href="#si" style="margin-left:80px;">si</a>
 <br>
@@ -36,6 +38,8 @@
 <a href="#med" style="margin-left:80px;">med</a>
 <br>
 <a href="#cor" style="margin-left:80px;">cor</a>
+<br>
+<a href="#Sd" style="margin-left:80px;">Sd</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
 <a href="#min" style="margin-left:80px;">min</a>
@@ -132,6 +136,9 @@
 <b><li style="margin-left:80px; color: #2c4786;">Variadic / Indefinite number of arguments - Rm_sharedv Class</li></b>
 <a href="#Rm_sharedv.to_rm()" style="margin-left:100px;">Rm_sharedv.to_rm()</a>
 <br>
+<b><li style="margin-left:60px; color: #2c4786;">Others</li></b>
+<a href="#pct_to_idx" style="margin-left:80px;">pct_to_idx</a>
+<br>
 <b><li style="margin-left:40px; color: #2c4786;">String and vectors conversions</li></b>
 <b><li style="margin-left:60px; color: #2c4786;">Collapse (vector to string)</li></b>
 <a href="#ncollapse" style="margin-left:80px;">ncollapse</a>
@@ -157,7 +164,17 @@
 <br>
 <a href="#abs_matrout" style="margin-left:60px;">abs_matrout</a>
 <br>
-<b><li style="margin-left:20px; color: #2c4786;">Fulgurance Extended</li></b>
+<b><li style="margin-left:40px; color: #2c4786;">Statistical distributions</li></b>
+<b><li style="margin-left:60px; color: #2c4786;">Normal distribution</li></b>
+<b><li style="margin-left:80px; color: #2c4786;">Getting probability from values</li></b>
+<a href="#normal_ppoint" style="margin-left:100px;">normal_ppoint</a>
+<br>
+<a href="#normal_prange" style="margin-left:100px;">normal_prange</a>
+<br>
+<b><li style="margin-left:80px; color: #2c4786;">Getting values from probability</li></b>
+<a href="#normal_offval" style="margin-left:100px;">normal_offval</a>
+<br>
+<b><li style="margin-left:20px; color: #2c4786;">Fulgurance Tools</li></b>
 <a href="#Parser_tokenizer_full" style="margin-left:40px;">Parser_tokenizer_full</a>
 <br>
 </ul><br>
@@ -165,7 +182,7 @@
 </div>
 <div class="box2">
 <br><hr><h1 style="color: #2c4786;"><b id="INTRODUCTION">INTRODUCTION:</b></h1>
-<p>Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a></p><p>In current development.</p><p>This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_extended part.</p><p>The framework is developped with C++ 14 but should work properly with 11 and 17 and furthers.</p><p>The main branch provides algorithms developped on the top of stl vector, but a deque version is coming.</p><h2 style="color: #2c4786;">Philosophy</h2><p>Matrices and dataframes implementation are classes. All functions that will transform 'voidly' (internaly) the relative data are built in the classes. All functions that copy and transform the relative data are extern to classes.</p><p>Also, all the functions relative to matrices classes exist for more standard type of matrices that is stl 2D vectors.</p><br>
+<p>Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a></p><p>In current development.</p><p>This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_tools part.</p><p>The framework is developped with C++ 14 but should work properly with 11 and 17 and furthers.</p><p>The main branch provides algorithms developped on the top of stl vector, but a deque version is coming.</p><h2 style="color: #2c4786;">Philosophy</h2><p>Matrices and dataframes implementation are classes. All functions that will transform 'voidly' (internaly) the relative data are built in the classes. All functions that copy and transform the relative data are extern to classes.</p><p>Also, all the functions relative to matrices classes exist for more standard type of matrices that is stl 2D vectors.</p><br>
 <hr>
 <h1 style="color:#2c4786;">Commun functions  </h1>
 <h2 style="color:#2c4786;">On elements</h2>
@@ -257,6 +274,27 @@ x </th><th> is an int, float, double</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h2 id="logn" style="test-align: left;">logn</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; double logn(T &val, T2 &base) </code></div>
+<h3>#Description</h3>
+<p>Returns the logarithm of any positive number to any base. This generalizes the <code>log(value) / log(base)</code> method.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+val </th><th> is the value of the logarith base n (must be positive)</th></tr>
+<tr><th>base </th><th> is the base of the logarithm</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double val = 2.63;</code>
+<br><code>int base = 10;</code>
+<br><code>logn(val, base);</code>
+<br><code>0.419956 </code>
+<br><code>base = 2;</code>
+<br><code>1.39506 </code>
+</div>
+<br>
+<hr class="hr">
 <h3 style="color:#2c4786;">String to int, float, double</h3>
 <h2 id="si" style="test-align: left;">si</h2>
 <h3>#Usage</h3>
@@ -311,7 +349,7 @@ x </th><th> is a stl string that can be converted to a float</th></tr>
 <hr class="hr">
 <h2 id="sd" style="test-align: left;">sd</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>double edm1_sd(const std::string &x)</code></div>
+<div class="Div"><code>double sd(const std::string &x)</code></div>
 <h3>#Description</h3>
 <p>Returns a converted std::string, that can be converted to a double, to a double.</p>
 <h3>#Arguments</h3>
@@ -369,19 +407,18 @@ x </th><th> is a stl vector (int, float, double, bool)</th></tr>
 <p>Returns the quantile value for a given probability between 0 and 1 for an input stl vector (int, float, double, bool). If you just want to calculate median, the <code>med()</code> function is more straight forward.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-x </th><th> stl vector (int, float, double, bool)</th></tr>
+x </th><th> stl vector (int, float, double, bool), must be ascendly sorted</th></tr>
 <tr><th>prob </th><th> is the probability(float, double)</th></tr>
 <tr><th>precision </th><th> is a double value representing the accuracy of the result. The lower the value is, higher the accuracy will be.</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};</code>
-<br><code>std::vector&lt;int&gt; vec2 = {1, 2, 3, 4};</code>
 <br><code>double prob = 0.89;</code>
 <br><code>std::cout << quantile(vec2, prob) << "\n";</code>
 <br><code>3.67188</code>
 <br><code>prob = 0.65;</code>
-<br><code>std::cout << quantile(vec, prob) << "\n";</code>
+<br><code>quantile(vec, prob);</code>
 <br><code>6.84375 </code>
 </div>
 <br>
@@ -393,7 +430,7 @@ x </th><th> stl vector (int, float, double, bool)</th></tr>
 <p>Returns the median of a stl vector (int, float, double, bool). </p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-x </th><th> is an stl vector (int, float, double, bool)</th></tr>
+x </th><th> is an stl vector (int, float, double, bool), must be ascendly sorted</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
@@ -419,6 +456,23 @@ x </th><th> is an stl vector (int, float, double, bool)</th></tr>
 <br><code>std::vector&lt;int&gt; vec2 = {-6, -5, -4, -3, -2, -1};</code>
 <br><code>double out = cor(vec1, vec2);</code>
 <br><code>1</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Sd" style="test-align: left;">Sd</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; double Sd(std::vector&lt;T&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Returns the standard deviation of a stl vector (int, float, double, bool).</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector (int, float, double, bool)</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 2, 3, 3, 3, 4, 4, 5};</code>
+<br><code>double out = Sd(vec);</code>
+<br><code>1.33333</code>
 </div>
 <br>
 <hr class="hr">
@@ -1194,6 +1248,27 @@ x </th><th> is an stl vector</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h3 style="color:#2c4786;">Others</h3>
+<h2 id="pct_to_idx" style="test-align: left;">pct_to_idx</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>unsigned int percentage_to_idx(double &val, unsigned int &sizen)</code></div>
+<h3>#Description</h3>
+<p>Returns an idx of a stl vector from a percentage between 0 and 1.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+val </th><th> is the percentage value, between 0 and 1</th></tr>
+<tr><th>sizen </th><th> is the size of the vector you want to have the index.</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>unsigned int sizen = vec.size();</code>
+<br><code>double pct = 0.6;</code>
+<br><code>unsigned int out = pct_to_idx(pct, sizen);</code>
+<br><code>2</code>
+</div>
+<br>
+<hr class="hr">
 <h2 style="color:#2c4786;">String and vectors conversions</h2>
 <h3 style="color:#2c4786;">Collapse (vector to string)</h3>
 <h2 id="ncollapse" style="test-align: left;">ncollapse</h2>
@@ -1429,7 +1504,79 @@ x </th><th> is a matrix as 2D stl vector (int, float, double, bool)</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h1 style="color:#2c4786;">Fulgurance Extended</h1>
+<h2 style="color:#2c4786;">Statistical distributions</h2>
+<h3 style="color:#2c4786;">Normal distribution</h3>
+<h4 style="color:#2c4786;">Getting probability from values</h4>
+<h2 id="normal_ppoint" style="test-align: left;">normal_ppoint</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2, typename T3&gt; double normal_ppoint(T &mean, T2 &sd, T3 &val)</code></div>
+<h3>#Description</h3>
+<p>Returns the probability of a value in a normal distribution with given parameters.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+mean </th><th> is the mean of the normal distribution </th></tr>
+<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
+<tr><th>val </th><th> is the value you want to get its probability</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double mean = 4;</code>
+<br><code>double sdt = 2;</code>
+<br><code>double val = 0.65;</code>
+<br><code>normal_ppoint(mean, sdt, val);</code>
+<br><code>0.176033</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="normal_prange" style="test-align: left;">normal_prange</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2, typename T3, typename T4, typename T5&gt; double normal_prange(T &mean, T2 &sd, T3 &from, T4 &to, T5 &by)</code></div>
+<h3>#Description</h3>
+<p>Returns the probability of a range of value in a normal distribution with given parameters.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+mean </th><th> is the mean of the normal distribution</th></tr>
+<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
+<tr><th>from is the first value of the range of values</th></tr>
+<tr><th>to </th><th> is the last value of the range of values</th></tr>
+<tr><th>by </th><th> is the accuracy step of the range of values, the lower it is, higher the result will be accurate</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double mean = 3;</code>
+<br><code>double sd = 1.23;</code>
+<br><code>double from = 2;</code>
+<br><code>double to = 4;</code>
+<br><code>double by = 0.1;</code>
+<br><code>double out = normal_prange(mean, sd, from, to, by);</code>
+<br><code>0.795199</code>
+</div>
+<br>
+<hr class="hr">
+<h4 style="color:#2c4786;">Getting values from probability</h4>
+<h2 id="normal_offval" style="test-align: left;">normal_offval</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; double normal_offval(T &sd, T2 offset_prob)</code></div>
+<h3>#Description</h3>
+<p>Returns the most offset value of a normal distribution for a given standard deviation. To get the low offset and the max offset, you have to respectively <code>your_mean - normal_offset_val(arguments...)</code> and <code>your_mean + normal_offset_val(arguments...)</code>.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+sd </th><th> is the standard deviation of the normal distribution</th></tr>
+<tr><th>offset_prob </th><th> is the offset probability of the most offset values for the normal distribution</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double sdt = 2.33;</code>
+<br><code>double offset_prob = 0.001;</code>
+<br><code>double out = normal_offval(sdt, offset_prob);</code>
+<br><code>mean - out</code>
+<br><code>mean - 7.47269 </code>
+<br><code>mean + out</code>
+<br><code>mean + 7.47269</code>
+</div>
+<br>
+<hr class="hr">
+<h1 style="color:#2c4786;">Fulgurance Tools</h1>
 <h2 id="Parser_tokenizer_full" style="test-align: left;">Parser_tokenizer_full</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>std::vector&lt;std::vector&lt;unsigned int&gt;&gt; Parser_tokenizer_full(std::string &x)</code></div>
