@@ -6,7 +6,7 @@
 
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
-//@I This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_extended part.
+//@I This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_tools part.
 //@I The framework is developped with C++ 14 but should work properly with 11 and 17 and furthers.
 //@I The main branch provides algorithms developped on the top of stl vector, but a deque version is coming.
 //@G2 Philosophy
@@ -126,6 +126,25 @@ template <typename T> void roundin(T &x, int &n) {
     };
     x = round(x / mlt) * mlt;
   };
+};
+
+//@T logn
+//@U template &lt;typename T, typename T2&gt; double logn(T &val, T2 &base) 
+//@X
+//@D Returns the logarithm of any positive number to any base. This generalizes the <code>log(value) / log(base)</code> method.
+//@A val : is the value of the logarith base n (must be positive)
+//@A base : is the base of the logarithm
+//@X
+//@E double val = 2.63;
+//@E int base = 10;
+//@E std::cout << logn(val, base) << "\n";
+//@E 0.419956 
+//@E base = 2;
+//@E 1.39506 
+//@X
+
+template <typename T, typename T2> double logn(T &val, T2 &base) {
+  return log(val) / log(base);
 };
 
 //@L3 String to int, float, double
@@ -288,12 +307,11 @@ template <typename T> T mean(const std::vector<T> &x) {
 //@U template &lt;typename T, typename T2&gt; double quantile(std::vector&lt;T&gt; &x, T2 &prob, double precision = 0.001)
 //@X
 //@D Returns the quantile value for a given probability between 0 and 1 for an input stl vector (int, float, double, bool). If you just want to calculate median, the <code>med()</code> function is more straight forward.
-//@A x : stl vector (int, float, double, bool)
+//@A x : stl vector (int, float, double, bool), must be ascendly sorted
 //@A prob : is the probability(float, double)
 //@A precision : is a double value representing the accuracy of the result. The lower the value is, higher the accuracy will be.
 //@X
 //@E std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-//@E std::vector&lt;int&gt; vec2 = {1, 2, 3, 4};
 //@E double prob = 0.89;
 //@E std::cout << quantile(vec2, prob) << "\n";
 //@E 3.67188
@@ -339,7 +357,7 @@ template <typename T, typename T2> double quantile(std::vector<T> &x, T2 &prob, 
 //@U template &lt;typename T&gt; double med(std::vector&lt;T&gt; &x)
 //@X
 //@D Returns the median of a stl vector (int, float, double, bool). 
-//@A x : is an stl vector (int, float, double, bool)
+//@A x : is an stl vector (int, float, double, bool), must be ascendly sorted
 //@X
 //@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
 //@E double out = med(vec);
@@ -396,6 +414,34 @@ template <typename T, typename T2> double cor(const std::vector<T> &x, const std
   std::cout << std::to_string(d1) << "\n";
   double rtn = d1 / sqrt(s1 * s2);
   return rtn;
+};
+
+//@T sd
+//@U template <typename T> double sd(std::vector<T> &x)
+//@X
+//@D Returns the standard deviation of a stl vector (int, float, double, bool).
+//@A x : is an stl vector (int, float, double, bool)
+//@X
+//@E std::vector<int> vec = {1, 2, 2, 3, 3, 3, 4, 4, 5};
+//@E double out = sd(vec);
+//@E 1.33333
+//@X
+
+template <typename T> double sd(std::vector<T> &x) {
+  unsigned int i;
+  const double n = x.size();
+  double mean = x[0];
+  for (i = 1; i < n; ++i) {
+    mean += x[i];
+  };
+  mean /= n;
+  std::cout << mean << "\n";
+  double delta_sq = 0;
+  for (i = 0; i < n; ++i) {
+    delta_sq += pow(x[i] - mean, 2);
+  };
+  std::cout << delta_sq << "\n";
+  return delta_sq / n;
 };
 
 //@L3 Min - Max
@@ -1783,6 +1829,25 @@ template <typename TB> class Rm_sharedv {
     ~Rm_sharedv() {}; 
 };
 
+//@L3 Others
+
+//@T pct_to_idx
+//@U unsigned int percentage_to_idx(double &val, unsigned int &sizen)
+//@X
+//@D Returns an idx of a stl vector from a percentage between 0 and 1.
+//@A val : is the percentage value, between 0 and 1
+//@A sizen : is the size of the vector you want to have the index.
+//@X
+//@E std::&lt;int&gt; vec = {1, 2, 3, 4};
+//@E unsigned int sizen = vec.size();
+//@E double pct = 0.6;
+//@E unsigned int out = pct_to_idx(pct, sizen);
+//@E 2
+//@X
+
+unsigned int pct_to_idx(double &val, unsigned int &sizen) {
+  return round((sizen - 1) * val);
+};
 
 //@L2 String and vectors conversions
 //@L3 Collapse (vector to string)
@@ -2147,7 +2212,82 @@ template <typename T> std::vector<std::vector<T>> abs_matrout(const std::vector<
   return rtn;
 };
 
-//@L1 Fulgurance Extended
+//@L2 Statistical distributions
+
+//@L3 Normal distribution
+//@L4 Getting probability from values
+
+//@T normal_ppoint
+//@U template &lt;typename T, typename T2, typename T3&gt; double normal_ppoint(T &mean, T2 &sd, T3 &val)
+//@X
+//@D Returns the probability of a value in a normal distribution with given parameters.
+//@A mean : is the mean of the normal distribution 
+//@A sd : is the standard deviation of the normal distribution
+//@A val : is the value you want to get its probability
+//@X
+//@E double mean = 4;
+//@E double sdt = 2;
+//@E double val = 0.65;
+//@E normal_ppoint(mean, sdt, val);
+//@E 0.176033
+//@X
+
+template <typename T, typename T2, typename T3> double normal_ppoint(T &mean, T2 &sd, T3 &val) {
+  return (1 / (sd * pow(M_PI * 2, 0.5))) * exp(-0.5 * pow((val - mean)/sd, 2));
+};
+
+//@T normal_prange
+//@U template &lt;typename T, typename T2, typename T3, typename T4, typename T5&gt; double normal_prange(T &mean, T2 &sd, T3 &from, T4 &to, T5 &by)
+//@X
+//@D Returns the probability of a range of value in a normal distribution with given parameters.
+//@A mean : is the mean of the normal distribution
+//@A sd : is the standard deviation of the normal distribution
+//@A from is the first value of the range of values
+//@A to : is the last value of the range of values
+//@A by : is the accuracy step of the range of values, the lower it is, higher the result will be accurate
+//@X
+//@E double mean = 3;
+//@E double sd = 1.23;
+//@E double from = 2;
+//@E double to = 4;
+//@E double by = 0.1;
+//@E double out = normal_prange(mean, sd, from, to, by);
+//@E std::cout << out << "\n";
+//@E 0.795199
+//@X
+
+template <typename T, typename T2, typename T3, typename T4, typename T5> double normal_prange(T &mean, T2 &sd, T3 &from, T4 &to, T5 &by) {
+  double delta = 0;
+  for (double i = 0; i <= to; i += by) {
+    delta += (1 / (sd * pow(M_PI * 2, 0.5))) * exp(-0.5 * pow((from - mean)/sd, 2)) * by;
+    from += by;
+  };
+  return delta;
+};
+
+//@L4 Getting values from probability
+
+//@T normal_offval
+//@U template &lt;typename T, typename T2&gt; double normal_offval(T &sd, T2 offset_prob)
+//@X
+//@D Returns the most offset value of a normal distribution for a given standard deviation. To get the low offset and the max offset, you have to respectively <code>your_mean - normal_offset_val(arguments...)</code> and <code>your_mean + normal_offset_val(arguments...)</code>.
+//@A sd : is the standard deviation of the normal distribution
+//@A offset_prob : is the offset probability of the most offset values for the normal distribution
+//@X
+//@E double sdt = 2.33;
+//@E double offset_prob = 0.001;
+//@E double out = normal_offval(sdt, offset_prob);
+//@E mean - out
+//@E mean - 7.47269 
+//@E mean + out
+//@E mean + 7.47269
+//@X
+
+template <typename T, typename T2> double normal_offval(T &sd, T2 offset_prob) {
+  return pow(-2 * log(precision * sd * pow((2 * M_PI), 0.5)), 0.5) * sd;
+};
+
+//@L1 Fulgurance Tools
 
 //@T Parser_tokenizer_full
 //@U std::vector&lt;std::vector&lt;unsigned int&gt;&gt; Parser_tokenizer_full(std::string &x)
