@@ -414,6 +414,7 @@ x </th><th> stl vector (int, float, double, bool), must be ascendly sorted</th><
 <br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};</code>
+<br><code>std::vector&lt;int&gt; vec2 = {1, 2, 3, 4};</code>
 <br><code>double prob = 0.89;</code>
 <br><code>std::cout << quantile(vec2, prob) << "\n";</code>
 <br><code>3.67188</code>
