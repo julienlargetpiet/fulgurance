@@ -26,17 +26,21 @@
 <a href="#sd" style="margin-left:80px;">sd</a>
 <br>
 <b><li style="margin-left:40px; color: #2c4786;">On std::vector&lt;Type&gt;</li></b>
-<b><li style="margin-left:60px; color: #2c4786;">Statisticals functions</li></b>
+<b><li style="margin-left:60px; color: #2c4786;">Statistical functions</li></b>
 <a href="#sum" style="margin-left:80px;">sum</a>
 <br>
 <a href="#mean" style="margin-left:80px;">mean</a>
 <br>
-<a href="#min" style="margin-left:80px;">min</a>
+<a href="#quantile" style="margin-left:80px;">quantile</a>
 <br>
-<b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
-<a href="#max" style="margin-left:80px;">max</a>
+<a href="#med" style="margin-left:80px;">med</a>
 <br>
 <a href="#cor" style="margin-left:80px;">cor</a>
+<br>
+<b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
+<a href="#min" style="margin-left:80px;">min</a>
+<br>
+<a href="#max" style="margin-left:80px;">max</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">Print</li></b>
 <a href="#print_nvec" style="margin-left:80px;">print_nvec</a>
@@ -204,7 +208,7 @@ x </th><th> is an int</th></tr>
 <hr class="hr">
 <h2 id="roundout" style="test-align: left;">roundout</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> T roundout(T &x, int &n)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; T roundout(T &x, int &n)</code></div>
 <h3>#Description</h3>
 <p>Returns a rounded value with decimal precision.</p>
 <h3>#Arguments</h3>
@@ -221,12 +225,15 @@ x </th><th> is an int, float, double</th></tr>
 <br><code>n = 0;</code>
 <br><code>out = roundout(x, n);</code>
 <br><code>34</code>
+<br><code>n = -1;</code>
+<br><code>out = roundout(x, n)</code>
+<br><code>30</code>
 </div>
 <br>
 <hr class="hr">
 <h2 id="roundin" style="test-align: left;">roundin</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template <typename T> void roundin(T &x, int &n)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; void roundin(T &x, int &n)</code></div>
 <h3>#Description</h3>
 <p>Transforms the input value to a rounded value with decimal precision.</p>
 <h3>#Arguments</h3>
@@ -244,6 +251,9 @@ x </th><th> is an int, float, double</th></tr>
 <br><code>x = 67.754;</code>
 <br><code>roundin(x, n);</code>
 <br><code>68</code>
+<br><code>n = -1;</code>
+<br><code>roundin(x, n);</code>
+<br><code>70</code>
 </div>
 <br>
 <hr class="hr">
@@ -317,7 +327,7 @@ x </th><th> is a stl string</th></tr>
 <br>
 <hr class="hr">
 <h2 style="color:#2c4786;">On std::vector&lt;Type&gt;</h2>
-<h3 style="color:#2c4786;">Statisticals functions</h3>
+<h3 style="color:#2c4786;">Statistical functions</h3>
 <h2 id="sum" style="test-align: left;">sum</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename T&gt; T sum(const std::vector&lt;T&gt; &x)</code></div>
@@ -352,40 +362,44 @@ x </th><th> is a stl vector (int, float, double, bool)</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="min" style="test-align: left;">min</h2>
+<h2 id="quantile" style="test-align: left;">quantile</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; T min(const std::vector&lt;T&gt; &x)</code></div>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; double quantile(std::vector&lt;T&gt; &x, T2 &prob, double precision = 0.001)</code></div>
 <h3>#Description</h3>
-<p>Returns the min element from a vector (int, float, double, bool)</p>
-<p>For finding the index of the min element refer <a href="#match_min">here</a></p>
+<p>Returns the quantile value for a given probability between 0 and 1 for an input stl vector (int, float, double, bool). If you just want to calculate median, the <code>med()</code> function is more straight forward.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-x </th><th> is a stl vector (int, float, double, bool)</th></tr>
+x </th><th> stl vector (int, float, double, bool)</th></tr>
+<tr><th>prob </th><th> is the probability(float, double)</th></tr>
+<tr><th>precision </th><th> is a double value representing the accuracy of the result. The lower the value is, higher the accuracy will be.</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector&lt;int&gt; vec = {4, 1, -7};</code>
-<br><code>int out  = min(vec);</code>
-<br><code>-7</code>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};</code>
+<br><code>std::vector&lt;int&gt; vec2 = {1, 2, 3, 4};</code>
+<br><code>double prob = 0.89;</code>
+<br><code>std::cout << quantile(vec2, prob) << "\n";</code>
+<br><code>3.67188</code>
+<br><code>prob = 0.65;</code>
+<br><code>std::cout << quantile(vec, prob) << "\n";</code>
+<br><code>6.84375 </code>
 </div>
 <br>
 <hr class="hr">
-<h3 style="color:#2c4786;">Min - Max</h3>
-<h2 id="max" style="test-align: left;">max</h2>
+<h2 id="med" style="test-align: left;">med</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; T max(const std::vector&lt;T&gt; &x)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; double med(std::vector&lt;T&gt; &x)</code></div>
 <h3>#Description</h3>
-<p>Returns the max element from a vector (int, float, double, bool)</p>
-<p>For finding the index of the min element refer <a href="#match_max">here</a></p>
+<p>Returns the median of a stl vector (int, float, double, bool). </p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-x </th><th> is a stl vector (int, float, double, bool)</th></tr>
+x </th><th> is an stl vector (int, float, double, bool)</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector&lt;int&gt; vec = {4, 1, -7};</code>
-<br><code>int out  = max(vec);</code>
-<br><code>4</code>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>double out = med(vec);</code>
+<br><code>2.5</code>
 </div>
 <br>
 <hr class="hr">
@@ -405,6 +419,43 @@ x </th><th> is an stl vector (int, float, double, bool)</th></tr>
 <br><code>std::vector&lt;int&gt; vec2 = {-6, -5, -4, -3, -2, -1};</code>
 <br><code>double out = cor(vec1, vec2);</code>
 <br><code>1</code>
+</div>
+<br>
+<hr class="hr">
+<h3 style="color:#2c4786;">Min - Max</h3>
+<h2 id="min" style="test-align: left;">min</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; T min(const std::vector&lt;T&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Returns the min element from a vector (int, float, double, bool)</p>
+<p>For finding the index of the min element refer <a href="#match_min">here</a></p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is a stl vector (int, float, double, bool)</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {4, 1, -7};</code>
+<br><code>int out  = min(vec);</code>
+<br><code>-7</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="max" style="test-align: left;">max</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; T max(const std::vector&lt;T&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Returns the max element from a vector (int, float, double, bool)</p>
+<p>For finding the index of the min element refer <a href="#match_max">here</a></p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is a stl vector (int, float, double, bool)</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {4, 1, -7};</code>
+<br><code>int out  = max(vec);</code>
+<br><code>4</code>
 </div>
 <br>
 <hr class="hr">

@@ -58,7 +58,7 @@ int int_lngth(const int &x) {
 }
 
 //@T roundout
-//@U template <typename T> T roundout(T &x, int &n)
+//@U template &lt;typename T&gt; T roundout(T &x, int &n)
 //@X
 //@D Returns a rounded value with decimal precision.
 //@A x : is an int, float, double
@@ -71,18 +71,29 @@ int int_lngth(const int &x) {
 //@E n = 0;
 //@E out = roundout(x, n);
 //@E 34
+//@E n = -1;
+//@E out = roundout(x, n)
+//@E 30
 //@X
 
 template <typename T> T roundout(T &x, int &n) {
   unsigned int mlt = 1;
-  for (unsigned int i = 0; i < n; ++i) {
-    mlt *= 10;
+  if (n > -1) {
+    for (unsigned int i = 0; i < n; ++i) {
+      mlt *= 10;
+    };
+    return round(x * mlt) / mlt;
+  } else {
+    n *= -1;
+    for (unsigned int i = 0; i < n; ++i) {
+      mlt *= 10;
+    };
+    return round(x / mlt) * mlt;
   };
-  return round(x * mlt) / mlt;
 };
 
 //@T roundin
-//@U template <typename T> void roundin(T &x, int &n)
+//@U template &lt;typename T&gt; void roundin(T &x, int &n)
 //@X
 //@D Transforms the input value to a rounded value with decimal precision.
 //@A x : is an int, float, double
@@ -96,14 +107,25 @@ template <typename T> T roundout(T &x, int &n) {
 //@E x = 67.754;
 //@E roundin(x, n);
 //@E 68
+//@E n = -1;
+//@E roundin(x, n);
+//@E 70
 //@X
 
 template <typename T> void roundin(T &x, int &n) {
   unsigned int mlt = 1;
-  for (unsigned int i = 0; i < n; ++i) {
-    mlt *= 10;
+  if (n > -1) {
+    for (unsigned int i = 0; i < n; ++i) {
+      mlt *= 10;
+    };
+    x = round(x * mlt) / mlt;
+  } else {
+    n *= -1;
+    for (unsigned int i = 0; i < n; ++i) {
+      mlt *= 10;
+    };
+    x = round(x / mlt) * mlt;
   };
-  x = round(x * mlt) / mlt;
 };
 
 //@L3 String to int, float, double
@@ -222,7 +244,7 @@ double sd(const std::string &x) {
 };
 
 //@L2 On std::vector&lt;Type&gt;
-//@L3 Statisticals functions
+//@L3 Statistical functions
 
 //@T sum
 //@U template &lt;typename T&gt; T sum(const std::vector&lt;T&gt; &x)
@@ -262,50 +284,77 @@ template <typename T> T mean(const std::vector<T> &x) {
   return rtn / x.size();
 };
 
-//@T min
-//@U template &lt;typename T&gt; T min(const std::vector&lt;T&gt; &x)
+//@T quantile
+//@U template &lt;typename T, typename T2&gt; double quantile(std::vector&lt;T&gt; &x, T2 &prob, double precision = 0.001)
 //@X
-//@D Returns the min element from a vector (int, float, double, bool)
-//@D For finding the index of the min element refer <a href="#match_min">here</a>
-//@A x : is a stl vector (int, float, double, bool)
+//@D Returns the quantile value for a given probability between 0 and 1 for an input stl vector (int, float, double, bool). If you just want to calculate median, the <code>med()</code> function is more straight forward.
+//@A x : stl vector (int, float, double, bool)
+//@A prob : is the probability(float, double)
+//@A precision : is a double value representing the accuracy of the result. The lower the value is, higher the accuracy will be.
 //@X
-//@E std::vector&lt;int&gt; vec = {4, 1, -7};
-//@E int out  = min(vec);
-//@E -7
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+//@E std::vector&lt;int&gt; vec2 = {1, 2, 3, 4};
+//@E double prob = 0.89;
+//@E std::cout << quantile(vec2, prob) << "\n";
+//@E 3.67188
+//@E prob = 0.65;
+//@E std::cout << quantile(vec, prob) << "\n";
+//@E 6.84375 
 //@X
 
-//@L3 Min - Max
-
-template <typename T> T min(const std::vector<T> &x) {
-  T rtn = x[0];
-  for (typename std::vector<T>::const_iterator it = x.begin() + 1; it != x.end(); ++it) {
-    if (rtn > *it) {
-      rtn = *it;
-    };
+template <typename T, typename T2> double quantile(std::vector<T> &x, T2 &prob, double precision = 0.001) {
+  double n = x.size();
+  unsigned int idx = round((n - 1) * prob);
+  const unsigned int fidx = idx;
+  double l_lim = prob - precision;
+  double h_lim = prob + precision;
+  double cur_vl = idx / (n - 1);
+  double rtn_val = x[idx];
+  double rtn_val2;
+  double divider = 2;
+  if (cur_vl < l_lim) {
+    rtn_val2 = (x[idx + 1] - x[idx]) / divider;
+  } else if (cur_vl > l_lim) {
+    rtn_val2 = (x[idx] - x[idx - 1]) / divider;
   };
-  return rtn;
+  while (cur_vl < l_lim || cur_vl > h_lim) {
+    if (cur_vl < l_lim) {
+      idx += idx;
+      idx += 1;
+      n += (n - 1);
+      rtn_val += rtn_val2;
+    } else {
+      idx += idx;
+      idx -= 1;
+      n += (n - 1);
+      rtn_val -= rtn_val2;
+    };
+    cur_vl = idx / (n - 1);
+    rtn_val2 /= 2;
+  };
+  return rtn_val;
 };
 
-//@T max
-//@U template &lt;typename T&gt; T max(const std::vector&lt;T&gt; &x)
+//@T med
+//@U template &lt;typename T&gt; double med(std::vector&lt;T&gt; &x)
 //@X
-//@D Returns the max element from a vector (int, float, double, bool)
-//@D For finding the index of the min element refer <a href="#match_max">here</a>
-//@A x : is a stl vector (int, float, double, bool)
+//@D Returns the median of a stl vector (int, float, double, bool). 
+//@A x : is an stl vector (int, float, double, bool)
 //@X
-//@E std::vector&lt;int&gt; vec = {4, 1, -7};
-//@E int out  = max(vec);
-//@E 4
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E double out = med(vec);
+//@E 2.5
 //@X
 
-template <typename T> T max(const std::vector<T> &x) {
-  T rtn = x[0];
-  for (typename std::vector<T>::const_iterator it = x.begin() + 1; it != x.end(); ++it) {
-    if (rtn < *it) {
-      rtn = *it;
-    };
+template <typename T> double med(std::vector<T> &x) {
+  const unsigned int n = x.size();
+  const unsigned int idx = (n - 1) * 0.5;
+  if (n % 2 == 0) {
+    double rslt = x[idx] + x[idx + 1];
+    return rslt / 2;
+  } else {
+    return(x[idx]);
   };
-  return rtn;
 };
 
 //@T cor
@@ -346,6 +395,52 @@ template <typename T, typename T2> double cor(const std::vector<T> &x, const std
   };
   std::cout << std::to_string(d1) << "\n";
   double rtn = d1 / sqrt(s1 * s2);
+  return rtn;
+};
+
+//@L3 Min - Max
+
+//@T min
+//@U template &lt;typename T&gt; T min(const std::vector&lt;T&gt; &x)
+//@X
+//@D Returns the min element from a vector (int, float, double, bool)
+//@D For finding the index of the min element refer <a href="#match_min">here</a>
+//@A x : is a stl vector (int, float, double, bool)
+//@X
+//@E std::vector&lt;int&gt; vec = {4, 1, -7};
+//@E int out  = min(vec);
+//@E -7
+//@X
+
+template <typename T> T min(const std::vector<T> &x) {
+  T rtn = x[0];
+  for (typename std::vector<T>::const_iterator it = x.begin() + 1; it != x.end(); ++it) {
+    if (rtn > *it) {
+      rtn = *it;
+    };
+  };
+  return rtn;
+};
+
+//@T max
+//@U template &lt;typename T&gt; T max(const std::vector&lt;T&gt; &x)
+//@X
+//@D Returns the max element from a vector (int, float, double, bool)
+//@D For finding the index of the min element refer <a href="#match_max">here</a>
+//@A x : is a stl vector (int, float, double, bool)
+//@X
+//@E std::vector&lt;int&gt; vec = {4, 1, -7};
+//@E int out  = max(vec);
+//@E 4
+//@X
+
+template <typename T> T max(const std::vector<T> &x) {
+  T rtn = x[0];
+  for (typename std::vector<T>::const_iterator it = x.begin() + 1; it != x.end(); ++it) {
+    if (rtn < *it) {
+      rtn = *it;
+    };
+  };
   return rtn;
 };
 
