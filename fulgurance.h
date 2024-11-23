@@ -3,6 +3,7 @@
 #include <typeinfo>
 #include <fstream>
 #include <math.h>
+#include <chrono>
 
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
@@ -128,6 +129,85 @@ template <typename T> void roundin(T &x, int &n) {
   };
 };
 
+//@T randint
+//@U int randint(const int &min, const int max, int seed = -1)
+//@X
+//@D Returns a pseudo-random number between min and max.
+//@A min : is an int
+//@A max : is a max
+//@A seed : is an int that determines the pseudo-random output, defaults to -1, so the seed will be randomly picked up by default, if you want to determine the output, choose a seed between 0 and 9.
+//@X
+//@E int min = -300;
+//@E int max = 100;
+//@E randint(min, max);
+//@E -14
+//@E randint(min, max);
+//@E -231
+//@X
+
+int randint(const int &min, const int max, int seed = -1) {
+  unsigned int cnt = 0;
+  unsigned long int mlc;
+  unsigned int offset;
+  if (abs(max) > abs(min)) {
+    offset = abs(max);
+  } else {
+    offset = abs(min);
+  };
+  while (offset >= 1) {
+    offset /= 10;
+    cnt += 1;
+  };
+  double rtn;
+  unsigned int cur_val;
+  long unsigned int cur_valint;
+  unsigned int cnt2 = 0;
+  std::vector<int> vec = {4, 8, 1, 2, 9, 0, 5, 3, 6, 7};
+  unsigned int addr;
+  unsigned int delta = (max - min) + 1;
+  if (seed == -1) {
+    auto now = std::chrono::system_clock::now();
+    auto duration = now.time_since_epoch();
+    rtn = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    rtn /= 10;
+    mlc = rtn;
+    rtn -= mlc;
+    rtn *= 10;
+    rtn = round(rtn);
+  } else {
+    rtn = seed;
+  };
+  if (mlc % 9 == 0) {
+    addr = 3;
+  } else if (mlc % 7 == 0) {
+    addr = 4;
+  } else if (mlc % 8 == 0) {
+    addr = 7;
+  } else if (mlc % 6 == 0) {
+    addr = 9;
+  } else if (mlc % 3 == 0) {
+    addr = 13;
+  } else if (mlc % 4 == 0) {
+    addr = 1;
+  } else if (mlc % 2 == 0) { 
+    addr = 8;
+  } else {
+    addr = 5;
+  };
+  cnt2 = 1;
+  cur_val = rtn;
+  while (cnt2 < cnt) {
+    cur_valint = pow(cur_val, 2);
+    cur_val = vec[(cur_valint + addr) % 10];
+    rtn *= 10;
+    rtn = round(rtn);
+    rtn += cur_val;
+    cnt2 += 1;
+  };
+  cur_valint = rtn;
+  return (cur_valint % delta) + min;
+};
+
 //@T logn
 //@U template &lt;typename T, typename T2&gt; double logn(T &val, T2 &base) 
 //@X
@@ -137,7 +217,7 @@ template <typename T> void roundin(T &x, int &n) {
 //@X
 //@E double val = 2.63;
 //@E int base = 10;
-//@E std::cout << logn(val, base) << "\n";
+//@E logn(val, base);
 //@E 0.419956 
 //@E base = 2;
 //@E 1.39506 
@@ -232,7 +312,7 @@ float sf2(const std::string &x) {
 };
 
 //@T sd
-//@U double edm1_sd(const std::string &x)
+//@U double sd(const std::string &x)
 //@X
 //@D Returns a converted std::string, that can be converted to a double, to a double.
 //@A x : is a stl string
@@ -312,11 +392,12 @@ template <typename T> T mean(const std::vector<T> &x) {
 //@A precision : is a double value representing the accuracy of the result. The lower the value is, higher the accuracy will be.
 //@X
 //@E std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+//@E std::vector&lt;int&gt; vec2 = {1, 2, 3, 4};
 //@E double prob = 0.89;
-//@E std::cout << quantile(vec2, prob) << "\n";
+//@E quantile(vec2, prob);
 //@E 3.67188
 //@E prob = 0.65;
-//@E std::cout << quantile(vec, prob) << "\n";
+//@E quantile(vec, prob);
 //@E 6.84375 
 //@X
 
@@ -351,6 +432,30 @@ template <typename T, typename T2> double quantile(std::vector<T> &x, T2 &prob, 
     rtn_val2 /= 2;
   };
   return rtn_val;
+};
+
+//@T quantile_theoretical
+//@U template &lt;typename T, typename T2&gt; double quantile_theoretical(T &mean, T2 &sd, double &val, double offset_prob = 0.05)
+//@X
+//@D Returns the quantile value for a given theoretical noral distribution. There is an offset probability input that tells the most offset probability the function has to takein count in order to return the quantile value.
+//@A mean : is the mean of the normal distribution
+//@A sd : is the standard deviation of the normal distribution
+//@A val : is the quantile percentage (between 0 and 1)
+//@A offset_prob : is the probability from which is no longer not taken in count by the function in order to return a coherent value
+//@X
+//@E 
+//@E double val = 0.65;
+//@E double offset_prob = 0.05;
+//@E int mean = 144;
+//@E int sd = 2;
+//@E double out = quantile_theoretical(mean, sd, val, offset_prob);
+//@E 144.998
+//@X
+
+template <typename T, typename T2> double quantile_theoretical(T &mean, T2 &sd, double &val, double offset_prob = 0.05) {
+  double offset = pow(-2 * log(offset_prob * sd * pow((2 * M_PI), 0.5)), 0.5) * sd;
+  double rtn = offset * 2 * val + (mean - offset);
+  return rtn;
 };
 
 //@T med
@@ -416,18 +521,18 @@ template <typename T, typename T2> double cor(const std::vector<T> &x, const std
   return rtn;
 };
 
-//@T sd
-//@U template <typename T> double sd(std::vector<T> &x)
+//@T Sd
+//@U template &lt;typename T&gt; double Sd(std::vector&lt;T&gt; &x)
 //@X
 //@D Returns the standard deviation of a stl vector (int, float, double, bool).
 //@A x : is an stl vector (int, float, double, bool)
 //@X
-//@E std::vector<int> vec = {1, 2, 2, 3, 3, 3, 4, 4, 5};
-//@E double out = sd(vec);
+//@E std::vector&lt;int&gt; vec = {1, 2, 2, 3, 3, 3, 4, 4, 5};
+//@E double out = Sd(vec);
 //@E 1.33333
 //@X
 
-template <typename T> double sd(std::vector<T> &x) {
+template <typename T> double Sd(std::vector<T> &x) {
   unsigned int i;
   const double n = x.size();
   double mean = x[0];
@@ -488,6 +593,221 @@ template <typename T> T max(const std::vector<T> &x) {
     };
   };
   return rtn;
+};
+
+//@L3 Mixing 
+//@L4 Heuristic (slightly slower)
+
+//@T mixout
+//@U template &lt;typename T&gt; void mixout(std::vector&lt;T&gt; &x)
+//@X
+//@D Returns a stl vector with its elements at different indexes pseudo-randomly chosen.
+//@A x : is an stl vector of any type
+//@X
+//@E std::vector&lt;int&gt; vec;
+//@E for (int i = 0; i &lt; 100; ++i) {
+//@E   vec.push_back(i);
+//@E };
+//@E std::vector&lt;int&gt; out = mixout(vec);
+//@E print_nvec(out);
+//@E   :0: 66 10 51 47 46 57 13 6  85 40 28 55 42 91 61 34 63 12 23 19 79 62 35 84 
+//@E  :25: 43 5  54 17 93 90 0  73 9  18 49 71 20 89 70 41 4  56 22 45 2  29 88 31 
+//@E  :50: 65 3  75 25 94 77 52 78 39 87 83 27 1  15 24 44 76 99 58 95 92 68 97 26 
+//@E  :75: 64 74 11 80 81 69 59 38 8  7  50 14 98 36 82 60 72 32 96 33 37 30 53 67 
+//@E :100: 48
+//@X
+
+template <typename T> std::vector<T> mixout(std::vector<T> x) {
+  auto now = std::chrono::system_clock::now();
+  auto duration = now.time_since_epoch();
+  double addr = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+  addr /= 10;
+  unsigned int valint = addr;
+  unsigned int addr2;
+  if (valint % 9 == 0) {
+    addr2 = 3;
+  } else if (valint % 7 == 0) {
+    addr2 = 4;
+  } else if (valint % 8 == 0) {
+    addr2 = 7;
+  } else if (valint % 6 == 0) {
+    addr2 = 9;
+  } else if (valint % 3 == 0) {
+    addr2 = 13;
+  } else if (valint % 4 == 0) {
+    addr2 = 1;
+  } else if (valint % 2 == 0) { 
+    addr2 = 8;
+  } else {
+    addr2 = 5;
+  };
+  addr -= valint;
+  addr *= 10;
+  addr = round(addr);
+  unsigned long int v;
+  long double n = x.size();
+  const unsigned int n2 = n;
+  n += 0.5 * n;
+  T switchr;
+  double mlt = 1;
+  unsigned int i;
+  while (mlt < n2) {
+    mlt *= 10;
+  };
+  for (unsigned int i = 0; i < n2; ++i) {
+    switchr = x[i];
+    v = sin((((i + 1) * mlt) / n)) * n2 + addr + addr2;
+    v = v % n2;
+    x[i] = x[v];
+    x[v] = switchr;
+  };
+  return x;
+};
+
+//@T mixin
+//@U template &lt;typename T&gt; void mixin(std::vector&lt;T&gt; &x)
+//@X
+//@D Transforms a stl vector with its elements at different indexes pseudo-randomly chosen.
+//@A x : is an stl vector of any type
+//@X
+//@E std::vector&lt;int&gt; vec;
+//@E for (int i = 0; i &lt; 100; ++i) {
+//@E   vec.push_back(i);
+//@E };
+//@E mixin(vec);
+//@E print_nvec(vec);
+//@E   :0: 66 10 51 47 46 57 13 6  85 40 28 55 42 91 61 34 63 12 23 19 79 62 35 84 
+//@E  :25: 43 5  54 17 93 90 0  73 9  18 49 71 20 89 70 41 4  56 22 45 2  29 88 31 
+//@E  :50: 65 3  75 25 94 77 52 78 39 87 83 27 1  15 24 44 76 99 58 95 92 68 97 26 
+//@E  :75: 64 74 11 80 81 69 59 38 8  7  50 14 98 36 82 60 72 32 96 33 37 30 53 67 
+//@E :100: 48
+//@X
+
+template <typename T> void mixin(std::vector<T> &x) {
+  auto now = std::chrono::system_clock::now();
+  auto duration = now.time_since_epoch();
+  double addr = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+  addr /= 10;
+  unsigned int valint = addr;
+  unsigned int addr2;
+  if (valint % 9 == 0) {
+    addr2 = 3;
+  } else if (valint % 7 == 0) {
+    addr2 = 4;
+  } else if (valint % 8 == 0) {
+    addr2 = 7;
+  } else if (valint % 6 == 0) {
+    addr2 = 9;
+  } else if (valint % 3 == 0) {
+    addr2 = 13;
+  } else if (valint % 4 == 0) {
+    addr2 = 1;
+  } else if (valint % 2 == 0) { 
+    addr2 = 8;
+  } else {
+    addr2 = 5;
+  };
+  addr -= valint;
+  addr *= 10;
+  addr = round(addr);
+  unsigned long int v;
+  long double n = x.size();
+  const unsigned int n2 = n;
+  n += 0.5 * n;
+  T switchr;
+  double mlt = 1;
+  unsigned int i;
+  while (mlt < n2) {
+    mlt *= 10;
+  };
+  for (unsigned int i = 0; i < n2; ++i) {
+    switchr = x[i];
+    v = sin((((i + 1) * mlt) / n)) * n2 + addr + addr2;
+    v = v % n2;
+    x[i] = x[v];
+    x[v] = switchr;
+  };
+};
+
+//@L4 Deterministic (slightly faster)
+
+//@T mixoutd
+//@U template &lt;typename T&gt; std::vector&lt;T&gt; mixoutd(std::vector&lt;T&gt; x)
+//@X
+//@D Returns a stl vector with its elements at different indexes. The function is determinitic based on the size of the input stl vector.
+//@A x : is an stl vector of any type
+//@X
+//@E std::vector&lt;int&gt; vec;
+//@E for (int i = 0; i &lt; 100; ++i) {
+//@E   vec.push_back(i);
+//@E };
+//@E std::vector&lt;int&gt; out = mixoutd(vec);
+//@E print_nvec(out);
+//@E   :0: 93 65 90 45 1  41 51 79 28 13 18 84 68 37 77 22 15 29 44 9  6  47 36 57 
+//@E  :25: 14 24 26 46 56 96 33 61 54 59 5  73 34 76 75 71 11 78 92 31 48 50 55 49 
+//@E  :50: 52 17 89 21 0  81 64 82 39 67 53 40 63 66 83 97 99 42 2  86 85 80 60 72 
+//@E  :75: 20 87 27 4  35 19 10 88 43 98 38 8  30 69 58 23 16 95 32 94 91 70 74 62 
+//@E :100: 25
+//@X
+
+template <typename T> std::vector<T> mixoutd(std::vector<T> x) {
+  unsigned long int v;
+  long double n = x.size();
+  const unsigned int n2 = n;
+  n += 0.5 * n;
+  T switchr;
+  double mlt = 1;
+  unsigned int i;
+  while (mlt < n2) {
+    mlt *= 10;
+  };
+  for (unsigned int i = 0; i < n2; ++i) {
+    switchr = x[i];
+    v = sin((((i + 1) * mlt) / n)) * n2;
+    v = v % n2;
+    x[i] = x[v];
+    x[v] = switchr;
+  };
+  return x;
+};
+
+//@T mixind
+//@U template &lt;typename T&gt; std::vector&lt;T&gt; mixind(std::vector&lt;T&gt; &x)
+//@X
+//@D Transforms a stl vector with its elements at different indexes. The function is determinitic based on the size of the input stl vector.
+//@A x : is an stl vector of any type
+//@X
+//@E std::vector&lt;int&gt; vec;
+//@E for (int i = 0; i < 100; ++i) {
+//@E   vec.push_back(i);
+//@E };
+//@E mixind(vec);
+//@E print_nvec(vec);
+//@E   :0: 93 65 90 45 1  41 51 79 28 13 18 84 68 37 77 22 15 29 44 9  6  47 36 57 
+//@E  :25: 14 24 26 46 56 96 33 61 54 59 5  73 34 76 75 71 11 78 92 31 48 50 55 49 
+//@E  :50: 52 17 89 21 0  81 64 82 39 67 53 40 63 66 83 97 99 42 2  86 85 80 60 72 
+//@E  :75: 20 87 27 4  35 19 10 88 43 98 38 8  30 69 58 23 16 95 32 94 91 70 74 62 
+//@E :100: 25
+//@X
+
+template <typename T> void mixind(std::vector<T> &x) {
+  unsigned long int v;
+  long double n = x.size();
+  const unsigned int n2 = n;
+  n += 0.5 * n;
+  T switchr;
+  double mlt = 1;
+  unsigned int i;
+  while (mlt < n2) {
+    mlt *= 10;
+  };
+  for (unsigned int i = 0; i < n2; ++i) {
+    switchr = x[i];
+    v = sin((((i + 1) * mlt) / n)) * n2;
+    v = v % n2;
+    x[i] = x[v];
+    x[v] = switchr;
+  };
 };
 
 //@L3 Print
@@ -2252,7 +2572,6 @@ template <typename T, typename T2, typename T3> double normal_ppoint(T &mean, T2
 //@E double to = 4;
 //@E double by = 0.1;
 //@E double out = normal_prange(mean, sd, from, to, by);
-//@E std::cout << out << "\n";
 //@E 0.795199
 //@X
 
@@ -2268,23 +2587,23 @@ template <typename T, typename T2, typename T3, typename T4, typename T5> double
 //@L4 Getting values from probability
 
 //@T normal_offval
-//@U template &lt;typename T, typename T2&gt; double normal_offval(T &sd, T2 offset_prob)
+//@U template &lt;typename T, typename T2&gt; double normal_offval(T &sd, T2 prob)
 //@X
-//@D Returns the most offset value of a normal distribution for a given standard deviation. To get the low offset and the max offset, you have to respectively <code>your_mean - normal_offset_val(arguments...)</code> and <code>your_mean + normal_offset_val(arguments...)</code>.
+//@D Returns the offset value for a given normal distribution with given probability, see example. 
 //@A sd : is the standard deviation of the normal distribution
-//@A offset_prob : is the offset probability of the most offset values for the normal distribution
+//@A offset_prob : is the offset probability of the wanted value(s)
 //@X
 //@E double sdt = 2.33;
 //@E double offset_prob = 0.001;
-//@E double out = normal_offval(sdt, offset_prob);
+//@E double out = normal_offval(sdt, prob);
 //@E mean - out
 //@E mean - 7.47269 
 //@E mean + out
 //@E mean + 7.47269
 //@X
 
-template <typename T, typename T2> double normal_offval(T &sd, T2 offset_prob) {
-  return pow(-2 * log(precision * sd * pow((2 * M_PI), 0.5)), 0.5) * sd;
+template <typename T, typename T2> double normal_offval(T &sd, T2 prob) {
+  return pow(-2 * log(prob * sd * pow((2 * M_PI), 0.5)), 0.5) * sd;
 };
 
 //@L1 Fulgurance Tools

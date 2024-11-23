@@ -16,6 +16,8 @@
 <br>
 <a href="#roundin" style="margin-left:80px;">roundin</a>
 <br>
+<a href="#randint" style="margin-left:80px;">randint</a>
+<br>
 <a href="#logn" style="margin-left:80px;">logn</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">String to int, float, double</li></b>
@@ -35,6 +37,8 @@
 <br>
 <a href="#quantile" style="margin-left:80px;">quantile</a>
 <br>
+<a href="#quantile_theoretical" style="margin-left:80px;">quantile_theoretical</a>
+<br>
 <a href="#med" style="margin-left:80px;">med</a>
 <br>
 <a href="#cor" style="margin-left:80px;">cor</a>
@@ -45,6 +49,17 @@
 <a href="#min" style="margin-left:80px;">min</a>
 <br>
 <a href="#max" style="margin-left:80px;">max</a>
+<br>
+<b><li style="margin-left:60px; color: #2c4786;">Mixing </li></b>
+<b><li style="margin-left:80px; color: #2c4786;">Heuristic (slightly slower)</li></b>
+<a href="#mixout" style="margin-left:100px;">mixout</a>
+<br>
+<a href="#mixin" style="margin-left:100px;">mixin</a>
+<br>
+<b><li style="margin-left:80px; color: #2c4786;">Deterministic (slightly faster)</li></b>
+<a href="#mixoutd" style="margin-left:100px;">mixoutd</a>
+<br>
+<a href="#mixind" style="margin-left:100px;">mixind</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">Print</li></b>
 <a href="#print_nvec" style="margin-left:80px;">print_nvec</a>
@@ -274,6 +289,28 @@ x </th><th> is an int, float, double</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h2 id="randint" style="test-align: left;">randint</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>int randint(const int &min, const int max, int seed = -1)</code></div>
+<h3>#Description</h3>
+<p>Returns a pseudo-random number between min and max.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+min </th><th> is an int</th></tr>
+<tr><th>max </th><th> is a max</th></tr>
+<tr><th>seed </th><th> is an int that determines the pseudo-random output, defaults to -1, so the seed will be randomly picked up by default, if you want to determine the output, choose a seed between 0 and 9.</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int min = -300;</code>
+<br><code>int max = 100;</code>
+<br><code>randint(min, max);</code>
+<br><code>-14</code>
+<br><code>randint(min, max);</code>
+<br><code>-231</code>
+</div>
+<br>
+<hr class="hr">
 <h2 id="logn" style="test-align: left;">logn</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename T, typename T2&gt; double logn(T &val, T2 &base) </code></div>
@@ -416,11 +453,35 @@ x </th><th> stl vector (int, float, double, bool), must be ascendly sorted</th><
 <div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};</code>
 <br><code>std::vector&lt;int&gt; vec2 = {1, 2, 3, 4};</code>
 <br><code>double prob = 0.89;</code>
-<br><code>std::cout << quantile(vec2, prob) << "\n";</code>
+<br><code>quantile(vec2, prob);</code>
 <br><code>3.67188</code>
 <br><code>prob = 0.65;</code>
 <br><code>quantile(vec, prob);</code>
 <br><code>6.84375 </code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="quantile_theoretical" style="test-align: left;">quantile_theoretical</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; double quantile_theoretical(T &mean, T2 &sd, double &val, double offset_prob = 0.05)</code></div>
+<h3>#Description</h3>
+<p>Returns the quantile value for a given theoretical noral distribution. There is an offset probability input that tells the most offset probability the function has to takein count in order to return the quantile value.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+mean </th><th> is the mean of the normal distribution</th></tr>
+<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
+<tr><th>val </th><th> is the quantile percentage (between 0 and 1)</th></tr>
+<tr><th>offset_prob </th><th> is the probability from which is no longer not taken in count by the function in order to return a coherent value</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code>double val = 0.65;</code>
+<br><code>double offset_prob = 0.05;</code>
+<br><code>int mean = 144;</code>
+<br><code>int sd = 2;</code>
+<br><code>double out = quantile_theoretical(mean, sd, val, offset_prob);</code>
+<br><code>144.998</code>
 </div>
 <br>
 <hr class="hr">
@@ -511,6 +572,109 @@ x </th><th> is a stl vector (int, float, double, bool)</th></tr>
 <div class = "Div"><code>std::vector&lt;int&gt; vec = {4, 1, -7};</code>
 <br><code>int out  = max(vec);</code>
 <br><code>4</code>
+</div>
+<br>
+<hr class="hr">
+<h3 style="color:#2c4786;">Mixing </h3>
+<h4 style="color:#2c4786;">Heuristic (slightly slower)</h4>
+<h2 id="mixout" style="test-align: left;">mixout</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void mixout(std::vector&lt;T&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Returns a stl vector with its elements at different indexes pseudo-randomly chosen.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector of any type</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec;</code>
+<br><code>for (int i = 0; i &lt; 100; ++i) {</code>
+<br><code>  vec.push_back(i);</code>
+<br><code>};</code>
+<br><code>std::vector&lt;int&gt; out = mixout(vec);</code>
+<br><code>print_nvec(out);</code>
+<br><code>  :0: 66 10 51 47 46 57 13 6  85 40 28 55 42 91 61 34 63 12 23 19 79 62 35 84 </code>
+<br><code> :25: 43 5  54 17 93 90 0  73 9  18 49 71 20 89 70 41 4  56 22 45 2  29 88 31 </code>
+<br><code> :50: 65 3  75 25 94 77 52 78 39 87 83 27 1  15 24 44 76 99 58 95 92 68 97 26 </code>
+<br><code> :75: 64 74 11 80 81 69 59 38 8  7  50 14 98 36 82 60 72 32 96 33 37 30 53 67 </code>
+<br><code>:100: 48</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="mixin" style="test-align: left;">mixin</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void mixin(std::vector&lt;T&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Transforms a stl vector with its elements at different indexes pseudo-randomly chosen.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector of any type</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec;</code>
+<br><code>for (int i = 0; i &lt; 100; ++i) {</code>
+<br><code>  vec.push_back(i);</code>
+<br><code>};</code>
+<br><code>mixin(vec);</code>
+<br><code>print_nvec(vec);</code>
+<br><code>  :0: 66 10 51 47 46 57 13 6  85 40 28 55 42 91 61 34 63 12 23 19 79 62 35 84 </code>
+<br><code> :25: 43 5  54 17 93 90 0  73 9  18 49 71 20 89 70 41 4  56 22 45 2  29 88 31 </code>
+<br><code> :50: 65 3  75 25 94 77 52 78 39 87 83 27 1  15 24 44 76 99 58 95 92 68 97 26 </code>
+<br><code> :75: 64 74 11 80 81 69 59 38 8  7  50 14 98 36 82 60 72 32 96 33 37 30 53 67 </code>
+<br><code>:100: 48</code>
+</div>
+<br>
+<hr class="hr">
+<h4 style="color:#2c4786;">Deterministic (slightly faster)</h4>
+<h2 id="mixoutd" style="test-align: left;">mixoutd</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; mixoutd(std::vector&lt;T&gt; x)</code></div>
+<h3>#Description</h3>
+<p>Returns a stl vector with its elements at different indexes. The function is determinitic based on the size of the input stl vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector of any type</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec;</code>
+<br><code>for (int i = 0; i &lt; 100; ++i) {</code>
+<br><code>  vec.push_back(i);</code>
+<br><code>};</code>
+<br><code>std::vector&lt;int&gt; out = mixoutd(vec);</code>
+<br><code>print_nvec(out);</code>
+<br><code>  :0: 93 65 90 45 1  41 51 79 28 13 18 84 68 37 77 22 15 29 44 9  6  47 36 57 </code>
+<br><code> :25: 14 24 26 46 56 96 33 61 54 59 5  73 34 76 75 71 11 78 92 31 48 50 55 49 </code>
+<br><code> :50: 52 17 89 21 0  81 64 82 39 67 53 40 63 66 83 97 99 42 2  86 85 80 60 72 </code>
+<br><code> :75: 20 87 27 4  35 19 10 88 43 98 38 8  30 69 58 23 16 95 32 94 91 70 74 62 </code>
+<br><code>:100: 25</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="mixind" style="test-align: left;">mixind</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; mixind(std::vector&lt;T&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Transforms a stl vector with its elements at different indexes. The function is determinitic based on the size of the input stl vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector of any type</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec;</code>
+<br><code>for (int i = 0; i < 100; ++i) {</code>
+<br><code>  vec.push_back(i);</code>
+<br><code>};</code>
+<br><code>mixind(vec);</code>
+<br><code>print_nvec(vec);</code>
+<br><code>  :0: 93 65 90 45 1  41 51 79 28 13 18 84 68 37 77 22 15 29 44 9  6  47 36 57 </code>
+<br><code> :25: 14 24 26 46 56 96 33 61 54 59 5  73 34 76 75 71 11 78 92 31 48 50 55 49 </code>
+<br><code> :50: 52 17 89 21 0  81 64 82 39 67 53 40 63 66 83 97 99 42 2  86 85 80 60 72 </code>
+<br><code> :75: 20 87 27 4  35 19 10 88 43 98 38 8  30 69 58 23 16 95 32 94 91 70 74 62 </code>
+<br><code>:100: 25</code>
 </div>
 <br>
 <hr class="hr">
@@ -1557,19 +1721,19 @@ mean </th><th> is the mean of the normal distribution</th></tr>
 <h4 style="color:#2c4786;">Getting values from probability</h4>
 <h2 id="normal_offval" style="test-align: left;">normal_offval</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T, typename T2&gt; double normal_offval(T &sd, T2 offset_prob)</code></div>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; double normal_offval(T &sd, T2 prob)</code></div>
 <h3>#Description</h3>
-<p>Returns the most offset value of a normal distribution for a given standard deviation. To get the low offset and the max offset, you have to respectively <code>your_mean - normal_offset_val(arguments...)</code> and <code>your_mean + normal_offset_val(arguments...)</code>.</p>
+<p>Returns the offset value for a given normal distribution with given probability, see example. </p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 sd </th><th> is the standard deviation of the normal distribution</th></tr>
-<tr><th>offset_prob </th><th> is the offset probability of the most offset values for the normal distribution</th></tr>
+<tr><th>offset_prob </th><th> is the offset probability of the wanted value(s)</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>double sdt = 2.33;</code>
 <br><code>double offset_prob = 0.001;</code>
-<br><code>double out = normal_offval(sdt, offset_prob);</code>
+<br><code>double out = normal_offval(sdt, prob);</code>
 <br><code>mean - out</code>
 <br><code>mean - 7.47269 </code>
 <br><code>mean + out</code>
