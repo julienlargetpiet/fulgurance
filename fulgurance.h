@@ -130,7 +130,7 @@ template <typename T> void roundin(T &x, int &n) {
 };
 
 //@T randint
-//@U int randint(const int &min, const int max, int seed = -1)
+//@U auto randint(const int &min, const int max, int seed = -1)
 //@X
 //@D Returns a pseudo-random number between min and max.
 //@A min : is an int
@@ -143,9 +143,15 @@ template <typename T> void roundin(T &x, int &n) {
 //@E -14
 //@E randint(min, max);
 //@E -231
+//@E // If you want to generate a float just do:
+//@E double x = randint(min, max);
+//@E min = 0;
+//@E max = 900;
+//@E x += randint() / 1000;
+//@E -13.257
 //@X
 
-int randint(const int &min, const int max, int seed = -1) {
+auto randint(const int &min, const int max, int seed = -1) {
   unsigned int cnt = 0;
   unsigned long int mlc;
   unsigned int offset;
@@ -644,17 +650,16 @@ template <typename T> std::vector<T> mixout(std::vector<T> x) {
   addr -= valint;
   addr *= 10;
   addr = round(addr);
-  unsigned long int v;
+  unsigned long long int v;
   long double n = x.size();
   const unsigned int n2 = n;
   n += 0.5 * n;
   T switchr;
   double mlt = 1;
-  unsigned int i;
   while (mlt < n2) {
     mlt *= 10;
   };
-  for (unsigned int i = 0; i < n2; ++i) {
+  for (unsigned long long int i = 0; i < n2; ++i) {
     switchr = x[i];
     v = sin((((i + 1) * mlt) / n)) * n2 + addr + addr2;
     v = v % n2;
@@ -710,17 +715,16 @@ template <typename T> void mixin(std::vector<T> &x) {
   addr -= valint;
   addr *= 10;
   addr = round(addr);
-  unsigned long int v;
+  unsigned long long int v;
   long double n = x.size();
   const unsigned int n2 = n;
   n += 0.5 * n;
   T switchr;
   double mlt = 1;
-  unsigned int i;
   while (mlt < n2) {
     mlt *= 10;
   };
-  for (unsigned int i = 0; i < n2; ++i) {
+  for (unsigned long long int i = 0; i < n2; ++i) {
     switchr = x[i];
     v = sin((((i + 1) * mlt) / n)) * n2 + addr + addr2;
     v = v % n2;
@@ -751,17 +755,16 @@ template <typename T> void mixin(std::vector<T> &x) {
 //@X
 
 template <typename T> std::vector<T> mixoutd(std::vector<T> x) {
-  unsigned long int v;
+  unsigned long long int v;
   long double n = x.size();
   const unsigned int n2 = n;
   n += 0.5 * n;
   T switchr;
   double mlt = 1;
-  unsigned int i;
   while (mlt < n2) {
     mlt *= 10;
   };
-  for (unsigned int i = 0; i < n2; ++i) {
+  for (unsigned long long int i = 0; i < n2; ++i) {
     switchr = x[i];
     v = sin((((i + 1) * mlt) / n)) * n2;
     v = v % n2;
@@ -791,17 +794,16 @@ template <typename T> std::vector<T> mixoutd(std::vector<T> x) {
 //@X
 
 template <typename T> void mixind(std::vector<T> &x) {
-  unsigned long int v;
+  unsigned long long int v;
   long double n = x.size();
   const unsigned int n2 = n;
   n += 0.5 * n;
   T switchr;
   double mlt = 1;
-  unsigned int i;
   while (mlt < n2) {
     mlt *= 10;
   };
-  for (unsigned int i = 0; i < n2; ++i) {
+  for (unsigned long long int i = 0; i < n2; ++i) {
     switchr = x[i];
     v = sin((((i + 1) * mlt) / n)) * n2;
     v = v % n2;
