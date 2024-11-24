@@ -628,7 +628,7 @@ template <typename T> std::vector<T> mixout(std::vector<T> x) {
   auto duration = now.time_since_epoch();
   double addr = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
   addr /= 10;
-  unsigned int valint = addr;
+  unsigned long int valint = addr;
   unsigned int addr2;
   if (valint % 9 == 0) {
     addr2 = 3;
@@ -661,7 +661,7 @@ template <typename T> std::vector<T> mixout(std::vector<T> x) {
   };
   for (unsigned long long int i = 0; i < n2; ++i) {
     switchr = x[i];
-    v = sin((((i + 1) * mlt) / n)) * n2 + addr + addr2;
+    v = abs(sin((((i + 1) * mlt) / n))) * n2 + addr + addr2;
     v = v % n2;
     x[i] = x[v];
     x[v] = switchr;
@@ -693,7 +693,7 @@ template <typename T> void mixin(std::vector<T> &x) {
   auto duration = now.time_since_epoch();
   double addr = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
   addr /= 10;
-  unsigned int valint = addr;
+  unsigned long int valint = addr;
   unsigned int addr2;
   if (valint % 9 == 0) {
     addr2 = 3;
@@ -726,7 +726,7 @@ template <typename T> void mixin(std::vector<T> &x) {
   };
   for (unsigned long long int i = 0; i < n2; ++i) {
     switchr = x[i];
-    v = sin((((i + 1) * mlt) / n)) * n2 + addr + addr2;
+    v = abs(sin((((i + 1) * mlt) / n))) * n2 + addr + addr2;
     v = v % n2;
     x[i] = x[v];
     x[v] = switchr;
@@ -766,7 +766,7 @@ template <typename T> std::vector<T> mixoutd(std::vector<T> x) {
   };
   for (unsigned long long int i = 0; i < n2; ++i) {
     switchr = x[i];
-    v = sin((((i + 1) * mlt) / n)) * n2;
+    v = abs(sin((((i + 1) * mlt) / n))) * n2;
     v = v % n2;
     x[i] = x[v];
     x[v] = switchr;
@@ -805,7 +805,7 @@ template <typename T> void mixind(std::vector<T> &x) {
   };
   for (unsigned long long int i = 0; i < n2; ++i) {
     switchr = x[i];
-    v = sin((((i + 1) * mlt) / n)) * n2;
+    v = abs(sin((((i + 1) * mlt) / n))) * n2;
     v = v % n2;
     x[i] = x[v];
     x[v] = switchr;
