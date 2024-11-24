@@ -625,7 +625,7 @@ std::vector<double> unif(unsigned &n, double &min, double &max, double noise = 0
   rtn_v.push_back(min);
   for (i = 1; i < n - 1; ++i) {
     lst_val = ref_vec[Step % 9] + addr;
-    rtn_v.push_back(noise * cur_step * abs(sin(lst_val)) + min + cur_step * i);
+    rtn_v.push_back(noise * cur_step * sin(lst_val) + min + cur_step * i);
     Step += lst_val;
   };
   rtn_v.push_back(max);
