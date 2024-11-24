@@ -151,7 +151,7 @@ template <typename T> void roundin(T &x, int &n) {
 
 auto randint(const int &min, const int max, int seed = -1) {
   unsigned int cnt = 0;
-  unsigned long int mlc;
+  unsigned long int mlc = 1;
   unsigned int offset;
   if (abs(max) > abs(min)) {
     offset = abs(max);
@@ -553,6 +553,85 @@ template <typename T> double Sd(std::vector<T> &x) {
   return delta_sq / n;
 };
 
+//@L4 Uniform distribution
+
+//@T unif
+//@U template &lt;typename T&gt; std::vector&lt;double&gt; unif(T &n, double &min, double &max, double noise = 0.1, int seed = -1)
+//@X
+//@D Returns a stl double vector containing pseudo-random uniform distribution between a min and max.
+//@A n : is the number of elements of the output stl vector
+//@A min : is the minimum of the uniform distribution
+//@A max : is the maximum of the uniform distribution
+//@A noise : is the noise in the returnde uniform distribution 
+//@A seed : is an int, controlling the output values, defaults to -1, so by default the function returns pseudo-random uniform distribution. If you want to manually control the output, enter a positive int for this parameter.
+//@X
+//@E unsigned int n = 1500;
+//@E double min = 1;
+//@E double max = 55;
+//@E std::vector&lt;double&gt; out = unif(n, min, max);
+//@E print_nvec(out);
+//@E :0: 1  1.03701  1.07557  1.10951  1.14757  1.18151  1.21957  1.25351  1.29157  1.32551  1.36357  1.39751  1.43557  1.46951  1.50757  1.54151  1.57957  1.61351  1.65157  1.68551  1.72357  1.75751  1.79557  1.82951  
+//@E ...
+//@E :1475: 54.1015 54.1396 54.1735 54.2116 54.2455 54.2836 54.3175 54.3556 54.3895 54.4276 54.4615 54.4996 54.5335 54.5716 54.6055 54.6436 54.6775 54.7156 54.7495 54.7876 54.8215 54.8596 54.8935 54.9316 
+//@E :1500: 55
+//@X
+
+template <typename T> std::vector<double> unif(T &n, double &min, double &max, double noise = 0.1, int seed = -1) {
+  long double step;
+  unsigned long int valint = 1;
+  unsigned int i;
+  if (seed == -1) {
+    auto now = std::chrono::system_clock::now();
+    auto duration = now.time_since_epoch();
+    step = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    step /= 10;
+    valint = step;
+    step -= valint;
+    step *= 10;
+    if (step == 0) {
+      i = 1;
+      while (valint % i != 0) {
+        i+= 1;
+      };
+      step += i;
+    };
+  } else {
+    step = seed;
+  };
+  double cur_step = (max - min) / n;
+  std::vector<double> rtn_v;
+  rtn_v.reserve(n);
+  std::vector<int> ref_vec = {5, 3, 1, 6, 8, 2, 4, 7, 9}; 
+  unsigned int addr;
+  if (valint % 9 == 0) {
+    addr = 3;
+  } else if (valint % 7 == 0) {
+    addr = 4;
+  } else if (valint % 8 == 0) {
+    addr = 7;
+  } else if (valint % 6 == 0) {
+    addr = 9;
+  } else if (valint % 3 == 0) {
+    addr = 13;
+  } else if (valint % 4 == 0) {
+    addr = 1;
+  } else if (valint % 2 == 0) { 
+    addr = 8;
+  } else {
+    addr = 5;
+  };
+  unsigned long int Step = step;
+  unsigned int lst_val;
+  rtn_v.push_back(min);
+  for (unsigned int i = 1; i < n - 1; ++i) {
+    lst_val = ref_vec[Step % 9] + addr;
+    rtn_v.push_back(noise * cur_step * abs(sin(lst_val)) + min + cur_step * i);
+    Step += lst_val;
+  };
+  rtn_v.push_back(max);
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
@@ -813,10 +892,11 @@ template <typename T> void mixind(std::vector<T> &x) {
 //@L3 Print
 
 //@T print_nvec
-//@U template &lt;typename T&gt; void print_nvec(const std::vector&lt;T&gt; &x) 
+//@U template &lt;typename T&gt; void print_nvec(const std::vector&lt;T&gt; &x, int untl = -1) 
 //@X
 //@D Print a stl vector (int, float, double, bool)
 //@A x : stl vector (int, float, double, bool)
+//@A untl : is an int idicating how many elements must be printed, defaults to -1, so by default all elements will be printed
 //@X
 //@E std::vector&lt;int&gt; vec = {12, 2, 4534, 7, -78, 12122};
 //@E for (int i = 0; i &lt; 20; ++i) { vec.push_back(7); }
@@ -825,24 +905,29 @@ template <typename T> void mixind(std::vector<T> &x) {
 //@E :25: 7     7     7     7     7     7     7     
 //@X
 
-template <typename T> void print_nvec(const std::vector<T> &x) {
-  const int n = x.size();
+template <typename T> void print_nvec(const std::vector<T> &x, int untl = -1) {
   int r = 1;
   int i;
   int cmax = 1;
   int cl;
-  for (i = 0; i < n; ++i) {
+  unsigned int Untl;
+  if (untl == -1) {
+    Untl = x.size();
+  } else {
+    Untl = untl;
+  };
+  for (i = 0; i < Untl; ++i) {
     cl = std::to_string(x[i]).length();
     if (cl > cmax) {
       cmax = cl;
     };
   }; 
-  int ref_delta = std::to_string(n).length();
+  int ref_delta = std::to_string(Untl).length();
   for (i = 0; i < ref_delta - 1; ++i) {
     std::cout << " ";
   };
   std::cout << ":" << 0 << ": ";
-  for (i = 0; i < n; ++i) {
+  for (i = 0; i < Untl; ++i) {
     if ((i + 1) % 25 == 0) {
       std::cout << "\n";
       for (cl = 0; cl < ref_delta - std::to_string(r * 25).length(); ++cl) {
@@ -850,7 +935,7 @@ template <typename T> void print_nvec(const std::vector<T> &x) {
       };
       std::cout << ":" << r * 25 << ": ";
       r += 1;
-      if ((i + 1) == n) {
+      if ((i + 1) == Untl) {
         std::cout << x[i];
       };
     } else {
@@ -864,10 +949,11 @@ template <typename T> void print_nvec(const std::vector<T> &x) {
 };
 
 //@T print_svec
-//@U template &lt;typename T&gt; void print_nvec(const std::vector&lt;T&gt; &x) 
+//@U template &lt;typename T&gt; void print_nvec(const std::vector&lt;T&gt; &x, int untl = -1) 
 //@X
 //@D Print a stl vector (int, float, double, bool)
 //@A x : stl vector (int, float, double, bool)
+//@A untl : is an int idicating how many elements must be printed, defaults to -1, so by default all elements will be printed
 //@X
 //@E std::vector&lt;std::string&gt; vec = {"peugeot", "wolkswagen", "honda", "renault", "stellantis"};
 //@E for (int i = 0; i &lt; 20; ++i) { vec.push_back("yesss"); }
@@ -876,26 +962,31 @@ template <typename T> void print_nvec(const std::vector<T> &x) {
 //@E :18: yesss      yesss      yesss      yesss      yesss      yesss      yesss       
 //@X
 
-void print_svec(const std::vector<std::string> &x) {
-  const int n = x.size();
+void print_svec(const std::vector<std::string> &x, int untl = -1) {
   int r = 1;
   int i;
   int cmax = 1;
   int cl;
   std::string ref_str;
-  for (i = 0; i < n; ++i) {
+  unsigned int Untl;
+  if (untl == -1) {
+    Untl = x.size();
+  } else {
+    Untl = untl;
+  };
+  for (i = 0; i < Untl; ++i) {
     ref_str = x[i];
     cl = ref_str.length();
     if (cl > cmax) {
       cmax = cl;
     };
   }; 
-  const int ref_delta = std::to_string(n).length();
+  const int ref_delta = std::to_string(Untl).length();
   for (i = 0; i < ref_delta - 1; ++i) {
     std::cout << " ";
   };
   std::cout << ":" << 0 << ": ";
-  for (i = 0; i < n; ++i) {
+  for (i = 0; i < Untl; ++i) {
     if ((i + 1) % 18 == 0) {
       std::cout << "\n";
       for (cl = 0; cl < ref_delta - std::to_string(r * 18).length(); ++cl) {
@@ -903,7 +994,7 @@ void print_svec(const std::vector<std::string> &x) {
       };
       std::cout << ":" << r * 18 << ": ";
       r += 1;
-      if ((i + 1) == n) {
+      if ((i + 1) == Untl) {
         std::cout << x[i];
       };
     } else {

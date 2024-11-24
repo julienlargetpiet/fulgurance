@@ -45,6 +45,9 @@
 <br>
 <a href="#Sd" style="margin-left:80px;">Sd</a>
 <br>
+<b><li style="margin-left:80px; color: #2c4786;">Uniform distribution</li></b>
+<a href="#unif" style="margin-left:100px;">unif</a>
+<br>
 <b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
 <a href="#min" style="margin-left:80px;">min</a>
 <br>
@@ -291,7 +294,7 @@ x </th><th> is an int, float, double</th></tr>
 <hr class="hr">
 <h2 id="randint" style="test-align: left;">randint</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>int randint(const int &min, const int max, int seed = -1)</code></div>
+<div class="Div"><code>auto randint(const int &min, const int max, int seed = -1)</code></div>
 <h3>#Description</h3>
 <p>Returns a pseudo-random number between min and max.</p>
 <h3>#Arguments</h3>
@@ -308,6 +311,12 @@ min </th><th> is an int</th></tr>
 <br><code>-14</code>
 <br><code>randint(min, max);</code>
 <br><code>-231</code>
+<br><code>// If you want to generate a float just do:</code>
+<br><code>double x = randint(min, max);</code>
+<br><code>min = 0;</code>
+<br><code>max = 900;</code>
+<br><code>x += randint() / 1000;</code>
+<br><code>-13.257</code>
 </div>
 <br>
 <hr class="hr">
@@ -538,6 +547,34 @@ x </th><th> is an stl vector (int, float, double, bool)</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h4 style="color:#2c4786;">Uniform distribution</h4>
+<h2 id="unif" style="test-align: left;">unif</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;double&gt; unif(T &n, double &min, double &max, double noise = 0.1, int seed = -1)</code></div>
+<h3>#Description</h3>
+<p>Returns a stl double vector containing pseudo-random uniform distribution between a min and max.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+n </th><th> is the number of elements of the output stl vector</th></tr>
+<tr><th>min </th><th> is the minimum of the uniform distribution</th></tr>
+<tr><th>max </th><th> is the maximum of the uniform distribution</th></tr>
+<tr><th>noise </th><th> is the noise in the returnde uniform distribution </th></tr>
+<tr><th>seed </th><th> is an int, controlling the output values, defaults to -1, so by default the function returns pseudo-random uniform distribution. If you want to manually control the output, enter a positive int for this parameter.</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>unsigned int n = 1500;</code>
+<br><code>double min = 1;</code>
+<br><code>double max = 55;</code>
+<br><code>std::vector&lt;double&gt; out = unif(n, min, max);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 1  1.03701  1.07557  1.10951  1.14757  1.18151  1.21957  1.25351  1.29157  1.32551  1.36357  1.39751  1.43557  1.46951  1.50757  1.54151  1.57957  1.61351  1.65157  1.68551  1.72357  1.75751  1.79557  1.82951  </code>
+<br><code>...</code>
+<br><code>:1475: 54.1015 54.1396 54.1735 54.2116 54.2455 54.2836 54.3175 54.3556 54.3895 54.4276 54.4615 54.4996 54.5335 54.5716 54.6055 54.6436 54.6775 54.7156 54.7495 54.7876 54.8215 54.8596 54.8935 54.9316 </code>
+<br><code>:1500: 55</code>
+</div>
+<br>
+<hr class="hr">
 <h3 style="color:#2c4786;">Min - Max</h3>
 <h2 id="min" style="test-align: left;">min</h2>
 <h3>#Usage</h3>
@@ -681,12 +718,13 @@ x </th><th> is an stl vector of any type</th></tr>
 <h3 style="color:#2c4786;">Print</h3>
 <h2 id="print_nvec" style="test-align: left;">print_nvec</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; void print_nvec(const std::vector&lt;T&gt; &x) </code></div>
+<div class="Div"><code>template &lt;typename T&gt; void print_nvec(const std::vector&lt;T&gt; &x, int untl = -1) </code></div>
 <h3>#Description</h3>
 <p>Print a stl vector (int, float, double, bool)</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> stl vector (int, float, double, bool)</th></tr>
+<tr><th>untl </th><th> is an int idicating how many elements must be printed, defaults to -1, so by default all elements will be printed</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
@@ -700,12 +738,13 @@ x </th><th> stl vector (int, float, double, bool)</th></tr>
 <hr class="hr">
 <h2 id="print_svec" style="test-align: left;">print_svec</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; void print_nvec(const std::vector&lt;T&gt; &x) </code></div>
+<div class="Div"><code>template &lt;typename T&gt; void print_nvec(const std::vector&lt;T&gt; &x, int untl = -1) </code></div>
 <h3>#Description</h3>
 <p>Print a stl vector (int, float, double, bool)</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> stl vector (int, float, double, bool)</th></tr>
+<tr><th>untl </th><th> is an int idicating how many elements must be printed, defaults to -1, so by default all elements will be printed</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
