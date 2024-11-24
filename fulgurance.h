@@ -315,18 +315,18 @@ float sf2(const std::string &x) {
   return rtn / m;
 };
 
-//@T sd
-//@U double sd(const std::string &x)
+//@T stod
+//@U double stod(const std::string &x)
 //@X
 //@D Returns a converted std::string, that can be converted to a double, to a double.
 //@A x : is a stl string
 //@X 
 //@E std::string a = "4566.132214";
-//@E double out = sd(a);
+//@E double out = stod(a);
 //@E 4566.132214
 //@X
 
-double sd(const std::string &x) {
+double stod(const std::string &x) {
   double rtn = int(x[0]) - 48;
   const int n = x.size();
   int i = 1;
@@ -368,18 +368,18 @@ template <typename T> T sum(const std::vector<T> &x) {
   return rtn;
 };
 
-//@T mean
-//@U template &lt;typename T&gt; T mean(const std::vector&lt;T&gt; &x) 
+//@T Mean
+//@U template &lt;typename T&gt; T Mean(const std::vector&lt;T&gt; &x) 
 //@X
 //@D Returns the mean of all elements in a vector (int, float, double, bool).
 //@A x : is a stl vector (int, float, double, bool)
 //@X
 //@E std::vector&lt;int&gt; vec = {1, 4, 2};
-//@E double out = mean(vec);
+//@E double out = Mean(vec);
 //@E 2.333333
 //@X
 
-template <typename T> T mean(const std::vector<T> &x) {
+template <typename T> T Mean(const std::vector<T> &x) {
   float rtn = 0;
   for (typename std::vector<T>::const_iterator it = x.begin(); it != x.end(); ++it) {
     rtn += *it;
@@ -533,7 +533,7 @@ template <typename T, typename T2> double cor(const std::vector<T> &x, const std
 //@X
 //@E std::vector&lt;int&gt; vec = {1, 2, 2, 3, 3, 3, 4, 4, 5};
 //@E double out = Sd(vec);
-//@E 1.33333
+//@E 1.224745
 //@X
 
 template <typename T> double Sd(std::vector<T> &x) {
@@ -544,13 +544,11 @@ template <typename T> double Sd(std::vector<T> &x) {
     mean += x[i];
   };
   mean /= n;
-  std::cout << mean << "\n";
   double delta_sq = 0;
   for (i = 0; i < n; ++i) {
     delta_sq += pow(x[i] - mean, 2);
   };
-  std::cout << delta_sq << "\n";
-  return delta_sq / n;
+  return pow(delta_sq / n, 0.5);
 };
 
 //@L4 Uniform distribution
