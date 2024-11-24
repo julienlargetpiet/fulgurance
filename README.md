@@ -550,7 +550,7 @@ x </th><th> is an stl vector (int, float, double, bool)</th></tr>
 <h4 style="color:#2c4786;">Uniform distribution</h4>
 <h2 id="unif" style="test-align: left;">unif</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;double&gt; unif(T &n, double &min, double &max, double noise = 0.1, int seed = -1)</code></div>
+<div class="Div"><code>std::vector&lt;double&gt; unif(unsigned int &n, double &min, double &max, double noise = 0.1, int seed = -1)</code></div>
 <h3>#Description</h3>
 <p>Returns a stl double vector containing pseudo-random uniform distribution between a min and max.</p>
 <h3>#Arguments</h3>

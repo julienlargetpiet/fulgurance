@@ -556,7 +556,7 @@ template <typename T> double Sd(std::vector<T> &x) {
 //@L4 Uniform distribution
 
 //@T unif
-//@U template &lt;typename T&gt; std::vector&lt;double&gt; unif(T &n, double &min, double &max, double noise = 0.1, int seed = -1)
+//@U std::vector&lt;double&gt; unif(unsigned int &n, double &min, double &max, double noise = 0.1, int seed = -1)
 //@X
 //@D Returns a stl double vector containing pseudo-random uniform distribution between a min and max.
 //@A n : is the number of elements of the output stl vector
@@ -576,7 +576,7 @@ template <typename T> double Sd(std::vector<T> &x) {
 //@E :1500: 55
 //@X
 
-template <typename T> std::vector<double> unif(T &n, double &min, double &max, double noise = 0.1, int seed = -1) {
+std::vector<double> unif(unsigned &n, double &min, double &max, double noise = 0.1, int seed = -1) {
   long double step;
   unsigned long int valint = 1;
   unsigned int i;
