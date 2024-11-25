@@ -27,13 +27,13 @@
 <br>
 <a href="#sf2" style="margin-left:80px;">sf2</a>
 <br>
-<a href="#sd" style="margin-left:80px;">sd</a>
+<a href="#stod" style="margin-left:80px;">stod</a>
 <br>
 <b><li style="margin-left:40px; color: #2c4786;">On std::vector&lt;Type&gt;</li></b>
 <b><li style="margin-left:60px; color: #2c4786;">Statistical functions</li></b>
 <a href="#sum" style="margin-left:80px;">sum</a>
 <br>
-<a href="#mean" style="margin-left:80px;">mean</a>
+<a href="#Mean" style="margin-left:80px;">Mean</a>
 <br>
 <a href="#quantile" style="margin-left:80px;">quantile</a>
 <br>
@@ -47,6 +47,9 @@
 <br>
 <b><li style="margin-left:80px; color: #2c4786;">Uniform distribution</li></b>
 <a href="#unif" style="margin-left:100px;">unif</a>
+<br>
+<b><li style="margin-left:80px; color: #2c4786;">Normal distribution</li></b>
+<a href="#norm" style="margin-left:100px;">norm</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
 <a href="#min" style="margin-left:80px;">min</a>
@@ -393,9 +396,9 @@ x </th><th> is a stl string that can be converted to a float</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="sd" style="test-align: left;">sd</h2>
+<h2 id="stod" style="test-align: left;">stod</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>double sd(const std::string &x)</code></div>
+<div class="Div"><code>double stod(const std::string &x)</code></div>
 <h3>#Description</h3>
 <p>Returns a converted std::string, that can be converted to a double, to a double.</p>
 <h3>#Arguments</h3>
@@ -405,7 +408,7 @@ x </th><th> is a stl string</th></tr>
 <br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::string a = "4566.132214";</code>
-<br><code>double out = sd(a);</code>
+<br><code>double out = stod(a);</code>
 <br><code>4566.132214</code>
 </div>
 <br>
@@ -429,9 +432,9 @@ x </th><th> is a stl vector (int, float, double, bool)</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="mean" style="test-align: left;">mean</h2>
+<h2 id="Mean" style="test-align: left;">Mean</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; T mean(const std::vector&lt;T&gt; &x) </code></div>
+<div class="Div"><code>template &lt;typename T&gt; T Mean(const std::vector&lt;T&gt; &x) </code></div>
 <h3>#Description</h3>
 <p>Returns the mean of all elements in a vector (int, float, double, bool).</p>
 <h3>#Arguments</h3>
@@ -441,7 +444,7 @@ x </th><th> is a stl vector (int, float, double, bool)</th></tr>
 <br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 4, 2};</code>
-<br><code>double out = mean(vec);</code>
+<br><code>double out = Mean(vec);</code>
 <br><code>2.333333</code>
 </div>
 <br>
@@ -543,7 +546,7 @@ x </th><th> is an stl vector (int, float, double, bool)</th></tr>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 2, 3, 3, 3, 4, 4, 5};</code>
 <br><code>double out = Sd(vec);</code>
-<br><code>1.33333</code>
+<br><code>1.224745</code>
 </div>
 <br>
 <hr class="hr">
@@ -573,6 +576,37 @@ n </th><th> is the number of elements of the output stl vector</th></tr>
 <br><code>:1475: 54.1015 54.1396 54.1735 54.2116 54.2455 54.2836 54.3175 54.3556 54.3895 54.4276 54.4615 54.4996 54.5335 54.5716 54.6055 54.6436 54.6775 54.7156 54.7495 54.7876 54.8215 54.8596 54.8935 54.9316 </code>
 <br><code>:1500: 55</code>
 </div>
+<br>
+<hr class="hr">
+<h4 style="color:#2c4786;">Normal distribution</h4>
+<h2 id="norm" style="test-align: left;">norm</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; norm(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) </code></div>
+<h3>#Description</h3>
+<p>Returns a pseudo-random normal distribution as a double stl vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+n </th><th> is the number of elements in the output stl vector</th></tr>
+<tr><th>mean </th><th> is the mean of the normal distribution</th></tr>
+<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
+<tr><th>noise </th><th> is the noise, defaults to 0.05</th></tr>
+<tr><th>seed </th><th> is an int that dictates the result, defaults to -1, so by default the output is pseudo-random</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>unsigned int n = 10000;</code>
+<br><code>double sd = 250;</code>
+<br><code>double mean = 155;</code>
+<br><code>std::vector&lt;double&gt; sd_vec;</code>
+<br><code>std::vector&lt;double&gt; out;</code>
+<br><code>double result;</code>
+<br><code>out = norm(n, mean, sd);</code>
+<br><code>Sd(out);</code>
+<br><code>250.6228</code>
+<br><code>Mean(out);</code>
+<br><code>154.9945</code>
+<br>
+<img style="margin-left: 20px;" height="220" width="360" src="doc_images/example.jpg"><br></div>
 <br>
 <hr class="hr">
 <h3 style="color:#2c4786;">Min - Max</h3>

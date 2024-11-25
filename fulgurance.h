@@ -3,6 +3,8 @@
 #include <math.h>
 #include <chrono>
 
+//@F doc_images
+
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
 //@I This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_tools part.
@@ -627,6 +629,100 @@ std::vector<double> unif(unsigned &n, double &min, double &max, double noise = 0
     Step += lst_val;
   };
   rtn_v.push_back(max);
+  return rtn_v;
+};
+
+//@L4 Normal distribution
+
+//@T norm
+//@U std::vector&lt;double&gt; norm(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) 
+//@X
+//@D Returns a pseudo-random normal distribution as a double stl vector.
+//@A n : is the number of elements in the output stl vector
+//@A mean : is the mean of the normal distribution
+//@A sd : is the standard deviation of the normal distribution
+//@A noise : is the noise, defaults to 0.05
+//@A seed : is an int that dictates the result, defaults to -1, so by default the output is pseudo-random
+//@X
+//@E unsigned int n = 10000;
+//@E double sd = 250;
+//@E double mean = 155;
+//@E std::vector&lt;double&gt; sd_vec;
+//@E std::vector&lt;double&gt; out;
+//@E double result;
+//@E out = norm(n, mean, sd);
+//@E Sd(out);
+//@E 250.6228
+//@E Mean(out);
+//@E 154.9945
+//@M example.jpg 
+//@X
+
+std::vector<double> norm(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) {
+  long double step;
+  unsigned long int valint = 1;
+  unsigned int i;
+  if (seed == -1) {
+    auto now = std::chrono::system_clock::now();
+    auto duration = now.time_since_epoch();
+    step = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+    step /= 10;
+    valint = step;
+    step -= valint;
+    step *= 10;
+    if (step == 0) {
+      i = 1;
+      while (valint % i != 0) {
+        i+= 1;
+      };
+      step += i;
+    };
+  } else {
+    step = seed;
+  };
+  std::vector<int> ref_vec = {5, 3, 1, 6, 8, 2, 4, 7, 9}; 
+  unsigned int addr;
+  long double n2 = n;
+  long double prob_step = 1 / n2;
+  if (valint % 9 == 0) {
+    addr = 3;
+  } else if (valint % 7 == 0) {
+    addr = 4;
+  } else if (valint % 8 == 0) {
+    addr = 7;
+  } else if (valint % 6 == 0) {
+    addr = 9;
+  } else if (valint % 3 == 0) {
+    addr = 13;
+  } else if (valint % 4 == 0) {
+    addr = 1;
+  } else if (valint % 2 == 0) { 
+    addr = 8;
+  } else {
+    addr = 5;
+  };
+  std::vector<double> rtn_v;
+  rtn_v.reserve(n);
+  long double cur_prob = 0;
+  double x_step = 1 / n2;
+  double x_step2 = 0;
+  unsigned int cur_n = 0;
+  unsigned int Step = step;
+  double cur_noise;
+  while (cur_n < n) {
+    cur_prob += (1 / (sd * sqrtl(2 * M_PI))) * exp(-0.5 * powl(x_step2 / sd, 2)) * x_step;
+    while ((cur_prob - prob_step) > 0) {
+      Step += ref_vec[Step % 9] + addr;
+      cur_noise = sin(Step) * noise * x_step2;
+      rtn_v.push_back(mean + x_step2 + cur_noise);
+      Step += ref_vec[Step % 9] + addr;
+      cur_noise = sin(Step) * noise * x_step2;
+      rtn_v.push_back(mean - x_step2 + cur_noise);
+      cur_prob -= prob_step;
+      cur_n += 2;
+    };
+    x_step2 += x_step;
+  };
   return rtn_v;
 };
 
