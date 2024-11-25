@@ -606,7 +606,7 @@ n </th><th> is the number of elements in the output stl vector</th></tr>
 <br><code>Mean(out);</code>
 <br><code>154.9945</code>
 <br>
-<img style="margin-left: 20px;" height="220" width="360" src="doc_images/example.jpg"><br></div>
+<img style="margin-left: 20px;" height="220" width="360" src="example.jpg"><br></div>
 <br>
 <hr class="hr">
 <h3 style="color:#2c4786;">Min - Max</h3>
