@@ -701,15 +701,15 @@ std::vector<double> norm(unsigned int &n, double &mean, double &sd, double noise
   };
   std::vector<double> rtn_v;
   rtn_v.reserve(n);
-  long double cur_prob = 0;
+  double cur_prob = 0;
   double x_step = 1 / n2;
   double x_step2 = 0;
   unsigned int cur_n = 0;
   unsigned int Step = step;
   double cur_noise;
-  long double cnst = 1 / (sd * sqrtl(2 * M_PI));
+  double cnst = 1 / (sd * sqrtl(2 * M_PI));
   while (cur_n < n) {
-    cur_prob += cnst * expl(-0.5 * powl(x_step2 / sd, 2)) * x_step;
+    cur_prob += cnst * expf(-0.5 * (x_step2 / sd) * (x_step2 / sd)) * x_step;
     while ((cur_prob - prob_step) >= 0) {
       Step += ref_vec[Step % 9] + addr;
       cur_noise = sin(Step) * noise * x_step2;
