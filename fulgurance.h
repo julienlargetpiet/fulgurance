@@ -3,8 +3,6 @@
 #include <math.h>
 #include <chrono>
 
-//@F doc_images
-
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
 //@I This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_tools part.
@@ -637,7 +635,7 @@ std::vector<double> unif(unsigned &n, double &min, double &max, double noise = 0
 //@T norm
 //@U std::vector&lt;double&gt; norm(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) 
 //@X
-//@D Returns a pseudo-random normal distribution as a double stl vector.
+//@D Returns a pseudo-random normal distribution as a double stl vector. Note, if you can it is preferable to choose the smallest standard deviation possible to increase speed. Example: N(14, 10) -&gt; N(1.4, 1).
 //@A n : is the number of elements in the output stl vector
 //@A mean : is the mean of the normal distribution
 //@A sd : is the standard deviation of the normal distribution
@@ -709,9 +707,10 @@ std::vector<double> norm(unsigned int &n, double &mean, double &sd, double noise
   unsigned int cur_n = 0;
   unsigned int Step = step;
   double cur_noise;
+  long double cnst = 1 / (sd * sqrtl(2 * M_PI));
   while (cur_n < n) {
-    cur_prob += (1 / (sd * sqrtl(2 * M_PI))) * exp(-0.5 * powl(x_step2 / sd, 2)) * x_step;
-    while ((cur_prob - prob_step) > 0) {
+    cur_prob += cnst * expl(-0.5 * powl(x_step2 / sd, 2)) * x_step;
+    while ((cur_prob - prob_step) >= 0) {
       Step += ref_vec[Step % 9] + addr;
       cur_noise = sin(Step) * noise * x_step2;
       rtn_v.push_back(mean + x_step2 + cur_noise);
