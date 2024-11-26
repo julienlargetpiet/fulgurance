@@ -51,6 +51,8 @@
 <b><li style="margin-left:80px; color: #2c4786;">Normal distribution</li></b>
 <a href="#norm" style="margin-left:100px;">norm</a>
 <br>
+<a href="#norm2 " style="margin-left:100px;">norm2 </a>
+<br>
 <b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
 <a href="#min" style="margin-left:80px;">min</a>
 <br>
@@ -583,7 +585,7 @@ n </th><th> is the number of elements of the output stl vector</th></tr>
 <h3>#Usage</h3>
 <div class="Div"><code>std::vector&lt;double&gt; norm(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) </code></div>
 <h3>#Description</h3>
-<p>Returns a pseudo-random normal distribution as a double stl vector.</p>
+<p>Returns a pseudo-random normal distribution as a double stl vector. Note, if you can it is preferable to choose the smallest standard deviation possible to increase speed. Example: N(14, 10) -&gt; N(1.4, 1).</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 n </th><th> is the number of elements in the output stl vector</th></tr>
@@ -607,6 +609,36 @@ n </th><th> is the number of elements in the output stl vector</th></tr>
 <br><code>154.9945</code>
 <br>
 <img style="margin-left: 20px;" height="220" width="360" src="example.jpg"><br></div>
+<br>
+<hr class="hr">
+<h2 id="norm2 " style="test-align: left;">norm2 </h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; norm2(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1)</code></div>
+<h3>#Description</h3>
+<p>Same as <code>norm()</code>, but faster and less accurate.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+n </th><th> is the number of elements in the output stl vector</th></tr>
+<tr><th>mean </th><th> is the mean of the normal distribution</th></tr>
+<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
+<tr><th>noise </th><th> is the noise, defaults to 0.05</th></tr>
+<tr><th>seed </th><th> is an int that dictates the result, defaults to -1, so by default the output is pseudo-random</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>unsigned int n = 10000;</code>
+<br><code>double sd = 50;</code>
+<br><code>double mean = 155;</code>
+<br><code>std::vector&lt;double&gt; sd_vec;</code>
+<br><code>std::vector&lt;double&gt; out;</code>
+<br><code>double result;</code>
+<br><code>out = norm2(n, mean, sd);</code>
+<br><code>Sd(out);</code>
+<br><code>42.06729</code>
+<br><code>Mean(out);</code>
+<br><code>155.0009</code>
+<br>
+<img style="margin-left: 20px;" height="220" width="360" src="example2.jpg"><br></div>
 <br>
 <hr class="hr">
 <h3 style="color:#2c4786;">Min - Max</h3>
