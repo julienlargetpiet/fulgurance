@@ -1,4 +1,3 @@
-<body>
 <div class="Div2"><i><b>README</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
 <div class="container">
 <div class="Divb">
@@ -19,6 +18,10 @@
 <a href="#randint" style="margin-left:80px;">randint</a>
 <br>
 <a href="#logn" style="margin-left:80px;">logn</a>
+<br>
+<a href="#Facto" style="margin-left:80px;">Facto</a>
+<br>
+<a href="#Comb" style="margin-left:80px;">Comb</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">String to int, float, double</li></b>
 <a href="#si" style="margin-left:80px;">si</a>
@@ -49,9 +52,22 @@
 <a href="#unif" style="margin-left:100px;">unif</a>
 <br>
 <b><li style="margin-left:80px; color: #2c4786;">Normal distribution</li></b>
-<a href="#norm" style="margin-left:100px;">norm</a>
+<b><li style="margin-left:100px; color: #2c4786;">Getting probability from values</li></b>
+<a href="#normal_ppoint" style="margin-left:120px;">normal_ppoint</a>
 <br>
-<a href="#norm2 " style="margin-left:100px;">norm2 </a>
+<a href="#normal_prange" style="margin-left:120px;">normal_prange</a>
+<br>
+<b><li style="margin-left:100px; color: #2c4786;">Getting values from probability</li></b>
+<a href="#normal_val2prob" style="margin-left:120px;">normal_val2prob</a>
+<br>
+<a href="#norm" style="margin-left:80px;">norm</a>
+<br>
+<a href="#norm2 " style="margin-left:80px;">norm2 </a>
+<br>
+<b><li style="margin-left:80px; color: #2c4786;">Binomial</li></b>
+<a href="#dbinom " style="margin-left:100px;">dbinom </a>
+<br>
+<a href="#qbinom " style="margin-left:100px;">qbinom </a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
 <a href="#min" style="margin-left:80px;">min</a>
@@ -194,16 +210,6 @@
 <a href="#abs_matrin" style="margin-left:60px;">abs_matrin</a>
 <br>
 <a href="#abs_matrout" style="margin-left:60px;">abs_matrout</a>
-<br>
-<b><li style="margin-left:40px; color: #2c4786;">Statistical distributions</li></b>
-<b><li style="margin-left:60px; color: #2c4786;">Normal distribution</li></b>
-<b><li style="margin-left:80px; color: #2c4786;">Getting probability from values</li></b>
-<a href="#normal_ppoint" style="margin-left:100px;">normal_ppoint</a>
-<br>
-<a href="#normal_prange" style="margin-left:100px;">normal_prange</a>
-<br>
-<b><li style="margin-left:80px; color: #2c4786;">Getting values from probability</li></b>
-<a href="#normal_offval" style="margin-left:100px;">normal_offval</a>
 <br>
 <b><li style="margin-left:20px; color: #2c4786;">Fulgurance Tools</li></b>
 <a href="#Parser_tokenizer_full" style="margin-left:40px;">Parser_tokenizer_full</a>
@@ -351,6 +357,43 @@ val </th><th> is the value of the logarith base n (must be positive)</th></tr>
 <br><code>0.419956 </code>
 <br><code>base = 2;</code>
 <br><code>1.39506 </code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Facto" style="test-align: left;">Facto</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>unsigned int Facto(unsigned int x)</code></div>
+<h3>#Description</h3>
+<p>Returns the factorial of a positive integer.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is a unsigned integer</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>Facto(7);</code>
+<br><code>5040</code>
+<br><code>Facto(0);</code>
+<br><code>1</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Comb" style="test-align: left;">Comb</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>unsigned int Comb(unsigned int r, unsigned int n)</code></div>
+<h3>#Description</h3>
+<p>Returns the result of the combination formula for given parameters.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+r </th><th> is the number of objects choosen among the set </th></tr>
+<tr><th>n </th><th> is the number of objects in the set</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>Comb(2, 5);</code>
+<br><code>10</code>
+<br><code>Comb(5, 12);</code>
+<br><code>792</code>
 </div>
 <br>
 <hr class="hr">
@@ -589,6 +632,76 @@ n </th><th> is the number of elements of the output stl vector</th></tr>
 <br>
 <hr class="hr">
 <h4 style="color:#2c4786;">Normal distribution</h4>
+<h5 style="color:#2c4786;">Getting probability from values</h5>
+<h2 id="normal_ppoint" style="test-align: left;">normal_ppoint</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2, typename T3&gt; double normal_ppoint(T &mean, T2 &sd, T3 &val)</code></div>
+<h3>#Description</h3>
+<p>Returns the probability of a value in a normal distribution with given parameters.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+mean </th><th> is the mean of the normal distribution </th></tr>
+<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
+<tr><th>val </th><th> is the value you want to get its probability</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double mean = 4;</code>
+<br><code>double sdt = 2;</code>
+<br><code>double val = 0.65;</code>
+<br><code>normal_ppoint(mean, sdt, val);</code>
+<br><code>0.176033</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="normal_prange" style="test-align: left;">normal_prange</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2, typename T3, typename T4, typename T5&gt; double normal_prange(T &mean, T2 &sd, T3 &from, T4 &to, T5 &by)</code></div>
+<h3>#Description</h3>
+<p>Returns the probability of a range of value in a normal distribution with given parameters.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+mean </th><th> is the mean of the normal distribution</th></tr>
+<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
+<tr><th>from is the first value of the range of values</th></tr>
+<tr><th>to </th><th> is the last value of the range of values</th></tr>
+<tr><th>by </th><th> is the accuracy step of the range of values, the lower it is, higher the result will be accurate</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double mean = 3;</code>
+<br><code>double sd = 1.23;</code>
+<br><code>double from = 2;</code>
+<br><code>double to = 4;</code>
+<br><code>double by = 0.1;</code>
+<br><code>double out = normal_prange(mean, sd, from, to, by);</code>
+<br><code>0.795199</code>
+</div>
+<br>
+<hr class="hr">
+<h5 style="color:#2c4786;">Getting values from probability</h5>
+<h2 id="normal_val2prob" style="test-align: left;">normal_val2prob</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; double normal_val2prob(T &sd, T2 prob)</code></div>
+<h3>#Description</h3>
+<p>Returns the value from a normal distribution at a given probability and standard deviation.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+sd </th><th> is the standard deviation of the normal distribution</th></tr>
+<tr><th>offset_prob </th><th> is the offset probability of the wanted value(s)</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double sdt = 2.33;</code>
+<br><code>double offset_prob = 0.001;</code>
+<br><code>double out = normal_offval(sdt, prob);</code>
+<br><code>mean - out</code>
+<br><code>mean - 7.47269 </code>
+<br><code>mean + out</code>
+<br><code>mean + 7.47269</code>
+</div>
+<br>
+<hr class="hr">
 <h2 id="norm" style="test-align: left;">norm</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>std::vector&lt;double&gt; norm(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) </code></div>
@@ -645,6 +758,51 @@ n </th><th> is the number of elements in the output stl vector</th></tr>
 <br><code>155.0009</code>
 <br>
 <img style="margin-left: 20px;" height="220" width="360" src="example2.jpg"><br></div>
+<br>
+<hr class="hr">
+<h4 style="color:#2c4786;">Binomial</h4>
+<h2 id="dbinom " style="test-align: left;">dbinom </h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; dbinom(std::vector&lt;unsigned int&gt; &x, unsigned int &n, double &p)</code></div>
+<h3>#Description</h3>
+<p>Returns the probability of P(X = {x1,x2...}) as an stl double vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl unsigned int vector containing all the x's</th></tr>
+<tr><th>n </th><th> is the size of the set</th></tr>
+<tr><th>p </th><th> is the probability of success</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;unsigned int&gt; vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};</code>
+<br><code>unsigned int n = 10;</code>
+<br><code>double p = 0.3;</code>
+<br><code>std::vector&lt;double&gt; out = dbinom(vec, n, p); </code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.0282475 0.121061 0.233474 0.266828 0.200121 0.102919 0.0367569 0.00900169 0.0014467 0.000137781 </code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="qbinom " style="test-align: left;">qbinom </h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; qbinom(std::vector&lt;unsigned int&gt; &x, unsigned int &n, double &p)</code></div>
+<h3>#Description</h3>
+<p>Returns the distribution function of <b>range</b> P(X = {x1,x2...}) as an stl double vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl unsigned int vector containing all the x's</th></tr>
+<tr><th>n </th><th> is the size of the set</th></tr>
+<tr><th>p </th><th> is the probability of success</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;unsigned int&gt; vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};</code>
+<br><code>unsigned int n = 10;</code>
+<br><code>double p = 0.3;</code>
+<br><code>std::vector&lt;double&gt; out = dbinom(vec, n, p); </code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.121061 0.354535 0.621363 0.821484 0.924403 0.96116 0.970162 0.971609 0.971747 </code>
+</div>
 <br>
 <hr class="hr">
 <h3 style="color:#2c4786;">Min - Max</h3>
@@ -1842,78 +2000,6 @@ x </th><th> is a matrix as 2D stl vector (int, float, double, bool)</th></tr>
 <br><code>:0:         1         4         7</code>
 <br><code>:1:         2         5         8</code>
 <br><code>:2:         3         6         9</code>
-</div>
-<br>
-<hr class="hr">
-<h2 style="color:#2c4786;">Statistical distributions</h2>
-<h3 style="color:#2c4786;">Normal distribution</h3>
-<h4 style="color:#2c4786;">Getting probability from values</h4>
-<h2 id="normal_ppoint" style="test-align: left;">normal_ppoint</h2>
-<h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T, typename T2, typename T3&gt; double normal_ppoint(T &mean, T2 &sd, T3 &val)</code></div>
-<h3>#Description</h3>
-<p>Returns the probability of a value in a normal distribution with given parameters.</p>
-<h3>#Arguments</h3>
-<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-mean </th><th> is the mean of the normal distribution </th></tr>
-<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
-<tr><th>val </th><th> is the value you want to get its probability</th></tr>
-</table>
-<br>
-<h3>#Example(s)</h3>
-<div class = "Div"><code>double mean = 4;</code>
-<br><code>double sdt = 2;</code>
-<br><code>double val = 0.65;</code>
-<br><code>normal_ppoint(mean, sdt, val);</code>
-<br><code>0.176033</code>
-</div>
-<br>
-<hr class="hr">
-<h2 id="normal_prange" style="test-align: left;">normal_prange</h2>
-<h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T, typename T2, typename T3, typename T4, typename T5&gt; double normal_prange(T &mean, T2 &sd, T3 &from, T4 &to, T5 &by)</code></div>
-<h3>#Description</h3>
-<p>Returns the probability of a range of value in a normal distribution with given parameters.</p>
-<h3>#Arguments</h3>
-<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-mean </th><th> is the mean of the normal distribution</th></tr>
-<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
-<tr><th>from is the first value of the range of values</th></tr>
-<tr><th>to </th><th> is the last value of the range of values</th></tr>
-<tr><th>by </th><th> is the accuracy step of the range of values, the lower it is, higher the result will be accurate</th></tr>
-</table>
-<br>
-<h3>#Example(s)</h3>
-<div class = "Div"><code>double mean = 3;</code>
-<br><code>double sd = 1.23;</code>
-<br><code>double from = 2;</code>
-<br><code>double to = 4;</code>
-<br><code>double by = 0.1;</code>
-<br><code>double out = normal_prange(mean, sd, from, to, by);</code>
-<br><code>0.795199</code>
-</div>
-<br>
-<hr class="hr">
-<h4 style="color:#2c4786;">Getting values from probability</h4>
-<h2 id="normal_offval" style="test-align: left;">normal_offval</h2>
-<h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T, typename T2&gt; double normal_offval(T &sd, T2 prob)</code></div>
-<h3>#Description</h3>
-<p>Returns the offset value for a given normal distribution with given probability, see example. </p>
-<h3>#Arguments</h3>
-<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-sd </th><th> is the standard deviation of the normal distribution</th></tr>
-<tr><th>offset_prob </th><th> is the offset probability of the wanted value(s)</th></tr>
-</table>
-<br>
-<h3>#Example(s)</h3>
-<div class = "Div"><code>double sdt = 2.33;</code>
-<br><code>double offset_prob = 0.001;</code>
-<br><code>double out = normal_offval(sdt, prob);</code>
-<br><code>mean - out</code>
-<br><code>mean - 7.47269 </code>
-<br><code>mean + out</code>
-<br><code>mean + 7.47269</code>
 </div>
 <br>
 <hr class="hr">

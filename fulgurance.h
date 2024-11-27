@@ -707,6 +707,80 @@ std::vector<double> unif(unsigned &n, double &min, double &max, double noise = 0
 
 //@L4 Normal distribution
 
+//@L5 Getting probability from values
+
+//@T normal_ppoint
+//@U template &lt;typename T, typename T2, typename T3&gt; double normal_ppoint(T &mean, T2 &sd, T3 &val)
+//@X
+//@D Returns the probability of a value in a normal distribution with given parameters.
+//@A mean : is the mean of the normal distribution 
+//@A sd : is the standard deviation of the normal distribution
+//@A val : is the value you want to get its probability
+//@X
+//@E double mean = 4;
+//@E double sdt = 2;
+//@E double val = 0.65;
+//@E normal_ppoint(mean, sdt, val);
+//@E 0.176033
+//@X
+
+template <typename T, typename T2, typename T3> double normal_ppoint(T &mean, T2 &sd, T3 &val) {
+  return (1 / (sd * pow(M_PI * 2, 0.5))) * exp(-0.5 * pow((val - mean)/sd, 2));
+};
+
+//@T normal_prange
+//@U template &lt;typename T, typename T2, typename T3, typename T4, typename T5&gt; double normal_prange(T &mean, T2 &sd, T3 &from, T4 &to, T5 &by)
+//@X
+//@D Returns the probability of a range of value in a normal distribution with given parameters.
+//@A mean : is the mean of the normal distribution
+//@A sd : is the standard deviation of the normal distribution
+//@A from is the first value of the range of values
+//@A to : is the last value of the range of values
+//@A by : is the accuracy step of the range of values, the lower it is, higher the result will be accurate
+//@X
+//@E double mean = 3;
+//@E double sd = 1.23;
+//@E double from = 2;
+//@E double to = 4;
+//@E double by = 0.1;
+//@E double out = normal_prange(mean, sd, from, to, by);
+//@E 0.795199
+//@X
+
+template <typename T, typename T2, typename T3, typename T4, typename T5> double normal_prange(T &mean, T2 &sd, T3 &from, T4 &to, T5 &by) {
+  double delta = 0;
+  for (double i = 0; i <= to; i += by) {
+    delta += (1 / (sd * pow(M_PI * 2, 0.5))) * exp(-0.5 * pow((from - mean)/sd, 2)) * by;
+    from += by;
+  };
+  return delta;
+};
+
+//@L5 Getting values from probability
+
+//@T normal_val2prob
+//@U template &lt;typename T, typename T2&gt; double normal_val2prob(T &sd, T2 prob)
+//@X
+//@D Returns the value from a normal distribution at a given probability and standard deviation.
+//@A sd : is the standard deviation of the normal distribution
+//@A offset_prob : is the offset probability of the wanted value(s)
+//@X
+//@E double sdt = 2.33;
+//@E double offset_prob = 0.001;
+//@E double out = normal_offval(sdt, prob);
+//@E mean - out
+//@E mean - 7.47269 
+//@E mean + out
+//@E mean + 7.47269
+//@X
+
+template <typename T, typename T2> double normal_val2prob(T &sd, T2 prob) {
+  return pow(-2 * log(prob * sd * pow((2 * M_PI), 0.5)), 0.5) * sd;
+};
+
+
+//@J3
+
 //@T norm
 //@U std::vector&lt;double&gt; norm(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) 
 //@X
@@ -887,6 +961,172 @@ std::vector<double> norm2(unsigned int &n, double &mean, double &sd, double nois
       cur_n += 2;
     };
     x_step2 += x_step;
+  };
+  return rtn_v;
+};
+
+//@L4 Binomial
+
+//@T dbinom 
+//@U std::vector&lt;double&gt; dbinom(std::vector&lt;unsigned int&gt; &x, unsigned int &n, double &p)
+//@X
+//@D Returns the probability of P(X = {x1,x2...}) as an stl double vector.
+//@A x : is an stl unsigned int vector containing all the x's
+//@A n : is the size of the set
+//@A p : is the probability of success
+//@X
+//@E std::vector&lt;unsigned int&gt; vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+//@E unsigned int n = 10;
+//@E double p = 0.3;
+//@E std::vector&lt;double&gt; out = dbinom(vec, n, p); 
+//@E print_nvec(out);
+//@E :0: 0.0282475 0.121061 0.233474 0.266828 0.200121 0.102919 0.0367569 0.00900169 0.0014467 0.000137781 
+//@X
+
+std::vector<double> dbinom(std::vector<unsigned int> &x, unsigned int &n, double &p) {
+  unsigned long int numerator;
+  unsigned long int divider1;
+  unsigned long int divider2;
+  unsigned int n2 = n;
+  unsigned int cnt2;
+  unsigned int exponent;
+  unsigned int r;
+  unsigned int r2;
+  if (n > 0) {
+    numerator = n;
+    n2 -= 1;
+    while (n2 > 1) {
+      numerator *= n2;
+      n2 -= 1;
+    };
+  } else {
+    numerator = 1;
+  };
+  const unsigned int xn = x.size();
+  std::vector<double> rtn_v;
+  double q = 1 - p;
+  for (unsigned int I = 0; I < xn; ++I) {
+    r = x[I];
+    divider2 = n - r;
+    exponent = divider2;
+    if (divider2 > 0) {
+      cnt2 = divider2;
+      cnt2 -= 1;
+      while (cnt2 > 1) {
+        divider2 *= cnt2;
+        cnt2 -= 1;
+      };
+    } else {
+       divider2 = 1;
+    };
+    r2 = r;
+    if (r > 0) {
+      divider1 = r;
+      r -= 1;
+      while (r > 1) {
+        divider1 *= r;
+        r -= 1;
+      };
+    } else {
+      divider1 = 1;
+    };
+    rtn_v.push_back(numerator / (divider1 * divider2) * powf(p, r2) * powf(q, exponent));
+  };
+  return rtn_v;
+};
+
+//@T qbinom 
+//@U std::vector&lt;double&gt; qbinom(std::vector&lt;unsigned int&gt; &x, unsigned int &n, double &p)
+//@X
+//@D Returns the distribution function of <b>range</b> P(X = {x1,x2...}) as an stl double vector.
+//@A x : is an stl unsigned int vector containing all the x's
+//@A n : is the size of the set
+//@A p : is the probability of success
+//@X
+//@E std::vector&lt;unsigned int&gt; vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+//@E unsigned int n = 10;
+//@E double p = 0.3;
+//@E std::vector&lt;double&gt; out = dbinom(vec, n, p); 
+//@E print_nvec(out);
+//@E :0: 0.121061 0.354535 0.621363 0.821484 0.924403 0.96116 0.970162 0.971609 0.971747 
+//@X
+
+std::vector<double> qbinom(std::vector<unsigned int> &x, unsigned int &n, double &p) {
+  unsigned long int numerator;
+  unsigned long int divider1;
+  unsigned long int divider2;
+  unsigned int n2 = n;
+  unsigned int cnt2;
+  unsigned int exponent;
+  unsigned int r;
+  unsigned int r2;
+  double lst_val;
+  if (n > 0) {
+    numerator = n;
+    n2 -= 1;
+    while (n2 > 1) {
+      numerator *= n2;
+      n2 -= 1;
+    };
+  } else {
+    numerator = 1;
+  };
+  const unsigned int xn = x.size();
+  std::vector<double> rtn_v;
+  double q = 1 - p;
+  r = x[0];
+  divider2 = n - r;
+  exponent = divider2;
+  if (divider2 > 0) {
+    cnt2 = divider2;
+    cnt2 -= 1;
+    while (cnt2 > 1) {
+      divider2 *= cnt2;
+      cnt2 -= 1;
+    };
+  } else {
+     divider2 = 1;
+  };
+  r2 = r;
+  if (r > 0) {
+    divider1 = r;
+    r -= 1;
+    while (r > 1) {
+      divider1 *= r;
+      r -= 1;
+    };
+  } else {
+    divider1 = 1;
+  };
+  lst_val = numerator / (divider1 * divider2) * powf(p, r2) * powf(q, exponent);
+  rtn_v.push_back(lst_val);
+  for (unsigned int I = 1; I < xn; ++I) {
+    r = x[I];
+    divider2 = n - r;
+    exponent = divider2;
+    if (divider2 > 0) {
+      cnt2 = divider2;
+      cnt2 -= 1;
+      while (cnt2 > 1) {
+        divider2 *= cnt2;
+        cnt2 -= 1;
+      };
+    } else {
+       divider2 = 1;
+    };
+    r2 = r;
+    if (r > 0) {
+      divider1 = r;
+      r -= 1;
+      while (r > 1) {
+        divider1 *= r;
+        r -= 1;
+      };
+    } else {
+      divider1 = 1;
+    };
+    lst_val += (numerator / (divider1 * divider2) * powf(p, r2) * powf(q, exponent));
+    rtn_v.push_back(lst_val);
   };
   return rtn_v;
 };
@@ -2993,80 +3233,6 @@ template <typename T> std::vector<std::vector<T>> abs_matrout(const std::vector<
     };
   };
   return rtn;
-};
-
-//@L2 Statistical distributions
-
-//@L3 Normal distribution
-//@L4 Getting probability from values
-
-//@T normal_ppoint
-//@U template &lt;typename T, typename T2, typename T3&gt; double normal_ppoint(T &mean, T2 &sd, T3 &val)
-//@X
-//@D Returns the probability of a value in a normal distribution with given parameters.
-//@A mean : is the mean of the normal distribution 
-//@A sd : is the standard deviation of the normal distribution
-//@A val : is the value you want to get its probability
-//@X
-//@E double mean = 4;
-//@E double sdt = 2;
-//@E double val = 0.65;
-//@E normal_ppoint(mean, sdt, val);
-//@E 0.176033
-//@X
-
-template <typename T, typename T2, typename T3> double normal_ppoint(T &mean, T2 &sd, T3 &val) {
-  return (1 / (sd * pow(M_PI * 2, 0.5))) * exp(-0.5 * pow((val - mean)/sd, 2));
-};
-
-//@T normal_prange
-//@U template &lt;typename T, typename T2, typename T3, typename T4, typename T5&gt; double normal_prange(T &mean, T2 &sd, T3 &from, T4 &to, T5 &by)
-//@X
-//@D Returns the probability of a range of value in a normal distribution with given parameters.
-//@A mean : is the mean of the normal distribution
-//@A sd : is the standard deviation of the normal distribution
-//@A from is the first value of the range of values
-//@A to : is the last value of the range of values
-//@A by : is the accuracy step of the range of values, the lower it is, higher the result will be accurate
-//@X
-//@E double mean = 3;
-//@E double sd = 1.23;
-//@E double from = 2;
-//@E double to = 4;
-//@E double by = 0.1;
-//@E double out = normal_prange(mean, sd, from, to, by);
-//@E 0.795199
-//@X
-
-template <typename T, typename T2, typename T3, typename T4, typename T5> double normal_prange(T &mean, T2 &sd, T3 &from, T4 &to, T5 &by) {
-  double delta = 0;
-  for (double i = 0; i <= to; i += by) {
-    delta += (1 / (sd * pow(M_PI * 2, 0.5))) * exp(-0.5 * pow((from - mean)/sd, 2)) * by;
-    from += by;
-  };
-  return delta;
-};
-
-//@L4 Getting values from probability
-
-//@T normal_offval
-//@U template &lt;typename T, typename T2&gt; double normal_offval(T &sd, T2 prob)
-//@X
-//@D Returns the offset value for a given normal distribution with given probability, see example. 
-//@A sd : is the standard deviation of the normal distribution
-//@A offset_prob : is the offset probability of the wanted value(s)
-//@X
-//@E double sdt = 2.33;
-//@E double offset_prob = 0.001;
-//@E double out = normal_offval(sdt, prob);
-//@E mean - out
-//@E mean - 7.47269 
-//@E mean + out
-//@E mean + 7.47269
-//@X
-
-template <typename T, typename T2> double normal_offval(T &sd, T2 prob) {
-  return pow(-2 * log(prob * sd * pow((2 * M_PI), 0.5)), 0.5) * sd;
 };
 
 //@L1 Fulgurance Tools
