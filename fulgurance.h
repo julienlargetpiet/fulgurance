@@ -1035,8 +1035,8 @@ std::vector<double> dbinom(std::vector<unsigned int> &x, unsigned int &n, double
   return rtn_v;
 };
 
-//@T qbinom 
-//@U std::vector&lt;double&gt; qbinom(std::vector&lt;unsigned int&gt; &x, unsigned int &n, double &p)
+//@T pbinom 
+//@U std::vector&lt;double&gt; pbinom(std::vector&lt;unsigned int&gt; &x, unsigned int &n, double &p)
 //@X
 //@D Returns the distribution function of <b>range</b> P(X = {x1,x2...}) as an stl double vector.
 //@A x : is an stl unsigned int vector containing all the x's
@@ -1046,12 +1046,12 @@ std::vector<double> dbinom(std::vector<unsigned int> &x, unsigned int &n, double
 //@E std::vector&lt;unsigned int&gt; vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 //@E unsigned int n = 10;
 //@E double p = 0.3;
-//@E std::vector&lt;double&gt; out = dbinom(vec, n, p); 
+//@E std::vector&lt;double&gt; out = pbinom(vec, n, p); 
 //@E print_nvec(out);
 //@E :0: 0.121061 0.354535 0.621363 0.821484 0.924403 0.96116 0.970162 0.971609 0.971747 
 //@X
 
-std::vector<double> qbinom(std::vector<unsigned int> &x, unsigned int &n, double &p) {
+std::vector<double> pbinom(std::vector<unsigned int> &x, unsigned int &n, double &p) {
   unsigned long int numerator;
   unsigned long int divider1;
   unsigned long int divider2;
