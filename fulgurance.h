@@ -231,6 +231,81 @@ template <typename T, typename T2> double logn(T &val, T2 &base) {
   return log(val) / log(base);
 };
 
+//@T Facto
+//@U unsigned int Facto(unsigned int x)
+//@X
+//@D Returns the factorial of a positive integer.
+//@A x : is a unsigned integer
+//@X
+//@E Facto(7);
+//@E 5040
+//@E Facto(0);
+//@E 1
+//@X
+
+unsigned int Facto(unsigned int x) {
+  if (x == 0) {
+    return 1;
+  };
+  unsigned int rtn = x;
+  x -= 1;
+  while (x > 1) {
+    rtn *= x;
+    x -= 1;
+  };
+  return rtn;
+};
+
+//@T Comb
+//@U unsigned int Comb(unsigned int r, unsigned int n)
+//@X
+//@D Returns the result of the combination formula for given parameters.
+//@A r : is the number of objects choosen among the set 
+//@A n : is the number of objects in the set
+//@X
+//@E Comb(2, 5);
+//@E 10
+//@E Comb(5, 12);
+//@E 792
+//@X
+
+unsigned int Comb(unsigned int r, unsigned int n) {
+  unsigned long int numerator;
+  unsigned long int divider2 = n - r;
+  if (n > 0) {
+    numerator = n;
+    n -= 1;
+    while (n > 1) {
+      numerator *= n;
+      n -= 1;
+    };
+  } else {
+    numerator = 1;
+  };
+  if (divider2 > 0) {
+    unsigned int cnt2 = divider2;
+    cnt2 -= 1;
+    while (cnt2 > 1) {
+      divider2 *= cnt2;
+      cnt2 -= 1;
+    };
+  } else {
+    divider2 = 1;
+  };
+  unsigned long int divider1;
+  if (r > 0) {
+    divider1 = r;
+    r -= 1;
+    while (r > 1) {
+      divider1 *= r;
+      r -= 1;
+    };
+  } else {
+    divider1 = 1;
+  };
+  return numerator / (divider1 * divider2);
+};
+
 //@L3 String to int, float, double
 
 //@T si
