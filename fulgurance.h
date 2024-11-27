@@ -145,7 +145,7 @@ template <typename T> void roundin(T &x, int &n) {
 //@E double x = randint(min, max);
 //@E min = 0;
 //@E max = 900;
-//@E x += randint() / 1000;
+//@E x += randint(min, max) / 1000;
 //@E -13.257
 //@X
 
@@ -645,7 +645,6 @@ std::vector<double> unif(unsigned &n, double &min, double &max, double noise = 0
 //@E unsigned int n = 10000;
 //@E double sd = 250;
 //@E double mean = 155;
-//@E std::vector&lt;double&gt; sd_vec;
 //@E std::vector&lt;double&gt; out;
 //@E double result;
 //@E out = norm(n, mean, sd);
@@ -738,7 +737,6 @@ std::vector<double> norm(unsigned int &n, double &mean, double &sd, double noise
 //@E unsigned int n = 10000;
 //@E double sd = 50;
 //@E double mean = 155;
-//@E std::vector&lt;double&gt; sd_vec;
 //@E std::vector&lt;double&gt; out;
 //@E double result;
 //@E out = norm2(n, mean, sd);
@@ -1192,6 +1190,119 @@ void print_svec(const std::vector<std::string> &x, int untl = -1) {
     };
   };
   std::cout << "\n";
+};
+
+//@L3 Parts 
+
+//@T getpart
+//@U template &lt;typename T&gt; std::vector&lt;T&gt; getpart(std::vector&lt;T&gt; &x, std::string prt)
+//@X
+//@D Retursn part of stl vector with R like synthax.
+//@A x : is an stl vector
+//@A prt : is a std::string that describe the parts of the stl vector to get (R like synthax)
+//@X
+//@E std::vector&lt;int&gt; vec;
+//@E std::vector&lt;int&gt; vec2 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+//@E vec = getpart(vec2, "1,3,5:9,0:9");
+//@E print_nvec(vec);
+//@E :0: 2  4  6  7  8  9  10 1  2  3  4  5  6  7  8  9  10 
+//@X
+
+template <typename T> std::vector<T> getpart(std::vector<T> &x, std::string prt) {
+  const unsigned int n = prt.length();
+  std::vector<T> rtn_v;
+  unsigned int i = 0;
+  unsigned int cur_idx;
+  unsigned int untl_idx;
+  while (i < n) {
+    cur_idx = int(prt[i]) - 48;
+    rtn_v.push_back(x[cur_idx]);
+    if (prt[i + 1] == ':') {
+      i += 2;
+      untl_idx = int(prt[i]) - 48;
+      while (cur_idx < untl_idx) {
+        cur_idx += 1;
+        rtn_v.push_back(x[cur_idx]);
+      };
+    };
+    i += 2;
+  };
+  return rtn_v;
+};
+
+//@L4 Add parts to existing stl vector
+
+//@T partout
+//@U template &lt;typename T&gt; std::vector&lt;T&gt; partout(std::vector&lt;T&gt; &inpt, std::vector&lt;T&gt; &x, std::string prt)
+//@X
+//@D Returns the input stl vector with elements added from another stl vector of the same type. The elements added are described with a std::string following the R synthax.
+//@A inpt : is the stl vector to which elements from the second stl vector will be added
+//@A x : is the stle vecotr from which elements will be added
+//@A prt : is a std::string that describes the elements from the second stl vector to be aded to the first stl vector
+//@X
+//@E std::vector&lt;int&gt; out;
+//@E std::vector&lt;int&gt; vec = {52, 88};
+//@E std::vector&lt;int&gt; vec2 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+//@E out = partout(vec, vec2, "1,3,5:9,0:9");
+//@E print_nvec(out);
+//@E:0: 52 88 2  4  6  7  8  9  10 1  2  3  4  5  6  7  8  9  10 
+//@X
+
+template <typename T> std::vector<T> partout(std::vector<T> &inpt, std::vector<T> &x, std::string prt) {
+  const unsigned int n = prt.length();
+  std::vector<T> rtn_v = inpt;
+  unsigned int i = 0;
+  unsigned int cur_idx;
+  unsigned int untl_idx;
+  while (i < n) {
+    cur_idx = int(prt[i]) - 48;
+    rtn_v.push_back(x[cur_idx]);
+    if (prt[i + 1] == ':') {
+      i += 2;
+      untl_idx = int(prt[i]) - 48;
+      while (cur_idx < untl_idx) {
+        cur_idx += 1;
+        rtn_v.push_back(x[cur_idx]);
+      };
+    };
+    i += 2;
+  };
+  return rtn_v;
+};
+
+//@T partin
+//@U template &lt;typename T&gt; std::vector&lt;T&gt; partin(std::vector&lt;T&gt; &inpt, std::vector&lt;T&gt; &x, std::string prt)
+//@X
+//@D Transforms the input stl vector adding elements from another stl vector of the same type. The elements added are described with a std::string following the R synthax.
+//@A inpt : is the stl vector to which elements from the second stl vector will be added
+//@A x : is the stle vecotr from which elements will be added
+//@A prt : is a std::string that describes the elements from the second stl vector to be aded to the first stl vector
+//@X
+//@E std::vector&lt;int&gt; vec = {52, 88};
+//@E std::vector&lt;int&gt; vec2 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+//@E partin(vec, vec2, "1,3,5:9,0:9");
+//@E print_nvec(vec);
+//@E:0: 52 88 2  4  6  7  8  9  10 1  2  3  4  5  6  7  8  9  10 
+//@X
+
+template <typename T> void partin(std::vector<T> &inpt, std::vector<T> &x, std::string prt) {
+  const unsigned int n = prt.length();
+  unsigned int i = 0;
+  unsigned int cur_idx;
+  unsigned int untl_idx;
+  while (i < n) {
+    cur_idx = int(prt[i]) - 48;
+    inpt.push_back(x[cur_idx]);
+    if (prt[i + 1] == ':') {
+      i += 2;
+      untl_idx = int(prt[i]) - 48;
+      while (cur_idx < untl_idx) {
+        cur_idx += 1;
+        inpt.push_back(x[cur_idx]);
+      };
+    };
+    i += 2;
+  };
 };
 
 //@L3 Absolute values

@@ -74,6 +74,14 @@
 <br>
 <a href="#print_svec" style="margin-left:80px;">print_svec</a>
 <br>
+<b><li style="margin-left:60px; color: #2c4786;">Parts </li></b>
+<a href="#getpart" style="margin-left:80px;">getpart</a>
+<br>
+<b><li style="margin-left:80px; color: #2c4786;">Add parts to existing stl vector</li></b>
+<a href="#partout" style="margin-left:100px;">partout</a>
+<br>
+<a href="#partin" style="margin-left:100px;">partin</a>
+<br>
 <b><li style="margin-left:60px; color: #2c4786;">Absolute values</li></b>
 <a href="#abs_vin" style="margin-left:80px;">abs_vin</a>
 <br>
@@ -320,7 +328,7 @@ min </th><th> is an int</th></tr>
 <br><code>double x = randint(min, max);</code>
 <br><code>min = 0;</code>
 <br><code>max = 900;</code>
-<br><code>x += randint() / 1000;</code>
+<br><code>x += randint(min, max) / 1000;</code>
 <br><code>-13.257</code>
 </div>
 <br>
@@ -599,7 +607,6 @@ n </th><th> is the number of elements in the output stl vector</th></tr>
 <div class = "Div"><code>unsigned int n = 10000;</code>
 <br><code>double sd = 250;</code>
 <br><code>double mean = 155;</code>
-<br><code>std::vector&lt;double&gt; sd_vec;</code>
 <br><code>std::vector&lt;double&gt; out;</code>
 <br><code>double result;</code>
 <br><code>out = norm(n, mean, sd);</code>
@@ -629,7 +636,6 @@ n </th><th> is the number of elements in the output stl vector</th></tr>
 <div class = "Div"><code>unsigned int n = 10000;</code>
 <br><code>double sd = 50;</code>
 <br><code>double mean = 155;</code>
-<br><code>std::vector&lt;double&gt; sd_vec;</code>
 <br><code>std::vector&lt;double&gt; out;</code>
 <br><code>double result;</code>
 <br><code>out = norm2(n, mean, sd);</code>
@@ -819,6 +825,71 @@ x </th><th> stl vector (int, float, double, bool)</th></tr>
 <br><code>print_svec(vec);</code>
 <br><code>:0: peugeot    wolkswagen honda      renault    stellantis yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      </code>
 <br><code>:18: yesss      yesss      yesss      yesss      yesss      yesss      yesss       </code>
+</div>
+<br>
+<hr class="hr">
+<h3 style="color:#2c4786;">Parts </h3>
+<h2 id="getpart" style="test-align: left;">getpart</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; getpart(std::vector&lt;T&gt; &x, std::string prt)</code></div>
+<h3>#Description</h3>
+<p>Retursn part of stl vector with R like synthax.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector</th></tr>
+<tr><th>prt </th><th> is a std</th><th></th><th>string that describe the parts of the stl vector to get (R like synthax)</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec;</code>
+<br><code>std::vector&lt;int&gt; vec2 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};</code>
+<br><code>vec = getpart(vec2, "1,3,5:9,0:9");</code>
+<br><code>print_nvec(vec);</code>
+<br><code>:0: 2  4  6  7  8  9  10 1  2  3  4  5  6  7  8  9  10 </code>
+</div>
+<br>
+<hr class="hr">
+<h4 style="color:#2c4786;">Add parts to existing stl vector</h4>
+<h2 id="partout" style="test-align: left;">partout</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; partout(std::vector&lt;T&gt; &inpt, std::vector&lt;T&gt; &x, std::string prt)</code></div>
+<h3>#Description</h3>
+<p>Returns the input stl vector with elements added from another stl vector of the same type. The elements added are described with a std::string following the R synthax.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+inpt </th><th> is the stl vector to which elements from the second stl vector will be added</th></tr>
+<tr><th>x </th><th> is the stle vecotr from which elements will be added</th></tr>
+<tr><th>prt </th><th> is a std</th><th></th><th>string that describes the elements from the second stl vector to be aded to the first stl vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; out;</code>
+<br><code>std::vector&lt;int&gt; vec = {52, 88};</code>
+<br><code>std::vector&lt;int&gt; vec2 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};</code>
+<br><code>out = partout(vec, vec2, "1,3,5:9,0:9");</code>
+<br><code>print_nvec(out);</code>
+<br><code>0: 52 88 2  4  6  7  8  9  10 1  2  3  4  5  6  7  8  9  10 </code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="partin" style="test-align: left;">partin</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; partin(std::vector&lt;T&gt; &inpt, std::vector&lt;T&gt; &x, std::string prt)</code></div>
+<h3>#Description</h3>
+<p>Transforms the input stl vector adding elements from another stl vector of the same type. The elements added are described with a std::string following the R synthax.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+inpt </th><th> is the stl vector to which elements from the second stl vector will be added</th></tr>
+<tr><th>x </th><th> is the stle vecotr from which elements will be added</th></tr>
+<tr><th>prt </th><th> is a std</th><th></th><th>string that describes the elements from the second stl vector to be aded to the first stl vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {52, 88};</code>
+<br><code>std::vector&lt;int&gt; vec2 = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};</code>
+<br><code>partin(vec, vec2, "1,3,5:9,0:9");</code>
+<br><code>print_nvec(vec);</code>
+<br><code>0: 52 88 2  4  6  7  8  9  10 1  2  3  4  5  6  7  8  9  10 </code>
 </div>
 <br>
 <hr class="hr">
