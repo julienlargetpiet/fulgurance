@@ -894,9 +894,9 @@ template <typename T, typename T2> std::vector<double> qnorm(std::vector<double>
 };
 
 //@T dnorm
-//@U template &lt;typename T&gt; std::vector&lt;double&gt; dnorm(std::vector&lt;T&gt; &x, double &mean, double &sd, double step = 0.01)
+//@U template &lt;typename T&gt; std::vector&lt;double&gt; dnorm(std::vector&lt;T&gt; &x, double &mean, double &sd, double step = 1)
 //@X
-//@D Returns the density of a given normal distribution as an stl double vector.
+//@D Returns the density function of a given normal distribution as an stl double vector.
 //@A x : is an stl vector of values you want the probability from
 //@A mean : is the mean of the normal distribution
 //@A sd : is the standard deviation of the normal distribution
@@ -913,7 +913,7 @@ template <typename T, typename T2> std::vector<double> qnorm(std::vector<double>
 //@E :0: 0.0647588 0.120985 0.176033 0.199471 0.176033 0.120985 
 //@X
 
-template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean, double &sd, double step = 0.01) {
+template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean, double &sd, double step = 1) {
   std::vector<double> rtn_v;
   for (typename std::vector<T>::iterator i = x.begin(); i != x.end(); ++i) {
     rtn_v.push_back((expf(-0.5 * powf(((mean - *i) / sd), 2))) / (sd * powf(2 * M_PI, 0.5)) * step);
@@ -924,7 +924,7 @@ template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean,
 //@T pnorm
 //@U template &lt;typename T&gt; std::vector&lt;double&gt; pnorm(std::vector&lt;T&gt; &x, double &mean, double &sd, double step = 0.01)
 //@X
-//@D Returns the function distribution of a given normal distribution.
+//@D Returns the cumulative distribution function of a given normal distribution.
 //@A x : is an stl vector containing all the elements you want the function distribution to be calculated with, must be ascendly sorted
 //@A mean : is the mean of the normal distribution
 //@A sd : is the standard deviation of the normal distribution
@@ -957,7 +957,7 @@ template <typename T> std::vector<double> pnorm(std::vector<T> &x, double &mean,
 //@T dbinom 
 //@U std::vector&lt;double&gt; dbinom(std::vector&lt;unsigned int&gt; &x, unsigned int &n, double &p)
 //@X
-//@D Returns the probability of P(X = {x1,x2...}) as an stl double vector.
+//@D Returns the probability function of a binomial distribution as an stl double vector.
 //@A x : is an stl unsigned int vector containing all the x's
 //@A n : is the size of the set
 //@A p : is the probability of success
@@ -1025,7 +1025,7 @@ std::vector<double> dbinom(std::vector<unsigned int> &x, unsigned int &n, double
 //@T pbinom 
 //@U std::vector&lt;double&gt; pbinom(std::vector&lt;unsigned int&gt; &x, unsigned int &n, double &p)
 //@X
-//@D Returns the distribution function of <b>range</b> P(X = {x1,x2...}) as an stl double vector.
+//@D Returns the cumulative distribution function of <b>range</b> P(X = {x1,x2...}) as an stl double vector.
 //@A x : is an stl unsigned int vector containing all the x's
 //@A n : is the size of the set
 //@A p : is the probability of success
@@ -2965,6 +2965,49 @@ template <typename TB> class Rm_sharedv {
     };
 
     ~Rm_sharedv() {}; 
+};
+
+//@T closest_idx
+//@U template &lt;typename T&gt; unsigned int closest_idx(std::vector&lt;T&gt; &x, T &val)
+//@X
+//@D Returns the closest elements from a stl vector (int, float, double, bool) and a given value as the index of the closet element of the stl vector.
+//@A x : is an stl vector (int, float, double, bool), must be ascendly or descendly sorted
+//@A val : is an int, float, double, bool
+//@X
+//@E std::vector&lt;double&gt; vec = {0.1, 0.89, 1.2, 1.66, 1.78, 2.25, 4.56};
+//@E double val = 1.97;
+//@E closest_idx(vec, val);
+//@E 4
+//@E val = 0.99;
+//@E closest_idx(vec, val);
+//@E 1
+//@E std::vector&lt;double&gt; vec2 = sort_descout(vec);
+//@E closest_idx(vec, val);
+//@E 5
+//@E val = 5.33;
+//@E closest_val(vec2, val);
+//@E 1
+//@X
+
+template <typename T> unsigned int closest_idx(std::vector<T> &x, T &val) {
+  unsigned int cnt = 1;
+  double lst_diff = x[0] - val;
+  if (lst_diff < 0) {
+    lst_diff *= -1;
+  };
+  double cur_diff = x[1] - val;
+  if (cur_diff < 0) {
+    cur_diff *= -1;
+  };
+  while (cur_diff < lst_diff) {
+    lst_diff = cur_diff;
+    cnt += 1;
+    cur_diff = x[cnt] - val;
+    if (cur_diff < 0) {
+      cur_diff *= -1;
+    };
+  };
+  return cnt - 1;
 };
 
 //@L3 Others
