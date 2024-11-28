@@ -513,30 +513,6 @@ template <typename T, typename T2> double quantile(std::vector<T> &x, T2 &prob, 
   return rtn_val;
 };
 
-//@T quantile_theoretical
-//@U template &lt;typename T, typename T2&gt; double quantile_theoretical(T &mean, T2 &sd, double &val, double offset_prob = 0.05)
-//@X
-//@D Returns the quantile value for a given theoretical noral distribution. There is an offset probability input that tells the most offset probability the function has to takein count in order to return the quantile value.
-//@A mean : is the mean of the normal distribution
-//@A sd : is the standard deviation of the normal distribution
-//@A val : is the quantile percentage (between 0 and 1)
-//@A offset_prob : is the probability from which is no longer not taken in count by the function in order to return a coherent value
-//@X
-//@E 
-//@E double val = 0.65;
-//@E double offset_prob = 0.05;
-//@E int mean = 144;
-//@E int sd = 2;
-//@E double out = quantile_theoretical(mean, sd, val, offset_prob);
-//@E 144.998
-//@X
-
-template <typename T, typename T2> double quantile_theoretical(T &mean, T2 &sd, double &val, double offset_prob = 0.05) {
-  double offset = pow(-2 * log(offset_prob * sd * pow((2 * M_PI), 0.5)), 0.5) * sd;
-  double rtn = offset * 2 * val + (mean - offset);
-  return rtn;
-};
-
 //@T med
 //@U template &lt;typename T&gt; double med(std::vector&lt;T&gt; &x)
 //@X
@@ -707,82 +683,8 @@ std::vector<double> unif(unsigned &n, double &min, double &max, double noise = 0
 
 //@L4 Normal distribution
 
-//@L5 Getting probability from values
-
-//@T normal_ppoint
-//@U template &lt;typename T, typename T2, typename T3&gt; double normal_ppoint(T &mean, T2 &sd, T3 &val)
-//@X
-//@D Returns the probability of a value in a normal distribution with given parameters.
-//@A mean : is the mean of the normal distribution 
-//@A sd : is the standard deviation of the normal distribution
-//@A val : is the value you want to get its probability
-//@X
-//@E double mean = 4;
-//@E double sdt = 2;
-//@E double val = 0.65;
-//@E normal_ppoint(mean, sdt, val);
-//@E 0.176033
-//@X
-
-template <typename T, typename T2, typename T3> double normal_ppoint(T &mean, T2 &sd, T3 &val) {
-  return (1 / (sd * pow(M_PI * 2, 0.5))) * exp(-0.5 * pow((val - mean)/sd, 2));
-};
-
-//@T normal_prange
-//@U template &lt;typename T, typename T2, typename T3, typename T4, typename T5&gt; double normal_prange(T &mean, T2 &sd, T3 &from, T4 &to, T5 &by)
-//@X
-//@D Returns the probability of a range of value in a normal distribution with given parameters.
-//@A mean : is the mean of the normal distribution
-//@A sd : is the standard deviation of the normal distribution
-//@A from is the first value of the range of values
-//@A to : is the last value of the range of values
-//@A by : is the accuracy step of the range of values, the lower it is, higher the result will be accurate
-//@X
-//@E double mean = 3;
-//@E double sd = 1.23;
-//@E double from = 2;
-//@E double to = 4;
-//@E double by = 0.1;
-//@E double out = normal_prange(mean, sd, from, to, by);
-//@E 0.795199
-//@X
-
-template <typename T, typename T2, typename T3, typename T4, typename T5> double normal_prange(T &mean, T2 &sd, T3 &from, T4 &to, T5 &by) {
-  double delta = 0;
-  for (double i = 0; i <= to; i += by) {
-    delta += (1 / (sd * pow(M_PI * 2, 0.5))) * exp(-0.5 * pow((from - mean)/sd, 2)) * by;
-    from += by;
-  };
-  return delta;
-};
-
-//@L5 Getting values from probability
-
-//@T normal_val2prob
-//@U template &lt;typename T, typename T2&gt; double normal_val2prob(T &sd, T2 prob)
-//@X
-//@D Returns the value from a normal distribution at a given probability and standard deviation.
-//@A sd : is the standard deviation of the normal distribution
-//@A offset_prob : is the offset probability of the wanted value(s)
-//@X
-//@E double sdt = 2.33;
-//@E double offset_prob = 0.001;
-//@E double out = normal_offval(sdt, prob);
-//@E mean - out
-//@E mean - 7.47269 
-//@E mean + out
-//@E mean + 7.47269
-//@X
-
-template <typename T, typename T2> double normal_val2prob(T &sd, T2 prob) {
-  return pow(-2 * log(prob * sd * pow((2 * M_PI), 0.5)), 0.5) * sd;
-};
-
-
-//@J3
-
-//@T norm
-//@U std::vector&lt;double&gt; norm(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) 
+//@T rnorm
+//@U std::vector&lt;double&gt; rnorm(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) 
 //@X
 //@D Returns a pseudo-random normal distribution as a double stl vector. Note, if you can it is preferable to choose the smallest standard deviation possible to increase speed. Example: N(14, 10) -&gt; N(1.4, 1).
 //@A n : is the number of elements in the output stl vector
@@ -796,7 +698,7 @@ template <typename T, typename T2> double normal_val2prob(T &sd, T2 prob) {
 //@E double mean = 155;
 //@E std::vector&lt;double&gt; out;
 //@E double result;
-//@E out = norm(n, mean, sd);
+//@E out = rnorm(n, mean, sd);
 //@E Sd(out);
 //@E 250.6228
 //@E Mean(out);
@@ -804,7 +706,7 @@ template <typename T, typename T2> double normal_val2prob(T &sd, T2 prob) {
 //@M example.jpg 
 //@X
 
-std::vector<double> norm(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) {
+std::vector<double> rnorm(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) {
   long double step;
   unsigned long int valint = 1;
   unsigned int i;
@@ -873,8 +775,8 @@ std::vector<double> norm(unsigned int &n, double &mean, double &sd, double noise
   return rtn_v;
 };
 
-//@T norm2 
-//@U std::vector&lt;double&gt; norm2(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1)
+//@T rnorm2 
+//@U std::vector&lt;double&gt; rnorm2(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1)
 //@X
 //@D Same as <code>norm()</code>, but faster and less accurate.
 //@A n : is the number of elements in the output stl vector
@@ -888,7 +790,7 @@ std::vector<double> norm(unsigned int &n, double &mean, double &sd, double noise
 //@E double mean = 155;
 //@E std::vector&lt;double&gt; out;
 //@E double result;
-//@E out = norm2(n, mean, sd);
+//@E out = rnorm2(n, mean, sd);
 //@E Sd(out);
 //@E 42.06729
 //@E Mean(out);
@@ -896,7 +798,7 @@ std::vector<double> norm(unsigned int &n, double &mean, double &sd, double noise
 //@M example2.jpg 
 //@X
 
-std::vector<double> norm2(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) {
+std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) {
   long double step;
   unsigned long int valint = 1;
   unsigned int i;
@@ -961,6 +863,91 @@ std::vector<double> norm2(unsigned int &n, double &mean, double &sd, double nois
       cur_n += 2;
     };
     x_step2 += x_step;
+  };
+  return rtn_v;
+};
+
+//@T qnorm
+//@U template &lt;typename T, typename T2&gt; double qnorm(T &mean, T2 &sd, double &val, double offset_prob = 0.05)
+//@X
+//@D Returns the quantile value for a given theoretical normal distribution. There is an offset probability input that tells the most offset probability the function has to takein count in order to return the quantile value.
+//@A mean : is the mean of the normal distribution
+//@A sd : is the standard deviation of the normal distribution
+//@A val : is the quantile percentage (between 0 and 1)
+//@A offset_prob : is the probability from which is no longer not taken in count by the function in order to return a coherent value
+//@X
+//@E double mean = 12;
+//@E double sd = 2;
+//@E std::vector&lt;double&gt; vec = {0.33, 0.40, 0.45, 0.5, 0.55};
+//@E std::vector&lt;double&gt; out = qnorm(vec, mean, sd);
+//@E print_nvec(out);
+//@E :0: 10.8688 11.3346 11.6673 12 12.3327 
+//@X
+
+template <typename T, typename T2> std::vector<double> qnorm(std::vector<double> &val, T &mean, T2 &sd, double offset_prob = 0.05) {
+  std::vector<double> rtn_v;
+  double offset = pow(-2 * log(offset_prob * sd * pow((2 * M_PI), 0.5)), 0.5) * sd;
+  for (std::vector<double>::iterator it = val.begin(); it != val.end(); ++it) {
+    rtn_v.push_back(offset * 2 * *it + (mean - offset));
+  };
+  return rtn_v;
+};
+
+//@T dnorm
+//@U template &lt;typename T&gt; std::vector&lt;double&gt; dnorm(std::vector&lt;T&gt; &x, double &mean, double &sd, double step = 0.01)
+//@X
+//@D Returns the density of a given normal distribution as an stl double vector.
+//@A x : is an stl vector of values you want the probability from
+//@A mean : is the mean of the normal distribution
+//@A sd : is the standard deviation of the normal distribution
+//@A step : the step of each element you want the probability from, see examples. Defaults to 1, so it ouputs the same result as the <code>dnorm()</code> function in R by default.
+//@X
+//@E double mean = 12;
+//@E double sd = 2;
+//@E std::vector&lt;double&gt; vec = {1, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14};
+//@E std::vector&lt;double&gt; vec2 = {9, 10, 11, 12, 13, 14};
+//@E std::vector&lt;double&gt; out = dnorm(vec, mean, sd, 0.5);
+//@E print_nvec(out);
+//@E :0: 0.0323794 0.0456623 0.0604927 0.0752844 0.0880163 0.096667 0.0997356 0.096667 0.0880163 0.0752844 0.0604927 
+//@E out = dnorm(vec2, mean, sd, 1);
+//@E :0: 0.0647588 0.120985 0.176033 0.199471 0.176033 0.120985 
+//@X
+
+template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean, double &sd, double step = 0.01) {
+  std::vector<double> rtn_v;
+  for (typename std::vector<T>::iterator i = x.begin(); i != x.end(); ++i) {
+    rtn_v.push_back((expf(-0.5 * powf(((mean - *i) / sd), 2))) / (sd * powf(2 * M_PI, 0.5)) * step);
+  };
+  return rtn_v;
+};
+
+//@T pnorm
+//@U template &lt;typename T&gt; std::vector&lt;double&gt; pnorm(std::vector&lt;T&gt; &x, double &mean, double &sd, double step = 0.01)
+//@X
+//@D Returns the function distribution of a given normal distribution.
+//@A x : is an stl vector containing all the elements you want the function distribution to be calculated with, must be ascendly sorted
+//@A mean : is the mean of the normal distribution
+//@A sd : is the standard deviation of the normal distribution
+//@A step : the step of each element you want the probability from, see examples
+//@X
+//@E double mean = 12;
+//@E double sd = 2;
+//@E std::vector&lt;double&gt; vec = {1, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14};
+//@E std::vector&lt;double&gt; vec2 = {9, 10, 11, 12, 13, 14};
+//@E std::vector&lt;double&gt; out = pnorm(vec2, mean, sd, 0.5);
+//@E :0: 0.0647588 0.185744 0.361777 0.561248 0.737281 0.858266 
+//@E print_nvec(out);
+//@E out = dnorm(vec, mean, sd, 0.5);
+//@E :0: 2.69244e-08 0.0215694 0.0539488 0.099611 0.160104 0.235388 0.323404 0.420071 0.519807 0.616474 0.70449 0.779775 0.840267 
+//@X
+
+template <typename T> std::vector<double> pnorm(std::vector<T> &x, double &mean, double &sd, double step = 0.01) {
+  std::vector<double> rtn_v;
+  double lst_val = (expf(-0.5 * powf((mean - x[0]) / sd, 2))) / (sd * powf(2 * M_PI, 0.5)) * step;
+  rtn_v.push_back(lst_val);
+  for (typename std::vector<T>::iterator i = x.begin() + 1; i != x.end(); ++i) {
+    lst_val += (expf(-0.5 * powf(((mean - *i) / sd), 2))) / (sd * powf(2 * M_PI, 0.5)) * step;
+    rtn_v.push_back(lst_val);
   };
   return rtn_v;
 };
@@ -1129,6 +1116,134 @@ std::vector<double> pbinom(std::vector<unsigned int> &x, unsigned int &n, double
     rtn_v.push_back(lst_val);
   };
   return rtn_v;
+};
+
+//@T pbinom
+//@U template &lt;typename T&gt; std::vector&lt;unsigned int&gt; qbinom(std::vector&lt;T&gt; &x, unsigned int &n, double &p)
+//@X
+//@D Returns the quantiles of a binomial distribution. 
+//@A x : is an stl vector of probabilities, must be ascendly sorted
+//@A n : is size of the set, as an unsigned int
+//@A p : is the probability of success, as a double
+//@X
+//@E std::vector&lt;double&gt; vec3 = {0.2, 0.2, 0.68, 0.8, 0.95};
+//@E unsigned int n = 20;
+//@E double prob = 0.3;
+//@E std::vector&lt;unsigned int&gt; out = qbinom(vec3, n, prob);
+//@E print_nvec(out);
+//@E :0: 3 3 5 6 8
+//@E vec3 = {0.2, 0.4, 0.68, 0.8, 0.95};
+//@E out = qbinom(vec3, n, prob);
+//@E :0: 3 4 5 6 8
+//@X
+
+template <typename T> std::vector<unsigned int> qbinom(std::vector<T> &x, unsigned int &n, double &p) {
+  unsigned long int numerator;
+  unsigned long int divider1;
+  unsigned long int divider2;
+  unsigned int n2 = n;
+  unsigned int cnt2;
+  unsigned int exponent;
+  unsigned int r;
+  unsigned int r2;
+  double lst_val;
+  if (n > 0) {
+    numerator = n;
+    n2 -= 1;
+    while (n2 > 1) {
+      numerator *= n2;
+      n2 -= 1;
+    };
+  } else {
+    numerator = 1;
+  };
+  std::vector<double> rtn_v;
+  double q = 1 - p;
+  r = 0;
+  divider2 = n - r;
+  exponent = divider2;
+  if (divider2 > 0) {
+    cnt2 = divider2;
+    cnt2 -= 1;
+    while (cnt2 > 1) {
+      divider2 *= cnt2;
+      cnt2 -= 1;
+    };
+  } else {
+     divider2 = 1;
+  };
+  r2 = r;
+  if (r > 0) {
+    divider1 = r;
+    r -= 1;
+    while (r > 1) {
+      divider1 *= r;
+      r -= 1;
+    };
+  } else {
+    divider1 = 1;
+  };
+  lst_val = numerator / (divider1 * divider2) * powf(p, r2) * powf(q, exponent);
+  unsigned int cur_lngth = 0;
+  const unsigned int sizen = x.size();
+  unsigned int I;
+  for (I = 1; I < n; ++I) {
+    r = I;
+    divider2 = n - r;
+    exponent = divider2;
+    if (divider2 > 0) {
+      cnt2 = divider2;
+      cnt2 -= 1;
+      while (cnt2 > 1) {
+        divider2 *= cnt2;
+        cnt2 -= 1;
+      };
+    } else {
+       divider2 = 1;
+    };
+    r2 = r;
+    if (r > 0) {
+      divider1 = r;
+      r -= 1;
+      while (r > 1) {
+        divider1 *= r;
+        r -= 1;
+      };
+    } else {
+      divider1 = 1;
+    };
+    lst_val += (numerator / (divider1 * divider2) * powf(p, r2) * powf(q, exponent));
+    rtn_v.push_back(lst_val);
+  };
+  double cur_diff;
+  double ref_diff;
+  unsigned int i = 0;
+  unsigned int i2 = 0;
+  std::vector<unsigned int> Rtn_v;
+  for (I = 0; I < sizen; ++I) {
+    ref_diff = x[I] - rtn_v[i];
+    if (ref_diff < 0) {
+      ref_diff *= -1;
+    };
+    cur_diff = x[I] - rtn_v[i + 1];
+    if (cur_diff < 0) {
+        cur_diff *= -1;
+    };
+    if (cur_diff < ref_diff & i < n){
+      i += 1;
+      while (cur_diff < ref_diff & i < n) {
+        ref_diff = cur_diff;
+        i += 1;
+        cur_diff = rtn_v[i] - x[I];
+        if (cur_diff < 0) {
+          cur_diff *= -1;
+        };
+      };
+      i -= 1;
+    };
+    Rtn_v.push_back(i);
+  };
+  return Rtn_v;
 };
 
 //@L3 Min - Max
@@ -2870,6 +2985,31 @@ template <typename TB> class Rm_sharedv {
 
 unsigned int pct_to_idx(double &val, unsigned int &sizen) {
   return round((sizen - 1) * val);
+};
+
+//@T diff_mean
+//@U template &lt;typename T&gt; double diff_mean(std::vector&lt;T&gt; &x)
+//@X
+//@D Returns the mean of all the differences in value between the contiguous elementsof a stl vector.
+//@A x : is a stl vector (int, float, double, bool)
+//@X
+//@E std::vector<double> vec = {10, 10.5, 11, 11.5};
+//@E diff_mean(vec);
+//@E 0.5
+//@X
+
+template <typename T> double diff_mean(std::vector<T> &x) {
+  const unsigned int n = x.size();
+  double tsum = 0;
+  double cur_val;
+  for (unsigned int i = 1; i < n; ++i) {
+    cur_val = x[i] - x[i - 1];
+    if (cur_val < 0) {
+      cur_val *= -1;
+    };
+    tsum += cur_val;
+  };
+  return tsum / (n - 1);
 };
 
 //@L2 String and vectors conversions

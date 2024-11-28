@@ -1,3 +1,4 @@
+<body>
 <div class="Div2"><i><b>README</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
 <div class="container">
 <div class="Divb">
@@ -40,8 +41,6 @@
 <br>
 <a href="#quantile" style="margin-left:80px;">quantile</a>
 <br>
-<a href="#quantile_theoretical" style="margin-left:80px;">quantile_theoretical</a>
-<br>
 <a href="#med" style="margin-left:80px;">med</a>
 <br>
 <a href="#cor" style="margin-left:80px;">cor</a>
@@ -52,22 +51,22 @@
 <a href="#unif" style="margin-left:100px;">unif</a>
 <br>
 <b><li style="margin-left:80px; color: #2c4786;">Normal distribution</li></b>
-<b><li style="margin-left:100px; color: #2c4786;">Getting probability from values</li></b>
-<a href="#normal_ppoint" style="margin-left:120px;">normal_ppoint</a>
+<a href="#rnorm" style="margin-left:100px;">rnorm</a>
 <br>
-<a href="#normal_prange" style="margin-left:120px;">normal_prange</a>
+<a href="#rnorm2 " style="margin-left:100px;">rnorm2 </a>
 <br>
-<b><li style="margin-left:100px; color: #2c4786;">Getting values from probability</li></b>
-<a href="#normal_val2prob" style="margin-left:120px;">normal_val2prob</a>
+<a href="#qnorm" style="margin-left:100px;">qnorm</a>
 <br>
-<a href="#norm" style="margin-left:80px;">norm</a>
+<a href="#dnorm" style="margin-left:100px;">dnorm</a>
 <br>
-<a href="#norm2 " style="margin-left:80px;">norm2 </a>
+<a href="#pnorm" style="margin-left:100px;">pnorm</a>
 <br>
 <b><li style="margin-left:80px; color: #2c4786;">Binomial</li></b>
 <a href="#dbinom " style="margin-left:100px;">dbinom </a>
 <br>
-<a href="#qbinom " style="margin-left:100px;">qbinom </a>
+<a href="#pbinom " style="margin-left:100px;">pbinom </a>
+<br>
+<a href="#pbinom" style="margin-left:100px;">pbinom</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
 <a href="#min" style="margin-left:80px;">min</a>
@@ -185,6 +184,8 @@
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">Others</li></b>
 <a href="#pct_to_idx" style="margin-left:80px;">pct_to_idx</a>
+<br>
+<a href="#diff_mean" style="margin-left:80px;">diff_mean</a>
 <br>
 <b><li style="margin-left:40px; color: #2c4786;">String and vectors conversions</li></b>
 <b><li style="margin-left:60px; color: #2c4786;">Collapse (vector to string)</li></b>
@@ -526,30 +527,6 @@ x </th><th> stl vector (int, float, double, bool), must be ascendly sorted</th><
 </div>
 <br>
 <hr class="hr">
-<h2 id="quantile_theoretical" style="test-align: left;">quantile_theoretical</h2>
-<h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T, typename T2&gt; double quantile_theoretical(T &mean, T2 &sd, double &val, double offset_prob = 0.05)</code></div>
-<h3>#Description</h3>
-<p>Returns the quantile value for a given theoretical noral distribution. There is an offset probability input that tells the most offset probability the function has to takein count in order to return the quantile value.</p>
-<h3>#Arguments</h3>
-<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-mean </th><th> is the mean of the normal distribution</th></tr>
-<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
-<tr><th>val </th><th> is the quantile percentage (between 0 and 1)</th></tr>
-<tr><th>offset_prob </th><th> is the probability from which is no longer not taken in count by the function in order to return a coherent value</th></tr>
-</table>
-<br>
-<h3>#Example(s)</h3>
-<div class = "Div"><code></code>
-<br><code>double val = 0.65;</code>
-<br><code>double offset_prob = 0.05;</code>
-<br><code>int mean = 144;</code>
-<br><code>int sd = 2;</code>
-<br><code>double out = quantile_theoretical(mean, sd, val, offset_prob);</code>
-<br><code>144.998</code>
-</div>
-<br>
-<hr class="hr">
 <h2 id="med" style="test-align: left;">med</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename T&gt; double med(std::vector&lt;T&gt; &x)</code></div>
@@ -632,79 +609,9 @@ n </th><th> is the number of elements of the output stl vector</th></tr>
 <br>
 <hr class="hr">
 <h4 style="color:#2c4786;">Normal distribution</h4>
-<h5 style="color:#2c4786;">Getting probability from values</h5>
-<h2 id="normal_ppoint" style="test-align: left;">normal_ppoint</h2>
+<h2 id="rnorm" style="test-align: left;">rnorm</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T, typename T2, typename T3&gt; double normal_ppoint(T &mean, T2 &sd, T3 &val)</code></div>
-<h3>#Description</h3>
-<p>Returns the probability of a value in a normal distribution with given parameters.</p>
-<h3>#Arguments</h3>
-<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-mean </th><th> is the mean of the normal distribution </th></tr>
-<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
-<tr><th>val </th><th> is the value you want to get its probability</th></tr>
-</table>
-<br>
-<h3>#Example(s)</h3>
-<div class = "Div"><code>double mean = 4;</code>
-<br><code>double sdt = 2;</code>
-<br><code>double val = 0.65;</code>
-<br><code>normal_ppoint(mean, sdt, val);</code>
-<br><code>0.176033</code>
-</div>
-<br>
-<hr class="hr">
-<h2 id="normal_prange" style="test-align: left;">normal_prange</h2>
-<h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T, typename T2, typename T3, typename T4, typename T5&gt; double normal_prange(T &mean, T2 &sd, T3 &from, T4 &to, T5 &by)</code></div>
-<h3>#Description</h3>
-<p>Returns the probability of a range of value in a normal distribution with given parameters.</p>
-<h3>#Arguments</h3>
-<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-mean </th><th> is the mean of the normal distribution</th></tr>
-<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
-<tr><th>from is the first value of the range of values</th></tr>
-<tr><th>to </th><th> is the last value of the range of values</th></tr>
-<tr><th>by </th><th> is the accuracy step of the range of values, the lower it is, higher the result will be accurate</th></tr>
-</table>
-<br>
-<h3>#Example(s)</h3>
-<div class = "Div"><code>double mean = 3;</code>
-<br><code>double sd = 1.23;</code>
-<br><code>double from = 2;</code>
-<br><code>double to = 4;</code>
-<br><code>double by = 0.1;</code>
-<br><code>double out = normal_prange(mean, sd, from, to, by);</code>
-<br><code>0.795199</code>
-</div>
-<br>
-<hr class="hr">
-<h5 style="color:#2c4786;">Getting values from probability</h5>
-<h2 id="normal_val2prob" style="test-align: left;">normal_val2prob</h2>
-<h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T, typename T2&gt; double normal_val2prob(T &sd, T2 prob)</code></div>
-<h3>#Description</h3>
-<p>Returns the value from a normal distribution at a given probability and standard deviation.</p>
-<h3>#Arguments</h3>
-<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-sd </th><th> is the standard deviation of the normal distribution</th></tr>
-<tr><th>offset_prob </th><th> is the offset probability of the wanted value(s)</th></tr>
-</table>
-<br>
-<h3>#Example(s)</h3>
-<div class = "Div"><code>double sdt = 2.33;</code>
-<br><code>double offset_prob = 0.001;</code>
-<br><code>double out = normal_offval(sdt, prob);</code>
-<br><code>mean - out</code>
-<br><code>mean - 7.47269 </code>
-<br><code>mean + out</code>
-<br><code>mean + 7.47269</code>
-</div>
-<br>
-<hr class="hr">
-<h2 id="norm" style="test-align: left;">norm</h2>
-<h3>#Usage</h3>
-<div class="Div"><code>std::vector&lt;double&gt; norm(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) </code></div>
+<div class="Div"><code>std::vector&lt;double&gt; rnorm(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) </code></div>
 <h3>#Description</h3>
 <p>Returns a pseudo-random normal distribution as a double stl vector. Note, if you can it is preferable to choose the smallest standard deviation possible to increase speed. Example: N(14, 10) -&gt; N(1.4, 1).</p>
 <h3>#Arguments</h3>
@@ -722,7 +629,7 @@ n </th><th> is the number of elements in the output stl vector</th></tr>
 <br><code>double mean = 155;</code>
 <br><code>std::vector&lt;double&gt; out;</code>
 <br><code>double result;</code>
-<br><code>out = norm(n, mean, sd);</code>
+<br><code>out = rnorm(n, mean, sd);</code>
 <br><code>Sd(out);</code>
 <br><code>250.6228</code>
 <br><code>Mean(out);</code>
@@ -731,9 +638,9 @@ n </th><th> is the number of elements in the output stl vector</th></tr>
 <img style="margin-left: 20px;" height="220" width="360" src="example.jpg"><br></div>
 <br>
 <hr class="hr">
-<h2 id="norm2 " style="test-align: left;">norm2 </h2>
+<h2 id="rnorm2 " style="test-align: left;">rnorm2 </h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::vector&lt;double&gt; norm2(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1)</code></div>
+<div class="Div"><code>std::vector&lt;double&gt; rnorm2(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1)</code></div>
 <h3>#Description</h3>
 <p>Same as <code>norm()</code>, but faster and less accurate.</p>
 <h3>#Arguments</h3>
@@ -751,13 +658,88 @@ n </th><th> is the number of elements in the output stl vector</th></tr>
 <br><code>double mean = 155;</code>
 <br><code>std::vector&lt;double&gt; out;</code>
 <br><code>double result;</code>
-<br><code>out = norm2(n, mean, sd);</code>
+<br><code>out = rnorm2(n, mean, sd);</code>
 <br><code>Sd(out);</code>
 <br><code>42.06729</code>
 <br><code>Mean(out);</code>
 <br><code>155.0009</code>
 <br>
 <img style="margin-left: 20px;" height="220" width="360" src="example2.jpg"><br></div>
+<br>
+<hr class="hr">
+<h2 id="qnorm" style="test-align: left;">qnorm</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; double qnorm(T &mean, T2 &sd, double &val, double offset_prob = 0.05)</code></div>
+<h3>#Description</h3>
+<p>Returns the quantile value for a given theoretical normal distribution. There is an offset probability input that tells the most offset probability the function has to takein count in order to return the quantile value.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+mean </th><th> is the mean of the normal distribution</th></tr>
+<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
+<tr><th>val </th><th> is the quantile percentage (between 0 and 1)</th></tr>
+<tr><th>offset_prob </th><th> is the probability from which is no longer not taken in count by the function in order to return a coherent value</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double mean = 12;</code>
+<br><code>double sd = 2;</code>
+<br><code>std::vector&lt;double&gt; vec = {0.33, 0.40, 0.45, 0.5, 0.55};</code>
+<br><code>std::vector&lt;double&gt; out = qnorm(vec, mean, sd);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 10.8688 11.3346 11.6673 12 12.3327 </code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="dnorm" style="test-align: left;">dnorm</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;double&gt; dnorm(std::vector&lt;T&gt; &x, double &mean, double &sd, double step = 0.01)</code></div>
+<h3>#Description</h3>
+<p>Returns the density of a given normal distribution as an stl double vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector of values you want the probability from</th></tr>
+<tr><th>mean </th><th> is the mean of the normal distribution</th></tr>
+<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
+<tr><th>step </th><th> the step of each element you want the probability from, see examples. Defaults to 1, so it ouputs the same result as the <code>dnorm()</code> function in R by default.</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double mean = 12;</code>
+<br><code>double sd = 2;</code>
+<br><code>std::vector&lt;double&gt; vec = {1, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14};</code>
+<br><code>std::vector&lt;double&gt; vec2 = {9, 10, 11, 12, 13, 14};</code>
+<br><code>std::vector&lt;double&gt; out = dnorm(vec, mean, sd, 0.5);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.0323794 0.0456623 0.0604927 0.0752844 0.0880163 0.096667 0.0997356 0.096667 0.0880163 0.0752844 0.0604927 </code>
+<br><code>out = dnorm(vec2, mean, sd, 1);</code>
+<br><code>:0: 0.0647588 0.120985 0.176033 0.199471 0.176033 0.120985 </code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="pnorm" style="test-align: left;">pnorm</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;double&gt; pnorm(std::vector&lt;T&gt; &x, double &mean, double &sd, double step = 0.01)</code></div>
+<h3>#Description</h3>
+<p>Returns the function distribution of a given normal distribution.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector containing all the elements you want the function distribution to be calculated with, must be ascendly sorted</th></tr>
+<tr><th>mean </th><th> is the mean of the normal distribution</th></tr>
+<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
+<tr><th>step </th><th> the step of each element you want the probability from, see examples</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double mean = 12;</code>
+<br><code>double sd = 2;</code>
+<br><code>std::vector&lt;double&gt; vec = {1, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14};</code>
+<br><code>std::vector&lt;double&gt; vec2 = {9, 10, 11, 12, 13, 14};</code>
+<br><code>std::vector&lt;double&gt; out = pnorm(vec2, mean, sd, 0.5);</code>
+<br><code>:0: 0.0647588 0.185744 0.361777 0.561248 0.737281 0.858266 </code>
+<br><code>print_nvec(out);</code>
+<br><code>out = dnorm(vec, mean, sd, 0.5);</code>
+<br><code>:0: 2.69244e-08 0.0215694 0.0539488 0.099611 0.160104 0.235388 0.323404 0.420071 0.519807 0.616474 0.70449 0.779775 0.840267 </code>
+</div>
 <br>
 <hr class="hr">
 <h4 style="color:#2c4786;">Binomial</h4>
@@ -783,9 +765,9 @@ x </th><th> is an stl unsigned int vector containing all the x's</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="qbinom " style="test-align: left;">qbinom </h2>
+<h2 id="pbinom " style="test-align: left;">pbinom </h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::vector&lt;double&gt; qbinom(std::vector&lt;unsigned int&gt; &x, unsigned int &n, double &p)</code></div>
+<div class="Div"><code>std::vector&lt;double&gt; pbinom(std::vector&lt;unsigned int&gt; &x, unsigned int &n, double &p)</code></div>
 <h3>#Description</h3>
 <p>Returns the distribution function of <b>range</b> P(X = {x1,x2...}) as an stl double vector.</p>
 <h3>#Arguments</h3>
@@ -799,9 +781,34 @@ x </th><th> is an stl unsigned int vector containing all the x's</th></tr>
 <div class = "Div"><code>std::vector&lt;unsigned int&gt; vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};</code>
 <br><code>unsigned int n = 10;</code>
 <br><code>double p = 0.3;</code>
-<br><code>std::vector&lt;double&gt; out = dbinom(vec, n, p); </code>
+<br><code>std::vector&lt;double&gt; out = pbinom(vec, n, p); </code>
 <br><code>print_nvec(out);</code>
 <br><code>:0: 0.121061 0.354535 0.621363 0.821484 0.924403 0.96116 0.970162 0.971609 0.971747 </code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="pbinom" style="test-align: left;">pbinom</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;unsigned int&gt; qbinom(std::vector&lt;T&gt; &x, unsigned int &n, double &p)</code></div>
+<h3>#Description</h3>
+<p>Returns the quantiles of a binomial distribution. </p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an stl vector of probabilities, must be ascendly sorted</th></tr>
+<tr><th>n </th><th> is size of the set, as an unsigned int</th></tr>
+<tr><th>p </th><th> is the probability of success, as a double</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; vec3 = {0.2, 0.2, 0.68, 0.8, 0.95};</code>
+<br><code>unsigned int n = 20;</code>
+<br><code>double prob = 0.3;</code>
+<br><code>std::vector&lt;unsigned int&gt; out = qbinom(vec3, n, prob);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 3 3 5 6 8</code>
+<br><code>vec3 = {0.2, 0.4, 0.68, 0.8, 0.95};</code>
+<br><code>out = qbinom(vec3, n, prob);</code>
+<br><code>:0: 3 4 5 6 8</code>
 </div>
 <br>
 <hr class="hr">
@@ -1765,6 +1772,23 @@ val </th><th> is the percentage value, between 0 and 1</th></tr>
 <br><code>double pct = 0.6;</code>
 <br><code>unsigned int out = pct_to_idx(pct, sizen);</code>
 <br><code>2</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="diff_mean" style="test-align: left;">diff_mean</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; double diff_mean(std::vector&lt;T&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Returns the mean of all the differences in value between the contiguous elementsof a stl vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is a stl vector (int, float, double, bool)</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector<double> vec = {10, 10.5, 11, 11.5};</code>
+<br><code>diff_mean(vec);</code>
+<br><code>0.5</code>
 </div>
 <br>
 <hr class="hr">
