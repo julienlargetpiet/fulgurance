@@ -2967,6 +2967,8 @@ template <typename TB> class Rm_sharedv {
     ~Rm_sharedv() {}; 
 };
 
+//@L2 Finding closest elements in stl vector
+
 //@T closest_idx
 //@U template &lt;typename T&gt; unsigned int closest_idx(std::vector&lt;T&gt; &x, T &val)
 //@X
@@ -3008,51 +3010,6 @@ template <typename T> unsigned int closest_idx(std::vector<T> &x, T &val) {
     };
   };
   return cnt - 1;
-};
-
-//@L3 Others
-
-//@T pct_to_idx
-//@U unsigned int percentage_to_idx(double &val, unsigned int &sizen)
-//@X
-//@D Returns an idx of a stl vector from a percentage between 0 and 1.
-//@A val : is the percentage value, between 0 and 1
-//@A sizen : is the size of the vector you want to have the index.
-//@X
-//@E std::&lt;int&gt; vec = {1, 2, 3, 4};
-//@E unsigned int sizen = vec.size();
-//@E double pct = 0.6;
-//@E unsigned int out = pct_to_idx(pct, sizen);
-//@E 2
-//@X
-
-unsigned int pct_to_idx(double &val, unsigned int &sizen) {
-  return round((sizen - 1) * val);
-};
-
-//@T diff_mean
-//@U template &lt;typename T&gt; double diff_mean(std::vector&lt;T&gt; &x)
-//@X
-//@D Returns the mean of all the differences in value between the contiguous elementsof a stl vector.
-//@A x : is a stl vector (int, float, double, bool)
-//@X
-//@E std::vector<double> vec = {10, 10.5, 11, 11.5};
-//@E diff_mean(vec);
-//@E 0.5
-//@X
-
-template <typename T> double diff_mean(std::vector<T> &x) {
-  const unsigned int n = x.size();
-  double tsum = 0;
-  double cur_val;
-  for (unsigned int i = 1; i < n; ++i) {
-    cur_val = x[i] - x[i - 1];
-    if (cur_val < 0) {
-      cur_val *= -1;
-    };
-    tsum += cur_val;
-  };
-  return tsum / (n - 1);
 };
 
 //@L2 String and vectors conversions
@@ -3143,6 +3100,51 @@ std::vector<std::string> split(const std::string &x, const char &sep) {
   };
   rtn.push_back(cur);
   return rtn;
+};
+
+//@L2 Others
+
+//@T pct_to_idx
+//@U unsigned int percentage_to_idx(double &val, unsigned int &sizen)
+//@X
+//@D Returns an idx of a stl vector from a percentage between 0 and 1.
+//@A val : is the percentage value, between 0 and 1
+//@A sizen : is the size of the vector you want to have the index.
+//@X
+//@E std::&lt;int&gt; vec = {1, 2, 3, 4};
+//@E unsigned int sizen = vec.size();
+//@E double pct = 0.6;
+//@E unsigned int out = pct_to_idx(pct, sizen);
+//@E 2
+//@X
+
+unsigned int pct_to_idx(double &val, unsigned int &sizen) {
+  return round((sizen - 1) * val);
+};
+
+//@T diff_mean
+//@U template &lt;typename T&gt; double diff_mean(std::vector&lt;T&gt; &x)
+//@X
+//@D Returns the mean of all the differences in value between the contiguous elementsof a stl vector.
+//@A x : is a stl vector (int, float, double, bool)
+//@X
+//@E std::vector<double> vec = {10, 10.5, 11, 11.5};
+//@E diff_mean(vec);
+//@E 0.5
+//@X
+
+template <typename T> double diff_mean(std::vector<T> &x) {
+  const unsigned int n = x.size();
+  double tsum = 0;
+  double cur_val;
+  for (unsigned int i = 1; i < n; ++i) {
+    cur_val = x[i] - x[i - 1];
+    if (cur_val < 0) {
+      cur_val *= -1;
+    };
+    tsum += cur_val;
+  };
+  return tsum / (n - 1);
 };
 
 //@L1 Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;
