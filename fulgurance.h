@@ -2970,7 +2970,7 @@ template <typename TB> class Rm_sharedv {
 //@T closest_idx
 //@U template &lt;typename T&gt; unsigned int closest_idx(std::vector&lt;T&gt; &x, T &val)
 //@X
-//@D Returns the closest elements from a stl vector (int, float, double, bool) and a given value as the index of the closet element of the stl vector. This is equivalent to finding the index of the minimum difference between the value and the elements in the stl vector, but more efficiently since the function assumes the stl vector is already sorted ascendly or descendly.
+//@D Returns the closest elements from a stl vector (int, float, double, bool) and a given value as the index of the closet element of the stl vector. This is equivalent to finding the index of the minimum difference between the value and the elements in the stl vector, but more efficiently since the function assumes the stl vector is already sorted ascendly or descendly as you see in examples.
 //@A x : is an stl vector (int, float, double, bool), must be ascendly or descendly sorted
 //@A val : is an int, float, double, bool
 //@X
