@@ -1147,7 +1147,7 @@ std::vector<double> pbinom(std::vector<unsigned int> &x, unsigned int &n, double
   return rtn_v;
 };
 
-//@T pbinom
+//@T qbinom
 //@U template &lt;typename T&gt; std::vector&lt;unsigned int&gt; qbinom(std::vector&lt;T&gt; &x, unsigned int &n, double &p)
 //@X
 //@D Returns the quantiles of a binomial distribution. 
@@ -3025,10 +3025,11 @@ template <typename TB> class Rm_sharedv {
 //@E 5
 //@E val = 5.33;
 //@E closest_val(vec2, val);
-//@E 1
+//@E 0
 //@X
 
-template <typename T> unsigned int closest_idx(std::vector<T> &x, T &val) {
+template <typename T, typename T2> unsigned int closest_idx(std::vector<T> &x, T2 &val) {
+  const unsigned int n = x.size();
   unsigned int cnt = 1;
   double lst_diff = x[0] - val;
   if (lst_diff < 0) {
@@ -3038,7 +3039,7 @@ template <typename T> unsigned int closest_idx(std::vector<T> &x, T &val) {
   if (cur_diff < 0) {
     cur_diff *= -1;
   };
-  while (cur_diff < lst_diff) {
+  while (cur_diff < lst_diff & cnt + 1 < n) {
     lst_diff = cur_diff;
     cnt += 1;
     cur_diff = x[cnt] - val;
