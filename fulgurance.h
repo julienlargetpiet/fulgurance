@@ -297,6 +297,14 @@ unsigned int Facto(unsigned int x) {
 //@X
 
 unsigned int Comb(unsigned int r, unsigned int n) {
+  unsigned int n_div;
+  if (n % 2 == 0) {
+    if (r > n / 2) {
+      r = n - r;
+    };
+  } else if (n / 2 + 1 < r) {
+    r = n - r;
+  };
   unsigned long int numerator;
   unsigned int n2 = n;
   if (n > 0) {
