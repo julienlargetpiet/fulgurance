@@ -298,26 +298,16 @@ unsigned int Facto(unsigned int x) {
 
 unsigned int Comb(unsigned int r, unsigned int n) {
   unsigned long int numerator;
-  unsigned long int divider2 = n - r;
+  unsigned int n2 = n;
   if (n > 0) {
     numerator = n;
     n -= 1;
-    while (n > 1) {
+    while (n > n2 - r) {
       numerator *= n;
       n -= 1;
     };
   } else {
     numerator = 1;
-  };
-  if (divider2 > 0) {
-    unsigned int cnt2 = divider2;
-    cnt2 -= 1;
-    while (cnt2 > 1) {
-      divider2 *= cnt2;
-      cnt2 -= 1;
-    };
-  } else {
-    divider2 = 1;
   };
   unsigned long int divider1;
   if (r > 0) {
@@ -330,7 +320,7 @@ unsigned int Comb(unsigned int r, unsigned int n) {
   } else {
     divider1 = 1;
   };
-  return numerator / (divider1 * divider2);
+  return numerator / divider1;
 };
 
 //@L3 String to int, float, double
