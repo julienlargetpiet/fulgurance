@@ -913,24 +913,6 @@ std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noi
 //@E :0: 10.8688 11.3346 11.6673 12 12.3327 
 //@X
 
-template <typename T, typename T2> std::vector<double> qnorm(std::vector<double> &val, T &mean, T2 &sd, double offset_prob = 0.05) {
-  std::vector<double> rtn_v;
-  rtn_v.reserve(val.size());
-  double intr_val = log(offset_prob * sd * pow((2 * M_PI), 0.5));
-  double offset;
-  if (intr_val < 0) {
-    offset = pow(-2 * intr_val, 0.5) * sd;
-  } else {
-    offset = pow(2 * intr_val, 0.5) * sd;
-  };
-  double addr = mean - offset;
-  offset *= 2;
-  for (std::vector<double>::iterator it = val.begin(); it != val.end(); ++it) {
-    rtn_v.push_back(offset * *it + addr);
-  };
-  return rtn_v;
-};
-
 //@T dnorm
 //@U template &lt;typename T&gt; std::vector&lt;double&gt; dnorm(std::vector&lt;T&gt; &x, double &mean, double &sd, double step = 1)
 //@X
