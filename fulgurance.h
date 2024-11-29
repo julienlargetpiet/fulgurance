@@ -935,8 +935,9 @@ std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noi
 
 template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean, double &sd, double step = 1) {
   std::vector<double> rtn_v;
+  const double divider = (sd * powf(2 * M_PI, 0.5));
   for (typename std::vector<T>::iterator i = x.begin(); i != x.end(); ++i) {
-    rtn_v.push_back((expf(-0.5 * powf(((mean - *i) / sd), 2))) / (sd * powf(2 * M_PI, 0.5)) * step);
+    rtn_v.push_back((expf(-0.5 * powf(((mean - *i) / sd), 2))) / divider * step);
   };
   return rtn_v;
 };
@@ -963,10 +964,11 @@ template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean,
 
 template <typename T> std::vector<double> pnorm(std::vector<T> &x, double &mean, double &sd, double step = 0.01) {
   std::vector<double> rtn_v;
-  double lst_val = (expf(-0.5 * powf((mean - x[0]) / sd, 2))) / (sd * powf(2 * M_PI, 0.5)) * step;
+  const double divider = (sd * powf(2 * M_PI, 0.5));
+  double lst_val = (expf(-0.5 * powf((mean - x[0]) / sd, 2))) / divider * step;
   rtn_v.push_back(lst_val);
   for (typename std::vector<T>::iterator i = x.begin() + 1; i != x.end(); ++i) {
-    lst_val += (expf(-0.5 * powf(((mean - *i) / sd), 2))) / (sd * powf(2 * M_PI, 0.5)) * step;
+    lst_val += (expf(-0.5 * powf(((mean - *i) / sd), 2))) / divider * step;
     rtn_v.push_back(lst_val);
   };
   return rtn_v;
