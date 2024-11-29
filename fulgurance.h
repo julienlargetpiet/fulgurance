@@ -3,6 +3,8 @@
 #include <math.h>
 #include <chrono>
 
+#include <iomanip>
+
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
 //@I This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_tools part.
@@ -1175,7 +1177,7 @@ template <typename T> std::vector<unsigned int> qbinom(std::vector<T> &x, unsign
   unsigned int exponent;
   unsigned int r;
   unsigned int r2;
-  double lst_val;
+  long double lst_val;
   if (n > 0) {
     numerator = n;
     n2 -= 1;
@@ -1186,7 +1188,7 @@ template <typename T> std::vector<unsigned int> qbinom(std::vector<T> &x, unsign
   } else {
     numerator = 1;
   };
-  std::vector<double> rtn_v;
+  std::vector<long double> rtn_v;
   double q = 1 - p;
   r = 0;
   divider2 = n - r;
@@ -1213,10 +1215,11 @@ template <typename T> std::vector<unsigned int> qbinom(std::vector<T> &x, unsign
     divider1 = 1;
   };
   lst_val = numerator / (divider1 * divider2) * powf(p, r2) * powf(q, exponent);
+  rtn_v.push_back(lst_val);
   unsigned int cur_lngth = 0;
   const unsigned int sizen = x.size();
   unsigned int I;
-  for (I = 1; I < n; ++I) {
+  for (I = 1; I <= n; ++I) {
     r = I;
     divider2 = n - r;
     exponent = divider2;
@@ -1258,9 +1261,9 @@ template <typename T> std::vector<unsigned int> qbinom(std::vector<T> &x, unsign
     if (cur_diff < 0) {
         cur_diff *= -1;
     };
-    if (cur_diff < ref_diff & i < n){
+    if (cur_diff < ref_diff & i + 1 < n){
       i += 1;
-      while (cur_diff < ref_diff & i < n) {
+      while (cur_diff <= ref_diff + 0.00001 & i < n + 1) {
         ref_diff = cur_diff;
         i += 1;
         cur_diff = rtn_v[i] - x[I];
