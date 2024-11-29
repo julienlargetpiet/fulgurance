@@ -57,7 +57,7 @@ int int_lngth(const int &x) {
 }
 
 //@T roundout
-//@U template &lt;typename T&gt; T roundout(T &x, int &n)
+//@U template &lt;typename T&gt; T roundout(T x, int n)
 //@X
 //@D Returns a rounded value with decimal precision.
 //@A x : is an int, float, double
@@ -75,24 +75,35 @@ int int_lngth(const int &x) {
 //@E 30
 //@X
 
-template <typename T> T roundout(T &x, int &n) {
+template <typename T> T roundout(T x, int n) {
   unsigned int mlt = 1;
+  int binc;
   if (n > -1) {
     for (unsigned int i = 0; i < n; ++i) {
       mlt *= 10;
     };
-    return round(x * mlt) / mlt;
+    x *= mlt;
+    binc = x;
+    if (x - binc > 0.5) {
+      binc += 1;
+    };
+    return (double)binc / mlt;
   } else {
     n *= -1;
     for (unsigned int i = 0; i < n; ++i) {
       mlt *= 10;
     };
-    return round(x / mlt) * mlt;
+    x /= mlt;
+    binc = x;
+    if (x - binc > 0.5) {
+      binc += 1;
+    };
+    return (double)binc * mlt;
   };
 };
 
 //@T roundin
-//@U template &lt;typename T&gt; void roundin(T &x, int &n)
+//@U template &lt;typename T&gt; void roundin(T &x, int n)
 //@X
 //@D Transforms the input value to a rounded value with decimal precision.
 //@A x : is an int, float, double
@@ -111,19 +122,30 @@ template <typename T> T roundout(T &x, int &n) {
 //@E 70
 //@X
 
-template <typename T> void roundin(T &x, int &n) {
+template <typename T> void roundin(T &x, int n) {
   unsigned int mlt = 1;
+  int binc;
   if (n > -1) {
     for (unsigned int i = 0; i < n; ++i) {
       mlt *= 10;
     };
-    x = round(x * mlt) / mlt;
+    x *= mlt;
+    binc = x;
+    if (x - binc > 0.5) {
+      binc += 1;
+    };
+    x = (double)binc / mlt;
   } else {
     n *= -1;
     for (unsigned int i = 0; i < n; ++i) {
       mlt *= 10;
     };
-    x = round(x / mlt) * mlt;
+    x /= mlt;
+    binc = x;
+    if (x - binc > 0.5) {
+      binc += 1;
+    };
+    x = (double)binc * mlt;
   };
 };
 
@@ -149,7 +171,7 @@ template <typename T> void roundin(T &x, int &n) {
 //@E -13.257
 //@X
 
-auto randint(const int &min, const int max, int seed = -1) {
+int randint(const int &min, const int max, int seed = -1) {
   unsigned int cnt = 0;
   unsigned long int mlc = 1;
   unsigned int offset;
@@ -169,6 +191,7 @@ auto randint(const int &min, const int max, int seed = -1) {
   std::vector<int> vec = {4, 8, 1, 2, 9, 0, 5, 3, 6, 7};
   unsigned int addr;
   unsigned int delta = (max - min) + 1;
+  unsigned int post_rtn;
   if (seed == -1) {
     auto now = std::chrono::system_clock::now();
     auto duration = now.time_since_epoch();
@@ -177,9 +200,12 @@ auto randint(const int &min, const int max, int seed = -1) {
     mlc = rtn;
     rtn -= mlc;
     rtn *= 10;
-    rtn = round(rtn);
+    post_rtn = rtn;
+    if (rtn - post_rtn > 0.5) {
+      post_rtn += 1;
+    };
   } else {
-    rtn = seed;
+    rtn = (int)seed;
   };
   if (mlc % 9 == 0) {
     addr = 3;
@@ -203,12 +229,11 @@ auto randint(const int &min, const int max, int seed = -1) {
   while (cnt2 < cnt) {
     cur_valint = pow(cur_val, 2);
     cur_val = vec[(cur_valint + addr) % 10];
-    rtn *= 10;
-    rtn = round(rtn);
-    rtn += cur_val;
+    post_rtn *= 10;
+    post_rtn += cur_val;
     cnt2 += 1;
   };
-  cur_valint = rtn;
+  cur_valint = post_rtn;
   return (cur_valint % delta) + min;
 };
 
@@ -482,7 +507,11 @@ template <typename T> T Mean(const std::vector<T> &x) {
 
 template <typename T, typename T2> double quantile(std::vector<T> &x, T2 &prob, double precision = 0.001) {
   double n = x.size();
-  unsigned int idx = round((n - 1) * prob);
+  double pre_rnd = (n - 1) * prob;
+  unsigned int idx = pre_rnd;
+  if (pre_rnd - idx > 0.5) {
+    idx += 1;
+  };
   const unsigned int fidx = idx;
   double l_lim = prob - precision;
   double h_lim = prob + precision;
@@ -1321,6 +1350,7 @@ template <typename T> std::vector<T> mixout(std::vector<T> x) {
   addr /= 10;
   unsigned long int valint = addr;
   unsigned int addr2;
+  int post_addr;
   if (valint % 9 == 0) {
     addr2 = 3;
   } else if (valint % 7 == 0) {
@@ -1340,7 +1370,10 @@ template <typename T> std::vector<T> mixout(std::vector<T> x) {
   };
   addr -= valint;
   addr *= 10;
-  addr = round(addr);
+  post_addr = addr;
+  if (addr - post_addr > 0.5)  {
+    post_addr += 1;
+  };
   unsigned long long int v;
   long double n = x.size();
   const unsigned int n2 = n;
@@ -1352,7 +1385,7 @@ template <typename T> std::vector<T> mixout(std::vector<T> x) {
   };
   for (unsigned long long int i = 0; i < n2; ++i) {
     switchr = x[i];
-    v = abs(sin((((i + 1) * mlt) / n))) * n2 + addr + addr2;
+    v = abs(sin((((i + 1) * mlt) / n))) * n2 + post_addr + addr2;
     v = v % n2;
     x[i] = x[v];
     x[v] = switchr;
@@ -1386,6 +1419,7 @@ template <typename T> void mixin(std::vector<T> &x) {
   addr /= 10;
   unsigned long int valint = addr;
   unsigned int addr2;
+  int post_addr;
   if (valint % 9 == 0) {
     addr2 = 3;
   } else if (valint % 7 == 0) {
@@ -1405,7 +1439,10 @@ template <typename T> void mixin(std::vector<T> &x) {
   };
   addr -= valint;
   addr *= 10;
-  addr = round(addr);
+  post_addr = addr;
+  if (addr - post_addr > 0.5) {
+    post_addr += 1;
+  };
   unsigned long long int v;
   long double n = x.size();
   const unsigned int n2 = n;
@@ -1417,7 +1454,7 @@ template <typename T> void mixin(std::vector<T> &x) {
   };
   for (unsigned long long int i = 0; i < n2; ++i) {
     switchr = x[i];
-    v = abs(sin((((i + 1) * mlt) / n))) * n2 + addr + addr2;
+    v = abs(sin((((i + 1) * mlt) / n))) * n2 + post_addr + addr2;
     v = v % n2;
     x[i] = x[v];
     x[v] = switchr;
@@ -3118,8 +3155,13 @@ std::vector<std::string> split(const std::string &x, const char &sep) {
 //@E 2
 //@X
 
-unsigned int pct_to_idx(double &val, unsigned int &sizen) {
-  return round((sizen - 1) * val);
+template <typename T> unsigned int pct_to_idx(T &val, unsigned int &sizen) {
+  double bval = (sizen - 1) * val;
+  int binc = bval; 
+  if (bval - binc > 0.5) {
+    binc += 1;
+  };
+  return binc;
 };
 
 //@T diff_mean
