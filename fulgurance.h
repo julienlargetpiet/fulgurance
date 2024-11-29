@@ -915,9 +915,18 @@ std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noi
 
 template <typename T, typename T2> std::vector<double> qnorm(std::vector<double> &val, T &mean, T2 &sd, double offset_prob = 0.05) {
   std::vector<double> rtn_v;
-  double offset = pow(-2 * log(offset_prob * sd * pow((2 * M_PI), 0.5)), 0.5) * sd;
+  rtn_v.reserve(val.size());
+  double intr_val = log(offset_prob * sd * pow((2 * M_PI), 0.5));
+  double offset;
+  if (intr_val < 0) {
+    offset = pow(-2 * intr_val, 0.5) * sd;
+  } else {
+    offset = pow(2 * intr_val, 0.5) * sd;
+  };
+  double addr = mean - offset;
+  offset *= 2;
   for (std::vector<double>::iterator it = val.begin(); it != val.end(); ++it) {
-    rtn_v.push_back(offset * 2 * *it + (mean - offset));
+    rtn_v.push_back(offset * *it + addr);
   };
   return rtn_v;
 };
@@ -1166,115 +1175,116 @@ std::vector<double> pbinom(std::vector<unsigned int> &x, unsigned int &n, double
 //@E :0: 3 4 5 6 8
 //@X
 
-template <typename T> std::vector<unsigned int> qbinom(std::vector<T> &x, unsigned int &n, double &p) {
-  unsigned long int numerator;
-  unsigned long int divider1;
-  unsigned long int divider2;
-  unsigned int n2 = n;
-  unsigned int cnt2;
-  unsigned int exponent;
-  unsigned int r;
-  unsigned int r2;
-  long double lst_val;
-  if (n > 0) {
-    numerator = n;
-    n2 -= 1;
-    while (n2 > 1) {
-      numerator *= n2;
-      n2 -= 1;
-    };
-  } else {
-    numerator = 1;
-  };
-  std::vector<long double> rtn_v;
-  double q = 1 - p;
-  r = 0;
-  divider2 = n - r;
-  exponent = divider2;
-  if (divider2 > 0) {
-    cnt2 = divider2;
-    cnt2 -= 1;
-    while (cnt2 > 1) {
-      divider2 *= cnt2;
-      cnt2 -= 1;
-    };
-  } else {
-     divider2 = 1;
-  };
-  r2 = r;
-  if (r > 0) {
-    divider1 = r;
-    r -= 1;
-    while (r > 1) {
-      divider1 *= r;
-      r -= 1;
-    };
-  } else {
-    divider1 = 1;
-  };
-  lst_val = numerator / (divider1 * divider2) * powf(p, r2) * powf(q, exponent);
-  rtn_v.push_back(lst_val);
-  unsigned int cur_lngth = 0;
-  const unsigned int sizen = x.size();
-  unsigned int I;
-  for (I = 1; I <= n; ++I) {
-    r = I;
-    divider2 = n - r;
-    exponent = divider2;
-    if (divider2 > 0) {
-      cnt2 = divider2;
-      cnt2 -= 1;
-      while (cnt2 > 1) {
-        divider2 *= cnt2;
-        cnt2 -= 1;
-      };
-    } else {
-       divider2 = 1;
-    };
-    r2 = r;
-    if (r > 0) {
-      divider1 = r;
-      r -= 1;
-      while (r > 1) {
-        divider1 *= r;
-        r -= 1;
-      };
-    } else {
-      divider1 = 1;
-    };
-    lst_val += (numerator / (divider1 * divider2) * powf(p, r2) * powf(q, exponent));
-    rtn_v.push_back(lst_val);
-  };
-  double cur_diff;
-  double ref_diff;
-  unsigned int i = 0;
-  unsigned int i2 = 0;
-  std::vector<unsigned int> Rtn_v;
-  for (I = 0; I < sizen; ++I) {
-    ref_diff = x[I] - rtn_v[i];
-    if (ref_diff < 0) {
-      ref_diff *= -1;
-    };
-    cur_diff = x[I] - rtn_v[i + 1];
-    if (cur_diff < 0) {
-        cur_diff *= -1;
-    };
-    if (cur_diff < ref_diff & i + 1 < n){
-      i += 1;
-      while (cur_diff <= ref_diff + 0.00001 & i < n + 1) {
-        ref_diff = cur_diff;
-        i += 1;
-        cur_diff = rtn_v[i] - x[I];
-        if (cur_diff < 0) {
-          cur_diff *= -1;
-        };
-      };
-      i -= 1;
-    };
-    Rtn_v.push_back(i);
-  };
-  return Rtn_v;
-};
+
+//template <typename T> std::vector<unsigned int> qbinom(std::vector<T> &x, unsigned int &n, double &p) {
+//  unsigned long int numerator;
+//  unsigned long int divider1;
+//  unsigned long int divider2;
+//  unsigned int n2 = n;
+//  unsigned int cnt2;
+//  unsigned int exponent;
+//  unsigned int r;
+//  unsigned int r2;
+//  long double lst_val;
+//  if (n > 0) {
+//    numerator = n;
+//    n2 -= 1;
+//    while (n2 > 1) {
+//      numerator *= n2;
+//      n2 -= 1;
+//    };
+//  } else {
+//    numerator = 1;
+//  };
+//  std::vector<long double> rtn_v;
+//  double q = 1 - p;
+//  r = 0;
+//  divider2 = n - r;
+//  exponent = divider2;
+//  if (divider2 > 0) {
+//    cnt2 = divider2;
+//    cnt2 -= 1;
+//    while (cnt2 > 1) {
+//      divider2 *= cnt2;
+//      cnt2 -= 1;
+//    };
+//  } else {
+//     divider2 = 1;
+//  };
+//  r2 = r;
+//  if (r > 0) {
+//    divider1 = r;
+//    r -= 1;
+//    while (r > 1) {
+//      divider1 *= r;
+//      r -= 1;
+//    };
+//  } else {
+//    divider1 = 1;
+//  };
+//  lst_val = numerator / (divider1 * divider2) * powf(p, r2) * powf(q, exponent);
+//  rtn_v.push_back(lst_val);
+//  unsigned int cur_lngth = 0;
+//  const unsigned int sizen = x.size();
+//  unsigned int I;
+//  for (I = 1; I <= n; ++I) {
+//    r = I;
+//    divider2 = n - r;
+//    exponent = divider2;
+//    if (divider2 > 0) {
+//      cnt2 = divider2;
+//      cnt2 -= 1;
+//      while (cnt2 > 1) {
+//        divider2 *= cnt2;
+//        cnt2 -= 1;
+//      };
+//    } else {
+//       divider2 = 1;
+//    };
+//    r2 = r;
+//    if (r > 0) {
+//      divider1 = r;
+//      r -= 1;
+//      while (r > 1) {
+//        divider1 *= r;
+//        r -= 1;
+//      };
+//    } else {
+//      divider1 = 1;
+//    };
+//    lst_val += (numerator / (divider1 * divider2) * powf(p, r2) * powf(q, exponent));
+//    rtn_v.push_back(lst_val);
+//  };
+//  double cur_diff;
+//  double ref_diff;
+//  unsigned int i = 0;
+//  unsigned int i2 = 0;
+//  std::vector<unsigned int> Rtn_v;
+//  for (I = 0; I < sizen; ++I) {
+//    ref_diff = x[I] - rtn_v[i];
+//    if (ref_diff < 0) {
+//      ref_diff *= -1;
+//    };
+//    cur_diff = x[I] - rtn_v[i + 1];
+//    if (cur_diff < 0) {
+//        cur_diff *= -1;
+//    };
+//    if (cur_diff < ref_diff & i + 1 < n){
+//      i += 1;
+//      while (cur_diff <= ref_diff + 0.00001 & i < n + 1) {
+//        ref_diff = cur_diff;
+//        i += 1;
+//        cur_diff = rtn_v[i] - x[I];
+//        if (cur_diff < 0) {
+//          cur_diff *= -1;
+//        };
+//      };
+//      i -= 1;
+//    };
+//    Rtn_v.push_back(i);
+//  };
+//  return Rtn_v;
+//};
 
 //@L3 Min - Max
 
