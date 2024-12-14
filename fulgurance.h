@@ -460,18 +460,14 @@ std::string itos(unsigned int x) {
   unsigned int cnt;
   unsigned int mlt_val = 1;
   std::string rtn_str = "";
-  if (x > 10) {
-    while (x > 0) {
-      cnt = 0;
-      while (x % (10 * mlt_val) != 0) {
-        x = x - mlt_val;
-        cnt += 1;
-      };
-      mlt_val *= 10;
-      rtn_str = char(cnt + 48) + rtn_str;
+  while (mlt_val <= x) {
+    cnt = 0;
+    while (x % (10 * mlt_val) != 0) {
+      x = x - mlt_val;
+      cnt += 1;
     };
-  } else {
-    rtn_str += x;
+    mlt_val *= 10;
+    rtn_str = char(cnt + 48) + rtn_str;
   };
   return rtn_str;
 };
