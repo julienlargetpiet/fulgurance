@@ -3,8 +3,6 @@
 #include <math.h>
 #include <chrono>
 
-#include <iomanip>
-
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
 //@I This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_tools part.
@@ -444,6 +442,38 @@ double stod(const std::string &x) {
     i += 1;
   };
   return rtn / m;
+};
+
+//@L3 Int, double, to string
+
+//@T
+//@U std::string itos(unsigned int x) 
+//@X
+//@D Returns the input integer as a std string.
+//@A : is an unsigned int
+//@X
+//@E itos(45897);
+//@E "45897"
+//@X
+
+std::string itos(unsigned int x) {
+  unsigned int cnt;
+  unsigned int mlt_val = 1;
+  std::string rtn_str = "";
+  if (x > 10) {
+    while (x > 0) {
+      cnt = 0;
+      while (x % (10 * mlt_val) != 0) {
+        x = x - mlt_val;
+        cnt += 1;
+      };
+      mlt_val *= 10;
+      rtn_str = char(cnt + 48) + rtn_str;
+    };
+  } else {
+    rtn_str += x;
+  };
+  return rtn_str;
 };
 
 //@L2 On std::vector&lt;Type&gt;
