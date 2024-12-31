@@ -941,8 +941,8 @@ std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noi
   return rtn_v;
 };
 
-//@T qnorm
-//@U template &lt;typename T, typename T2&gt; double qnorm(T &mean, T2 &sd, double &val, double offset_prob = 0.05)
+//@T qnorm1
+//@U template &lt;typename T, typename T2&gt; double qnorm1(T &mean, T2 &sd, double &val, double offset_prob = 0.05)
 //@X
 //@D Returns the quantile value for a given theoretical normal distribution. There is an offset probability input that tells the most offset probability the function has to takein count in order to return the quantile value.
 //@A mean : is the mean of the normal distribution
@@ -953,12 +953,12 @@ std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noi
 //@E double mean = 12;
 //@E double sd = 2;
 //@E std::vector&lt;double&gt; vec = {0.33, 0.40, 0.45, 0.5, 0.55};
-//@E std::vector&lt;double&gt; out = qnorm(vec, mean, sd);
+//@E std::vector&lt;double&gt; out = qnorm1(vec, mean, sd);
 //@E print_nvec(out);
 //@E :0: 10.8688 11.3346 11.6673 12 12.3327 
 //@X
 
-template <typename T, typename T2> std::vector<double> qnorm(std::vector<double> &val, T &mean, T2 &sd, double offset_prob = 0.05) {
+template <typename T, typename T2> std::vector<double> qnorm1(std::vector<double> &val, T &mean, T2 &sd, double offset_prob = 0.05) {
   std::vector<double> rtn_v;
   rtn_v.reserve(val.size());
   double intr_val = log(offset_prob * sd * pow((2 * M_PI), 0.5));
