@@ -865,6 +865,12 @@ std::vector<double> rnorm(unsigned int &n, double &mean, double &sd, double nois
 
 std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) {
   long double step;
+  bool evenval;
+  if (n % 2 == 0) {
+    evenval = 0;
+  } else {
+    evenval = 1;
+  };
   unsigned long int valint = 1;
   unsigned int i;
   if (seed == -1) {
@@ -928,6 +934,9 @@ std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noi
       cur_n += 2;
     };
     x_step2 += x_step;
+  };
+  if (evenval) {
+    rtn_v.pop_back();
   };
   return rtn_v;
 };
