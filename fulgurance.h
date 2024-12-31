@@ -2,6 +2,7 @@
 #include <vector>
 #include <math.h>
 #include <chrono>
+#include <unistd.h>
 
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
@@ -626,7 +627,6 @@ template <typename T, typename T2> double cor(const std::vector<T> &x, const std
     s1 += (c1 * c1);
     s2 += (c2 * c2);
   };
-  std::cout << std::to_string(d1) << "\n";
   double rtn = d1 / sqrt(s1 * s2);
   return rtn;
 };
@@ -765,6 +765,13 @@ std::vector<double> rnorm(unsigned int &n, double &mean, double &sd, double nois
   long double step;
   unsigned long int valint = 1;
   unsigned int i;
+  bool evenval;
+  if (n % 2 == 0) {
+    evenval = 0;
+  } else {
+    evenval = 1;
+    n += 1;
+  };
   if (seed == -1) {
     auto now = std::chrono::system_clock::now();
     auto duration = now.time_since_epoch();
@@ -812,9 +819,9 @@ std::vector<double> rnorm(unsigned int &n, double &mean, double &sd, double nois
   unsigned int cur_n = 0;
   unsigned int Step = step;
   double cur_noise;
-  double cnst = 1 / (sd * sqrtl(2 * M_PI));
+  double cnst = 1 / (sd * sqrt(2 * M_PI));
   while (cur_n < n) {
-    cur_prob += cnst * expf(-0.5 * (x_step2 / sd) * (x_step2 / sd)) * x_step;
+    cur_prob += cnst * exp(-0.5 * (x_step2 / sd) * (x_step2 / sd)) * x_step;
     while ((cur_prob - prob_step) >= 0) {
       Step += ref_vec[Step % 9] + addr;
       cur_noise = sin(Step) * noise * x_step2;
@@ -826,6 +833,9 @@ std::vector<double> rnorm(unsigned int &n, double &mean, double &sd, double nois
       cur_n += 2;
     };
     x_step2 += x_step;
+  };
+  if (evenval) {
+    rtn_v.pop_back();
   };
   return rtn_v;
 };
@@ -961,9 +971,9 @@ std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noi
 
 template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean, double &sd, double step = 1) {
   std::vector<double> rtn_v;
-  const double divider = (sd * powf(2 * M_PI, 0.5));
+  const double divider = (sd * pow(2 * M_PI, 0.5));
   for (typename std::vector<T>::iterator i = x.begin(); i != x.end(); ++i) {
-    rtn_v.push_back((expf(-0.5 * powf(((mean - *i) / sd), 2))) / divider * step);
+    rtn_v.push_back((exp(-0.5 * pow(((mean - *i) / sd), 2))) / divider * step);
   };
   return rtn_v;
 };
