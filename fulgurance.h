@@ -958,6 +958,24 @@ std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noi
 //@E :0: 10.8688 11.3346 11.6673 12 12.3327 
 //@X
 
+template <typename T, typename T2> std::vector<double> qnorm(std::vector<double> &val, T &mean, T2 &sd, double offset_prob = 0.05) {
+  std::vector<double> rtn_v;
+  rtn_v.reserve(val.size());
+  double intr_val = log(offset_prob * sd * pow((2 * M_PI), 0.5));
+  double offset;
+  if (intr_val < 0) {
+    offset = pow(-2 * intr_val, 0.5) * sd;
+  } else {
+    offset = pow(2 * intr_val, 0.5) * sd;
+  };
+  double addr = mean - offset;
+  offset *= 2;
+  for (std::vector<double>::iterator it = val.begin(); it != val.end(); ++it) {
+    rtn_v.push_back(offset * *it + addr);
+  };
+  return rtn_v;
+};
+
 //@T dnorm
 //@U template &lt;typename T&gt; std::vector&lt;double&gt; dnorm(std::vector&lt;T&gt; &x, double &mean, double &sd, double step = 1)
 //@X
@@ -1037,57 +1055,57 @@ template <typename T> std::vector<double> pnorm(std::vector<T> &x, double &mean,
 //@E :0: 0.0282475 0.121061 0.233474 0.266828 0.200121 0.102919 0.0367569 0.00900169 0.0014467 0.000137781 
 //@X
 
-std::vector<double> dbinom(std::vector<unsigned int> &x, unsigned int &n, double &p) {
-  unsigned long int numerator;
-  unsigned long int divider1;
-  unsigned long int divider2;
-  unsigned int n2 = n;
-  unsigned int cnt2;
-  unsigned int exponent;
-  unsigned int r;
-  unsigned int r2;
-  if (n > 0) {
-    numerator = n;
-    n2 -= 1;
-    while (n2 > 1) {
-      numerator *= n2;
-      n2 -= 1;
-    };
-  } else {
-    numerator = 1;
-  };
-  const unsigned int xn = x.size();
-  std::vector<double> rtn_v;
-  double q = 1 - p;
-  for (unsigned int I = 0; I < xn; ++I) {
-    r = x[I];
-    divider2 = n - r;
-    exponent = divider2;
-    if (divider2 > 0) {
-      cnt2 = divider2;
-      cnt2 -= 1;
-      while (cnt2 > 1) {
-        divider2 *= cnt2;
-        cnt2 -= 1;
-      };
-    } else {
-       divider2 = 1;
-    };
-    r2 = r;
-    if (r > 0) {
-      divider1 = r;
-      r -= 1;
-      while (r > 1) {
-        divider1 *= r;
-        r -= 1;
-      };
-    } else {
-      divider1 = 1;
-    };
-    rtn_v.push_back(numerator / (divider1 * divider2) * powf(p, r2) * powf(q, exponent));
-  };
-  return rtn_v;
-};
+//std::vector<double> dbinom(std::vector<unsigned int> &x, unsigned int &n, double &p) {
+//  unsigned long int numerator;
+//  unsigned long int divider1;
+//  unsigned long int divider2;
+//  unsigned int n2 = n;
+//  unsigned int cnt2;
+//  unsigned int exponent;
+//  unsigned int r;
+//  unsigned int r2;
+//  if (n > 0) {
+//    numerator = n;
+//    n2 -= 1;
+//    while (n2 > 1) {
+//      numerator *= n2;
+//      n2 -= 1;
+//    };
+//  } else {
+//    numerator = 1;
+//  };
+//  const unsigned int xn = x.size();
+//  std::vector<double> rtn_v;
+//  double q = 1 - p;
+//  for (unsigned int I = 0; I < xn; ++I) {
+//    r = x[I];
+//    divider2 = n - r;
+//    exponent = divider2;
+//    if (divider2 > 0) {
+//      cnt2 = divider2;
+//      cnt2 -= 1;
+//      while (cnt2 > 1) {
+//        divider2 *= cnt2;
+//        cnt2 -= 1;
+//      };
+//    } else {
+//       divider2 = 1;
+//    };
+//    r2 = r;
+//    if (r > 0) {
+//      divider1 = r;
+//      r -= 1;
+//      while (r > 1) {
+//        divider1 *= r;
+//        r -= 1;
+//      };
+//    } else {
+//      divider1 = 1;
+//    };
+//    rtn_v.push_back(numerator / (divider1 * divider2) * powf(p, r2) * powf(q, exponent));
+//  };
+//  return rtn_v;
+//};
 
 //@T pbinom 
 //@U std::vector&lt;double&gt; pbinom(std::vector&lt;unsigned int&gt; &x, unsigned int &n, double &p)
