@@ -1053,17 +1053,17 @@ template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean,
 //@E std::vector&lt;double&gt; out = pnorm(vec2, mean, sd, 0.5);
 //@E :0: 0.0647588 0.185744 0.361777 0.561248 0.737281 0.858266 
 //@E print_nvec(out);
-//@E out = dnorm(vec, mean, sd, 0.5);
+//@E out = pnorm(vec, mean, sd, 0.5);
 //@E :0: 2.69244e-08 0.0215694 0.0539488 0.099611 0.160104 0.235388 0.323404 0.420071 0.519807 0.616474 0.70449 0.779775 0.840267 
 //@X
 
 template <typename T> std::vector<double> pnorm(std::vector<T> &x, double &mean, double &sd, double step = 0.01) {
   std::vector<double> rtn_v;
   const double divider = (sd * powf(2 * M_PI, 0.5));
-  double lst_val = (expf(-0.5 * powf((mean - x[0]) / sd, 2))) / divider * step;
+  double lst_val = (expf(-0.5 * powf((x[0] - mean) / sd, 2))) / divider * step;
   rtn_v.push_back(lst_val);
   for (typename std::vector<T>::iterator i = x.begin() + 1; i != x.end(); ++i) {
-    lst_val += (expf(-0.5 * powf(((mean - *i) / sd), 2))) / divider * step;
+    lst_val += (expf(-0.5 * powf(((*i - mean) / sd), 2))) / divider * step;
     rtn_v.push_back(lst_val);
   };
   return rtn_v;
