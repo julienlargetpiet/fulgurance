@@ -1130,20 +1130,81 @@ std::vector<double> dbinom(std::vector<unsigned int> &k, unsigned int n, double 
 };
 
 //@T pbinom 
-//@U std::vector&lt;double&gt; pbinom(std::vector&lt;unsigned int&gt; &x, unsigned int &n, double &p)
+//@U std::vector&lt;double&gt; pbinom(std::vector&lt;unsigned int&gt; &k, unsigned int &n, double &p)
 //@X
 //@D Returns the cumulative distribution function of <b>range</b> P(X = {x1,x2...}) as an stl double vector.
-//@A x : is an stl unsigned int vector containing all the x's
+//@A x : is an stl unsigned int vector containing all the k's, must be ascendly sorted
 //@A n : is the size of the set
 //@A p : is the probability of success
 //@X
-//@E std::vector&lt;unsigned int&gt; vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-//@E unsigned int n = 10;
-//@E double p = 0.3;
+//@E std::vector&lt;unsigned int&gt; vec;
+//@E for (int i = 0; i < 51; ++i) {
+//@E   vec.push_back(i);
+//@E };
+//@E unsigned int n = 100;
+//@E double p = 0.45;
 //@E std::vector&lt;double&gt; out = pbinom(vec, n, p); 
 //@E print_nvec(out);
-//@E :0: 0.121061 0.354535 0.621363 0.821484 0.924403 0.96116 0.970162 0.971609 0.971747 
+//@E :0: 1.37256e-19 9.65928e-19 5.77087e-18 3.25284e-17 
+//@E 1.75634e-16 9.10691e-16 4.53677e-15 2.17161e-14 9.9884e-14 
+//@E 4.41473e-13 1.87508e-12 7.65353e-12 3.00224e-11 1.13185e-10 
+//@E 4.10125e-10 1.42839e-09 4.78192e-09 1.53891e-08 4.76109e-08 
+//@E 1.41616e-07 4.0501e-07 1.11379e-06 2.94558e-06 7.49219e-06 
+//@E :25: 4.31429e-05 9.7699e-05 0.000212903 0.000446542 0.000901607 
+//@E 0.00175286 0.00328215 0.00592079 0.0102932 0.0172517 
+//@E 0.0278872 0.0434992 0.0655087 0.0953086 0.134059 0.182452 
+//@E 0.240494 0.307353 0.381318 0.459905 0.540095 0.618682 0.692647 
+//@E 0.759506 
+//@E :50: 0.865941  
 //@X
+
+std::vector<double> pbinom(std::vector<unsigned int> &k, unsigned int n, double &p) {
+  std::vector<double> rslt;
+  unsigned int cur_k;
+  int numerator = n;
+  unsigned int lst_n = n;
+  unsigned int denumerator1;
+  unsigned int denumerator2;
+  double frct;
+  double q = 1 - p;
+  double mean = n * p;
+  double sd = std::sqrt(n * p * q);
+  double lst_val = 0;
+  double cur_val;
+  if (n * p < 6 || n * q < 6) {
+    n -= 1;
+    while (n > 1) {
+      numerator *= n;
+      n -= 1;
+    };
+    for (unsigned int i : k) {
+      denumerator1 = i;
+      cur_k = i - 1;
+      while (cur_k > 1) {
+        denumerator1 *= cur_k;
+        cur_k -= 1;
+      };
+      denumerator2 = lst_n - i;
+      cur_k = lst_n - i - 1;
+      while (cur_k > 1) {
+      denumerator2 *= cur_k;
+      cur_k -= 1;
+      };
+      frct = numerator / (denumerator1 * denumerator2);
+      cur_val = frct * std::pow(p, i) * std::pow(q, (lst_n - i));
+      lst_val += cur_val;
+      rslt.push_back(lst_val);
+    };
+    return rslt;
+  } else {
+    for (unsigned int i : k) {
+      cur_val = (std::exp(-0.5 * std::pow((i - mean) / sd, 2))) / (sd * std::sqrt(2 * M_PI));
+      lst_val += cur_val;
+      rslt.push_back(lst_val);
+    };
+    return rslt;
+  };
+};
 
 //@T qbinom
 //@U template &lt;typename T&gt; std::vector&lt;unsigned int&gt; qbinom(std::vector&lt;T&gt; &x, unsigned int &n, double &p)
