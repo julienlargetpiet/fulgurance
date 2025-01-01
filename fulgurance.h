@@ -2,7 +2,6 @@
 #include <vector>
 #include <math.h>
 #include <chrono>
-#include <unistd.h>
 
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
@@ -972,6 +971,39 @@ template <typename T, typename T2> std::vector<double> qnorm1(std::vector<double
   offset *= 2;
   for (std::vector<double>::iterator it = val.begin(); it != val.end(); ++it) {
     rtn_v.push_back(offset * *it + addr);
+  };
+  return rtn_v;
+};
+
+//@T qnorm2
+//@U template &lt;typename T, typename T2&gt; double qnorm1(T &mean, T2 &sd, double &val, double offset_prob = 0.05)
+//@X
+//@D Returns the quantile value for a given theoretical normal distribution. This algorithm may be more precise than qnorm1 but takes slightly longer times to compute.
+//@A mean : is the mean of the normal distribution
+//@A sd : is the standard deviation of the normal distribution
+//@A x : are the quantile percentage (between 0 and 1), must be ascendly sorted
+//@A step : is the accuracy, the lower it is, the more precise it gets
+//@X
+//@E double mean = 12;
+//@E double sd = 2;
+//@E std::vector&lt;double&gt; vec = {0.33, 0.40, 0.45, 0.5, 0.55};
+//@E std::vector&lt;double&gt; out = qnorm2(vec, mean, sd);
+//@E print_nvec(out);
+//@E :0: 9.92 10.85 11.48 12.11 12.74 
+//@X
+
+std::vector<double> qnorm2(std::vector<double> &x, double mean, double sd, double step = 0.01) {
+  double cur_prob;
+  double cur_step;
+  std::vector<double> rtn_v;
+  cur_step = step;
+  cur_prob = (std::exp(-0.5 * std::pow((cur_step - mean) / sd, 2)) / (sd * std::sqrt(2 * M_PI))) * step;
+  for (double qtl : x) {
+    while (cur_prob < qtl) {
+      cur_prob += (std::exp(-0.5 * std::pow((cur_step - mean) / sd, 2)) / (sd * std::sqrt(2 * M_PI))) * step;
+      cur_step += step;
+    };
+    rtn_v.push_back(cur_step);
   };
   return rtn_v;
 };
