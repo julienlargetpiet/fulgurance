@@ -1115,8 +1115,8 @@ std::vector<double> dbinom(std::vector<unsigned int> &k, unsigned int n, double 
       denumerator2 = lst_n - i;
       cur_k = lst_n - i - 1;
       while (cur_k > 1) {
-      denumerator2 *= cur_k;
-      cur_k -= 1;
+        denumerator2 *= cur_k;
+        cur_k -= 1;
       };
       frct = numerator / (denumerator1 * denumerator2);
       rslt.push_back(frct * std::pow(p, i) * std::pow(q, (lst_n - i)));
