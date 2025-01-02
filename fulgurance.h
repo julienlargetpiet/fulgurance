@@ -1230,7 +1230,7 @@ std::vector<unsigned int> qbinom(std::vector<double> &pvec, unsigned int &n, dou
   double sd = std::sqrt(n * p * (1 - p));
   unsigned int i = 0;
   for (double cur_p : pvec) {
-    while (lst_prob < cur_p) {
+    while (cur_prob < cur_p) {
       lst_prob = cur_prob;
       cur_prob += (std::exp(-0.5 * pow((i - mean) / sd, 2))) / (sd * std::sqrt(2 * M_PI));
       i += 1;
