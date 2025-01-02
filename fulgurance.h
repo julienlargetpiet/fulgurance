@@ -1223,7 +1223,7 @@ std::vector<double> pbinom(std::vector<unsigned int> &k, unsigned int n, double 
 //@E :0: 47 48 50 51 52 54
 //@X
 
-std::vector<unsigned int> qbinomb(std::vector<double> &pvec, unsigned int &n, double &p) {
+std::vector<unsigned int> qbinom(std::vector<double> &pvec, unsigned int &n, double &p) {
   std::vector<unsigned int> rtn_v;
   double cur_prob = 0;
   double lst_prob;
