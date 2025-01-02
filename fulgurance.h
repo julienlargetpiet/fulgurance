@@ -1223,23 +1223,59 @@ std::vector<double> pbinom(std::vector<unsigned int> &k, unsigned int n, double 
 //@E :0: 47 48 50 51 52 54
 //@X
 
-std::vector<unsigned int> qbinom(std::vector<double> &pvec, unsigned int &n, double &p) {
+std::vector<unsigned int> qbinomb(std::vector<double> &pvec, unsigned int &n, double &p) {
   std::vector<unsigned int> rtn_v;
-  double cur_prob;
+  double cur_prob = 0;
   double lst_prob;
+  double q = 1 - p;
   double mean = n * p;
   double sd = std::sqrt(n * p * (1 - p));
-  unsigned int i = 0;
-  for (double cur_p : pvec) {
-    while (cur_prob < cur_p) {
-      lst_prob = cur_prob;
-      cur_prob += (std::exp(-0.5 * pow((i - mean) / sd, 2))) / (sd * std::sqrt(2 * M_PI));
-      i += 1;
+  unsigned int i = 1;
+  double fct;
+  unsigned int numerator = n;
+  unsigned int denumerator = 1;
+  unsigned int denumerator2;
+  unsigned inv_k = n - 1;
+  int cur_k;
+  if (n * p < 6 || n * q < 6) {
+    cur_k = n - 1;
+    while (cur_k > 1) {
+      numerator *= cur_k;
+      cur_k -= 1;
     };
-    if (abs(cur_p - lst_prob) < abs(cur_p - cur_prob)) {
-      rtn_v.push_back(i - 1);
-    } else {
-      rtn_v.push_back(i);
+    for (double cur_p : pvec) {
+      while (cur_prob < cur_p) {
+        denumerator *= i;
+        denumerator2 = inv_k;
+        cur_k = inv_k - 1;
+        while (cur_k > 1) {
+          denumerator2 *= cur_k;
+          cur_k -= 1;
+        };
+        fct = (double)numerator / (denumerator * denumerator2);
+        lst_prob = cur_prob;
+        cur_prob += fct * pow(p, i) * pow(q, inv_k);
+        i += 1;
+        inv_k -= 1;
+      };
+      if (abs(cur_p - lst_prob) < abs(cur_p - cur_prob)) {
+        rtn_v.push_back(i - 1);
+      } else {
+        rtn_v.push_back(i);
+      };
+    };
+  } else {
+    for (double cur_p : pvec) {
+      while (cur_prob < cur_p) {
+        lst_prob = cur_prob;
+        cur_prob += (std::exp(-0.5 * pow((i - mean) / sd, 2))) / (sd * std::sqrt(2 * M_PI));
+        i += 1;
+      };
+      if (abs(cur_p - lst_prob) < abs(cur_p - cur_prob)) {
+        rtn_v.push_back(i - 1);
+      } else {
+        rtn_v.push_back(i);
+      };
     };
   };
   return rtn_v;
