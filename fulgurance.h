@@ -2,6 +2,7 @@
 #include <vector>
 #include <math.h>
 #include <chrono>
+#include <unistd.h>
 
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
