@@ -1207,23 +1207,42 @@ std::vector<double> pbinom(std::vector<unsigned int> &k, unsigned int n, double 
 };
 
 //@T qbinom
-//@U template &lt;typename T&gt; std::vector&lt;unsigned int&gt; qbinom(std::vector&lt;T&gt; &x, unsigned int &n, double &p)
+//@U std::vector&lt;unsigned int&gt; qbinom(std::vector&lt;double&gt; &pvec, unsigned int &n, double &p)
 //@X
 //@D Returns the quantiles of a binomial distribution. 
-//@A x : is an stl vector of probabilities, must be ascendly sorted
+//@A pvec : is an stl vector of probabilities, must be ascendly sorted
 //@A n : is size of the set, as an unsigned int
 //@A p : is the probability of success, as a double
 //@X
-//@E std::vector&lt;double&gt; vec3 = {0.2, 0.2, 0.68, 0.8, 0.95};
-//@E unsigned int n = 20;
-//@E double prob = 0.3;
+//@E std::vector&lt;double&gt; vec3 = {0.3, 0.4, 0.5, 0.6, 0.7};
+//@E unsigned int n = 100;
+//@E double prob = 0.55;
 //@E std::vector&lt;unsigned int&gt; out = qbinom(vec3, n, prob);
 //@E print_nvec(out);
-//@E :0: 3 3 5 6 8
-//@E vec3 = {0.2, 0.4, 0.68, 0.8, 0.95};
-//@E out = qbinom(vec3, n, prob);
-//@E :0: 3 4 5 6 8
+//@E :0: 47 48 50 51 52 54
 //@X
+
+std::vector<unsigned int> qbinom(std::vector<double> &pvec, unsigned int &n, double &p) {
+  std::vector<unsigned int> rtn_v;
+  double cur_prob;
+  double lst_prob;
+  double mean = n * p;
+  double sd = std::sqrt(n * p * (1 - p));
+  unsigned int i = 0;
+  for (double cur_p : pvec) {
+    while (lst_prob < cur_p) {
+      lst_prob = cur_prob;
+      cur_prob += (std::exp(-0.5 * pow((i - mean) / sd, 2))) / (sd * std::sqrt(2 * M_PI));
+      i += 1;
+    };
+    if (abs(cur_p - lst_prob) < abs(cur_p - cur_prob)) {
+      rtn_v.push_back(i - 1);
+    } else {
+      rtn_v.push_back(i);
+    };
+  };
+  return rtn_v;
+};
 
 //@L3 Min - Max
 
