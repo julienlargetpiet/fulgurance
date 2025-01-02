@@ -21,6 +21,9 @@ std::vector<unsigned int> rbinom(unsigned int &n, unsigned int size, double p) {
       usleep(r_idx * 5);
     };
     r_val = out[r_idx];
+    if (r_val < 0) {
+      r_val *= -1;
+    };
     r_val = round(r_val);
     rtn_v.push_back(r_val);
   };
