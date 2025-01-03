@@ -1281,6 +1281,73 @@ std::vector<unsigned int> qbinom(std::vector<double> &pvec, unsigned int &n, dou
   return rtn_v;
 };
 
+//@T dpois
+
+std::vector<double> dpois(std::vector<int> &k, int &lambda) {
+  double cur_prob;
+  std::vector<double> rtn_v;
+  unsigned int denumerator;
+  const double numerator = std::exp(-lambda);
+  int idx_k;
+  double sd = std::sqrt(lambda);
+  if (lambda < 6) {
+    cur_prob = 0;
+    for (int cur_k : k) {
+      denumerator = cur_k;
+      idx_k = cur_k - 1;
+      while (idx_k > 1) {
+        denumerator *= idx_k;
+        idx_k -= 1;
+      };
+      cur_prob = numerator * std::pow(lambda, cur_k) / denumerator;
+      rtn_v.push_back(cur_prob);
+    };
+  } else {
+    for (int cur_k : k) {
+      cur_prob = std::exp(-0.5 * std::pow((cur_k - lambda) / sd, 2)) / (sd * std::sqrt(2 * M_PI));
+      rtn_v.push_back(cur_prob);
+    };
+  };
+  return rtn_v;
+};
+
+//@T ppois
+
+std::vector<double> ppois(std::vector<int> &k, int &lambda) {
+  double cur_prob = 0;
+  std::vector<double> rtn_v;
+  unsigned int denumerator;
+  const double numerator = std::exp(-lambda);
+  int idx_k;
+  double sd = std::sqrt(lambda);
+  int lst_k = k[0];
+  if (lambda < 6) {
+    denumerator = lst_k;
+    idx_k = lst_k - 1;
+     while (idx_k > 1) {
+       denumerator *= idx_k;
+       idx_k -= 1;
+     };
+    for (int cur_k : k) {
+      while (lst_k <= cur_k) {
+        cur_prob += numerator * std::pow(lambda, lst_k) / denumerator;
+        lst_k += 1;
+        denumerator *= lst_k;
+      };
+      rtn_v.push_back(cur_prob);
+    };
+  } else {
+    for (int cur_k : k) {
+      while (lst_k <= cur_k) {
+        cur_prob += std::exp(-0.5 * std::pow((lst_k - lambda) / sd, 2)) / (sd * std::sqrt(2 * M_PI));
+        lst_k += 1;
+      };
+      rtn_v.push_back(cur_prob);
+    };
+  };
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
