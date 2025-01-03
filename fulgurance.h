@@ -1343,6 +1343,54 @@ std::vector<double> ppois(std::vector<int> &k, int &lambda) {
   return rtn_v;
 };
 
+//@T qpois
+
+std::vector<unsigned int> qpois(std::vector<double> &p, int &lambda) {
+  double cur_prob = 0;
+  std::vector<unsigned int> rtn_v;
+  unsigned int denumerator;
+  const double numerator = std::exp(-lambda);
+  int idx_k;
+  double sd = std::sqrt(lambda);
+  double lst_prob = 0;
+  int lst_k = 1;
+  if (lambda < 6) {
+    denumerator = lst_k;
+    idx_k = lst_k - 1;
+     while (idx_k > 1) {
+       denumerator *= idx_k;
+       idx_k -= 1;
+     };
+    for (double cur_p : p) {
+      while (cur_prob < cur_p) {
+        lst_prob = cur_prob;
+        cur_prob += numerator * std::pow(lambda, lst_k) / denumerator;
+        lst_k += 1;
+        denumerator *= lst_k;
+      };
+      if (abs(cur_prob - cur_p) < abs(lst_prob - cur_p)) {
+        rtn_v.push_back(lst_k);
+      } else {
+        rtn_v.push_back(lst_k - 1);
+      };
+    };
+  } else {
+    for (double cur_p : p) {
+      while (cur_prob < cur_p) {
+        lst_prob = cur_prob;
+        cur_prob += std::exp(-0.5 * std::pow((lst_k - lambda) / sd, 2)) / (sd * std::sqrt(2 * M_PI));
+        lst_k += 1;
+      };
+      if (abs(cur_prob - cur_p) < abs(lst_prob - cur_p)) {
+        rtn_v.push_back(lst_k);
+      } else {
+        rtn_v.push_back(lst_k - 1);
+      };
+    };
+  };
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
