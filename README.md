@@ -33,6 +33,9 @@
 <br>
 <a href="#stod" style="margin-left:80px;">stod</a>
 <br>
+<b><li style="margin-left:60px; color: #2c4786;">Int, double, to string</li></b>
+<a href="#" style="margin-left:80px;"></a>
+<br>
 <b><li style="margin-left:40px; color: #2c4786;">On std::vector&lt;Type&gt;</li></b>
 <b><li style="margin-left:60px; color: #2c4786;">Statistical functions</li></b>
 <a href="#sum" style="margin-left:80px;">sum</a>
@@ -55,7 +58,9 @@
 <br>
 <a href="#rnorm2 " style="margin-left:100px;">rnorm2 </a>
 <br>
-<a href="#qnorm" style="margin-left:100px;">qnorm</a>
+<a href="#qnorm1" style="margin-left:100px;">qnorm1</a>
+<br>
+<a href="#qnorm2" style="margin-left:100px;">qnorm2</a>
 <br>
 <a href="#dnorm" style="margin-left:100px;">dnorm</a>
 <br>
@@ -66,7 +71,18 @@
 <br>
 <a href="#pbinom " style="margin-left:100px;">pbinom </a>
 <br>
-<a href="#pbinom" style="margin-left:100px;">pbinom</a>
+<a href="#qbinom" style="margin-left:100px;">qbinom</a>
+<br>
+<a href="#rbinom " style="margin-left:100px;">rbinom </a>
+<br>
+<b><li style="margin-left:80px; color: #2c4786;">Poisson</li></b>
+<a href="#dpois" style="margin-left:100px;">dpois</a>
+<br>
+<a href="#ppois" style="margin-left:100px;">ppois</a>
+<br>
+<a href="#qpois" style="margin-left:100px;">qpois</a>
+<br>
+<a href="#rpois" style="margin-left:100px;">rpois</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
 <a href="#min" style="margin-left:80px;">min</a>
@@ -182,10 +198,8 @@
 <b><li style="margin-left:80px; color: #2c4786;">Variadic / Indefinite number of arguments - Rm_sharedv Class</li></b>
 <a href="#Rm_sharedv.to_rm()" style="margin-left:100px;">Rm_sharedv.to_rm()</a>
 <br>
-<b><li style="margin-left:60px; color: #2c4786;">Others</li></b>
-<a href="#pct_to_idx" style="margin-left:80px;">pct_to_idx</a>
-<br>
-<a href="#diff_mean" style="margin-left:80px;">diff_mean</a>
+<b><li style="margin-left:40px; color: #2c4786;">Finding closest elements in stl vector</li></b>
+<a href="#closest_idx" style="margin-left:60px;">closest_idx</a>
 <br>
 <b><li style="margin-left:40px; color: #2c4786;">String and vectors conversions</li></b>
 <b><li style="margin-left:60px; color: #2c4786;">Collapse (vector to string)</li></b>
@@ -195,6 +209,11 @@
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">Split (string to vector)</li></b>
 <a href="#split" style="margin-left:80px;">split</a>
+<br>
+<b><li style="margin-left:40px; color: #2c4786;">Others</li></b>
+<a href="#pct_to_idx" style="margin-left:60px;">pct_to_idx</a>
+<br>
+<a href="#diff_mean" style="margin-left:60px;">diff_mean</a>
 <br>
 <b><li style="margin-left:20px; color: #2c4786;">Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;</li></b>
 <b><li style="margin-left:40px; color: #2c4786;">Transposition</li></b>
@@ -263,7 +282,7 @@ x </th><th> is an int</th></tr>
 <hr class="hr">
 <h2 id="roundout" style="test-align: left;">roundout</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; T roundout(T &x, int &n)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; T roundout(T x, int n)</code></div>
 <h3>#Description</h3>
 <p>Returns a rounded value with decimal precision.</p>
 <h3>#Arguments</h3>
@@ -288,7 +307,7 @@ x </th><th> is an int, float, double</th></tr>
 <hr class="hr">
 <h2 id="roundin" style="test-align: left;">roundin</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; void roundin(T &x, int &n)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; void roundin(T &x, int n)</code></div>
 <h3>#Description</h3>
 <p>Transforms the input value to a rounded value with decimal precision.</p>
 <h3>#Arguments</h3>
@@ -464,6 +483,23 @@ x </th><th> is a stl string</th></tr>
 <div class = "Div"><code>std::string a = "4566.132214";</code>
 <br><code>double out = stod(a);</code>
 <br><code>4566.132214</code>
+</div>
+<br>
+<hr class="hr">
+<h3 style="color:#2c4786;">Int, double, to string</h3>
+<h2 id="" style="test-align: left;"></h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::string itos(unsigned int x) </code></div>
+<h3>#Description</h3>
+<p>Returns the input integer as a std string.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+</th><th> is an unsigned int</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>itos(45897);</code>
+<br><code>"45897"</code>
 </div>
 <br>
 <hr class="hr">
@@ -667,9 +703,9 @@ n </th><th> is the number of elements in the output stl vector</th></tr>
 <img style="margin-left: 20px;" height="220" width="360" src="example2.jpg"><br></div>
 <br>
 <hr class="hr">
-<h2 id="qnorm" style="test-align: left;">qnorm</h2>
+<h2 id="qnorm1" style="test-align: left;">qnorm1</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T, typename T2&gt; double qnorm(T &mean, T2 &sd, double &val, double offset_prob = 0.05)</code></div>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; double qnorm1(T &mean, T2 &sd, double &val, double offset_prob = 0.05)</code></div>
 <h3>#Description</h3>
 <p>Returns the quantile value for a given theoretical normal distribution. There is an offset probability input that tells the most offset probability the function has to takein count in order to return the quantile value.</p>
 <h3>#Arguments</h3>
@@ -684,17 +720,40 @@ mean </th><th> is the mean of the normal distribution</th></tr>
 <div class = "Div"><code>double mean = 12;</code>
 <br><code>double sd = 2;</code>
 <br><code>std::vector&lt;double&gt; vec = {0.33, 0.40, 0.45, 0.5, 0.55};</code>
-<br><code>std::vector&lt;double&gt; out = qnorm(vec, mean, sd);</code>
+<br><code>std::vector&lt;double&gt; out = qnorm1(vec, mean, sd);</code>
 <br><code>print_nvec(out);</code>
 <br><code>:0: 10.8688 11.3346 11.6673 12 12.3327 </code>
 </div>
 <br>
 <hr class="hr">
+<h2 id="qnorm2" style="test-align: left;">qnorm2</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; double qnorm1(T &mean, T2 &sd, double &val, double offset_prob = 0.05)</code></div>
+<h3>#Description</h3>
+<p>Returns the quantile value for a given theoretical normal distribution. This algorithm may be more precise than qnorm1 but takes slightly longer times to compute.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+mean </th><th> is the mean of the normal distribution</th></tr>
+<tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
+<tr><th>x </th><th> are the quantile percentage (between 0 and 1), must be ascendly sorted</th></tr>
+<tr><th>step </th><th> is the accuracy, the lower it is, the more precise it gets</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double mean = 12;</code>
+<br><code>double sd = 2;</code>
+<br><code>std::vector&lt;double&gt; vec = {0.33, 0.40, 0.45, 0.5, 0.55};</code>
+<br><code>std::vector&lt;double&gt; out = qnorm2(vec, mean, sd);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 9.92 10.85 11.48 12.11 12.74 </code>
+</div>
+<br>
+<hr class="hr">
 <h2 id="dnorm" style="test-align: left;">dnorm</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;double&gt; dnorm(std::vector&lt;T&gt; &x, double &mean, double &sd, double step = 0.01)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;double&gt; dnorm(std::vector&lt;T&gt; &x, double &mean, double &sd, double step = 1)</code></div>
 <h3>#Description</h3>
-<p>Returns the density of a given normal distribution as an stl double vector.</p>
+<p>Returns the density function of a given normal distribution as an stl double vector.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> is an stl vector of values you want the probability from</th></tr>
@@ -720,34 +779,31 @@ x </th><th> is an stl vector of values you want the probability from</th></tr>
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename T&gt; std::vector&lt;double&gt; pnorm(std::vector&lt;T&gt; &x, double &mean, double &sd, double step = 0.01)</code></div>
 <h3>#Description</h3>
-<p>Returns the function distribution of a given normal distribution.</p>
+<p>Returns the cumulative distribution function of a given normal distribution.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> is an stl vector containing all the elements you want the function distribution to be calculated with, must be ascendly sorted</th></tr>
 <tr><th>mean </th><th> is the mean of the normal distribution</th></tr>
 <tr><th>sd </th><th> is the standard deviation of the normal distribution</th></tr>
-<tr><th>step </th><th> the step of each element you want the probability from, see examples</th></tr>
+<tr><th>step </th><th> the lower it is the higher the accuracy is</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>double mean = 12;</code>
+<div class = "Div"><code>double mean = 15;</code>
 <br><code>double sd = 2;</code>
-<br><code>std::vector&lt;double&gt; vec = {1, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14};</code>
-<br><code>std::vector&lt;double&gt; vec2 = {9, 10, 11, 12, 13, 14};</code>
-<br><code>std::vector&lt;double&gt; out = pnorm(vec2, mean, sd, 0.5);</code>
-<br><code>:0: 0.0647588 0.185744 0.361777 0.561248 0.737281 0.858266 </code>
+<br><code>std::vector&lt;double&gt; vec = {13, 13.5, 14, 14.5, 15, 15.5, 16, 18};</code>
+<br><code>std::vector&lt;double&gt; out = pnorm(vec, mean, sd);</code>
 <br><code>print_nvec(out);</code>
-<br><code>out = dnorm(vec, mean, sd, 0.5);</code>
-<br><code>:0: 2.69244e-08 0.0215694 0.0539488 0.099611 0.160104 0.235388 0.323404 0.420071 0.519807 0.616474 0.70449 0.779775 0.840267 </code>
+<br><code>:0: 0.00120985 0.0693298 0.151367 0.24421 0.342947 0.441622 0.534291 0.774818</code>
 </div>
 <br>
 <hr class="hr">
 <h4 style="color:#2c4786;">Binomial</h4>
 <h2 id="dbinom " style="test-align: left;">dbinom </h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::vector&lt;double&gt; dbinom(std::vector&lt;unsigned int&gt; &x, unsigned int &n, double &p)</code></div>
+<div class="Div"><code>std::vector&lt;double&gt; dbinom(std::vector&lt;unsigned int&gt; &k, unsigned int &n, double &p)</code></div>
 <h3>#Description</h3>
-<p>Returns the probability of P(X = {x1,x2...}) as an stl double vector.</p>
+<p>Returns the probability function of a binomial distribution as an stl double vector.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> is an stl unsigned int vector containing all the x's</th></tr>
@@ -756,66 +812,184 @@ x </th><th> is an stl unsigned int vector containing all the x's</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector&lt;unsigned int&gt; vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};</code>
-<br><code>unsigned int n = 10;</code>
-<br><code>double p = 0.3;</code>
+<div class = "Div"><code>std::vector&lt;unsigned int&gt; vec = {39, 40, 41, 42, 43, 44, 45, 46, 47, 48};</code>
+<br><code>unsigned int n = 100;</code>
+<br><code>double p = 0.45;</code>
 <br><code>std::vector&lt;double&gt; out = dbinom(vec, n, p); </code>
 <br><code>print_nvec(out);</code>
-<br><code>:0: 0.0282475 0.121061 0.233474 0.266828 0.200121 0.102919 0.0367569 0.00900169 0.0014467 0.000137781 </code>
+<br><code> :0: 0.03875 0.0483929 0.0580423 0.066859 0.0739653 0.0785867 0.0801904 0.0785867 0.0739653 0.066859 0.0580423 0.0483929</code>
 </div>
 <br>
 <hr class="hr">
 <h2 id="pbinom " style="test-align: left;">pbinom </h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::vector&lt;double&gt; pbinom(std::vector&lt;unsigned int&gt; &x, unsigned int &n, double &p)</code></div>
+<div class="Div"><code>std::vector&lt;double&gt; pbinom(std::vector&lt;unsigned int&gt; &k, unsigned int &n, double &p)</code></div>
 <h3>#Description</h3>
-<p>Returns the distribution function of <b>range</b> P(X = {x1,x2...}) as an stl double vector.</p>
+<p>Returns the cumulative distribution function of <b>range</b> P(X = {x1,x2...}) as an stl double vector.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-x </th><th> is an stl unsigned int vector containing all the x's</th></tr>
+k </th><th> is an stl unsigned int vector containing all the k's, must be ascendly sorted</th></tr>
 <tr><th>n </th><th> is the size of the set</th></tr>
 <tr><th>p </th><th> is the probability of success</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector&lt;unsigned int&gt; vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};</code>
-<br><code>unsigned int n = 10;</code>
-<br><code>double p = 0.3;</code>
-<br><code>std::vector&lt;double&gt; out = pbinom(vec, n, p); </code>
+<div class = "Div"><code>unsigned int n = 10;</code>
+<br><code>double p = 0.5;</code>
+<br><code>std::vector&lt;unsigned int&gt; vec = {3, 5, 7};</code>
+<br><code>std::vector&lt;double&gt; out = pbinom(vec, n, p);</code>
 <br><code>print_nvec(out);</code>
-<br><code>:0: 0.121061 0.354535 0.621363 0.821484 0.924403 0.96116 0.970162 0.971609 0.971747 </code>
+<br><code>:0: 0.117188 0.568359 0.890625</code>
 </div>
 <br>
 <hr class="hr">
-<h2 id="pbinom" style="test-align: left;">pbinom</h2>
+<h2 id="qbinom" style="test-align: left;">qbinom</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;unsigned int&gt; qbinom(std::vector&lt;T&gt; &x, unsigned int &n, double &p)</code></div>
+<div class="Div"><code>std::vector&lt;unsigned int&gt; qbinom(std::vector&lt;double&gt; &pvec, unsigned int &n, double &p)</code></div>
 <h3>#Description</h3>
 <p>Returns the quantiles of a binomial distribution. </p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-x </th><th> is an stl vector of probabilities, must be ascendly sorted</th></tr>
+pvec </th><th> is an stl vector of probabilities, must be ascendly sorted</th></tr>
 <tr><th>n </th><th> is size of the set, as an unsigned int</th></tr>
 <tr><th>p </th><th> is the probability of success, as a double</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector&lt;double&gt; vec3 = {0.2, 0.2, 0.68, 0.8, 0.95};</code>
-<br><code>unsigned int n = 20;</code>
-<br><code>double prob = 0.3;</code>
+<div class = "Div"><code>std::vector&lt;double&gt; vec3 = {0.3, 0.4, 0.5, 0.6, 0.7};</code>
+<br><code>unsigned int n = 100;</code>
+<br><code>double prob = 0.55;</code>
 <br><code>std::vector&lt;unsigned int&gt; out = qbinom(vec3, n, prob);</code>
 <br><code>print_nvec(out);</code>
-<br><code>:0: 3 3 5 6 8</code>
-<br><code>vec3 = {0.2, 0.4, 0.68, 0.8, 0.95};</code>
-<br><code>out = qbinom(vec3, n, prob);</code>
-<br><code>:0: 3 4 5 6 8</code>
+<br><code>:0: 47 48 50 51 52 54</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="rbinom " style="test-align: left;">rbinom </h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;unsigned int&gt; rbinom(unsigned int &n, unsigned int size, double p)</code></div>
+<h3>#Description</h3>
+<p>Returns pseudo-random values of binomial distribution.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+n </th><th> is the number of observations</th></tr>
+<tr><th>size </th><th> is the size of the individuals</th></tr>
+<tr><th>p </th><th> is the probability of success</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>unsigned int size = 100;</code>
+<br><code>double p = 0.5;</code>
+<br><code>unsigned int n = 60;</code>
+<br><code>std::vector&lt;unsigned int&gt; out = rbinom(n, size, p);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:25: 50 50 50 50 50 50 50 50 50 50 50 50 50 50 </code>
+<br><code>50 50 50 50 50 50 50 50 50 50</code>
+<br><code>:50: 50 50 50 50 50 50 50 50 50 50</code>
+<br><code>Mean(out);</code>
+<br><code>49</code>
+<br><code>Sd(out);</code>
+<br><code>5.90141</code>
+<br><code>std::sqrt(size * p * (1 - p));</code>
+<br><code>5</code>
+</div>
+<br>
+<hr class="hr">
+<h4 style="color:#2c4786;">Poisson</h4>
+<h2 id="dpois" style="test-align: left;">dpois</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; dpois(std::vector&lt;int&gt; &k, int &lambda)</code></div>
+<h3>#Description</h3>
+<p>Returns the poisson probability distribution. </p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+k </th><th> is the vector containing the k values</th></tr>
+<tr><th>lambda </th><th> is the mean</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int lambda = 500;</code>
+<br><code>std::vector&lt;int&gt; vec2 = {492, 500, 520};</code>
+<br><code>std::vector&lt;double&gt; out = dpois(vec2, lambda);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.0167352 0.0178412 0.0119593</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="ppois" style="test-align: left;">ppois</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; ppois(std::vector&lt;int&gt; &k, int &lambda)</code></div>
+<h3>#Description</h3>
+<p>Returns the poisson cumulative probability distribution. </p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+k </th><th> is the vector containing the k values</th></tr>
+<tr><th>lambda </th><th> is the mean</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int lambda = 500;</code>
+<br><code>std::vector&lt;int&gt; vec2 = {492, 500, 520};</code>
+<br><code>std::vector&lt;double&gt; out = ppois(vec2, lambda);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.0167352 0.157008 0.468481</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="qpois" style="test-align: left;">qpois</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;unsigned int&gt; qpois(std::vector&lt;double&gt; &p, int &lambda)</code></div>
+<h3>#Description</h3>
+<p>Returns the quantile of the poisson distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+p </th><th> is the vector of probabilities</th></tr>
+<tr><th>lambda </th><th> is the mean</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; vec = {0.22, 0.5, 0.7};</code>
+<br><code>int lambda = 500;</code>
+<br><code>std::vector&lt;unsigned int&gt; out = qpois(vec, lambda);</code>
+<br><code>:0: 483 500 512</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="rpois" style="test-align: left;">rpois</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;unsigned int&gt; rpois(unsigned int &n, unsigned int lambda)<h3>#Description</h3>
+<p></p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+n </th><th> is the number of observations</th></tr>
+<tr><th>lambda </th><th> is the mean</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>unsigned int lambda = 100;</code>
+<br><code>unsigned int n = 60;</code>
+<br><code>std::vector&lt;unsigned int&gt; out = rpois(n, lambda);</code>
+<br><code>print_nvec(out);</code>
+<br><code> :0: 114 86  86  86  115 115 85  </code>
+<br><code>85  85  116 116 84  84  119 119 </code>
+<br><code>83  83  120 120 79  79  133 133 67</code>
+<br><code>:25: 100 100 100 100 100 100 100 </code>
+<br><code>100 100 100 100 100 100 100 100 100 </code>
+<br><code>100 100 100 100 100 100 100 100</code>
+<br><code>:50: 101 101 101 101 101 101 101 101 </code>
+<br><code>101 101</code>
+<br><code>Mean(out);</code>
+<br><code>99</code>
+<br><code>Sd(out);</code>
+<br><code>13.0799</code>
+<br><code>std::sqrt(lambda);</code>
+<br><code>10</code>
 </div>
 <br>
 <hr class="hr">
 <h3 style="color:#2c4786;">Min - Max</h3>
 <h2 id="min" style="test-align: left;">min</h2>
-<h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; T min(const std::vector&lt;T&gt; &x)</code></div>
+<br>template &lt;typename T&gt; T min(const std::vector&lt;T&gt; &x)</code></div>
 <h3>#Description</h3>
 <p>Returns the min element from a vector (int, float, double, bool)</p>
 <p>For finding the index of the min element refer <a href="#match_min">here</a></p>
@@ -1754,41 +1928,32 @@ x </th><th> is an stl vector</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h3 style="color:#2c4786;">Others</h3>
-<h2 id="pct_to_idx" style="test-align: left;">pct_to_idx</h2>
+<h2 style="color:#2c4786;">Finding closest elements in stl vector</h2>
+<h2 id="closest_idx" style="test-align: left;">closest_idx</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>unsigned int percentage_to_idx(double &val, unsigned int &sizen)</code></div>
+<div class="Div"><code>template &lt;typename T&gt; unsigned int closest_idx(std::vector&lt;T&gt; &x, T &val)</code></div>
 <h3>#Description</h3>
-<p>Returns an idx of a stl vector from a percentage between 0 and 1.</p>
+<p>Returns the closest elements from a stl vector (int, float, double, bool) and a given value as the index of the closet element of the stl vector. This is equivalent to finding the index of the minimum difference between the value and the elements in the stl vector, but more efficiently since the function assumes the stl vector is already sorted ascendly or descendly as you see in examples.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-val </th><th> is the percentage value, between 0 and 1</th></tr>
-<tr><th>sizen </th><th> is the size of the vector you want to have the index.</th></tr>
+x </th><th> is an stl vector (int, float, double, bool), must be ascendly or descendly sorted</th></tr>
+<tr><th>val </th><th> is an int, float, double, bool</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::&lt;int&gt; vec = {1, 2, 3, 4};</code>
-<br><code>unsigned int sizen = vec.size();</code>
-<br><code>double pct = 0.6;</code>
-<br><code>unsigned int out = pct_to_idx(pct, sizen);</code>
-<br><code>2</code>
-</div>
-<br>
-<hr class="hr">
-<h2 id="diff_mean" style="test-align: left;">diff_mean</h2>
-<h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; double diff_mean(std::vector&lt;T&gt; &x)</code></div>
-<h3>#Description</h3>
-<p>Returns the mean of all the differences in value between the contiguous elementsof a stl vector.</p>
-<h3>#Arguments</h3>
-<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-x </th><th> is a stl vector (int, float, double, bool)</th></tr>
-</table>
-<br>
-<h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<double> vec = {10, 10.5, 11, 11.5};</code>
-<br><code>diff_mean(vec);</code>
-<br><code>0.5</code>
+<div class = "Div"><code>std::vector&lt;double&gt; vec = {0.1, 0.89, 1.2, 1.66, 1.78, 2.25, 4.56};</code>
+<br><code>double val = 1.97;</code>
+<br><code>closest_idx(vec, val);</code>
+<br><code>4</code>
+<br><code>val = 0.99;</code>
+<br><code>closest_idx(vec, val);</code>
+<br><code>1</code>
+<br><code>std::vector&lt;double&gt; vec2 = sort_descout(vec);</code>
+<br><code>closest_idx(vec, val);</code>
+<br><code>5</code>
+<br><code>val = 5.33;</code>
+<br><code>closest_val(vec2, val);</code>
+<br><code>0</code>
 </div>
 <br>
 <hr class="hr">
@@ -1857,6 +2022,44 @@ x </th><th> is a stl string</th></tr>
 <br><code>char sep = '-';</code>
 <br><code>std::vector&lt;std::string&gt; out = split(test, sep);</code>
 <br><code>{"y", "e", "ss"}</code>
+</div>
+<br>
+<hr class="hr">
+<h2 style="color:#2c4786;">Others</h2>
+<h2 id="pct_to_idx" style="test-align: left;">pct_to_idx</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>unsigned int percentage_to_idx(double &val, unsigned int &sizen)</code></div>
+<h3>#Description</h3>
+<p>Returns an idx of a stl vector from a percentage between 0 and 1.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+val </th><th> is the percentage value, between 0 and 1</th></tr>
+<tr><th>sizen </th><th> is the size of the vector you want to have the index.</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>unsigned int sizen = vec.size();</code>
+<br><code>double pct = 0.6;</code>
+<br><code>unsigned int out = pct_to_idx(pct, sizen);</code>
+<br><code>2</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="diff_mean" style="test-align: left;">diff_mean</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; double diff_mean(std::vector&lt;T&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Returns the mean of all the differences in value between the contiguous elementsof a stl vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is a stl vector (int, float, double, bool)</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; vec = {10, 10.5, 11, 11.5};</code>
+<br><code>diff_mean(vec);</code>
+<br><code>0.5</code>
 </div>
 <br>
 <hr class="hr">
