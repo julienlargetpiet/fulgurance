@@ -1045,26 +1045,26 @@ template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean,
 //@A x : is an stl vector containing all the elements you want the function distribution to be calculated with, must be ascendly sorted
 //@A mean : is the mean of the normal distribution
 //@A sd : is the standard deviation of the normal distribution
-//@A step : the step of each element you want the probability from, see examples
+//@A step : the lower it is the higher the accuracy is
 //@X
-//@E double mean = 12;
+//@E double mean = 15;
 //@E double sd = 2;
-//@E std::vector&lt;double&gt; vec = {1, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 13.5, 14};
-//@E std::vector&lt;double&gt; vec2 = {9, 10, 11, 12, 13, 14};
-//@E std::vector&lt;double&gt; out = pnorm(vec2, mean, sd, 0.5);
-//@E :0: 0.0647588 0.185744 0.361777 0.561248 0.737281 0.858266 
+//@E std::vector<double> vec = {13, 13.5, 14, 14.5, 15, 15.5, 16, 18};
+//@E std::vector<double> out = pnorm(vec, mean, sd);
 //@E print_nvec(out);
-//@E out = pnorm(vec, mean, sd, 0.5);
-//@E :0: 2.69244e-08 0.0215694 0.0539488 0.099611 0.160104 0.235388 0.323404 0.420071 0.519807 0.616474 0.70449 0.779775 0.840267 
+//@E :0: 0.00120985 0.0693298 0.151367 0.24421 0.342947 0.441622 0.534291 0.774818
 //@X
 
 template <typename T> std::vector<double> pnorm(std::vector<T> &x, double &mean, double &sd, double step = 0.01) {
   std::vector<double> rtn_v;
   const double divider = (sd * powf(2 * M_PI, 0.5));
-  double lst_val = (expf(-0.5 * powf((x[0] - mean) / sd, 2))) / divider * step;
-  rtn_v.push_back(lst_val);
-  for (typename std::vector<T>::iterator i = x.begin() + 1; i != x.end(); ++i) {
-    lst_val += (expf(-0.5 * powf(((*i - mean) / sd), 2))) / divider * step;
+  double lst_val = 0;
+  double lst_x = x[0];
+  for (double cur_x : x) {
+    while (lst_x <= cur_x) {
+      lst_val += (expf(-0.5 * powf(((lst_x - mean) / sd), 2))) / divider * step;
+      lst_x += step;
+    };
     rtn_v.push_back(lst_val);
   };
   return rtn_v;
