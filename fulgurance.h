@@ -1049,8 +1049,8 @@ template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean,
 //@X
 //@E double mean = 15;
 //@E double sd = 2;
-//@E std::vector<double> vec = {13, 13.5, 14, 14.5, 15, 15.5, 16, 18};
-//@E std::vector<double> out = pnorm(vec, mean, sd);
+//@E std::vector&lt;double&gt; vec = {13, 13.5, 14, 14.5, 15, 15.5, 16, 18};
+//@E std::vector&lt;double&gt; out = pnorm(vec, mean, sd);
 //@E print_nvec(out);
 //@E :0: 0.00120985 0.0693298 0.151367 0.24421 0.342947 0.441622 0.534291 0.774818
 //@X
@@ -1140,8 +1140,8 @@ std::vector<double> dbinom(std::vector<unsigned int> &k, unsigned int n, double 
 //@X
 //@E unsigned int n = 10;
 //@E double p = 0.5;
-//@E std::vector<unsigned int> vec = {3, 5, 7};
-//@E std::vector<double> out = pbinom(vec, n, p);
+//@E std::vector&lt;unsigned int&gt; vec = {3, 5, 7};
+//@E std::vector&lt;double&gt; out = pbinom(vec, n, p);
 //@E print_nvec(out);
 //@E :0: 0.117188 0.568359 0.890625
 //@X
@@ -1276,7 +1276,45 @@ std::vector<unsigned int> qbinom(std::vector<double> &pvec, unsigned int &n, dou
   return rtn_v;
 };
 
+//@T rbinom 
+//@U std::vector&lt;unsigned int&gt; rbinom(unsigned int &n, unsigned int size, double p)
+//@X
+//@D Returns pseudo-random values of binomial distribution.
+//@A n : is the number of observations
+//@A size : is the size of the individuals
+//@A p : is the probability of success
+//@X
+//@E unsigned int size = 100;
+//@E double p = 0.5;
+//@E unsigned int n = 60;
+//@E std::vector<unsigned int> out = rbinom(n, size, p);
+//@E print_nvec(out);
+ //@E :0: 58 42 42 42 59 59 41 41 61 61 39 39 67 67 
+ //@E 35 35 50 50 50 50 50 50 50 50
+//@E :25: 50 50 50 50 50 50 50 50 50 50 50 50 50 50 
+//@E 50 50 50 50 50 50 50 50 50 50
+//@E :50: 50 50 50 50 50 50 50 50 50 50
+//@E std::cout << Mean(out) << "\n";
+//@E 49
+//@E std::cout << Sd(out) << "\n";
+//@E 5.90141
+//@E std::cout << std::sqrt(size * p * (1 - p)) << "\n";
+//@E 5
+//@X
+
 //@T dpois
+//@U std::vector&lt;double&gt; dpois(std::vector&lt;int&gt; &k, int &lambda)
+//@X
+//@D Returns the poisson probability distribution. 
+//@A k : is the vector containing the k values
+//@A lambda : is the size
+//@X
+//@E int lambda = 500;
+//@E std::vector&lt;int&gt; vec2 = {492, 500, 520};
+//@E std::vector&lt;double&gt; out = dpois(vec2, lambda);
+//@E print_nvec(out);
+//@E :0: 0.0167352 0.0178412 0.0119593
+//@X
 
 std::vector<double> dpois(std::vector<int> &k, int &lambda) {
   double cur_prob;
@@ -1307,6 +1345,18 @@ std::vector<double> dpois(std::vector<int> &k, int &lambda) {
 };
 
 //@T ppois
+//@U std::vector&lt;double&gt; ppois(std::vector&lt;int&gt; &k, int &lambda)
+//@X
+//@D Returns the poisson cumulative probability distribution. 
+//@A k : is the vector containing the k values
+//@A lambda : is the size
+//@X
+//@E int lambda = 500;
+//@E std::vector&lt;int&gt; vec2 = {492, 500, 520};
+//@E std::vector&lt;double&gt; out = ppois(vec2, lambda);
+//@E print_nvec(out);
+//@E :0: 0.0167352 0.157008 0.468481
+//@X
 
 std::vector<double> ppois(std::vector<int> &k, int &lambda) {
   double cur_prob = 0;
@@ -1344,6 +1394,17 @@ std::vector<double> ppois(std::vector<int> &k, int &lambda) {
 };
 
 //@T qpois
+//@U std::vector&lt;unsigned int&gt; qpois(std::vector&lt;double&gt; &p, int &lambda)
+//@X
+//@D Returns the quantile of the poisson distribution
+//@A p : is the vector of probabilities
+//@A lambda : is the size
+//@X
+//@E std::vector&lt;double&gt; vec = {0.22, 0.5, 0.7};
+//@E int lambda = 500;
+//@E std::vector&lt;unsigned int&gt; out = qpois(vec, lambda);
+//@E :0: 483 500 512
+//@X
 
 std::vector<unsigned int> qpois(std::vector<double> &p, int &lambda) {
   double cur_prob = 0;
