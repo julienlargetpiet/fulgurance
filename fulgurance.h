@@ -1452,6 +1452,32 @@ std::vector<unsigned int> qpois(std::vector<double> &p, int &lambda) {
   return rtn_v;
 };
 
+//@T rpois
+//@U std::vector&lt;unsigned int&gt; rpois(unsigned int &n, unsigned int lambda)
+//@D
+//@A n : is the number of observations
+//@A lambda : is the size of the individuals
+//@X
+//@E unsigned int lambda = 100;
+//@E unsigned int n = 60;
+//@E std::vector<unsigned int> out = rpois(n, lambda);
+//@E print_nvec(out);
+//@E  :0: 114 86  86  86  115 115 85  
+//@E 85  85  116 116 84  84  119 119 
+//@E 83  83  120 120 79  79  133 133 67
+//@E :25: 100 100 100 100 100 100 100 
+//@E 100 100 100 100 100 100 100 100 100 
+//@E 100 100 100 100 100 100 100 100
+//@E :50: 101 101 101 101 101 101 101 101 
+//@E 101 101
+//@E std::cout << Mean(out) << "\n";
+//@E 99
+//@E std::cout << Sd(out) << "\n";
+//@E 13.0799
+//@E std::cout << std::sqrt(lambda) << "\n";
+//@E 10
+//@X
+
 //@L3 Min - Max
 
 //@T min
