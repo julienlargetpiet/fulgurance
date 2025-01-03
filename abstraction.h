@@ -60,7 +60,7 @@ std::vector<unsigned int> rbinom(unsigned int &n, unsigned int size, double p) {
 //@U std::vector&lt;unsigned int&gt; rpois(unsigned int &n, unsigned int lambda)
 //@D
 //@A n : is the number of observations
-//@A lambda : is the size of the individuals
+//@A lambda : is the mean
 //@X
 //@E unsigned int lambda = 100;
 //@E unsigned int n = 60;

@@ -1307,7 +1307,7 @@ std::vector<unsigned int> qbinom(std::vector<double> &pvec, unsigned int &n, dou
 //@X
 //@D Returns the poisson probability distribution. 
 //@A k : is the vector containing the k values
-//@A lambda : is the size
+//@A lambda : is the mean
 //@X
 //@E int lambda = 500;
 //@E std::vector&lt;int&gt; vec2 = {492, 500, 520};
@@ -1349,7 +1349,7 @@ std::vector<double> dpois(std::vector<int> &k, int &lambda) {
 //@X
 //@D Returns the poisson cumulative probability distribution. 
 //@A k : is the vector containing the k values
-//@A lambda : is the size
+//@A lambda : is the mean
 //@X
 //@E int lambda = 500;
 //@E std::vector&lt;int&gt; vec2 = {492, 500, 520};
@@ -1398,7 +1398,7 @@ std::vector<double> ppois(std::vector<int> &k, int &lambda) {
 //@X
 //@D Returns the quantile of the poisson distribution
 //@A p : is the vector of probabilities
-//@A lambda : is the size
+//@A lambda : is the mean
 //@X
 //@E std::vector&lt;double&gt; vec = {0.22, 0.5, 0.7};
 //@E int lambda = 500;
@@ -1456,7 +1456,7 @@ std::vector<unsigned int> qpois(std::vector<double> &p, int &lambda) {
 //@U std::vector&lt;unsigned int&gt; rpois(unsigned int &n, unsigned int lambda)
 //@D
 //@A n : is the number of observations
-//@A lambda : is the size of the individuals
+//@A lambda : is the mean
 //@X
 //@E unsigned int lambda = 100;
 //@E unsigned int n = 60;
