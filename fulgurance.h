@@ -1652,6 +1652,60 @@ std::vector<double> qexp(std::vector<double> &p, double &rate) {
   return rtn_v;
 };
 
+//@L4 Cauchy
+
+//@T dcauchy
+//@U std::vector&lt;double&gt; dcauchy(std::vector&lt;double&gt; &x, double location = 0, double scale = 1)
+//@X
+//@D Returns the probability distribution of the cauchy distribution.
+//@A x : is the vector of values you want the probability from
+//@A location : is the x coordinate
+//@A scale : is the t coordinate
+//@X
+//@E double location = 0;
+//@E double scale = 1;
+//@E std::vector<double> vec = {-2, -1, 0, 1, 2, 4};
+//@E std::vector<double> out = dcauchy(vec, location, scale);
+//@E print_nvec(out);
+//@E :0: 0.063662 0.159155 0.31831 0.159155 0.063662 0.0187241
+//@X
+
+std::vector<double> dcauchy(std::vector<double> &x, double location = 0, double scale = 1) {
+  std::vector<double> rtn_v;
+  rtn_v.reserve(x.size());
+  for (double i : x) {
+    rtn_v.push_back(1 / (scale * M_PI * (1 + std::pow((i - location) / scale, 2))));
+  };
+  return rtn_v;
+};
+
+//@T pcauchy
+//@U std::vector&lt;double&gt; pcauchy(std::vector&lt;double&gt; &x, double location = 0, double scale = 1)
+//@X
+//@D Returns the cumulative probability distribution of the cauchy distribution (starts from first value).
+//@A x : is the vector of values you want the cumulative probability from
+//@A location : is the x coordinate
+//@A scale : is the t coordinate
+//@A step : the lowest it is the more accurate the result gets
+//@X
+//@E double location = 0;
+//@E double scale = 1;
+//@E std::vector<double> vec = {-2, -1, 0, 1, 2, 4};
+//@E std::vector<double> out = pcauchy(vec, location, scale);
+//@E print_nvec(out);
+//@E :0: 0.000634083 0.10305 0.35305 0.60305 0.705467 0.775071 
+//@X
+
+std::vector<double> pcauchy(std::vector<double> &x, double location = 0, double scale = 1, double step = 0.01) {
+  std::vector<double> rtn_v;
+  rtn_v.reserve(x.size());
+  double ref_prob = atan((x[0] - step - location) / scale) / M_PI + 0.5;
+  for (double i : x) {
+    rtn_v.push_back(atan((i - location) / scale) / M_PI + 0.5 - ref_prob);
+  };
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
