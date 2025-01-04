@@ -51,7 +51,13 @@
 <a href="#Sd" style="margin-left:80px;">Sd</a>
 <br>
 <b><li style="margin-left:80px; color: #2c4786;">Uniform distribution</li></b>
-<a href="#unif" style="margin-left:100px;">unif</a>
+<a href="#dunif" style="margin-left:100px;">dunif</a>
+<br>
+<a href="#punif" style="margin-left:100px;">punif</a>
+<br>
+<a href="#qunif" style="margin-left:100px;">qunif</a>
+<br>
+<a href="#runif" style="margin-left:100px;">runif</a>
 <br>
 <b><li style="margin-left:80px; color: #2c4786;">Normal distribution</li></b>
 <a href="#rnorm" style="margin-left:100px;">rnorm</a>
@@ -617,7 +623,75 @@ x </th><th> is an stl vector (int, float, double, bool)</th></tr>
 <br>
 <hr class="hr">
 <h4 style="color:#2c4786;">Uniform distribution</h4>
-<h2 id="unif" style="test-align: left;">unif</h2>
+<h2 id="dunif" style="test-align: left;">dunif</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;double&gt; dunif(std::vector&lt;T&gt; &x, double &min, double &max)</code></div>
+<h3>#Description</h3>
+<p>Returns the probability distribution of the uniform distribution.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is a vector containing all the values you want the probability from</th></tr>
+<tr><th>min </th><th> is the minimum of the uniform distribution </th></tr>
+<tr><th>max </th><th> is the maximum of the uniform distribution</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double min = -2;</code>
+<br><code>double max = 10;</code>
+<br><code>std::vector<double> vec = {-7, -2, 3.5, 8, 12, 56};</code>
+<br><code>std::vector<double> out = dunif(vec, min, max);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0 0.0833333 0.0833333 0.0833333 0 0</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="punif" style="test-align: left;">punif</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;double&gt; punif(std::vector&lt;T&gt; &x, double &min, double &max, double step = 0.01)</code></div>
+<h3>#Description</h3>
+<p>Returns the cumulative probablity distribution of the uniform distribution.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is a vector containing the values you want the cumulative probability from, must be ascendly sorted</th></tr>
+<tr><th>min </th><th> is the minimum of the probability distribution</th></tr>
+<tr><th>max </th><th> is the maximum of the probability distribution</th></tr>
+<tr><th>step </th><th> the lower it is, the more accurate the result gets</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double min = -2;</code>
+<br><code>double max = 10;</code>
+<br><code>std::vector<double> vec = {-7, -2, 3.5, 8, 12, 56};</code>
+<br><code>std::vector<double> out = punif(vec, min, max);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0 0.000833333 0.459167 0.834167 1 1</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="qunif" style="test-align: left;">qunif</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; qunif(std::vector&lt;double&gt; &x, double &min, double &max)</code></div>
+<h3>#Description</h3>
+<p>Returns the quantile of the uniform distribution.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the probability vector </th></tr>
+<tr><th>min </th><th> is the minimum of the uniform distribution</th></tr>
+<tr><th>max </th><th> is the maximum of the uniform distribution</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double min = -2;</code>
+<br><code>double max = 10;</code>
+<br><code>std::vector<double> vec = {-7, -2, 3.5, 8, 12, 56};</code>
+<br><code>std::vector<double> vec2 = {0.2, 0.4, 0.5, 0.6, 0.75};</code>
+<br><code>std::vector<double> out = qunif(vec2, min, max);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 3.6 5.2 6 6.8 8</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="runif" style="test-align: left;">runif</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>std::vector&lt;double&gt; unif(unsigned int &n, double &min, double &max, double noise = 0.1, int seed = -1)</code></div>
 <h3>#Description</h3>
