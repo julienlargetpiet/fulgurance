@@ -1610,7 +1610,7 @@ std::vector<double> dexp(std::vector<double> &x, double &rate) {
 //@U std::vector&lt;double&gt; pexp(std::vector&lt;double&gt; &x, double &rate, double step = 0.01)
 //@X
 //@D Returns the cumulative probability distribution for the exponential distribution.
-//@A x : is the vector of the values you want the cumulative probability distribution from
+//@A x : is the vector of the values you want the cumulative probability distribution from, must be ascendly sorted
 //@A rate : is the rate for the exponential distribution
 //@A step : the lower it is the more accurate the result will be
 //@X
