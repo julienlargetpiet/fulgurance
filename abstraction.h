@@ -150,7 +150,7 @@ std::vector<unsigned int> rpois(unsigned int &n, unsigned int lambda) {
 std::vector<double> rexp(unsigned int &n, double rate) {
   std::vector<double> out;
   std::vector<double> rtn_v;
-  unsigned int n_norm = 60;
+  unsigned int n_norm = 400;
   double mean = 1 / rate;
   double sd = std::sqrt(1 / std::pow(rate, 2));
   double r_val;
@@ -161,11 +161,21 @@ std::vector<double> rexp(unsigned int &n, double rate) {
     out = rnorm(n_norm, mean, sd);
     now = std::chrono::system_clock::now();
     duration = now.time_since_epoch();
-    r_idx = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() % 60;
-    if (r_idx % 2 == 0) {
-      usleep(r_idx * 10);
+    r_idx = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() % 400;
+    if (r_idx % 9 == 0) {
+      usleep(9);
+    } else if (r_idx % 8 == 0) {
+      usleep(8);
+    } else if (r_idx % 6 == 0) {
+      usleep(6);
+    } else if (r_idx % 5 == 0) {
+      usleep(5);
+    } else if (r_idx % 3 == 0) {
+      usleep(3);
+    } else if (r_idx % 2 == 0) {
+      usleep(2);
     } else {
-      usleep(r_idx * 5);
+      usleep(1);
     };
     r_val = out[r_idx];
     if (r_val < 0) {
