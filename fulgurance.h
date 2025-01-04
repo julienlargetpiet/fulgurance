@@ -1582,6 +1582,55 @@ std::vector<unsigned int> qpois(std::vector<double> &p, int &lambda) {
 //@E 10
 //@X
 
+//@L4 Exponential distribution
+
+//@T dexp
+//@U std::vector&lt;double&gt; dexp(std::vector&lt;double&gt; &x, double &rate)
+//@X
+//@D Returns the probability distribution of the exponential distribution
+//@A x : is the vector containing the values you want the probability from
+//@A rate : is the rate value for the exponential distribution, given by 1 / mean
+//@X
+//@E double rate = 0.2;
+//@E std::vector<double> vec = {1, 2, 3, 4, 5, 6};
+//@E std::vector<double> out = dexp(vec, rate);
+//@E print_nvec(out);
+//@E :0: 0.163746 0.134064 0.109762 0.0898658 0.0735759 0.0602388
+//@X
+
+std::vector<double> dexp(std::vector<double> &x, double &rate) {
+  std::vector<double> rtn_v;
+  for (double i : x) {
+    rtn_v.push_back(rate * std::exp(-rate * i));
+  };
+  return rtn_v;
+};
+
+//@T pexp
+//@U std::vector&lt;double&gt; pexp(std::vector&lt;double&gt; &x, double &rate, double step = 0.01)
+//@X
+//@D Returns the cumulative probability distribution for the exponential distribution.
+//@A x : is the vector of the values you want the cumulative probability distribution from
+//@A rate : is the rate for the exponential distribution
+//@A step : the lower it is the more accurate the result will be
+//@X
+//@E :0: 0.00163746 0.148559 0.271287 0.37067 0.452038 0.518657
+//@X
+
+std::vector<double> pexp(std::vector<double> &x, double &rate, double step = 0.01) {
+  std::vector<double> rtn_v;
+  double cur_prob = 0;
+  double lst_x = x[0];
+  for (double i : x) {
+    while (lst_x <= i) {
+      cur_prob += rate * std::exp(-rate * lst_x) * step;
+      lst_x += step;
+    };
+    rtn_v.push_back(cur_prob);
+  };
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
