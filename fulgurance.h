@@ -735,6 +735,32 @@ template <typename T> std::vector<double> punif(std::vector<T> &x, double &min, 
   return rtn_v;
 };
 
+//@T qunif
+//@U std::vector&lt;double&gt; qunif(std::vector&lt;double&gt; &x, double &min, double &max)
+//@X
+//@D Returns the quantile of the uniform distribution.
+//@A x : is the probability vector 
+//@A min : is the minimum of the uniform distribution
+//@A max : is the maximum of the uniform distribution
+//@X
+//@E double min = -2;
+//@E double max = 10;
+//@E std::vector<double> vec = {-7, -2, 3.5, 8, 12, 56};
+//@E std::vector<double> vec2 = {0.2, 0.4, 0.5, 0.6, 0.75};
+//@E std::vector<double> out = qunif(vec2, min, max);
+//@E print_nvec(out);
+//@E :0: 3.6 5.2 6 6.8 8
+//@X
+
+std::vector<double> qunif(std::vector<double> &x, double &min, double &max) {
+  double coeff = 1 / (max - min);
+  std::vector<double> rtn_v;
+  for (double i : x) {
+    rtn_v.push_back(i / coeff + min);
+  };
+  return rtn_v;
+};
+
 //@T runif
 //@U std::vector&lt;double&gt; unif(unsigned int &n, double &min, double &max, double noise = 0.1, int seed = -1)
 //@X
