@@ -692,7 +692,7 @@ template <typename T> std::vector<double> dunif(std::vector<T> &x, double &min, 
 //@U template &lt;typename T&gt; std::vector&lt;double&gt; punif(std::vector&lt;T&gt; &x, double &min, double &max, double step = 0.01)
 //@X
 //@D Returns the cumulative probablity distribution of the uniform distribution.
-//@A x : is a vecotr containing the values you want the cumulative probability from
+//@A x : is a vector containing the values you want the cumulative probability from, must be ascendly sorted
 //@A min : is the minimum of the probability distribution
 //@A max : is the maximum of the probability distribution
 //@A step : the lower it is, the more accurate the result gets
