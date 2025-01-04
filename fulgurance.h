@@ -1619,13 +1619,10 @@ std::vector<double> dexp(std::vector<double> &x, double &rate) {
 
 std::vector<double> pexp(std::vector<double> &x, double &rate, double step = 0.01) {
   std::vector<double> rtn_v;
-  double cur_prob = 0;
-  double lst_x = x[0];
+  double cur_prob;
+  double lst_prob = 1 - std::exp(-rate * (x[0] - step));
   for (double i : x) {
-    while (lst_x <= i) {
-      cur_prob += rate * std::exp(-rate * lst_x) * step;
-      lst_x += step;
-    };
+    cur_prob = 1 - std::exp(-rate * i) - lst_prob;
     rtn_v.push_back(cur_prob);
   };
   return rtn_v;
