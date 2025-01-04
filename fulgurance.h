@@ -659,7 +659,83 @@ template <typename T> double Sd(std::vector<T> &x) {
 
 //@L4 Uniform distribution
 
-//@T unif
+//@T dunif
+//@U template &lt;typename T&gt; std::vector&lt;double&gt; dunif(std::vector&lt;T&gt; &x, double &min, double &max)
+//@X
+//@D Returns the probability distribution of the uniform distribution.
+//@A x : is a vector containing all the values you want the probability from
+//@A min : is the minimum of the uniform distribution 
+//@A max : is the maximum of the uniform distribution
+//@X
+//@E double min = -2;
+//@E double max = 10;
+//@E std::vector<double> vec = {-7, -2, 3.5, 8, 12, 56};
+//@E std::vector<double> out = dunif(vec, min, max);
+//@E print_nvec(out);
+//@E :0: 0 0.0833333 0.0833333 0.0833333 0 0
+//@X
+
+template <typename T> std::vector<double> dunif(std::vector<T> &x, double &min, double &max) {
+  double cur_prob = 1 / (max - min);
+  std::vector<double> rtn_v;
+  for (double i : x) {
+    if (i >= min & i <= max) {
+      rtn_v.push_back(cur_prob);
+    } else {
+      rtn_v.push_back(0);
+    }
+  };
+  return rtn_v;
+};
+
+//@T punif
+//@U template &lt;typename T&gt; std::vector&lt;double&gt; punif(std::vector&lt;T&gt; &x, double &min, double &max, double step = 0.01)
+//@X
+//@D Returns the cumulative probablity distribution of the uniform distribution.
+//@A x : is a vecotr containing the values you want the cumulative probability from
+//@A min : is the minimum of the probability distribution
+//@A max : is the maximum of the probability distribution
+//@A step : the lower it is, the more accurate the result gets
+//@X
+//@E double min = -2;
+//@E double max = 10;
+//@E std::vector<double> vec = {-7, -2, 3.5, 8, 12, 56};
+//@E std::vector<double> out = punif(vec, min, max);
+//@E print_nvec(out);
+//@E :0: 0 0.000833333 0.459167 0.834167 1 1
+//@X
+
+template <typename T> std::vector<double> punif(std::vector<T> &x, double &min, double &max, double step = 0.01) {
+  double cur_prob = 0;
+  double ref_prob = 1 / (max - min) * step;
+  std::vector<double> rtn_v;
+  unsigned int i = 0;
+  const unsigned int n = x.size();
+  while (x[i] < min) {
+    i += 1;
+    rtn_v.push_back(0);
+  };
+  double lst_x = x[i];
+  while (i < n) {
+    if (x[i] <= max) {
+      while (lst_x <= x[i]) {
+        cur_prob += ref_prob;
+        lst_x += step;
+      };
+      rtn_v.push_back(cur_prob);
+    } else {
+      while (i < n) {
+        rtn_v.push_back(1);
+        i+= 1;
+      };
+      return rtn_v;
+    }
+    i += 1;
+  };
+  return rtn_v;
+};
+
+//@T runif
 //@U std::vector&lt;double&gt; unif(unsigned int &n, double &min, double &max, double noise = 0.1, int seed = -1)
 //@X
 //@D Returns a stl double vector containing pseudo-random uniform distribution between a min and max.
