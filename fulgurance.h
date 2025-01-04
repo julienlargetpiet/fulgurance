@@ -1628,6 +1628,30 @@ std::vector<double> pexp(std::vector<double> &x, double &rate, double step = 0.0
   return rtn_v;
 };
 
+//@T qexp
+//@U std::vector&lt;double&gt; qexp(std::vector&lt;double&gt; &p, double &rate)
+//@X
+//@D Returns the quantile of the exponential probability distribution
+//@A p : is the vector of probabilities
+//@A rate : is the rate of the exponential distribution
+//@X
+//@E double rate = 0.2;
+//@E std::vector<double> vec2 = {0.1, 0.2, 0.3, 0.4, 0.5, 0.75};
+//@E std::vector<double> out = qexp(vec2, rate);
+//@E print_nvec(out);
+//@E :0: 0.526803 1.11572 1.78337 2.55413 3.46574 6.93147
+//@X
+
+std::vector<double> qexp(std::vector<double> &p, double &rate) {
+  std::vector<double> rtn_v;
+  const unsigned int n = p.size();
+  rtn_v.reserve(n);
+  for (double i : p) {
+    rtn_v.push_back(-std::log(1 - i) / rate);
+  };
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
