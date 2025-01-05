@@ -1706,6 +1706,31 @@ std::vector<double> pcauchy(std::vector<double> &x, double location = 0, double 
   return rtn_v;
 };
 
+//@T qcauchy 
+//@U std::vector&lt;double&gt; qcauchy(std::vector&lt;double&gt; &p, double location = 0, double scale = 1)
+//@X
+//@D Returns the quantile of the cauchy probability distribution
+//@A p : is the vector containing the probabilities
+//@A location : is the x coordiante
+//@A scale : is the y coordinate
+//@X
+//@E double location = 0;
+//@E double scale = 1;
+//@E std::vector<double> vec = {0.1, 0.25, 0.4, 0.5, 0.63, 0.78};
+//@E std::vector<double> out = qcauchy(vec, location, scale);
+//@E print_nvec(out);
+//@E :0: -3.07768 -1 -0.32492 0  0.432739  1.20879
+//@X
+
+std::vector<double> qcauchy(std::vector<double> &p, double location = 0, double scale = 1) {
+  std::vector<double> rtn_v;
+  rtn_v.reserve(p.size());
+  for (double i : p) {
+    rtn_v.push_back(std::tan((i * 2 * M_PI - M_PI) / 2));
+  };
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
