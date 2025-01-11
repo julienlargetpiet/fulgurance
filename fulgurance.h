@@ -1736,7 +1736,7 @@ std::vector<double> qcauchy(std::vector<double> &p, double location = 0, double 
 //@U
 //@X
 
-std::vector<double> rcauchy(unsigned int n, double x, double y) {
+std::vector<double> rcauchy(unsigned int n, double x = 0, double y = 1) {
   std::vector<double> rtn_v;
   double wait_val;
   double cur_wait_val;
@@ -1788,7 +1788,7 @@ std::vector<double> rcauchy(unsigned int n, double x, double y) {
     } else {
       wait_val *= -1.570796;
     };
-    rtn_v.push_back(tan(wait_val));
+    rtn_v.push_back(tan(wait_val) * y + x);
   };
   return rtn_v;
 };
