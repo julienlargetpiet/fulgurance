@@ -3,6 +3,7 @@
 #include <math.h>
 #include <chrono>
 #include <unistd.h>
+#include <thread>
 
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
@@ -782,7 +783,7 @@ std::vector<double> qunif(std::vector<double> &x, double &min, double &max) {
 //@E :1500: 55
 //@X
 
-std::vector<double> unif(unsigned &n, double &min, double &max, double noise = 0.1, int seed = -1) {
+std::vector<double> runif(unsigned &n, double &min, double &max, double noise = 0.1, int seed = -1) {
   long double step;
   unsigned long int valint = 1;
   unsigned int i;
