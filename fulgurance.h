@@ -1732,6 +1732,70 @@ std::vector<double> qcauchy(std::vector<double> &p, double location = 0, double 
   return rtn_v;
 };
 
+//@T rcauchy
+//@U
+//@X
+
+std::vector<double> rcauchy(unsigned int n, double x, double y) {
+  std::vector<double> rtn_v;
+  double wait_val;
+  double cur_wait_val;
+  auto now = std::chrono::system_clock::now();
+  auto duration = now.time_since_epoch();
+  unsigned int i2;
+  for (int i = 0; i < n; ++i) {
+    now = std::chrono::system_clock::now();
+    duration = now.time_since_epoch();
+    wait_val = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 100;
+    std::cout << wait_val << "\n";
+    if ((int)wait_val % 9 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(9));
+    } else if ((int)wait_val % 8 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(8));
+    } else if ((int)wait_val % 6 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(6));
+    } else if ((int)wait_val % 5 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(5));
+    } else if ((int)wait_val % 3 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(3));
+    } else if ((int)wait_val % 2 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(2));
+    } else {
+      std::this_thread::sleep_for(std::chrono::microseconds(1));
+    };
+    for (i2 = 0; i2 < 2; ++i2) {
+      now = std::chrono::system_clock::now();
+      duration = now.time_since_epoch();
+      cur_wait_val = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 100;
+      wait_val *= cur_wait_val;
+      std::cout << cur_wait_val << "\n";
+      if ((int)wait_val % 9 == 0) {
+        std::this_thread::sleep_for(std::chrono::microseconds(9));
+      } else if ((int)wait_val % 8 == 0) {
+        std::this_thread::sleep_for(std::chrono::microseconds(8));
+      } else if ((int)wait_val % 6 == 0) {
+        std::this_thread::sleep_for(std::chrono::microseconds(6));
+      } else if ((int)wait_val % 5 == 0) {
+        std::this_thread::sleep_for(std::chrono::microseconds(5));
+      } else if ((int)wait_val % 3 == 0) {
+        std::this_thread::sleep_for(std::chrono::microseconds(3));
+      } else if ((int)wait_val % 2 == 0) {
+        std::this_thread::sleep_for(std::chrono::microseconds(2));
+      } else {
+        std::this_thread::sleep_for(std::chrono::microseconds(1));
+      };
+    };
+    std::cout << wait_val << "\n";
+    if (i % 2 == 0) {
+      wait_val *= 1.570796;
+    } else {
+      wait_val *= -1.570796;
+    };
+    rtn_v.push_back(tan(wait_val));
+  };
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
