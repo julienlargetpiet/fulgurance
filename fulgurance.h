@@ -1747,7 +1747,6 @@ std::vector<double> rcauchy(unsigned int n, double x, double y) {
     now = std::chrono::system_clock::now();
     duration = now.time_since_epoch();
     wait_val = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 100;
-    std::cout << wait_val << "\n";
     if ((int)wait_val % 9 == 0) {
       std::this_thread::sleep_for(std::chrono::microseconds(9));
     } else if ((int)wait_val % 8 == 0) {
@@ -1768,7 +1767,6 @@ std::vector<double> rcauchy(unsigned int n, double x, double y) {
       duration = now.time_since_epoch();
       cur_wait_val = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 100;
       wait_val *= cur_wait_val;
-      std::cout << cur_wait_val << "\n";
       if ((int)wait_val % 9 == 0) {
         std::this_thread::sleep_for(std::chrono::microseconds(9));
       } else if ((int)wait_val % 8 == 0) {
@@ -1785,7 +1783,6 @@ std::vector<double> rcauchy(unsigned int n, double x, double y) {
         std::this_thread::sleep_for(std::chrono::microseconds(1));
       };
     };
-    std::cout << wait_val << "\n";
     if (i % 2 == 0) {
       wait_val *= 1.570796;
     } else {
