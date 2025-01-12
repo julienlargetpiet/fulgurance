@@ -1745,7 +1745,7 @@ std::vector<double> qcauchy(std::vector<double> &p, double location = 0, double 
 //@E double scale = 8;
 //@E unsigned int n = 100;
 //@E std::vector&lt;double&gt; out = rcauchy(n, location, scale);
-//@E std::vector&lt;bool&gt; out2 = sup(out, ref_min);
+//@E std::vector&lt;bool&gt; out2 = supcmp(out, ref_min);
 //@E sum(out2);
 //@E 42 
 //@X
@@ -2823,6 +2823,58 @@ template <typename TB> class Compv {
     };
 
     ~Compv() {}; 
+};
+
+//@L3 Lower
+
+//@T lowercomp2
+//@U template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; lowercomp2(std::vector<T> x, T2 val)
+//@X
+//@A x : is the input vector
+//@A val : is the comparison value
+//@X
+//@E std::vector<double> vec = {1, 2.5, -6, 7.8, 2};
+//@E lowercomp2(vec, 2);
+//@E 1 0 1 0 0
+//@X
+
+template <typename T, typename T2> std::vector<bool> lowercomp2(std::vector<T> x, T2 val) {
+  std::vector<bool> rtn_v;
+  rtn_v.reserve(x.size());
+  for (T i : x) {
+    if (i < val) {
+      rtn_v.push_back(1);
+    } else {
+      rtn_v.push_back(0);
+    };
+  };
+  return rtn_v;
+};
+
+//@L3 Greater
+
+//@T greatercomp2
+//@U template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; greatercomp2(std::vector<T> x, T2 val)
+//@X
+//@A x : is the input vector
+//@A val : is the comparison value
+//@X
+//@E std::vector<double> vec = {1, 2.5, -6, 7.8, 2};
+//@E greatercomp2(vec, 2);
+//@E 0 1 0 1 0
+//@X
+
+template <typename T, typename T2> std::vector<bool> greatercomp2(std::vector<T> x, T2 val) {
+  std::vector<bool> rtn_v;
+  rtn_v.reserve(x.size());
+  for (T i : x) {
+    if (i > val) {
+      rtn_v.push_back(1);
+    } else {
+      rtn_v.push_back(0);
+    };
+  };
+  return rtn_v;
 };
 
 //@L3 Any - All
