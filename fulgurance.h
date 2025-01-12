@@ -488,11 +488,11 @@ std::string itos(unsigned int x) {
 //@E 32446.8632 
 //@X
 
-template <typename T> T sum(const std::vector<T> &x) {
-  T rtn = 0;
+template <typename T> double sum(const std::vector<T> &x) {
+  double rtn = 0;
   for (typename std::vector<T>::const_iterator it = x.begin(); it != x.end(); ++it) {
     rtn += *it;
-  }
+  };
   return rtn;
 };
 
@@ -1783,12 +1783,10 @@ std::vector<double> rcauchy(unsigned int n, double x = 0, double y = 1) {
         std::this_thread::sleep_for(std::chrono::microseconds(1));
       };
     };
-    if (i % 2 == 0) {
-      wait_val *= 1.570796;
-    } else {
-      wait_val *= -1.570796;
+    if (i % 2 != 0) {
+      wait_val *= -1;
     };
-    rtn_v.push_back(tan(wait_val) * y + x);
+    rtn_v.push_back((tan(wait_val) + x) * y);
   };
   return rtn_v;
 };
