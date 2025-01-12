@@ -1733,7 +1733,21 @@ std::vector<double> qcauchy(std::vector<double> &p, double location = 0, double 
 };
 
 //@T rcauchy
-//@U
+//@U std::vector&lt;double&gt; rcauchy(unsigned int n, double x = 0, double y = 1)
+//@X
+//@D Returns a pseudo-random generation of numbers following a cauchy distribution.
+//@A n : is the number of numbers to generate
+//@A x : is the x coordinate
+//@A y : is the y coordinate
+//@X
+//@E int ref_min = -2;
+//@E double location = -4;
+//@E double scale = 8;
+//@E unsigned int n = 100;
+//@E std::vector&lt;double&gt; out = rcauchy(n, location, scale);
+//@E std::vector&lt;bool&gt; out2 = sup(out, ref_min);
+//@E sum(out2);
+//@E 42 
 //@X
 
 std::vector<double> rcauchy(unsigned int n, double x = 0, double y = 1) {
