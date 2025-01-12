@@ -40,7 +40,7 @@ std::vector<unsigned int> rbinom(unsigned int &n, unsigned int size, double p) {
     out = rnorm(n_norm, mean, sd);
     now = std::chrono::system_clock::now();
     duration = now.time_since_epoch();
-    r_idx = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() % 400;
+    r_idx = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 400;
     if (r_idx % 9 == 0) {
       usleep(9);
     } else if (r_idx % 8 == 0) {
@@ -106,7 +106,7 @@ std::vector<unsigned int> rpois(unsigned int &n, unsigned int lambda) {
     out = rnorm(n_norm, mean, sd);
     now = std::chrono::system_clock::now();
     duration = now.time_since_epoch();
-    r_idx = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() % 400;
+    r_idx = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 400;
     if (r_idx % 9 == 0) {
       usleep(9);
     } else if (r_idx % 8 == 0) {
@@ -181,7 +181,7 @@ std::vector<double> rexp(unsigned int &n, double rate) {
     out = rnorm(n_norm, mean, sd);
     now = std::chrono::system_clock::now();
     duration = now.time_since_epoch();
-    r_idx = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() % 400;
+    r_idx = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 400;
     if (r_idx % 9 == 0) {
       usleep(9);
     } else if (r_idx % 8 == 0) {
