@@ -2828,24 +2828,25 @@ template <typename TB> class Compv {
 //@L3 Lower
 
 //@T lowercomp2
-//@U template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; lowercomp2(std::vector<T> x, T2 val)
+//@U template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; lowercomp2(std::vector<T> &x, std::vector<T2> &val)
 //@X
-//@A x : is the input vector
-//@A val : is the comparison value
+//@D Returns a boolean vector, 1 if the corresponding values from the first vecotr is lower than  the corresponding values from the second vecotr. Each vector must be the same size.
+//@A x : is the first vector
+//@A val : is the second vector
 //@X
 //@E std::vector<double> vec = {1, 2.5, -6, 7.8, 2};
-//@E lowercomp2(vec, 2);
+//@E std::vector<double> vec = {2, 2, 2, 2, 2};
+//@E lowercomp2(vec, vec2);
 //@E 1 0 1 0 0
 //@X
 
 template <typename T, typename T2> std::vector<bool> lowercomp2(std::vector<T> x, T2 val) {
   std::vector<bool> rtn_v;
-  rtn_v.reserve(x.size());
-  for (T i : x) {
-    if (i < val) {
-      rtn_v.push_back(1);
-    } else {
-      rtn_v.push_back(0);
+  rtn_v.resize(x.size(), 0);
+  const unsigned int n = x.size();
+  for (unsigned int i = 0; i < n; ++i) {
+    if (x[i] < val[i]) {
+      rtn_v[i] = 1;
     };
   };
   return rtn_v;
@@ -2856,22 +2857,23 @@ template <typename T, typename T2> std::vector<bool> lowercomp2(std::vector<T> x
 //@T greatercomp2
 //@U template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; greatercomp2(std::vector<T> x, T2 val)
 //@X
-//@A x : is the input vector
-//@A val : is the comparison value
+//@D Returns a boolean vector, 1 if the corresponding values from the first vecotr is greater than  the corresponding values from the second vecotr. Each vector must be the same size.
+//@A x : is the first vector
+//@A val : is the second vector
 //@X
 //@E std::vector<double> vec = {1, 2.5, -6, 7.8, 2};
-//@E greatercomp2(vec, 2);
+//@E std::vector<double> vec = {2, 2, 2, 2, 2};
+//@E greatercomp2(vec, vec2);
 //@E 0 1 0 1 0
 //@X
 
 template <typename T, typename T2> std::vector<bool> greatercomp2(std::vector<T> x, T2 val) {
   std::vector<bool> rtn_v;
-  rtn_v.reserve(x.size());
-  for (T i : x) {
-    if (i > val) {
-      rtn_v.push_back(1);
-    } else {
-      rtn_v.push_back(0);
+  rtn_v.resize(x.size(), 0);
+  const unsigned int n = x.size();
+  for (unsigned int i = 0; i < n; ++i) {
+    if (x[i] > val[i]) {
+      rtn_v[i] = 1;
     };
   };
   return rtn_v;
