@@ -1805,6 +1805,47 @@ std::vector<double> rcauchy(unsigned int n, double x = 0, double y = 1) {
   return rtn_v;
 };
 
+//@L4 Gamma distribution
+
+//@T dgamma
+//@U std::vector&lt;double&gt; dgamma(std::vector&lt;double&gt; &x, double &shape, double &rate)
+//@X
+//@D Returns the gamma density probability distribution. Uses a normal law of mean = 1/rate * shape and sd = 1/rate * sqrt(shape) to approximate for shape value greater than 171
+//@A x : is the input vector composed of the x values
+//@A shape : is the alpha value
+//@A rate : is the rate value (lambda or 1/theta)
+//@X
+//@E std::vector&lt;double&gt; vec = {6444, 6666, 6888};
+//@E double shape = 3333;
+//@E double rate = 0.5;
+//@E std::vector&lt;double&gt; out = dgamma(vec, shape, rate);
+//@E print_nvec(out);
+//@E :0: 0.000544178 0.00345511 0.000544178
+//@X
+
+std::vector<double> dgamma(std::vector<double> &x, double &shape, double &rate) {
+  std::vector<double> rtn_v;
+  double divided;
+  const double divider = tgamma(shape);
+  const double shape_minus = shape - 1;
+  const double ref_mult = pow(rate, shape);
+  const double scale = 1 / rate;
+  const double mean = shape * scale;
+  const double sd = pow(shape, 0.5) * scale;
+  const double divided2 = sd * pow(6.28318530717959, 0.5);
+  if (shape < 172) {
+    for (double val : x) {
+      divided = pow(val, shape_minus) * exp(-rate * val) * ref_mult;
+      rtn_v.push_back(divided / divider);
+    };
+  } else {
+    for (double val : x) {
+      rtn_v.push_back(exp(-0.5 * pow((val - mean) / sd, 2)) / divided2);
+    };
+  };
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
