@@ -2,7 +2,6 @@
 #include <vector>
 #include <math.h>
 #include <chrono>
-#include <unistd.h>
 #include <thread>
 
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
@@ -1864,7 +1863,7 @@ std::vector<double> dgamma(std::vector<double> &x, double &shape, double &rate) 
 //@E :0: 5.44178e-05 0.141121 0.473211 0.946151
 //@X
 
-std::vector<double> pgamma(std::vector<double> &x, double &shape, double &rate, double step) {
+std::vector<double> pgamma(std::vector<double> &x, double &shape, double &rate, double &step) {
   std::vector<double> rtn_v;
   double divided;
   const double divider = tgamma(shape);
@@ -1915,7 +1914,7 @@ std::vector<double> pgamma(std::vector<double> &x, double &shape, double &rate, 
 //@E :0: 6591.86 6651.56 6666.06 6695.36 6801.76
 //@X
 
-std::vector<double> qgamma(std::vector<double> &x, double &shape, double &rate, double step) {
+std::vector<double> qgamma(std::vector<double> &x, double &shape, double &rate, double &step) {
   std::vector<double> rtn_v;
   double divided;
   const double divider = tgamma(shape);
@@ -1944,6 +1943,87 @@ std::vector<double> qgamma(std::vector<double> &x, double &shape, double &rate, 
       rtn_v.push_back(cur_x);
     };
   };
+  return rtn_v;
+};
+
+//@T rgamma
+//@U std::vector&lt;double&gt; rgamma(unsigned int &n, double &shape, double &rate, double step)
+//@X
+//@D Generates pseudo-random variables that follow a gamma probability distribution
+//@A n : is the number of observations
+//@A shape : is the alpha value
+//@A rate : is the lambda (1 / theta)
+//@A step : the lower it is, the more the result will be accurate, at a computational cost
+//@X
+//@E unsigned int n = 100;
+//@E double shape = 3333;
+//@E double rate = 0.25;
+//@E double step = 0.01;
+//@E std::vector<double> out = rgamma(n, shape, rate, step);
+//@E print_nvec(out);
+//@E :0: 12794.8 12857.7 12897.7 12927.7 12952.2 12973 12991.2 
+//@E 13007.5 13022.4 13036.1 13048.8 13060.7 13071.9 13082.5 13092.7
+//@E 13102.4 13111.7 13120.6 13129.3 13137.7 13145.8 13153.7 13161.4
+//@E 13168.9
+//@E :25: 13183.4 13190.5 13197.4 13204.2 13210.9 13217.5 13224 13230.4
+//@E 13236.8 13243 13249.2 13255.4 13261.5 13267.5 13273.5 13279.5
+//@E 13285.4 13291.3 13297.1 13303 13308.8 13314.6 13320.4 13326.2
+//@E :50: 13337.8 13343.6 13349.4 13355.2 13361 13366.9 13372.7 13378.6
+//@E 13384.6 13390.5 13396.5 13402.6 13408.6 13414.8 13421 13427.3
+//@E 13433.6 13440 13446.5 13453.1 13459.8 13466.6 13473.5 13480.6
+//@E :75: 13495.1 13502.6 13510.3 13518.2 13526.4 13534.7 13543.4 
+//@E 13552.4 13561.7 13571.3 13581.5 13592.1 13603.3 13615.3 13628 
+//@E 13641.6 13656.5 13672.8 13691 13711.9 13736.3 13766.3 13806.3
+//@E 13869.2
+//@E :100: 13276.2
+//@X
+
+std::vector<double> rgamma(unsigned int &n, double &shape, double &rate, double step) {
+  std::vector<double> rtn_v;
+  double divided;
+  const double ref_proba_step = (double)1 / n;
+  double proba_cnt = ref_proba_step;
+  const double divider = tgamma(shape);
+  const double shape_minus = shape - 1;
+  const double ref_mult = pow(rate, shape);
+  const double scale = 1 / rate;
+  const double mean = shape * scale;
+  const double sd = pow(shape, 0.5) * scale;
+  const double divided2 = sd * pow(6.28318530717959, 0.5);
+  double cur_x = 0;
+  double cur_proba = 0;
+  double lst_val1;
+  double lst_val2;
+  auto now = std::chrono::system_clock::now();
+  auto duration = now.time_since_epoch();
+  double cur_time = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 100;
+  if ((int)cur_time % 2 == 0) {
+    step += cur_time / 100 * 0.2 * step;
+  } else {
+    step -= cur_time / 100 * 0.2 * step;
+  };
+  if (shape < 172) {
+    for (unsigned int i = 0; i < n; ++i) {
+      while (cur_proba < proba_cnt) {
+        cur_proba += pow(cur_x, shape_minus) * exp(-rate * cur_x) * ref_mult / divider * step;
+        cur_x += step;
+      };
+      proba_cnt += ref_proba_step;
+      rtn_v.push_back(cur_x);
+    };
+  } else {
+    for (unsigned int i = 1; i < n; ++i) {
+      while (cur_proba < proba_cnt) {
+        cur_proba += exp(-0.5 * pow((cur_x - mean) / sd, 2)) / divided2 * step;
+        cur_x += step;
+      };
+      proba_cnt += ref_proba_step;
+      rtn_v.push_back(cur_x);
+    };
+  };
+  lst_val1 = rtn_v[(int)cur_time % (n - 1)];
+  lst_val2 = rtn_v[(int)cur_time * 5 % (n - 1)];
+  rtn_v.push_back(0.5 * (lst_val1 + lst_val2));
   return rtn_v;
 };
 
