@@ -1850,7 +1850,7 @@ std::vector<double> dgamma(std::vector<double> &x, double &shape, double &rate) 
 //@U std::vector&lt;double&gt; pgamma(std::vector&lt;double&gt; &x, double &shape, double &rate, double step)
 //@X
 //@D Returns the gamma cmulative probability distribution between an interval (first x value to last x value)
-//@A x : is the input x values 
+//@A x : is the input x values, must be ascendly sorted
 //@A shape : is the alpha value
 //@A rate : is the lambda value, 1/theta
 //@A step : the lower it is, the more accurate the result will be at a computational cost
@@ -1893,6 +1893,55 @@ std::vector<double> pgamma(std::vector<double> &x, double &shape, double &rate, 
       };
       cur_rslt += exp(-0.5 * pow((cnt - mean) / sd, 2)) / divided2 * step;
       rtn_v.push_back(cur_rslt);
+    };
+  };
+  return rtn_v;
+};
+
+//@T qgamma
+//@U std::vector&lt;double&gt; qgamma(std::vector&lt;double&gt; &x, double &shape, double &rate, double step)
+//@X
+//@D Returns the quantile value of the gamma probability distribution
+//@A x : is the input vector of probabilities, must be ascendly sorted
+//@A shape : is the alpha value
+//@A rate : is the lambda value (1 / theta)
+//@A step : the lower it is, the more accurate the result will be at a cmputational cost
+//@E std::vector&lt;double&gt; vec = {0.26, 0.45, 0.5, 0.6, 0.88};
+//@E double shape = 3333;
+//@E double rate = 0.5;
+//@E double step = 0.1;
+//@E std::vector&lt;double&gt; out = qgamma(vec, shape, rate, step);
+//@E print_nvec(out);
+//@E :0: 6591.86 6651.56 6666.06 6695.36 6801.76
+//@X
+
+std::vector<double> qgamma(std::vector<double> &x, double &shape, double &rate, double step) {
+  std::vector<double> rtn_v;
+  double divided;
+  const double divider = tgamma(shape);
+  const double shape_minus = shape - 1;
+  const double ref_mult = pow(rate, shape);
+  const double scale = 1 / rate;
+  const double mean = shape * scale;
+  const double sd = pow(shape, 0.5) * scale;
+  const double divided2 = sd * pow(6.28318530717959, 0.5);
+  double cur_x = x[0];
+  double cur_proba = 0;
+  if (shape < 172) {
+    for (double val : x) {
+      while (cur_proba < val) {
+        cur_proba += pow(cur_x, shape_minus) * exp(-rate * cur_x) * ref_mult / divider * step;
+        cur_x += step;
+      };
+      rtn_v.push_back(cur_x);
+    };
+  } else {
+    for (double val : x) {
+      while (cur_proba < val) {
+        cur_proba += exp(-0.5 * pow((cur_x - mean) / sd, 2)) / divided2 * step;
+        cur_x += step;
+      };
+      rtn_v.push_back(cur_x);
     };
   };
   return rtn_v;
