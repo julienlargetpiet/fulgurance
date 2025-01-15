@@ -2091,6 +2091,38 @@ std::vector<double> pbeta(std::vector<double> &x, double &a, double &b, double s
   return rtn_v;
 };
 
+//@T qbeta
+//@U std::vector&lt;double&gt; qbeta(std::vector&lt;double&gt; &x, double &a, double &b, double step = 0.01)
+//@X
+//@D Returns the quantile of given probabilities according to the beta probability distribution
+//@A x : is the vector of probabilities you want the probabilities from
+//@A a : is alpha, the number of successes
+//@A b : is beta, the number of failures
+//@A step : the lower this value is, the more accurate the result will be at a computational cost
+//@X
+//@E double a = 40;
+//@E double b = 60;
+//@E std::vector<double> vec = {0.3, 0.55, 0.9, 0.99};
+//@E double step = 0.005;
+//@E std::vector<double> out = qbeta(vec2, a, b, step);
+//@E print_nvec(out);
+//@X
+
+std::vector<double> qbeta(std::vector<double> &x, double &a, double &b, double step = 0.01) {
+  std::vector<double> rtn_v;
+  const double divider = std::beta(a + 1, b + 1);
+  double cur_x = 0;
+  double cur_proba = 0;
+  for (double val : x) {
+    while (cur_proba < val) {
+      cur_proba += step * std::pow(cur_x, a) * std::pow(1 - cur_x, b) / divider;
+      cur_x += step;
+    };
+    rtn_v.push_back(cur_x);
+  };
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
