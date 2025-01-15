@@ -2048,7 +2048,7 @@ std::vector<double> rgamma(unsigned int &n, double &shape, double &rate, double 
 //@E 0.00547615 1.23346e-05 1.87358e-10 1.06384e-18 0
 //@X
 
-std::vector<double> dbeta(std::vector<double> &x, double &a, double &b, double normalisation_step = 1) {
+std::vector<double> dbeta(std::vector<double> &x, double &a, double &b, double normalisation_step = 0.1) {
   std::vector<double> rtn_v;
   const double divider = std::beta(a + 1, b + 1);
   for (double val : x) {
