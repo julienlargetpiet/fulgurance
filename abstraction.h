@@ -42,19 +42,19 @@ std::vector<unsigned int> rbinom(unsigned int &n, unsigned int size, double p) {
     duration = now.time_since_epoch();
     r_idx = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 400;
     if (r_idx % 9 == 0) {
-      usleep(9);
+      std::this_thread::sleep_for(std::chrono::microseconds(9));
     } else if (r_idx % 8 == 0) {
-      usleep(8);
+      std::this_thread::sleep_for(std::chrono::microseconds(8));
     } else if (r_idx % 6 == 0) {
-      usleep(6);
+      std::this_thread::sleep_for(std::chrono::microseconds(6));
     } else if (r_idx % 5 == 0) {
-      usleep(5);
+      std::this_thread::sleep_for(std::chrono::microseconds(5));
     } else if (r_idx % 3 == 0) {
-      usleep(3);
+      std::this_thread::sleep_for(std::chrono::microseconds(3));
     } else if (r_idx % 2 == 0) {
-      usleep(2);
+      std::this_thread::sleep_for(std::chrono::microseconds(2));
     } else {
-      usleep(1);
+      std::this_thread::sleep_for(std::chrono::microseconds(1));
     };
     r_val = out[r_idx];
     if (r_val < 0) {
@@ -108,19 +108,19 @@ std::vector<unsigned int> rpois(unsigned int &n, unsigned int lambda) {
     duration = now.time_since_epoch();
     r_idx = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 400;
     if (r_idx % 9 == 0) {
-      usleep(9);
+      std::this_thread::sleep_for(std::chrono::microseconds(9));
     } else if (r_idx % 8 == 0) {
-      usleep(8);
+      std::this_thread::sleep_for(std::chrono::microseconds(8));
     } else if (r_idx % 6 == 0) {
-      usleep(6);
+      std::this_thread::sleep_for(std::chrono::microseconds(6));
     } else if (r_idx % 5 == 0) {
-      usleep(5);
+      std::this_thread::sleep_for(std::chrono::microseconds(5));
     } else if (r_idx % 3 == 0) {
-      usleep(3);
+      std::this_thread::sleep_for(std::chrono::microseconds(3));
     } else if (r_idx % 2 == 0) {
-      usleep(2);
+      std::this_thread::sleep_for(std::chrono::microseconds(2));
     } else {
-      usleep(1);
+      std::this_thread::sleep_for(std::chrono::microseconds(1));
     };
     r_val = out[r_idx];
     if (r_val < 0) {
@@ -183,19 +183,19 @@ std::vector<double> rexp(unsigned int &n, double rate) {
     duration = now.time_since_epoch();
     r_idx = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 400;
     if (r_idx % 9 == 0) {
-      usleep(9);
+      std::this_thread::sleep_for(std::chrono::microseconds(9));
     } else if (r_idx % 8 == 0) {
-      usleep(8);
+      std::this_thread::sleep_for(std::chrono::microseconds(8));
     } else if (r_idx % 6 == 0) {
-      usleep(6);
+      std::this_thread::sleep_for(std::chrono::microseconds(6));
     } else if (r_idx % 5 == 0) {
-      usleep(5);
+      std::this_thread::sleep_for(std::chrono::microseconds(5));
     } else if (r_idx % 3 == 0) {
-      usleep(3);
+      std::this_thread::sleep_for(std::chrono::microseconds(3));
     } else if (r_idx % 2 == 0) {
-      usleep(2);
+      std::this_thread::sleep_for(std::chrono::microseconds(2));
     } else {
-      usleep(1);
+      std::this_thread::sleep_for(std::chrono::microseconds(1));
     };
     r_val = out[r_idx];
     if (r_val < 0) {
