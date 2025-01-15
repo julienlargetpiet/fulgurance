@@ -2060,7 +2060,7 @@ std::vector<double> dbeta(std::vector<double> &x, double &a, double &b, double n
 //@T pbeta
 //@U std::vector&lt;double&gt; pbeta(std::vector&lt;double&gt; &x, double &a, double &b, double step = 0.01)
 //@X
-//@D Returns the beta cumulative probability distribution
+//@D Returns the beta cumulative probability distribution, of an interval of the first input value to the last input value (from the input vector of probabilities)
 //@A x : is the vector of the probabilities, must be ascendly sorted
 //@A a : is alpha, the number of successes
 //@A b : is beta, the number of failures
