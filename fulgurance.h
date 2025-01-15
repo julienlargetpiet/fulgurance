@@ -2027,6 +2027,70 @@ std::vector<double> rgamma(unsigned int &n, double &shape, double &rate, double 
   return rtn_v;
 };
 
+//@L4 Beta distribution
+
+//@T dbeta
+//@U std::vector&lt;double&gt; dbeta(std::vector&lt;double&gt; &x, double &a, double &b, double normalisation_step = 1)
+//@X
+//@D Returns the beta density probability distribution
+//@A x : is the vector of the probabilities
+//@A a : is alpha, number of successes
+//@A b : is beta, the number of failures
+//@A normalisation_step : is the probability unit of the x vector
+//@X
+//@E double a = 40;
+//@E double b = 60;
+//@E std::vector&lt;double&gt; vec = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1};
+//@E double step = 0.005;
+//@E std::vector&lt;double&gt; out = dbeta(vec, a, b, step);
+//@E print_nvec(out);
+//@E :0: 0 1.24746e-15 1.1697e-06 0.00428754 0.0410157 
+//@E 0.00547615 1.23346e-05 1.87358e-10 1.06384e-18 0
+//@X
+
+std::vector<double> dbeta(std::vector<double> &x, double &a, double &b, double normalisation_step = 1) {
+  std::vector<double> rtn_v;
+  const double divider = std::beta(a + 1, b + 1);
+  for (double val : x) {
+    rtn_v.push_back(normalisation_step * std::pow(val, a) * std::pow(1 - val, b) / divider);    
+  };
+  return rtn_v;
+};
+
+//@T pbeta
+//@U std::vector&lt;double&gt; pbeta(std::vector&lt;double&gt; &x, double &a, double &b, double step = 0.01)
+//@X
+//@D Returns the beta cumulative probability distribution
+//@A x : is the vector of the probabilities, must be ascendly sorted
+//@A a : is alpha, the number of successes
+//@A b : is beta, the number of failures
+//@A step : the lower this value is, the more accurate the result will be at a computational cost
+//@X
+//@E double a = 40;
+//@E double b = 60;
+//@E std::vector&lt;double&gt; vec = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1};
+//@E double step = 0.005;
+//@E std::vector&lt;double&gt; out = pbeta(vec, a, b, step);
+//@E print_nvec(out);
+//@E :0: 0 2.65054e-16 1.23119e-06 0.0129867 0.468685 0.974149 
+//@E 0.999966 1 1 1
+//@X
+
+std::vector<double> pbeta(std::vector<double> &x, double &a, double &b, double step = 0.01) {
+  std::vector<double> rtn_v;
+  const double divider = std::beta(a + 1, b + 1);
+  double cnt = x[0];
+  double cur_rslt = step * std::pow(cnt, a) * std::pow(1 - cnt, b) / divider;
+  for (double val : x) {
+    while (cnt < val) {
+      cur_rslt += step * std::pow(cnt, a) * std::pow(1 - cnt, b) / divider;
+      cnt += step;
+    };
+    rtn_v.push_back(cur_rslt);
+  };
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
