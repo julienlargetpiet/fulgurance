@@ -1924,7 +1924,7 @@ std::vector<double> qgamma(std::vector<double> &x, double &shape, double &rate, 
   const double mean = shape * scale;
   const double sd = pow(shape, 0.5) * scale;
   const double divided2 = sd * pow(6.28318530717959, 0.5);
-  double cur_x = x[0];
+  double cur_x = 0;
   double cur_proba = 0;
   if (shape < 172) {
     for (double val : x) {
