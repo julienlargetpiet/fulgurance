@@ -669,8 +669,8 @@ template <typename T> double Sd(std::vector<T> &x) {
 //@X
 //@E double min = -2;
 //@E double max = 10;
-//@E std::vector<double> vec = {-7, -2, 3.5, 8, 12, 56};
-//@E std::vector<double> out = dunif(vec, min, max);
+//@E std::vector&lt;double&gt; vec = {-7, -2, 3.5, 8, 12, 56};
+//@E std::vector&lt;double&gt; out = dunif(vec, min, max);
 //@E print_nvec(out);
 //@E :0: 0 0.0833333 0.0833333 0.0833333 0 0
 //@X
@@ -699,8 +699,8 @@ template <typename T> std::vector<double> dunif(std::vector<T> &x, double &min, 
 //@X
 //@E double min = -2;
 //@E double max = 10;
-//@E std::vector<double> vec = {-7, -2, 3.5, 8, 12, 56};
-//@E std::vector<double> out = punif(vec, min, max);
+//@E std::vector&lt;double&gt; vec = {-7, -2, 3.5, 8, 12, 56};
+//@E std::vector&lt;double&gt; out = punif(vec, min, max);
 //@E print_nvec(out);
 //@E :0: 0 0.000833333 0.459167 0.834167 1 1
 //@X
@@ -745,9 +745,9 @@ template <typename T> std::vector<double> punif(std::vector<T> &x, double &min, 
 //@X
 //@E double min = -2;
 //@E double max = 10;
-//@E std::vector<double> vec = {-7, -2, 3.5, 8, 12, 56};
-//@E std::vector<double> vec2 = {0.2, 0.4, 0.5, 0.6, 0.75};
-//@E std::vector<double> out = qunif(vec2, min, max);
+//@E std::vector&lt;double&gt; vec = {-7, -2, 3.5, 8, 12, 56};
+//@E std::vector&lt;double&gt; vec2 = {0.2, 0.4, 0.5, 0.6, 0.75};
+//@E std::vector&lt;double&gt; out = qunif(vec2, min, max);
 //@E print_nvec(out);
 //@E :0: 3.6 5.2 6 6.8 8
 //@X
@@ -1558,6 +1558,7 @@ std::vector<unsigned int> qpois(std::vector<double> &p, int &lambda) {
 
 //@T rpois
 //@U std::vector&lt;unsigned int&gt; rpois(unsigned int &n, unsigned int lambda)
+//@X
 //@D
 //@A n : is the number of observations
 //@A lambda : is the mean
@@ -1592,8 +1593,8 @@ std::vector<unsigned int> qpois(std::vector<double> &p, int &lambda) {
 //@A rate : is the rate value for the exponential distribution, given by 1 / mean
 //@X
 //@E double rate = 0.2;
-//@E std::vector<double> vec = {1, 2, 3, 4, 5, 6};
-//@E std::vector<double> out = dexp(vec, rate);
+//@E std::vector&lt;double&gt; vec = {1, 2, 3, 4, 5, 6};
+//@E std::vector&lt;double&gt; out = dexp(vec, rate);
 //@E print_nvec(out);
 //@E :0: 0.163746 0.134064 0.109762 0.0898658 0.0735759 0.0602388
 //@X
@@ -1636,8 +1637,8 @@ std::vector<double> pexp(std::vector<double> &x, double &rate, double step = 0.0
 //@A rate : is the rate of the exponential distribution
 //@X
 //@E double rate = 0.2;
-//@E std::vector<double> vec2 = {0.1, 0.2, 0.3, 0.4, 0.5, 0.75};
-//@E std::vector<double> out = qexp(vec2, rate);
+//@E std::vector&lt;double&gt; vec2 = {0.1, 0.2, 0.3, 0.4, 0.5, 0.75};
+//@E std::vector&lt;double&gt; out = qexp(vec2, rate);
 //@E print_nvec(out);
 //@E :0: 0.526803 1.11572 1.78337 2.55413 3.46574 6.93147
 //@X
@@ -1652,6 +1653,41 @@ std::vector<double> qexp(std::vector<double> &p, double &rate) {
   return rtn_v;
 };
 
+//@T rexp
+//@U std::vector&lt;double&gt; rexp(unsigned int &n, double rate)
+//@X
+//@D Returns a pseudo-random distribution of the exponential distribution
+//@A n : is the number of observations
+//@A rate : is the rate of the exponential distribution
+//@X
+//@E double rate = 0.2;
+//@E unsigned int n = 100;
+//@E std::vector&lt;double&gt; out = rexp(n, rate);
+//@E print_nvec(out);
+//@E :0: 13.2 13.2 2.79385  2.79385  2.79385  
+//@E 13.6804 13.6804 4.10504  4.10504  15.9378 
+//@E 15.9378 5.60406  5.60406  21.5331 21.5331 
+//@E 10.4864 10.4864 5.20657  5.20657  5.20657  
+//@E 5.20657  5.20657  5.20657  5.20657
+//@E :25: 5.20657  5.20657  5.20657  5.20657  5.20657  
+//@E 4.80913  4.80913  4.80913  4.80913  4.80913  4.80913  
+//@E 4.80913  4.80913  4.80913  4.80913  4.80913  4.80913  
+//@E 4.80913  4.80913  5.3978  5.3978  5.3978  5.3978  5.3978
+//@E :50: 5.3978  5.3978  5.3978  5.3978  5.3978  4.57492  
+//@E 4.57492  4.57492  4.57492  4.57492  4.57492  4.57492
+//@E 4.57492  4.57492  4.57492  4.57492  4.57492  5.58841  
+//@E 5.63733  5.63733  5.63733  5.63733  5.63733  5.63733
+//@E :75: 5.63733  5.63733  4.35393  4.35393  4.35393  4.35393  
+//@E 4.35393  4.35393  4.35393  4.35393  4.35393  4.35393  
+//@E 4.35393  5.82063  5.82063  5.82063  5.82063  5.82063  
+//@E 5.82063  5.82063  5.82063  4.19025  4.19025  4.19025
+//@E :100: 4.19025
+//@E Mean(out);
+//@E 5.94307
+//@E Sd(out);
+//@E 4.29426
+//@X
+
 //@L4 Cauchy
 
 //@T dcauchy
@@ -1664,8 +1700,8 @@ std::vector<double> qexp(std::vector<double> &p, double &rate) {
 //@X
 //@E double location = 0;
 //@E double scale = 1;
-//@E std::vector<double> vec = {-2, -1, 0, 1, 2, 4};
-//@E std::vector<double> out = dcauchy(vec, location, scale);
+//@E std::vector&lt;double&gt; vec = {-2, -1, 0, 1, 2, 4};
+//@E std::vector&lt;double&gt; out = dcauchy(vec, location, scale);
 //@E print_nvec(out);
 //@E :0: 0.063662 0.159155 0.31831 0.159155 0.063662 0.0187241
 //@X
@@ -1690,8 +1726,8 @@ std::vector<double> dcauchy(std::vector<double> &x, double location = 0, double 
 //@X
 //@E double location = 0;
 //@E double scale = 1;
-//@E std::vector<double> vec = {-2, -1, 0, 1, 2, 4};
-//@E std::vector<double> out = pcauchy(vec, location, scale);
+//@E std::vector&lt;double&gt; vec = {-2, -1, 0, 1, 2, 4};
+//@E std::vector&lt;double&gt; out = pcauchy(vec, location, scale);
 //@E print_nvec(out);
 //@E :0: 0.000634083 0.10305 0.35305 0.60305 0.705467 0.775071 
 //@X
@@ -1716,8 +1752,8 @@ std::vector<double> pcauchy(std::vector<double> &x, double location = 0, double 
 //@X
 //@E double location = 0;
 //@E double scale = 1;
-//@E std::vector<double> vec = {0.1, 0.25, 0.4, 0.5, 0.63, 0.78};
-//@E std::vector<double> out = qcauchy(vec, location, scale);
+//@E std::vector&lt;double&gt; vec = {0.1, 0.25, 0.4, 0.5, 0.63, 0.78};
+//@E std::vector&lt;double&gt; out = qcauchy(vec, location, scale);
 //@E print_nvec(out);
 //@E :0: -3.07768 -1 -0.32492 0  0.432739  1.20879
 //@X
@@ -1905,6 +1941,7 @@ std::vector<double> pgamma(std::vector<double> &x, double &shape, double &rate, 
 //@A shape : is the alpha value
 //@A rate : is the lambda value (1 / theta)
 //@A step : the lower it is, the more accurate the result will be at a cmputational cost
+//@X
 //@E std::vector&lt;double&gt; vec = {0.26, 0.45, 0.5, 0.6, 0.88};
 //@E double shape = 3333;
 //@E double rate = 0.5;
@@ -2102,9 +2139,9 @@ std::vector<double> pbeta(std::vector<double> &x, double &a, double &b, double s
 //@X
 //@E double a = 40;
 //@E double b = 60;
-//@E std::vector<double> vec = {0.3, 0.55, 0.9, 0.99};
+//@E std::vector&lt;double&gt; vec = {0.3, 0.55, 0.9, 0.99};
 //@E double step = 0.005;
-//@E std::vector<double> out = qbeta(vec2, a, b, step);
+//@E std::vector&lt;double&gt; out = qbeta(vec2, a, b, step);
 //@E print_nvec(out);
 //@X
 
@@ -2134,10 +2171,10 @@ std::vector<double> qbeta(std::vector<double> &x, double &a, double &b, double s
 //@X
 //@E double a = 40;
 //@E double b = 60;
-//@E std::vector<double> vec = {0.3, 0.55, 0.9, 0.99};
+//@E std::vector&lt;double&gt; vec = {0.3, 0.55, 0.9, 0.99};
 //@E double step = 0.005;
 //@E unsigned int n = 100;
-//@E std::vector<double> out = rbeta(n, a, b, step);
+//@E std::vector&lt;double&gt; out = rbeta(n, a, b, step);
 //@E print_nvec(out);
 //@E :0: 0.29716 0.31027 0.31901 0.32338 0.32775 0.33212
 //@E 0.33649 0.34086 0.34086 0.34523 0.34523 0.3496 0.35397
@@ -3212,14 +3249,14 @@ template <typename TB> class Compv {
 //@L3 Lower
 
 //@T lowercomp2
-//@U template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; lowercomp2(std::vector<T> &x, std::vector<T2> &x2)
+//@U template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; lowercomp2(std::vector&lt;T&gt; &x, std::vector&lt;T2&gt; &x2)
 //@X
-//@D Returns a boolean vector, 1 if the corresponding values from the first vecotr is lower than  the corresponding values from the second vecotr. The output vector is the size of the first vector. 
+//@D Returns a boolean vector, 1 if the corresponding values from the first vector is lower than  the corresponding values from the second vecotr. The output vector is the size of the first vector. 
 //@A x : is the first vector
 //@A x2 : is the second vector
 //@X
-//@E std::vector<double> vec = {1, 2.5, -6, 7.8, 2};
-//@E std::vector<double> vec = {2, 2};
+//@E std::vector&lt;double&gt; vec = {1, 2.5, -6, 7.8, 2};
+//@E std::vector&lt;double&gt; vec = {2, 2};
 //@E lowercomp2(vec, vec2);
 //@E 1 0 1 0 0
 //@X
@@ -3240,14 +3277,14 @@ template <typename T, typename T2> std::vector<bool> lowercomp2(std::vector<T> x
 //@L3 Greater
 
 //@T greatercomp2
-//@U template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; greatercomp2(std::vector<T> x, T2 x2)
+//@U template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; greatercomp2(std::vector&lt;T&gt; x, T2 x2)
 //@X
-//@D Returns a boolean vector, 1 if the corresponding values from the first vecotr is greater than  the corresponding values from the second vecotr. The output vector is the size of the first vector.
+//@D Returns a boolean vector, 1 if the corresponding values from the first vector is greater than  the corresponding values from the second vecotr. The output vector is the size of the first vector.
 //@A x : is the first vector
 //@A x2 : is the second vector
 //@X
-//@E std::vector<double> vec = {1, 2.5, -6, 7.8, 2};
-//@E std::vector<double> vec = {2, 2, 2, 2, 2};
+//@E std::vector&lt;double&gt; vec = {1, 2.5, -6, 7.8, 2};
+//@E std::vector&lt;double&gt; vec = {2, 2, 2, 2, 2};
 //@E greatercomp2(vec, vec2);
 //@E 0 1 0 1 0
 //@X
