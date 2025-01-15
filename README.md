@@ -90,6 +90,42 @@
 <br>
 <a href="#rpois" style="margin-left:100px;">rpois</a>
 <br>
+<b><li style="margin-left:80px; color: #2c4786;">Exponential distribution</li></b>
+<a href="#dexp" style="margin-left:100px;">dexp</a>
+<br>
+<a href="#pexp" style="margin-left:100px;">pexp</a>
+<br>
+<a href="#qexp" style="margin-left:100px;">qexp</a>
+<br>
+<a href="#rexp" style="margin-left:100px;">rexp</a>
+<br>
+<b><li style="margin-left:80px; color: #2c4786;">Cauchy</li></b>
+<a href="#dcauchy" style="margin-left:100px;">dcauchy</a>
+<br>
+<a href="#pcauchy" style="margin-left:100px;">pcauchy</a>
+<br>
+<a href="#qcauchy " style="margin-left:100px;">qcauchy </a>
+<br>
+<a href="#rcauchy" style="margin-left:100px;">rcauchy</a>
+<br>
+<b><li style="margin-left:80px; color: #2c4786;">Gamma distribution</li></b>
+<a href="#dgamma" style="margin-left:100px;">dgamma</a>
+<br>
+<a href="#pgamma" style="margin-left:100px;">pgamma</a>
+<br>
+<a href="#qgamma" style="margin-left:100px;">qgamma</a>
+<br>
+<a href="#rgamma" style="margin-left:100px;">rgamma</a>
+<br>
+<b><li style="margin-left:80px; color: #2c4786;">Beta distribution</li></b>
+<a href="#dbeta" style="margin-left:100px;">dbeta</a>
+<br>
+<a href="#pbeta" style="margin-left:100px;">pbeta</a>
+<br>
+<a href="#qbeta" style="margin-left:100px;">qbeta</a>
+<br>
+<a href="#rbeta" style="margin-left:100px;">rbeta</a>
+<br>
 <b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
 <a href="#min" style="margin-left:80px;">min</a>
 <br>
@@ -161,6 +197,12 @@
 <br>
 <b><li style="margin-left:80px; color: #2c4786;">Variadic / Indefinite number of arguments - Compv Class</li></b>
 <a href="#Compv.to_comp()" style="margin-left:100px;">Compv.to_comp()</a>
+<br>
+<b><li style="margin-left:60px; color: #2c4786;">Lower</li></b>
+<a href="#lowercomp2" style="margin-left:80px;">lowercomp2</a>
+<br>
+<b><li style="margin-left:60px; color: #2c4786;">Greater</li></b>
+<a href="#greatercomp2" style="margin-left:80px;">greatercomp2</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">Any - All</li></b>
 <a href="#any" style="margin-left:80px;">any</a>
@@ -638,8 +680,8 @@ x </th><th> is a vector containing all the values you want the probability from<
 <h3>#Example(s)</h3>
 <div class = "Div"><code>double min = -2;</code>
 <br><code>double max = 10;</code>
-<br><code>std::vector<double> vec = {-7, -2, 3.5, 8, 12, 56};</code>
-<br><code>std::vector<double> out = dunif(vec, min, max);</code>
+<br><code>std::vector&lt;double&gt; vec = {-7, -2, 3.5, 8, 12, 56};</code>
+<br><code>std::vector&lt;double&gt; out = dunif(vec, min, max);</code>
 <br><code>print_nvec(out);</code>
 <br><code>:0: 0 0.0833333 0.0833333 0.0833333 0 0</code>
 </div>
@@ -661,8 +703,8 @@ x </th><th> is a vector containing the values you want the cumulative probabilit
 <h3>#Example(s)</h3>
 <div class = "Div"><code>double min = -2;</code>
 <br><code>double max = 10;</code>
-<br><code>std::vector<double> vec = {-7, -2, 3.5, 8, 12, 56};</code>
-<br><code>std::vector<double> out = punif(vec, min, max);</code>
+<br><code>std::vector&lt;double&gt; vec = {-7, -2, 3.5, 8, 12, 56};</code>
+<br><code>std::vector&lt;double&gt; out = punif(vec, min, max);</code>
 <br><code>print_nvec(out);</code>
 <br><code>:0: 0 0.000833333 0.459167 0.834167 1 1</code>
 </div>
@@ -683,9 +725,9 @@ x </th><th> is the probability vector </th></tr>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>double min = -2;</code>
 <br><code>double max = 10;</code>
-<br><code>std::vector<double> vec = {-7, -2, 3.5, 8, 12, 56};</code>
-<br><code>std::vector<double> vec2 = {0.2, 0.4, 0.5, 0.6, 0.75};</code>
-<br><code>std::vector<double> out = qunif(vec2, min, max);</code>
+<br><code>std::vector&lt;double&gt; vec = {-7, -2, 3.5, 8, 12, 56};</code>
+<br><code>std::vector&lt;double&gt; vec2 = {0.2, 0.4, 0.5, 0.6, 0.75};</code>
+<br><code>std::vector&lt;double&gt; out = qunif(vec2, min, max);</code>
 <br><code>print_nvec(out);</code>
 <br><code>:0: 3.6 5.2 6 6.8 8</code>
 </div>
@@ -1031,7 +1073,8 @@ p </th><th> is the vector of probabilities</th></tr>
 <hr class="hr">
 <h2 id="rpois" style="test-align: left;">rpois</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::vector&lt;unsigned int&gt; rpois(unsigned int &n, unsigned int lambda)<h3>#Description</h3>
+<div class="Div"><code>std::vector&lt;unsigned int&gt; rpois(unsigned int &n, unsigned int lambda)</code></div>
+<h3>#Description</h3>
 <p></p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
@@ -1061,9 +1104,425 @@ n </th><th> is the number of observations</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h4 style="color:#2c4786;">Exponential distribution</h4>
+<h2 id="dexp" style="test-align: left;">dexp</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; dexp(std::vector&lt;double&gt; &x, double &rate)</code></div>
+<h3>#Description</h3>
+<p>Returns the probability distribution of the exponential distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the vector containing the values you want the probability from</th></tr>
+<tr><th>rate </th><th> is the rate value for the exponential distribution, given by 1 / mean</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double rate = 0.2;</code>
+<br><code>std::vector&lt;double&gt; vec = {1, 2, 3, 4, 5, 6};</code>
+<br><code>std::vector&lt;double&gt; out = dexp(vec, rate);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.163746 0.134064 0.109762 0.0898658 0.0735759 0.0602388</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="pexp" style="test-align: left;">pexp</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; pexp(std::vector&lt;double&gt; &x, double &rate, double step = 0.01)</code></div>
+<h3>#Description</h3>
+<p>Returns the cumulative probability distribution for the exponential distribution.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the vector of the values you want the cumulative probability distribution from, must be ascendly sorted</th></tr>
+<tr><th>rate </th><th> is the rate for the exponential distribution</th></tr>
+<tr><th>step </th><th> the lower it is the more accurate the result will be</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>:0: 0.00163746 0.148559 0.271287 0.37067 0.452038 0.518657</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="qexp" style="test-align: left;">qexp</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; qexp(std::vector&lt;double&gt; &p, double &rate)</code></div>
+<h3>#Description</h3>
+<p>Returns the quantile of the exponential probability distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+p </th><th> is the vector of probabilities</th></tr>
+<tr><th>rate </th><th> is the rate of the exponential distribution</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double rate = 0.2;</code>
+<br><code>std::vector&lt;double&gt; vec2 = {0.1, 0.2, 0.3, 0.4, 0.5, 0.75};</code>
+<br><code>std::vector&lt;double&gt; out = qexp(vec2, rate);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.526803 1.11572 1.78337 2.55413 3.46574 6.93147</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="rexp" style="test-align: left;">rexp</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; rexp(unsigned int &n, double rate)</code></div>
+<h3>#Description</h3>
+<p>Returns a pseudo-random distribution of the exponential distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+n </th><th> is the number of observations</th></tr>
+<tr><th>rate </th><th> is the rate of the exponential distribution</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double rate = 0.2;</code>
+<br><code>unsigned int n = 100;</code>
+<br><code>std::vector&lt;double&gt; out = rexp(n, rate);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 13.2 13.2 2.79385  2.79385  2.79385  </code>
+<br><code>13.6804 13.6804 4.10504  4.10504  15.9378 </code>
+<br><code>15.9378 5.60406  5.60406  21.5331 21.5331 </code>
+<br><code>10.4864 10.4864 5.20657  5.20657  5.20657  </code>
+<br><code>5.20657  5.20657  5.20657  5.20657</code>
+<br><code>:25: 5.20657  5.20657  5.20657  5.20657  5.20657  </code>
+<br><code>4.80913  4.80913  4.80913  4.80913  4.80913  4.80913  </code>
+<br><code>4.80913  4.80913  4.80913  4.80913  4.80913  4.80913  </code>
+<br><code>4.80913  4.80913  5.3978  5.3978  5.3978  5.3978  5.3978</code>
+<br><code>:50: 5.3978  5.3978  5.3978  5.3978  5.3978  4.57492  </code>
+<br><code>4.57492  4.57492  4.57492  4.57492  4.57492  4.57492</code>
+<br><code>4.57492  4.57492  4.57492  4.57492  4.57492  5.58841  </code>
+<br><code>5.63733  5.63733  5.63733  5.63733  5.63733  5.63733</code>
+<br><code>:75: 5.63733  5.63733  4.35393  4.35393  4.35393  4.35393  </code>
+<br><code>4.35393  4.35393  4.35393  4.35393  4.35393  4.35393  </code>
+<br><code>4.35393  5.82063  5.82063  5.82063  5.82063  5.82063  </code>
+<br><code>5.82063  5.82063  5.82063  4.19025  4.19025  4.19025</code>
+<br><code>:100: 4.19025</code>
+<br><code>Mean(out);</code>
+<br><code>5.94307</code>
+<br><code>Sd(out);</code>
+<br><code>4.29426</code>
+</div>
+<br>
+<hr class="hr">
+<h4 style="color:#2c4786;">Cauchy</h4>
+<h2 id="dcauchy" style="test-align: left;">dcauchy</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; dcauchy(std::vector&lt;double&gt; &x, double location = 0, double scale = 1)</code></div>
+<h3>#Description</h3>
+<p>Returns the probability distribution of the cauchy distribution.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the vector of values you want the probability from</th></tr>
+<tr><th>location </th><th> is the x coordinate</th></tr>
+<tr><th>scale </th><th> is the t coordinate</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double location = 0;</code>
+<br><code>double scale = 1;</code>
+<br><code>std::vector&lt;double&gt; vec = {-2, -1, 0, 1, 2, 4};</code>
+<br><code>std::vector&lt;double&gt; out = dcauchy(vec, location, scale);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.063662 0.159155 0.31831 0.159155 0.063662 0.0187241</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="pcauchy" style="test-align: left;">pcauchy</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; pcauchy(std::vector&lt;double&gt; &x, double location = 0, double scale = 1)</code></div>
+<h3>#Description</h3>
+<p>Returns the cumulative probability distribution of the cauchy distribution (starts from first value).</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the vector of values you want the cumulative probability from</th></tr>
+<tr><th>location </th><th> is the x coordinate</th></tr>
+<tr><th>scale </th><th> is the t coordinate</th></tr>
+<tr><th>step </th><th> the lowest it is the more accurate the result gets</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double location = 0;</code>
+<br><code>double scale = 1;</code>
+<br><code>std::vector&lt;double&gt; vec = {-2, -1, 0, 1, 2, 4};</code>
+<br><code>std::vector&lt;double&gt; out = pcauchy(vec, location, scale);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.000634083 0.10305 0.35305 0.60305 0.705467 0.775071 </code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="qcauchy " style="test-align: left;">qcauchy </h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; qcauchy(std::vector&lt;double&gt; &p, double location = 0, double scale = 1)</code></div>
+<h3>#Description</h3>
+<p>Returns the quantile of the cauchy probability distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+p </th><th> is the vector containing the probabilities</th></tr>
+<tr><th>location </th><th> is the x coordiante</th></tr>
+<tr><th>scale </th><th> is the y coordinate</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double location = 0;</code>
+<br><code>double scale = 1;</code>
+<br><code>std::vector&lt;double&gt; vec = {0.1, 0.25, 0.4, 0.5, 0.63, 0.78};</code>
+<br><code>std::vector&lt;double&gt; out = qcauchy(vec, location, scale);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: -3.07768 -1 -0.32492 0  0.432739  1.20879</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="rcauchy" style="test-align: left;">rcauchy</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; rcauchy(unsigned int n, double x = 0, double y = 1)</code></div>
+<h3>#Description</h3>
+<p>Returns a pseudo-random generation of numbers following a cauchy distribution.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+n </th><th> is the number of numbers to generate</th></tr>
+<tr><th>x </th><th> is the x coordinate</th></tr>
+<tr><th>y </th><th> is the y coordinate</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int ref_min = -2;</code>
+<br><code>double location = -4;</code>
+<br><code>double scale = 8;</code>
+<br><code>unsigned int n = 100;</code>
+<br><code>std::vector&lt;double&gt; out = rcauchy(n, location, scale);</code>
+<br><code>std::vector&lt;bool&gt; out2 = supcmp(out, ref_min);</code>
+<br><code>sum(out2);</code>
+<br><code>42 </code>
+</div>
+<br>
+<hr class="hr">
+<h4 style="color:#2c4786;">Gamma distribution</h4>
+<h2 id="dgamma" style="test-align: left;">dgamma</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; dgamma(std::vector&lt;double&gt; &x, double &shape, double &rate)</code></div>
+<h3>#Description</h3>
+<p>Returns the gamma density probability distribution. Uses a normal law of mean = 1/rate * shape and sd = 1/rate * sqrt(shape) to approximate for shape value greater than 171</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector composed of the x values</th></tr>
+<tr><th>shape </th><th> is the alpha value</th></tr>
+<tr><th>rate </th><th> is the rate value (lambda or 1/theta)</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; vec = {6444, 6666, 6888};</code>
+<br><code>double shape = 3333;</code>
+<br><code>double rate = 0.5;</code>
+<br><code>std::vector&lt;double&gt; out = dgamma(vec, shape, rate);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.000544178 0.00345511 0.000544178</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="pgamma" style="test-align: left;">pgamma</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; pgamma(std::vector&lt;double&gt; &x, double &shape, double &rate, double step)</code></div>
+<h3>#Description</h3>
+<p>Returns the gamma cmulative probability distribution between an interval (first x value to last x value)</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input x values, must be ascendly sorted</th></tr>
+<tr><th>shape </th><th> is the alpha value</th></tr>
+<tr><th>rate </th><th> is the lambda value, 1/theta</th></tr>
+<tr><th>step </th><th> the lower it is, the more accurate the result will be at a computational cost</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; vec = {6444, 6555, 6666, 6888};</code>
+<br><code>double shape = 3333;</code>
+<br><code>double rate = 0.5;</code>
+<br><code>double step = 0.1;</code>
+<br><code>std::vector&lt;double&gt; out = pgamma(vec, shape, rate, step);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 5.44178e-05 0.141121 0.473211 0.946151</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="qgamma" style="test-align: left;">qgamma</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; qgamma(std::vector&lt;double&gt; &x, double &shape, double &rate, double step)</code></div>
+<h3>#Description</h3>
+<p>Returns the quantile value of the gamma probability distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector of probabilities, must be ascendly sorted</th></tr>
+<tr><th>shape </th><th> is the alpha value</th></tr>
+<tr><th>rate </th><th> is the lambda value (1 / theta)</th></tr>
+<tr><th>step </th><th> the lower it is, the more accurate the result will be at a cmputational cost</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; vec = {0.26, 0.45, 0.5, 0.6, 0.88};</code>
+<br><code>double shape = 3333;</code>
+<br><code>double rate = 0.5;</code>
+<br><code>double step = 0.1;</code>
+<br><code>std::vector&lt;double&gt; out = qgamma(vec, shape, rate, step);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 6591.86 6651.56 6666.06 6695.36 6801.76</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="rgamma" style="test-align: left;">rgamma</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; rgamma(unsigned int &n, double &shape, double &rate, double step)</code></div>
+<h3>#Description</h3>
+<p>Generates pseudo-random variables that follow a gamma probability distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+n </th><th> is the number of observations, more than 1</th></tr>
+<tr><th>shape </th><th> is the alpha value</th></tr>
+<tr><th>rate </th><th> is the lambda (1 / theta)</th></tr>
+<tr><th>step </th><th> the lower it is, the more the result will be accurate, at a computational cost</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>unsigned int n = 100;</code>
+<br><code>double shape = 3333;</code>
+<br><code>double rate = 0.25;</code>
+<br><code>double step = 0.01;</code>
+<br><code>std::vector<double> out = rgamma(n, shape, rate, step);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 12794.8 12857.7 12897.7 12927.7 12952.2 12973 12991.2 </code>
+<br><code>13007.5 13022.4 13036.1 13048.8 13060.7 13071.9 13082.5 13092.7</code>
+<br><code>13102.4 13111.7 13120.6 13129.3 13137.7 13145.8 13153.7 13161.4</code>
+<br><code>13168.9</code>
+<br><code>:25: 13183.4 13190.5 13197.4 13204.2 13210.9 13217.5 13224 13230.4</code>
+<br><code>13236.8 13243 13249.2 13255.4 13261.5 13267.5 13273.5 13279.5</code>
+<br><code>13285.4 13291.3 13297.1 13303 13308.8 13314.6 13320.4 13326.2</code>
+<br><code>:50: 13337.8 13343.6 13349.4 13355.2 13361 13366.9 13372.7 13378.6</code>
+<br><code>13384.6 13390.5 13396.5 13402.6 13408.6 13414.8 13421 13427.3</code>
+<br><code>13433.6 13440 13446.5 13453.1 13459.8 13466.6 13473.5 13480.6</code>
+<br><code>:75: 13495.1 13502.6 13510.3 13518.2 13526.4 13534.7 13543.4 </code>
+<br><code>13552.4 13561.7 13571.3 13581.5 13592.1 13603.3 13615.3 13628 </code>
+<br><code>13641.6 13656.5 13672.8 13691 13711.9 13736.3 13766.3 13806.3</code>
+<br><code>13869.2</code>
+<br><code>:100: 13276.2</code>
+</div>
+<br>
+<hr class="hr">
+<h4 style="color:#2c4786;">Beta distribution</h4>
+<h2 id="dbeta" style="test-align: left;">dbeta</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; dbeta(std::vector&lt;double&gt; &x, double &a, double &b, double normalisation_step = 1)</code></div>
+<h3>#Description</h3>
+<p>Returns the beta density probability distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the vector of the probabilities</th></tr>
+<tr><th>a </th><th> is alpha, number of successes</th></tr>
+<tr><th>b </th><th> is beta, the number of failures</th></tr>
+<tr><th>normalisation_step </th><th> is the probability unit of the x vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double a = 40;</code>
+<br><code>double b = 60;</code>
+<br><code>std::vector&lt;double&gt; vec = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1};</code>
+<br><code>double step = 0.005;</code>
+<br><code>std::vector&lt;double&gt; out = dbeta(vec, a, b, step);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0 1.24746e-15 1.1697e-06 0.00428754 0.0410157 </code>
+<br><code>0.00547615 1.23346e-05 1.87358e-10 1.06384e-18 0</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="pbeta" style="test-align: left;">pbeta</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; pbeta(std::vector&lt;double&gt; &x, double &a, double &b, double step = 0.01)</code></div>
+<h3>#Description</h3>
+<p>Returns the beta cumulative probability distribution, of an interval of the first input value to the last input value (from the input vector of probabilities)</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the vector of the probabilities, must be ascendly sorted</th></tr>
+<tr><th>a </th><th> is alpha, the number of successes</th></tr>
+<tr><th>b </th><th> is beta, the number of failures</th></tr>
+<tr><th>step </th><th> the lower this value is, the more accurate the result will be at a computational cost</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double a = 40;</code>
+<br><code>double b = 60;</code>
+<br><code>std::vector&lt;double&gt; vec = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1};</code>
+<br><code>double step = 0.005;</code>
+<br><code>std::vector&lt;double&gt; out = pbeta(vec, a, b, step);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0 2.65054e-16 1.23119e-06 0.0129867 0.468685 0.974149 </code>
+<br><code>0.999966 1 1 1</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="qbeta" style="test-align: left;">qbeta</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; qbeta(std::vector&lt;double&gt; &x, double &a, double &b, double step = 0.01)</code></div>
+<h3>#Description</h3>
+<p>Returns the quantile of given probabilities according to the beta probability distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the vector of probabilities you want the probabilities from</th></tr>
+<tr><th>a </th><th> is alpha, the number of successes</th></tr>
+<tr><th>b </th><th> is beta, the number of failures</th></tr>
+<tr><th>step </th><th> the lower this value is, the more accurate the result will be at a computational cost</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double a = 40;</code>
+<br><code>double b = 60;</code>
+<br><code>std::vector&lt;double&gt; vec = {0.3, 0.55, 0.9, 0.99};</code>
+<br><code>double step = 0.005;</code>
+<br><code>std::vector&lt;double&gt; out = qbeta(vec2, a, b, step);</code>
+<br><code>print_nvec(out);</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="rbeta" style="test-align: left;">rbeta</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; rbeta(unsigned int &n, double &a, double &b, double step = 0.01)</code></div>
+<h3>#Description</h3>
+<p>Returns pseudo-ranomly value that follow a beta probability distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+n </th><th> is the number of observations, values to generate</th></tr>
+<tr><th>a </th><th> is alpha, the number of successes</th></tr>
+<tr><th>b </th><th> is beta, the number of failures</th></tr>
+<tr><th>step </th><th> the lower this value is, the more accurate the result will be</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double a = 40;</code>
+<br><code>double b = 60;</code>
+<br><code>std::vector&lt;double&gt; vec = {0.3, 0.55, 0.9, 0.99};</code>
+<br><code>double step = 0.005;</code>
+<br><code>unsigned int n = 100;</code>
+<br><code>std::vector&lt;double&gt; out = rbeta(n, a, b, step);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.29716 0.31027 0.31901 0.32338 0.32775 0.33212</code>
+<br><code>0.33649 0.34086 0.34086 0.34523 0.34523 0.3496 0.35397</code>
+<br><code>0.35397 0.35397 0.35834 0.35834 0.36271 0.36271 0.36708</code>
+<br><code>0.36708 0.36708 0.37145 0.37145</code>
+<br><code>:25: 0.37582 0.37582 0.37582 0.38019 0.38019 0.38019 </code>
+<br><code>0.38456 0.38456 0.38456 0.38893 0.38893 0.38893 0.38893</code>
+<br><code>0.3933 0.3933 0.3933 0.39767 0.39767 0.39767 0.39767 </code>
+<br><code>0.40204 0.40204 0.40204 0.40641</code>
+<br><code>:50: 0.40641 0.40641 0.41078 0.41078 0.41078 0.41515 </code>
+<br><code>0.41515 0.41515 0.41515 0.41952 0.41952 0.41952 0.42389</code>
+<br><code>0.42389 0.42389 0.42389 0.42826 0.42826 0.42826 0.43263</code>
+<br><code>0.43263 0.43263 0.437 0.437</code>
+<br><code>:75: 0.44137 0.44137 0.44574 0.44574 0.44574 0.45011 0.45011</code>
+<br><code>0.45448 0.45448 0.45448 0.45885 0.46322 0.46322 0.46759</code>
+<br><code>0.46759 0.47196 0.47633 0.47633 0.4807 0.48507 0.49381 0.49818</code>
+<br><code>0.50692 0.52003</code>
+<br><code>:100: 0.3933</code>
+</div>
+<br>
+<hr class="hr">
 <h3 style="color:#2c4786;">Min - Max</h3>
 <h2 id="min" style="test-align: left;">min</h2>
-<br>template &lt;typename T&gt; T min(const std::vector&lt;T&gt; &x)</code></div>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; T min(const std::vector&lt;T&gt; &x)</code></div>
 <h3>#Description</h3>
 <p>Returns the min element from a vector (int, float, double, bool)</p>
 <p>For finding the index of the min element refer <a href="#match_min">here</a></p>
@@ -1638,6 +2097,46 @@ x </th><th> is an stl vector </th></tr>
 <br><code>obj1.to_comp(vec, vecb, vecc);</code>
 <br><code>out = obj1.result();</code>
 <br><code>1 1 0 1 1 0</code>
+</div>
+<br>
+<hr class="hr">
+<h3 style="color:#2c4786;">Lower</h3>
+<h2 id="lowercomp2" style="test-align: left;">lowercomp2</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; lowercomp2(std::vector&lt;T&gt; &x, std::vector&lt;T2&gt; &x2)</code></div>
+<h3>#Description</h3>
+<p>Returns a boolean vector, 1 if the corresponding values from the first vector is lower than  the corresponding values from the second vecotr. The output vector is the size of the first vector. </p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the first vector</th></tr>
+<tr><th>x2 </th><th> is the second vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; vec = {1, 2.5, -6, 7.8, 2};</code>
+<br><code>std::vector&lt;double&gt; vec = {2, 2};</code>
+<br><code>lowercomp2(vec, vec2);</code>
+<br><code>1 0 1 0 0</code>
+</div>
+<br>
+<hr class="hr">
+<h3 style="color:#2c4786;">Greater</h3>
+<h2 id="greatercomp2" style="test-align: left;">greatercomp2</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; std::vector&lt;bool&gt; greatercomp2(std::vector&lt;T&gt; x, T2 x2)</code></div>
+<h3>#Description</h3>
+<p>Returns a boolean vector, 1 if the corresponding values from the first vector is greater than  the corresponding values from the second vecotr. The output vector is the size of the first vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the first vector</th></tr>
+<tr><th>x2 </th><th> is the second vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; vec = {1, 2.5, -6, 7.8, 2};</code>
+<br><code>std::vector&lt;double&gt; vec = {2, 2, 2, 2, 2};</code>
+<br><code>greatercomp2(vec, vec2);</code>
+<br><code>0 1 0 1 0</code>
 </div>
 <br>
 <hr class="hr">
