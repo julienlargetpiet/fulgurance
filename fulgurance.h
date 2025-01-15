@@ -1950,7 +1950,7 @@ std::vector<double> qgamma(std::vector<double> &x, double &shape, double &rate, 
 //@U std::vector&lt;double&gt; rgamma(unsigned int &n, double &shape, double &rate, double step)
 //@X
 //@D Generates pseudo-random variables that follow a gamma probability distribution
-//@A n : is the number of observations
+//@A n : is the number of observations, more than 1
 //@A shape : is the alpha value
 //@A rate : is the lambda (1 / theta)
 //@A step : the lower it is, the more the result will be accurate, at a computational cost
@@ -2120,6 +2120,72 @@ std::vector<double> qbeta(std::vector<double> &x, double &a, double &b, double s
     };
     rtn_v.push_back(cur_x);
   };
+  return rtn_v;
+};
+
+//@T rbeta
+//@U std::vector&lt;double&gt; rbeta(unsigned int &n, double &a, double &b, double step = 0.01)
+//@X
+//@D Returns pseudo-ranomly value that follow a beta probability distribution
+//@A n : is the number of observations, values to generate
+//@A a : is alpha, the number of successes
+//@A b : is beta, the number of failures
+//@A step : the lower this value is, the more accurate the result will be
+//@X
+//@E double a = 40;
+//@E double b = 60;
+//@E std::vector<double> vec = {0.3, 0.55, 0.9, 0.99};
+//@E double step = 0.005;
+//@E unsigned int n = 100;
+//@E std::vector<double> out = rbeta(n, a, b, step);
+//@E print_nvec(out);
+//@E :0: 0.29716 0.31027 0.31901 0.32338 0.32775 0.33212
+//@E 0.33649 0.34086 0.34086 0.34523 0.34523 0.3496 0.35397
+//@E 0.35397 0.35397 0.35834 0.35834 0.36271 0.36271 0.36708
+//@E 0.36708 0.36708 0.37145 0.37145
+//@E :25: 0.37582 0.37582 0.37582 0.38019 0.38019 0.38019 
+//@E 0.38456 0.38456 0.38456 0.38893 0.38893 0.38893 0.38893
+//@E 0.3933 0.3933 0.3933 0.39767 0.39767 0.39767 0.39767 
+//@E 0.40204 0.40204 0.40204 0.40641
+//@E :50: 0.40641 0.40641 0.41078 0.41078 0.41078 0.41515 
+//@E 0.41515 0.41515 0.41515 0.41952 0.41952 0.41952 0.42389
+//@E 0.42389 0.42389 0.42389 0.42826 0.42826 0.42826 0.43263
+//@E 0.43263 0.43263 0.437 0.437
+//@E :75: 0.44137 0.44137 0.44574 0.44574 0.44574 0.45011 0.45011
+//@E 0.45448 0.45448 0.45448 0.45885 0.46322 0.46322 0.46759
+//@E 0.46759 0.47196 0.47633 0.47633 0.4807 0.48507 0.49381 0.49818
+//@E 0.50692 0.52003
+//@E :100: 0.3933
+//@X
+
+std::vector<double> rbeta(unsigned int &n, double &a, double &b, double step = 0.01) {
+  double proba_step = (double)1 / n;
+  double proba_cnt = proba_step;
+  auto now = std::chrono::system_clock::now();
+  auto duration = now.time_since_epoch();
+  double now_time = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 100;
+  if ((int)now_time % 2 == 0) {
+    step += 0.2 * step * now_time / 100;
+  } else {
+    step -= 0.2 * step * now_time / 100;
+  };
+  std::vector<double> rtn_v;
+  const double divider = std::beta(a + 1, b + 1);
+  double cur_x = 0;
+  double cur_proba = 0;
+  double lst_val1;
+  double lst_val2;
+  for (unsigned int i = 1; i < n; ++i) {
+    while (cur_proba < proba_cnt) {
+      cur_proba += step * std::pow(cur_x, a) * std::pow(1 - cur_x, b) / divider;
+      cur_x += step;
+    };
+    proba_cnt += proba_step;
+    rtn_v.push_back(cur_x);
+  };
+  lst_val1 = rtn_v[(int)now_time % (n - 1)];
+  lst_val2 = rtn_v[(int)(now_time * 5) % (n - 1)];
+  rtn_v.push_back(0.5 * (lst_val1 + lst_val2));
   return rtn_v;
 };
 
