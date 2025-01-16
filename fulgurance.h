@@ -4413,6 +4413,54 @@ template <typename T> double diff_mean(std::vector<T> &x) {
 };
 
 //@L1 Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;
+
+//@L2 Sum elements for each rows and columns
+
+//@T sum_nxp
+//@U template &lt;typename T&gt; std::vector&lt;std::vector&lt;T&gt;&gt; sum_nxp(std::vector&lt;std::vector&lt;T&gt;&gt; &matr)
+//@X
+//@D Returns as the first vector the sum of elements in each row, and in the second vector the sum of each elements in each column
+//@A matr : is the input matrice 
+//@X
+//@E std::vector&lt;std::vector&lt;double&gt;&gt; matr = {{1, 2}, {3, 4}, {5, 6}};
+//@E print_matr(matr);
+//@E std::vector&lt;std::vector&lt;double&gt;&gt; outmatr = sum_xnx(matr);
+//@E for (double i : outmatr[0]) {
+//@E   std::cout &lt;&lt; i &lt;&lt; " ";
+//@E };
+//@E std::cout &lt;&lt; "\n";
+//@E for (double i : outmatr[1]) {
+//@E   std::cout &lt;&lt; i &lt;&lt; " ";
+//@E };
+//@E std::cout &lt;&lt; "\n";
+//@E 9 12
+//@E 3 7 11
+//@X
+
+template <typename T> std::vector<std::vector<T>> sum_nxp(std::vector<std::vector<T>> &matr) {
+  std::vector<T> sum_row;
+  std::vector<T> sum_col;
+  const unsigned int n_col = matr.size();
+  const unsigned int n_row = matr[0].size();
+  sum_col.resize(n_col, 0);
+  sum_row.reserve(n_row);
+  unsigned int i = 0;
+  unsigned int i2 = 0;
+  T cur_sum;
+  T cur_val;
+  for (i = 0; i < n_row; ++i) {
+    cur_sum = 0;
+    for (i2 = 0; i2 < n_col; ++i2) {
+      cur_val = matr[i2][i];
+      sum_col[i2] += cur_val;
+      cur_sum += cur_val;
+    };
+    sum_row.push_back(cur_sum);
+  };
+  std::vector<std::vector<T>> rtn_sums = {sum_row, sum_col};
+  return rtn_sums;
+};
+
 //@L2 Transposition
 
 //@T t
