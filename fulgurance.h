@@ -2167,7 +2167,7 @@ std::vector<double> qbeta(std::vector<double> &x, double &a, double &b, double s
 //@A n : is the number of observations, values to generate
 //@A a : is alpha, the number of successes
 //@A b : is beta, the number of failures
-//@A step : the lower this value is, the more accurate the result will be
+//@A step : the lower this value is, the more accurate the result will be. Have to be lowered if the output starts having clone values, it can happen when n is very high
 //@X
 //@E double a = 40;
 //@E double b = 60;
@@ -2346,6 +2346,82 @@ std::vector<double> qchisq(std::vector<double> &x, double &degf, double step = 0
       rtn_v.push_back(cur_x);
     };
   };
+  return rtn_v;
+};
+
+//@T rchisq
+//@U std::vector&lt;double&gt; rchisq(unsigned int &n, double &degf, double step = 0.05)
+//@X
+//@D Returns pseudo-random values that follow a chi square probability distribution
+//@A n : is the number of observations
+//@A degf : is the degree of freedom
+//@A step : the lower it is the more accurate the result is. Have to be lowered if the output begins to have clone values. It can happen if n is very high
+//@X
+//@E unsigned int n = 100;
+//@E double degf = 240;
+//@E std::vector<double> out = rchisq(n, degf);
+//@E print_nvec(out);
+//@E :0: 192.049 197.248 200.571 203.09 205.181 206.95 
+//@E 208.558 209.951 211.238 212.417 213.542 214.614 215.579 
+//@E 216.544 217.402 218.313 219.117 219.921 220.671 221.422 
+//@E 222.172 222.869 223.566 224.262
+//@E :25: 225.602 226.246 226.889 227.478 228.122 228.711 
+//@E 229.301 229.89 230.48 231.07 231.606 232.195 232.785 
+//@E 233.321 233.91 234.446 234.982 235.572 236.108 236.644 
+//@E 237.18 237.77 238.306 238.842
+//@E :50: 239.914 240.503 241.039 241.575 242.165 242.701 
+//@E 243.29 243.826 244.416 244.952 245.542 246.131 246.721 
+//@E 247.31 247.9 248.543 249.133 249.776 250.419 251.062 251.706 
+//@E 252.349 253.046 253.742
+//@E :75: 255.19 255.94 256.69 257.441 258.245 259.102 259.96 260.871 
+//@E 261.782 262.801 263.819 264.891 266.017 267.25 268.536 269.93 
+//@E 271.43 273.146 275.022 277.166 279.738 282.901 287.189 293.942
+//@E :100: 223.914
+//@X
+
+std::vector<double> rchisq(unsigned int &n, double &degf, double step = 0.05) {
+  auto now = std::chrono::system_clock::now();
+  auto duration = now.time_since_epoch();
+  double now_time = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 100;
+  if ((int)now_time % 2 == 0) {
+    step += 0.3 * step * now_time / 100;
+  } else {
+    step -= 0.3 * step * now_time / 100;
+  };
+  std::vector<double> rtn_v;
+  double mid_degf = degf / 2;
+  const double divider = pow(2, mid_degf) * std::tgamma(mid_degf);
+  const double mid_degf_min = mid_degf - 1;
+  const double mean = degf;
+  const double sd = std::pow(2 * degf, 0.5);
+  double cur_x = 0;
+  double cur_proba = 0;
+  const double ref_proba = (double)1 / n;
+  double proba_cnt = ref_proba;
+  double last_val1;
+  double last_val2;
+  if (mid_degf < 172) {
+    for (unsigned int i = 1; i < n; ++i) {
+      while (cur_proba < proba_cnt) {
+        cur_proba += (step * pow(cur_x, mid_degf_min) * std::exp(-0.5 * cur_x)) / divider;
+        cur_x += step;
+      };
+      proba_cnt += ref_proba;
+      rtn_v.push_back(cur_x);
+    };
+  } else {
+    for (unsigned int i = 1; i < n; ++i) {
+      while (cur_proba < proba_cnt) {
+        cur_proba += step * std::exp(-0.5 * std::pow((cur_x - mean) / sd, 2)) / (sd * std::pow(2 * M_PI, 0.5));
+        cur_x += step;
+      };
+      proba_cnt += ref_proba;
+      rtn_v.push_back(cur_x);
+    };
+  };
+  last_val1 = rtn_v[(int)now_time % (n - 1)];
+  last_val2 = rtn_v[(int)now_time * 5 % (n - 1)];
+  rtn_v.push_back(0.5 * (last_val1 + last_val2));
   return rtn_v;
 };
 
