@@ -2425,6 +2425,22 @@ std::vector<double> rchisq(unsigned int &n, double &degf, double step = 0.05) {
   return rtn_v;
 };
 
+//@T test_chisq_fit
+//@U bool test_chisq_fit(std::vector&lt;double&gt; theoretical, std::vector&lt;double&gt; observed, double a_value = 0.05, double step = 0.05)
+//@X
+//@D Performs a chi square goodness of fit test. Returns 1 if the observed values fit the observed values at a given p_value, 0 else
+//@A theoretical : is the vector containing all the theoretical data
+//@A observed : is the vector containing all the observed data
+//@A a_value : is the significance level
+//@A step : the lower this value is the more accurate the result wil be at a computational cost
+//@X
+//@E std::vector<double> theoretical = {20, 20, 30, 40, 60, 30};
+//@E std::vector<double> observed = {30, 14, 34, 45, 57, 20};
+//@E double a_value = 0.05;
+//@E bool out = test_chisq_fit(theoretical, observed, a_value);
+//@E 0 // the observed data does not fit the theoretical data
+//@X
+
 //@L3 Min - Max
 
 //@T min
