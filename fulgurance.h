@@ -2260,6 +2260,51 @@ std::vector<double> dchisq(std::vector<double> &x, double &degf) {
   return rtn_v;
 };
 
+//@T pchisq
+//@U std::vector&lt;double&gt; pchisq(std::vector&lt;double&gt; &x, double &degf, double step = 0.05)
+//@X
+//@D Returns the chi square cumulative probability function
+//@A x : is the input vector of quantiles, must be ascendly sorted
+//@A degf : is the degree of freedom
+//@A step : the lower this value is the more accurate the result will be at a computational cost
+//@X
+//@E std::vector&lt;double&gt; vec = {180, 200, 210, 250, 290, 310};
+//@E double degf = 240;
+//@E std::vector&lt;double&gt; out = pchisq(vec, degf);
+//@E print_nvec(out);
+//@E :0: 1.31851e-05 0.0266942 0.0790938 0.682744 
+//@E 0.983524 0.996995
+//@X
+
+std::vector<double> pchisq(std::vector<double> &x, double &degf, double step = 0.05) {
+  std::vector<double> rtn_v;
+  double mid_degf = degf / 2;
+  const double divider = pow(2, mid_degf) * std::tgamma(mid_degf);
+  const double mid_degf_min = mid_degf - 1;
+  const double mean = degf;
+  const double sd = std::pow(2 * degf, 0.5);
+  double cur_x = x[0];
+  double cur_proba = 0;
+  if (mid_degf < 172) {
+    for (double val : x) {
+      while (cur_x <= val) {
+        cur_proba += (step * pow(cur_x, mid_degf_min) * std::exp(-0.5 * cur_x)) / divider;
+        cur_x += step;
+      };
+      rtn_v.push_back(cur_proba);
+    };
+  } else {
+    for (double val : x) {
+      while (cur_x <= val) {
+        cur_proba += step * std::exp(-0.5 * std::pow((cur_x - mean) / sd, 2)) / (sd * std::pow(2 * M_PI, 0.5));
+        cur_x += step;
+      };
+      rtn_v.push_back(cur_proba);
+    };
+  };
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
