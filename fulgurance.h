@@ -2226,6 +2226,40 @@ std::vector<double> rbeta(unsigned int &n, double &a, double &b, double step = 0
   return rtn_v;
 };
 
+//@T dchisq
+//@U std::vector&lt;double&gt; dchisq(std::vector&lt;double&gt; &x, double &degf)
+//@X
+//@D Returns the chi square density probability function
+//@A x : is the input vector of quantiles
+//@A degf : is the degree of freedom
+//@X
+//@E std::vector&lt;double&gt; vec = {180, 200, 210, 250, 290, 310};
+//@E double degf = 240;
+//@E std::vector&lt;double&gt; out = dchisq(vec, degf);
+//@E print_nvec(out);
+//@E :0: 0.000263702 0.00333664 0.00747074 0.0157848 
+//@E 0.00152353 0.000193457
+//@X
+
+std::vector<double> dchisq(std::vector<double> &x, double &degf) {
+  std::vector<double> rtn_v;
+  double mid_degf = degf / 2;
+  const double divider = pow(2, mid_degf) * std::tgamma(mid_degf);
+  const double mid_degf_min = mid_degf - 1;
+  const double mean = degf;
+  const double sd = std::pow(2 * degf, 0.5);
+  if (mid_degf < 172) {
+    for (double val : x) {
+      rtn_v.push_back((pow(val, mid_degf_min) * std::exp(-0.5 * val)) / divider);
+    };
+  } else {
+    for (double val : x) {
+      rtn_v.push_back(std::exp(-0.5 * std::pow((val - mean) / sd, 2)) / (sd * std::pow(2 * M_PI, 0.5)));
+    };
+  };
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
