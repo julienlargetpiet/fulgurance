@@ -2226,6 +2226,8 @@ std::vector<double> rbeta(unsigned int &n, double &a, double &b, double step = 0
   return rtn_v;
 };
 
+//@L4 Chi Square distribution
+
 //@T dchisq
 //@U std::vector&lt;double&gt; dchisq(std::vector&lt;double&gt; &x, double &degf)
 //@X
@@ -2459,6 +2461,67 @@ std::vector<double> rchisq(unsigned int &n, double &degf, double step = 0.05) {
 //@E bool out = test_chisq_independance(matr, a_value, step);
 //@E 0 // the variables are independant
 //@X
+
+//@L4 Geometric distributions
+
+//@T dgeom
+//@U std::vector&lt;double&gt; dgeom(std::vector&lt;unsigned int&gt; &x, double &p)
+//@X
+//@D Returns the geometric density probability distribution
+//@A x : is the input vector of quantiles, representing the number of failures before success
+//@A p : is the probability of success
+//@X
+//@E std::vector&lt;unsigned int&gt; vec = {2, 3, 4, 5};
+//@E double p = (double)1 / 6;
+//@E std::vector&lt;double&gt; out = dgeom(vec, p);
+//@E print_nvec(out);
+//@E :0: 0.115741 0.0964506 0.0803755 0.0669796
+//@X
+
+std::vector<double> dgeom(std::vector<unsigned int> &x, double &p) {
+  std::vector<double> rtn_v;
+  rtn_v.reserve(x.size());
+  const double failure = 1 - p;
+  for (unsigned int val : x) {
+    rtn_v.push_back(std::pow(failure, val) * p);
+  };
+  return rtn_v;
+};
+
+//@T pgeom
+//@U std::vector&lt;double&gt; pgeom(std::vector&lt;unsigned int&gt; &x, double &p)
+//@X
+//@D Returns the geometric cumulative probability distribution (interval between firts value in vector and last, see example)
+//@A x : is the input vector of quantiles, representing the number of failures before success
+//@A p : is the probability of success
+//@X
+//@E std::vector&lt;unsigned int&gt; vec = {2, 3, 4, 5};
+//@E double p = (double)1 / 6;
+//@E std::vector&lt;double&gt; out = pgeom(vec, p);
+//@E print_nvec(out);
+//@E :0: 0.115741 0.212191 0.292567 0.359546
+//@X
+
+std::vector<double> pgeom(std::vector<unsigned int> &x, double &p) {
+  std::vector<double> rtn_v;
+  const unsigned int n = x.size();
+  rtn_v.reserve(n);
+  const double failure = 1 - p;
+  double cnt = x[0];
+  double cur_prob = std::pow(failure, cnt) * p;
+  rtn_v.push_back(cur_prob);
+  if (n > 1) {
+    cnt += 1;
+    for (unsigned int i = 1; i < n; ++i) {
+      while (cnt - 1 < x[i]) {
+        cur_prob += std::pow(failure, cnt) * p;
+        cnt += 1;
+      };
+      rtn_v.push_back(cur_prob);
+    };
+  };
+  return rtn_v;
+};
 
 //@L3 Min - Max
 
