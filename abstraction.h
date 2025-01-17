@@ -238,13 +238,65 @@ bool test_chisq_fit(std::vector<double> theoretical, std::vector<double> observe
   };
 };
 
+//@T test_chisq_independance
+//@U bool test_chisq_independance(std::vector&lt;std::vector&lt;double&gt;&gt; &matr, double a_value = 0.05, double step = 0.05)
+//@X
+//@D Performs a chi square independance test. Returns 0 if the variables are independant, 1 else
+//@A matr is the input matrice (observed values)
+//@A a_value : is the significance level (the greater it is the more likely the 2 variables will be percieved as independant) 
+//@A step : the lower this value is the more accurate the result will be at a computational cost
+//@X
+//@E std::vector&lt;std::vector&lt;double&gt;&gt; matr = {{8, 16, 11, 10}, 
+//@E                                            {9, 27, 22, 16}, 
+//@E                                            {7, 13, 8, 12},
+//@E                                            {9, 13, 12, 7}};
+//@E print_matr(matr);
+//@E double step = 0.05;
+//@E double a_value = 0.05;
+//@E bool out = test_chisq_independance(matr, a_value, step);
+//@E 0 // the variables are independant
+//@X
 
-
-
-
-
-
-
+bool test_chisq_independance(std::vector<std::vector<double>> &matr, double a_value = 0.05, double step = 0.05) {
+  std::vector<double> sum_col;
+  std::vector<double> sum_row;
+  double n = 0;
+  const unsigned int n_col = matr.size();
+  const unsigned int n_row = matr[0].size();
+  sum_col.resize(n_col, 0);
+  sum_row.reserve(n_row);
+  unsigned int i = 0;
+  unsigned int i2 = 0;
+  double cur_sum;
+  double cur_val;
+  std::vector<double> ref_probv;
+  double ref_prob;
+  double degf = (n_row - 1) * (n_col - 1);
+  std::vector<double> delta = {0, 0};
+  for (i = 0; i < n_row; ++i) {
+    cur_sum = 0;
+    for (i2 = 0; i2 < n_col; ++i2) {
+      cur_val = matr[i2][i];
+      sum_col[i2] += cur_val;
+      cur_sum += cur_val;
+    };
+    n += cur_sum;
+    sum_row.push_back(cur_sum);
+  };
+  for (i = 0; i < n_row; ++i) {
+    for (i2 = 0; i2 < n_col; ++i2) {
+      cur_val = sum_row[i] * sum_col[i2] / n;
+      delta[1] += std::pow(matr[i2][i] - cur_val, 2) / cur_val;
+    };
+  };
+  ref_probv = pchisq(delta, degf);
+  ref_prob = 1 - ref_probv[1];
+  if (ref_prob < a_value) {
+    return 1;
+  } else {
+    return 0;
+  };
+};
 
 
 

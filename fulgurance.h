@@ -2441,6 +2441,25 @@ std::vector<double> rchisq(unsigned int &n, double &degf, double step = 0.05) {
 //@E 0 // the observed data does not fit the theoretical data
 //@X
 
+//@T test_chisq_independance
+//@U bool test_chisq_independance(std::vector&lt;std::vector&lt;double&gt;&gt; &matr, double a_value = 0.05, double step = 0.05)
+//@X
+//@D Performs a chi square independance test. Returns 0 if the variables are independant, 1 else
+//@A matr is the input matrice (observed values)
+//@A a_value : is the significance level (the greater it is the more likely the 2 variables will be percieved as independant) 
+//@A step : the lower this value is the more accurate the result will be at a computational cost
+//@X
+//@E std::vector&lt;std::vector&lt;double&gt;&gt; matr = {{8, 16, 11, 10}, 
+//@E                                            {9, 27, 22, 16}, 
+//@E                                            {7, 13, 8, 12},
+//@E                                            {9, 13, 12, 7}};
+//@E print_matr(matr);
+//@E double step = 0.05;
+//@E double a_value = 0.05;
+//@E bool out = test_chisq_independance(matr, a_value, step);
+//@E 0 // the variables are independant
+//@X
+
 //@L3 Min - Max
 
 //@T min
