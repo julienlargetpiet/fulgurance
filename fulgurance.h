@@ -2492,7 +2492,7 @@ std::vector<double> dgeom(std::vector<unsigned int> &x, double &p) {
 //@U std::vector&lt;double&gt; pgeom(std::vector&lt;unsigned int&gt; &x, double &p)
 //@X
 //@D Returns the geometric cumulative probability distribution (interval between firts value in vector and last, see example)
-//@A x : is the input vector of quantiles, representing the number of failures before success
+//@A x : is the input vector of quantiles, representing the number of failures before success, must be ascendly sorted
 //@A p : is the probability of success
 //@X
 //@E std::vector&lt;unsigned int&gt; vec = {2, 3, 4, 5};
@@ -2519,6 +2519,37 @@ std::vector<double> pgeom(std::vector<unsigned int> &x, double &p) {
       };
       rtn_v.push_back(cur_prob);
     };
+  };
+  return rtn_v;
+};
+
+//@T qgeom
+//@U std::vector&lt;unsigned int&gt; qgeom(std::vector&lt;double&gt; &x, double &p)
+//@X
+//@D Returns the quantiles of the input probabilities according to a geometric probability distribution
+//@A x : is the input vector of probabilities, must be ascendly sorted
+//@A p : is the probability of success
+//@X
+//@E std::vector&lt;double&gt; vec2 = {0.2, 0.3, 0.5, 0.52, 0.6, 0.85};
+//@E double p = (double)1 / 6;
+//@E std::vector&lt;unsigned int&gt; out = qgeom(vec2, p);
+//@E print_nvec(out);
+//@E :0: 1  1  3  4  5  10
+//@X
+
+std::vector<unsigned int> qgeom(std::vector<double> &x, double &p) {
+  std::vector<unsigned int> rtn_v;
+  const unsigned int n = x.size();
+  rtn_v.reserve(n);
+  const double failure = 1 - p;
+  double cnt = 0;
+  double cur_prob = 0;
+  for (double val : x) {
+    while (cur_prob < val) {
+      cur_prob += std::pow(failure, cnt) * p;
+      cnt += 1;
+    };
+    rtn_v.push_back(cnt - 1);
   };
   return rtn_v;
 };
