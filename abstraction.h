@@ -298,8 +298,66 @@ bool test_chisq_independance(std::vector<std::vector<double>> &matr, double a_va
   };
 };
 
+//@T rgeom
+//@U std::vector&lt;unsigned int&gt; rgeom(unsigned int &n, double &p)
+//@X
+//@D Returns pseudo-randomly generated values that follow a geometric distribution
+//@A n : is the number of observations
+//@A p : is the probability of success
+//@X
+//@E double p = (double)2 / 9;
+//@E unsigned int n = 100;
+//@E std::vector&lt;unsigned int&gt; out = rgeom(n, p);
+//@E print_nvec(out);
+//@E :0: 8  13 3  0  4  2  0  4  2  11 4  1  12 3  9  
+//@E 5  2  10 15 7  0  5  7  2
+//@E :25: 8  4  3  9  17 2  10 5  2  1  4  8  12 6  1  
+//@E 5  6  9  4  2  0  5  2  1
+//@E :50: 8  2  6  1  13 6  0  4  7  1  4  7  1  5  1  
+//@E 4  3  9  4  2  10 5  2  10
+//@E :75: 1  12 3  8  17 2  9  4  2  11 6  8  3  6  0  
+//@E 5  7  10 5  2  2  3  1  13
+//@E :100: 6
+//@X
 
-
+std::vector<unsigned int> rgeom(unsigned int &n, double &p) {
+  std::vector<double> out;
+  std::vector<unsigned int> rtn_v;
+  unsigned int n_norm = 400;
+  double mean = 1 / p;
+  double sd = std::sqrt(1 / std::pow(p, 2));
+  double r_val;
+  unsigned int r_idx;
+  auto now = std::chrono::system_clock::now();
+  auto duration = now.time_since_epoch();
+  for (unsigned int i = 0; i < n; ++i) {
+    out = rnorm(n_norm, mean, sd);
+    now = std::chrono::system_clock::now();
+    duration = now.time_since_epoch();
+    r_idx = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 400;
+    if (r_idx % 9 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(9));
+    } else if (r_idx % 8 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(8));
+    } else if (r_idx % 6 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(6));
+    } else if (r_idx % 5 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(5));
+    } else if (r_idx % 3 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(3));
+    } else if (r_idx % 2 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(2));
+    } else {
+      std::this_thread::sleep_for(std::chrono::microseconds(1));
+    };
+    r_val = out[r_idx];
+    if (r_val < 0) {
+      r_val *= -1;
+    };
+    rtn_v.push_back(std::round(r_val));
+  };
+  return rtn_v;
+};
 
 
 
