@@ -913,7 +913,7 @@ std::vector<double> rnorm(unsigned int &n, double &mean, double &sd, double nois
   } else {
     addr = 5;
   };
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   rtn_v.reserve(n);
   double cur_prob = 0;
   double x_step = 1 / n2;
@@ -1014,7 +1014,7 @@ std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noi
   } else {
     addr = 5;
   };
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   rtn_v.reserve(n);
   double cur_prob = 0;
   double x_step = 1 / n2;
@@ -1061,7 +1061,7 @@ std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noi
 //@X
 
 template <typename T, typename T2> std::vector<double> qnorm1(std::vector<double> &val, T &mean, T2 &sd, double offset_prob = 0.05) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   rtn_v.reserve(val.size());
   double intr_val = log(offset_prob * sd * pow((2 * M_PI), 0.5));
   double offset;
@@ -1098,7 +1098,7 @@ template <typename T, typename T2> std::vector<double> qnorm1(std::vector<double
 std::vector<double> qnorm2(std::vector<double> &x, double mean, double sd, double step = 0.01) {
   double cur_prob;
   double cur_step;
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   cur_step = step;
   cur_prob = (std::exp(-0.5 * std::pow((cur_step - mean) / sd, 2)) / (sd * std::sqrt(2 * M_PI))) * step;
   for (double qtl : x) {
@@ -1132,7 +1132,7 @@ std::vector<double> qnorm2(std::vector<double> &x, double mean, double sd, doubl
 //@X
 
 template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean, double &sd, double step = 1) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   const double divider = (sd * pow(2 * M_PI, 0.5));
   for (typename std::vector<T>::iterator i = x.begin(); i != x.end(); ++i) {
     rtn_v.push_back((exp(-0.5 * pow(((mean - *i) / sd), 2))) / divider * step);
@@ -1158,7 +1158,7 @@ template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean,
 //@X
 
 template <typename T> std::vector<double> pnorm(std::vector<T> &x, double &mean, double &sd, double step = 0.01) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   const double divider = (sd * powf(2 * M_PI, 0.5));
   double lst_val = 0;
   double lst_x = x[0];
@@ -1191,7 +1191,7 @@ template <typename T> std::vector<double> pnorm(std::vector<T> &x, double &mean,
 //@X
 
 std::vector<double> dbinom(std::vector<unsigned int> &k, unsigned int n, double &p) {
-  std::vector<double> rslt;
+  std::vector<double> rslt = {};
   unsigned int cur_k;
   int numerator = n;
   unsigned int lst_n = n;
@@ -1249,7 +1249,7 @@ std::vector<double> dbinom(std::vector<unsigned int> &k, unsigned int n, double 
 //@X
 
 std::vector<double> pbinom(std::vector<unsigned int> &k, unsigned int n, double &p) {
-  std::vector<double> rslt;
+  std::vector<double> rslt = {};
   unsigned int cur_k;
   int numerator = n;
   int lst_n = n;
@@ -1321,7 +1321,7 @@ std::vector<double> pbinom(std::vector<unsigned int> &k, unsigned int n, double 
 //@X
 
 std::vector<unsigned int> qbinom(std::vector<double> &pvec, unsigned int &n, double &p) {
-  std::vector<unsigned int> rtn_v;
+  std::vector<unsigned int> rtn_v = {};
   double cur_prob = 0;
   double lst_prob;
   double q = 1 - p;
@@ -1422,7 +1422,7 @@ std::vector<unsigned int> qbinom(std::vector<double> &pvec, unsigned int &n, dou
 
 std::vector<double> dpois(std::vector<int> &k, int &lambda) {
   double cur_prob;
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   unsigned int denumerator;
   const double numerator = std::exp(-lambda);
   int idx_k;
@@ -1464,7 +1464,7 @@ std::vector<double> dpois(std::vector<int> &k, int &lambda) {
 
 std::vector<double> ppois(std::vector<int> &k, int &lambda) {
   double cur_prob = 0;
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   unsigned int denumerator;
   const double numerator = std::exp(-lambda);
   int idx_k;
@@ -1512,7 +1512,7 @@ std::vector<double> ppois(std::vector<int> &k, int &lambda) {
 
 std::vector<unsigned int> qpois(std::vector<double> &p, int &lambda) {
   double cur_prob = 0;
-  std::vector<unsigned int> rtn_v;
+  std::vector<unsigned int> rtn_v = {};
   unsigned int denumerator;
   const double numerator = std::exp(-lambda);
   int idx_k;
@@ -1600,7 +1600,7 @@ std::vector<unsigned int> qpois(std::vector<double> &p, int &lambda) {
 //@X
 
 std::vector<double> dexp(std::vector<double> &x, double &rate) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   for (double i : x) {
     rtn_v.push_back(rate * std::exp(-rate * i));
   };
@@ -1619,7 +1619,7 @@ std::vector<double> dexp(std::vector<double> &x, double &rate) {
 //@X
 
 std::vector<double> pexp(std::vector<double> &x, double &rate, double step = 0.01) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   double cur_prob;
   double lst_prob = 1 - std::exp(-rate * (x[0] - step));
   for (double i : x) {
@@ -1644,7 +1644,7 @@ std::vector<double> pexp(std::vector<double> &x, double &rate, double step = 0.0
 //@X
 
 std::vector<double> qexp(std::vector<double> &p, double &rate) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   const unsigned int n = p.size();
   rtn_v.reserve(n);
   for (double i : p) {
@@ -1707,7 +1707,7 @@ std::vector<double> qexp(std::vector<double> &p, double &rate) {
 //@X
 
 std::vector<double> dcauchy(std::vector<double> &x, double location = 0, double scale = 1) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   rtn_v.reserve(x.size());
   for (double i : x) {
     rtn_v.push_back(1 / (scale * M_PI * (1 + std::pow((i - location) / scale, 2))));
@@ -1733,7 +1733,7 @@ std::vector<double> dcauchy(std::vector<double> &x, double location = 0, double 
 //@X
 
 std::vector<double> pcauchy(std::vector<double> &x, double location = 0, double scale = 1, double step = 0.01) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   rtn_v.reserve(x.size());
   double ref_prob = atan((x[0] - step - location) / scale) / M_PI + 0.5;
   for (double i : x) {
@@ -1759,7 +1759,7 @@ std::vector<double> pcauchy(std::vector<double> &x, double location = 0, double 
 //@X
 
 std::vector<double> qcauchy(std::vector<double> &p, double location = 0, double scale = 1) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   rtn_v.reserve(p.size());
   for (double i : p) {
     rtn_v.push_back(std::tan((i * 2 * M_PI - M_PI) / 2));
@@ -1786,7 +1786,7 @@ std::vector<double> qcauchy(std::vector<double> &p, double location = 0, double 
 //@X
 
 std::vector<double> rcauchy(unsigned int n, double x = 0, double y = 1) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   double wait_val;
   double cur_wait_val;
   auto now = std::chrono::system_clock::now();
@@ -1859,7 +1859,7 @@ std::vector<double> rcauchy(unsigned int n, double x = 0, double y = 1) {
 //@X
 
 std::vector<double> dgamma(std::vector<double> &x, double &shape, double &rate) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   double divided;
   const double divider = tgamma(shape);
   const double shape_minus = shape - 1;
@@ -1900,7 +1900,7 @@ std::vector<double> dgamma(std::vector<double> &x, double &shape, double &rate) 
 //@X
 
 std::vector<double> pgamma(std::vector<double> &x, double &shape, double &rate, double &step) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   double divided;
   const double divider = tgamma(shape);
   const double shape_minus = shape - 1;
@@ -1952,7 +1952,7 @@ std::vector<double> pgamma(std::vector<double> &x, double &shape, double &rate, 
 //@X
 
 std::vector<double> qgamma(std::vector<double> &x, double &shape, double &rate, double &step) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   double divided;
   const double divider = tgamma(shape);
   const double shape_minus = shape - 1;
@@ -2016,7 +2016,7 @@ std::vector<double> qgamma(std::vector<double> &x, double &shape, double &rate, 
 //@X
 
 std::vector<double> rgamma(unsigned int &n, double &shape, double &rate, double step) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   double divided;
   const double ref_proba_step = (double)1 / n;
   double proba_cnt = ref_proba_step;
@@ -2086,7 +2086,7 @@ std::vector<double> rgamma(unsigned int &n, double &shape, double &rate, double 
 //@X
 
 std::vector<double> dbeta(std::vector<double> &x, double &a, double &b, double normalisation_step = 0.1) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   const double divider = std::beta(a + 1, b + 1);
   for (double val : x) {
     rtn_v.push_back(normalisation_step * std::pow(val, a) * std::pow(1 - val, b) / divider);    
@@ -2114,7 +2114,7 @@ std::vector<double> dbeta(std::vector<double> &x, double &a, double &b, double n
 //@X
 
 std::vector<double> pbeta(std::vector<double> &x, double &a, double &b, double step = 0.01) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   const double divider = std::beta(a + 1, b + 1);
   double cnt = x[0];
   double cur_rslt = step * std::pow(cnt, a) * std::pow(1 - cnt, b) / divider;
@@ -2146,7 +2146,7 @@ std::vector<double> pbeta(std::vector<double> &x, double &a, double &b, double s
 //@X
 
 std::vector<double> qbeta(std::vector<double> &x, double &a, double &b, double step = 0.01) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   const double divider = std::beta(a + 1, b + 1);
   double cur_x = 0;
   double cur_proba = 0;
@@ -2206,7 +2206,7 @@ std::vector<double> rbeta(unsigned int &n, double &a, double &b, double step = 0
   } else {
     step -= 0.2 * step * now_time / 100;
   };
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   const double divider = std::beta(a + 1, b + 1);
   double cur_x = 0;
   double cur_proba = 0;
@@ -2244,7 +2244,7 @@ std::vector<double> rbeta(unsigned int &n, double &a, double &b, double step = 0
 //@X
 
 std::vector<double> dchisq(std::vector<double> &x, double &degf) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   double mid_degf = degf / 2;
   const double divider = pow(2, mid_degf) * std::tgamma(mid_degf);
   const double mid_degf_min = mid_degf - 1;
@@ -2279,7 +2279,7 @@ std::vector<double> dchisq(std::vector<double> &x, double &degf) {
 //@X
 
 std::vector<double> pchisq(std::vector<double> &x, double &degf, double step = 0.05) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   double mid_degf = degf / 2;
   const double divider = pow(2, mid_degf) * std::tgamma(mid_degf);
   const double mid_degf_min = mid_degf - 1;
@@ -2323,7 +2323,7 @@ std::vector<double> pchisq(std::vector<double> &x, double &degf, double step = 0
 //@X
 
 std::vector<double> qchisq(std::vector<double> &x, double &degf, double step = 0.05) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   double mid_degf = degf / 2;
   const double divider = pow(2, mid_degf) * std::tgamma(mid_degf);
   const double mid_degf_min = mid_degf - 1;
@@ -2390,7 +2390,7 @@ std::vector<double> rchisq(unsigned int &n, double &degf, double step = 0.05) {
   } else {
     step -= 0.3 * step * now_time / 100;
   };
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   double mid_degf = degf / 2;
   const double divider = pow(2, mid_degf) * std::tgamma(mid_degf);
   const double mid_degf_min = mid_degf - 1;
@@ -2479,7 +2479,7 @@ std::vector<double> rchisq(unsigned int &n, double &degf, double step = 0.05) {
 //@X
 
 std::vector<double> dgeom(std::vector<unsigned int> &x, double &p) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   rtn_v.reserve(x.size());
   const double failure = 1 - p;
   for (unsigned int val : x) {
@@ -2503,7 +2503,7 @@ std::vector<double> dgeom(std::vector<unsigned int> &x, double &p) {
 //@X
 
 std::vector<double> pgeom(std::vector<unsigned int> &x, double &p) {
-  std::vector<double> rtn_v;
+  std::vector<double> rtn_v = {};
   const unsigned int n = x.size();
   rtn_v.reserve(n);
   const double failure = 1 - p;
@@ -2538,7 +2538,7 @@ std::vector<double> pgeom(std::vector<unsigned int> &x, double &p) {
 //@X
 
 std::vector<unsigned int> qgeom(std::vector<double> &x, double &p) {
-  std::vector<unsigned int> rtn_v;
+  std::vector<unsigned int> rtn_v = {};
   const unsigned int n = x.size();
   rtn_v.reserve(n);
   const double failure = 1 - p;
@@ -2553,6 +2553,28 @@ std::vector<unsigned int> qgeom(std::vector<double> &x, double &p) {
   };
   return rtn_v;
 };
+
+//@T rgeom
+//@U std::vector&lt;unsigned int&gt; rgeom(unsigned int &n, double &p)
+//@X
+//@D Returns pseudo-randomly generated values that follow a geometric distribution
+//@A n : is the number of observations
+//@A p : is the probability of success
+//@X
+//@E double p = (double)2 / 9;
+//@E unsigned int n = 100;
+//@E std::vector&lt;unsigned int&gt; out = rgeom(n, p);
+//@E print_nvec(out);
+//@E :0: 8  13 3  0  4  2  0  4  2  11 4  1  12 3  9  
+//@E 5  2  10 15 7  0  5  7  2
+//@E :25: 8  4  3  9  17 2  10 5  2  1  4  8  12 6  1  
+//@E 5  6  9  4  2  0  5  2  1
+//@E :50: 8  2  6  1  13 6  0  4  7  1  4  7  1  5  1  
+//@E 4  3  9  4  2  10 5  2  10
+//@E :75: 1  12 3  8  17 2  9  4  2  11 6  8  3  6  0  
+//@E 5  7  10 5  2  2  3  1  13
+//@E :100: 6
+//@X
 
 //@L3 Min - Max
 

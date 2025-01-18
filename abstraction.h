@@ -27,8 +27,8 @@
 //@X
 
 std::vector<unsigned int> rbinom(unsigned int &n, unsigned int size, double p) {
-  std::vector<double> out;
-  std::vector<unsigned int> rtn_v;
+  std::vector<double> out = {};
+  std::vector<unsigned int> rtn_v = {};
   unsigned int n_norm = 400;
   double mean = size * p;
   double sd = std::sqrt(size * p * (1 - p));
@@ -93,8 +93,8 @@ std::vector<unsigned int> rbinom(unsigned int &n, unsigned int size, double p) {
 //@X
 
 std::vector<unsigned int> rpois(unsigned int &n, unsigned int lambda) {
-  std::vector<double> out;
-  std::vector<unsigned int> rtn_v;
+  std::vector<double> out = {};
+  std::vector<unsigned int> rtn_v = {};
   unsigned int n_norm = 400;
   double sd = std::sqrt(lambda);
   double r_val;
@@ -168,8 +168,8 @@ std::vector<unsigned int> rpois(unsigned int &n, unsigned int lambda) {
 //@X
 
 std::vector<double> rexp(unsigned int &n, double rate) {
-  std::vector<double> out;
-  std::vector<double> rtn_v;
+  std::vector<double> out = {};
+  std::vector<double> rtn_v = {};
   unsigned int n_norm = 400;
   double mean = 1 / rate;
   double sd = std::sqrt(1 / std::pow(rate, 2));
@@ -258,8 +258,8 @@ bool test_chisq_fit(std::vector<double> theoretical, std::vector<double> observe
 //@X
 
 bool test_chisq_independance(std::vector<std::vector<double>> &matr, double a_value = 0.05, double step = 0.05) {
-  std::vector<double> sum_col;
-  std::vector<double> sum_row;
+  std::vector<double> sum_col = {};
+  std::vector<double> sum_row = {};
   double n = 0;
   const unsigned int n_col = matr.size();
   const unsigned int n_row = matr[0].size();
@@ -269,7 +269,7 @@ bool test_chisq_independance(std::vector<std::vector<double>> &matr, double a_va
   unsigned int i2 = 0;
   double cur_sum;
   double cur_val;
-  std::vector<double> ref_probv;
+  std::vector<double> ref_probv = {};
   double ref_prob;
   double degf = (n_row - 1) * (n_col - 1);
   std::vector<double> delta = {0, 0};
@@ -321,8 +321,8 @@ bool test_chisq_independance(std::vector<std::vector<double>> &matr, double a_va
 //@X
 
 std::vector<unsigned int> rgeom(unsigned int &n, double &p) {
-  std::vector<double> out;
-  std::vector<unsigned int> rtn_v;
+  std::vector<double> out = {};
+  std::vector<unsigned int> rtn_v = {};
   unsigned int n_norm = 400;
   double mean = 1 / p;
   double sd = std::sqrt(1 / std::pow(p, 2));
