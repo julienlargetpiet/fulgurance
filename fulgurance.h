@@ -2575,6 +2575,65 @@ std::vector<unsigned int> qgeom(std::vector<double> &x, double &p) {
 //@E :100: 6
 //@X
 
+//@T dhyper
+//@U std::vector&lt;double&gt; dhyper(std::vector&lt;int&gt; &x, unsigned int &n_ones, unsigned int &n_others, int &n_trials)
+//@X
+//@D Returns the hypergeometric probability distribution
+//@A x : is the vector of quantiles
+//@A n_ones : is the number of desired elements in the set
+//@A n_others : is the number of undesired elements in the set
+//@A n_trials : is the number of drawns
+//@X
+//@E unsigned int n_others = 1300;
+//@E unsigned int n_ones = 415;
+//@E std::vector<int> x = {150, 190, 400};
+//@E int n_trials = 555;
+//@E std::vector<double> out  = dhyper(x, n_ones, n_others, n_trials);
+//@E print_nvec(out);
+//@E :0: 0.00807227 1.69452e-11 4.42674e-236
+//@X
+
+std::vector<double> dhyper(std::vector<int> &x, unsigned int &n_ones, unsigned int &n_others, int &n_trials) {
+  std::vector<double> rtn_v;
+  unsigned int n_tot;
+  if (n_trials > n_tot) {
+    return {0};
+  };
+  double n_ones_left;
+  double cur_prob;
+  const int ref_n_tot = n_ones + n_others;
+  const int ref_n_ones = n_ones;
+  int i;
+  double divided_trial;
+  int goal_bottom;
+  for (int n_desired : x) {
+    divided_trial = n_trials;
+    n_tot = ref_n_tot;
+    n_ones_left = ref_n_ones;
+    i = n_desired;
+    cur_prob = n_ones_left / n_tot * divided_trial / i;
+    n_ones_left -= 1;
+    n_tot -= 1;
+    i -= 1;
+    divided_trial -= 1;
+    while (i > 0) {
+      cur_prob *= (n_ones_left / n_tot) * divided_trial / i;
+      divided_trial -= 1;
+      n_ones_left -= 1;
+      n_tot -= 1;
+      i -= 1;
+    };
+    goal_bottom = n_desired - n_trials;
+    while (i > goal_bottom) {
+      cur_prob *= (1 - n_ones_left / n_tot);
+      n_tot -= 1;
+      i -= 1;
+    };
+    rtn_v.push_back(cur_prob);
+  };
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
