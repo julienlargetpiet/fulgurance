@@ -283,7 +283,7 @@ unsigned int Facto(unsigned int x) {
 };
 
 //@T Comb
-//@U unsigned int Comb(unsigned int r, unsigned int n)
+//@U double Comb(double r, double n)
 //@X
 //@D Returns the result of the combination formula for given parameters.
 //@A r : is the number of objects choosen among the set 
@@ -295,17 +295,16 @@ unsigned int Facto(unsigned int x) {
 //@E 792
 //@X
 
-unsigned int Comb(unsigned int r, unsigned int n) {
-  unsigned int n_div;
-  if (n % 2 == 0) {
+double Comb(double r, double n) {
+  if ((long unsigned int)n % 2 == 0) {
     if (r > n / 2) {
       r = n - r;
     };
-  } else if (n / 2 + 1 < r) {
+  } else if ((long unsigned int)n / 2 + 1 < r) {
     r = n - r;
   };
-  unsigned long int numerator;
-  unsigned int n2 = n;
+  double numerator;
+  double n2 = n;
   if (n > 0) {
     numerator = n;
     n -= 1;
@@ -316,7 +315,7 @@ unsigned int Comb(unsigned int r, unsigned int n) {
   } else {
     numerator = 1;
   };
-  unsigned long int divider1;
+  double divider1;
   if (r > 0) {
     divider1 = r;
     r -= 1;
