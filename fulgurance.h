@@ -303,30 +303,15 @@ double Comb(double r, double n) {
   } else if ((long unsigned int)n / 2 + 1 < r) {
     r = n - r;
   };
-  double numerator;
-  double n2 = n;
-  if (n > 0) {
-    numerator = n;
-    n -= 1;
-    while (n > n2 - r) {
-      numerator *= n;
-      n -= 1;
-    };
-  } else {
-    numerator = 1;
-  };
-  double divider1;
-  if (r > 0) {
-    divider1 = r;
+  double rslt = n / r;
+  r -= 1;
+  n -= 1;
+  while (r > 0) {
+    rslt *= (n / r);
     r -= 1;
-    while (r > 1) {
-      divider1 *= r;
-      r -= 1;
-    };
-  } else {
-    divider1 = 1;
+    n -= 1;
   };
-  return numerator / divider1;
+  return rslt;
 };
 
 //@L3 String to int, float, double
