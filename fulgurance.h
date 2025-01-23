@@ -5010,3 +5010,195 @@ template <typename T> bool is_symetric(std::vector<T> &x) {
   };
 };
 
+//@T all_comb
+//@U std::vector&lt;std::vector&lt;bool&gt;&gt; all_comb(unsigned int &k, unsigned int &n)
+//@X
+//@D Returns all the combinations of k elements in a set of n elements.
+//@A k : is the k value
+//@A n : is the total number of the set
+//@X
+//@E unsigned int k = 5;
+//@E unsigned int n = 9;
+//@E std::vector&lt;std::vector&lt;bool&gt;&gt; outmatr = all_comb(k, n);
+//@E int i2;
+//@E for (int i = 0; i &lt; outmatr.size(); ++i) {
+//@E   for (i2 = 0; i2 &lt; outmatr[0].size(); ++i2) {
+//@E     std::cout &lt;&lt; outmatr[i][i2] &lt;&lt;< " ";
+//@E   };
+//@E   std::cout &lt;&lt; "\n";
+//@E };
+//@E 1 1 1 1 1 0 0 0 0
+//@E 1 1 1 1 0 1 0 0 0
+//@E 1 1 1 1 0 0 1 0 0
+//@E 1 1 1 1 0 0 0 1 0
+//@E 1 1 1 1 0 0 0 0 1
+//@E 1 1 1 0 1 1 0 0 0
+//@E 1 1 1 0 1 0 1 0 0
+//@E 1 1 1 0 1 0 0 1 0
+//@E 1 1 1 0 1 0 0 0 1
+//@E 1 1 1 0 0 1 1 0 0
+//@E 1 1 1 0 0 1 0 1 0
+//@E 1 1 1 0 0 1 0 0 1
+//@E 1 1 1 0 0 0 1 1 0
+//@E 1 1 1 0 0 0 1 0 1
+//@E 1 1 1 0 0 0 0 1 1
+//@E 1 1 0 1 1 1 0 0 0
+//@E 1 1 0 1 1 0 1 0 0
+//@E 1 1 0 1 1 0 0 1 0
+//@E 1 1 0 1 1 0 0 0 1
+//@E 1 1 0 1 0 1 1 0 0
+//@E 1 1 0 1 0 1 0 1 0
+//@E 1 1 0 1 0 1 0 0 1
+//@E 1 1 0 1 0 0 1 1 0
+//@E 1 1 0 1 0 0 1 0 1
+//@E 1 1 0 1 0 0 0 1 1
+//@E 1 1 0 0 1 1 1 0 0
+//@E 1 1 0 0 1 1 0 1 0
+//@E 1 1 0 0 1 1 0 0 1
+//@E 1 1 0 0 1 0 1 1 0
+//@E 1 1 0 0 1 0 1 0 1
+//@E 1 1 0 0 1 0 0 1 1
+//@E 1 1 0 0 0 1 1 1 0
+//@E 1 1 0 0 0 1 1 0 1
+//@E 1 1 0 0 0 1 0 1 1
+//@E 1 1 0 0 0 0 1 1 1
+//@E 1 0 1 1 1 1 0 0 0
+//@E 1 0 1 1 1 0 1 0 0
+//@E 1 0 1 1 1 0 0 1 0
+//@E 1 0 1 1 1 0 0 0 1
+//@E 1 0 1 1 0 1 1 0 0
+//@E 1 0 1 1 0 1 0 1 0
+//@E 1 0 1 1 0 1 0 0 1
+//@E 1 0 1 1 0 0 1 1 0
+//@E 1 0 1 1 0 0 1 0 1
+//@E 1 0 1 1 0 0 0 1 1
+//@E 1 0 1 0 1 1 1 0 0
+//@E 1 0 1 0 1 1 0 1 0
+//@E 1 0 1 0 1 1 0 0 1
+//@E 1 0 1 0 1 0 1 1 0
+//@E 1 0 1 0 1 0 1 0 1
+//@E 1 0 1 0 1 0 0 1 1
+//@E 1 0 1 0 0 1 1 1 0
+//@E 1 0 1 0 0 1 1 0 1
+//@E 1 0 1 0 0 1 0 1 1
+//@E 1 0 1 0 0 0 1 1 1
+//@E 1 0 0 1 1 1 1 0 0
+//@E 1 0 0 1 1 1 0 1 0
+//@E 1 0 0 1 1 1 0 0 1
+//@E 1 0 0 1 1 0 1 1 0
+//@E 1 0 0 1 1 0 1 0 1
+//@E 1 0 0 1 1 0 0 1 1
+//@E 1 0 0 1 0 1 1 1 0
+//@E 1 0 0 1 0 1 1 0 1
+//@E 1 0 0 1 0 1 0 1 1
+//@E 1 0 0 1 0 0 1 1 1
+//@E 1 0 0 0 1 1 1 1 0
+//@E 1 0 0 0 1 1 1 0 1
+//@E 1 0 0 0 1 1 0 1 1
+//@E 1 0 0 0 1 0 1 1 1
+//@E 1 0 0 0 0 1 1 1 1
+//@E 0 1 1 1 1 1 0 0 0
+//@E 0 1 1 1 1 0 1 0 0
+//@E 0 1 1 1 1 0 0 1 0
+//@E 0 1 1 1 1 0 0 0 1
+//@E 0 1 1 1 0 1 1 0 0
+//@E 0 1 1 1 0 1 0 1 0
+//@E 0 1 1 1 0 1 0 0 1
+//@E 0 1 1 1 0 0 1 1 0
+//@E 0 1 1 1 0 0 1 0 1
+//@E 0 1 1 1 0 0 0 1 1
+//@E 0 1 1 0 1 1 1 0 0
+//@E 0 1 1 0 1 1 0 1 0
+//@E 0 1 1 0 1 1 0 0 1
+//@E 0 1 1 0 1 0 1 1 0
+//@E 0 1 1 0 1 0 1 0 1
+//@E 0 1 1 0 1 0 0 1 1
+//@E 0 1 1 0 0 1 1 1 0
+//@E 0 1 1 0 0 1 1 0 1
+//@E 0 1 1 0 0 1 0 1 1
+//@E 0 1 1 0 0 0 1 1 1
+//@E 0 1 0 1 1 1 1 0 0
+//@E 0 1 0 1 1 1 0 1 0
+//@E 0 1 0 1 1 1 0 0 1
+//@E 0 1 0 1 1 0 1 1 0
+//@E 0 1 0 1 1 0 1 0 1
+//@E 0 1 0 1 1 0 0 1 1
+//@E 0 1 0 1 0 1 1 1 0
+//@E 0 1 0 1 0 1 1 0 1
+//@E 0 1 0 1 0 1 0 1 1
+//@E 0 1 0 1 0 0 1 1 1
+//@E 0 1 0 0 1 1 1 1 0
+//@E 0 1 0 0 1 1 1 0 1
+//@E 0 1 0 0 1 1 0 1 1
+//@E 0 1 0 0 1 0 1 1 1
+//@E 0 1 0 0 0 1 1 1 1
+//@E 0 0 1 1 1 1 1 0 0
+//@E 0 0 1 1 1 1 0 1 0
+//@E 0 0 1 1 1 1 0 0 1
+//@E 0 0 1 1 1 0 1 1 0
+//@E 0 0 1 1 1 0 1 0 1
+//@E 0 0 1 1 1 0 0 1 1
+//@E 0 0 1 1 0 1 1 1 0
+//@E 0 0 1 1 0 1 1 0 1
+//@E 0 0 1 1 0 1 0 1 1
+//@E 0 0 1 1 0 0 1 1 1
+//@E 0 0 1 0 1 1 1 1 0
+//@E 0 0 1 0 1 1 1 0 1
+//@E 0 0 1 0 1 1 0 1 1
+//@E 0 0 1 0 1 0 1 1 1
+//@E 0 0 1 0 0 1 1 1 1
+//@E 0 0 0 1 1 1 1 1 0
+//@E 0 0 0 1 1 1 1 0 1
+//@E 0 0 0 1 1 1 0 1 1
+//@E 0 0 0 1 1 0 1 1 1
+//@E 0 0 0 1 0 1 1 1 1
+//@E 0 0 0 0 1 1 1 1 1
+//@E std::cout &lt;&lt; outmatr.size() &lt;&lt; "\n";
+//@E 126
+//@X
+
+std::vector<std::vector<bool>> all_comb(unsigned int &k, unsigned int &n) {
+  std::vector<std::vector<bool>> matr;
+  std::vector<unsigned int> cur_idx;
+  std::vector<unsigned int> max_idx;
+  std::vector<bool> cur_v;
+  std::vector<bool> ref_v;
+  unsigned int i = 0;
+  const unsigned int ref_k = k - 1;
+  int idx = ref_k;
+  unsigned int idx_val;
+  while (i < k) {
+    max_idx.push_back(n - k + i);
+    cur_idx.push_back(i);
+    ref_v.push_back(0);
+    i += 1;
+  };
+  while (i < n){
+    ref_v.push_back(0);
+    i += 1;
+  };
+  while (cur_idx[ref_k] < n) {
+    while (cur_idx[ref_k] != n) {
+      cur_v = ref_v;
+      for (i = 0; i < k; ++i) {
+        cur_v[cur_idx[i]] = 1;
+      };
+      matr.push_back(cur_v);
+      cur_idx[ref_k] += 1;
+    };
+    idx = ref_k - 1;
+    while (cur_idx[idx] == max_idx[idx] & idx > -1) {
+      idx -= 1;
+    };
+    if (idx < 0) {
+      idx = 0;
+    };
+    idx_val = cur_idx[idx] + 1;
+    while (idx < k) {
+      cur_idx[idx] = idx_val;
+      idx += 1;
+      idx_val += 1;
+    };
+  };
+  return matr;
+};
