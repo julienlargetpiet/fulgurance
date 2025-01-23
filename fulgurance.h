@@ -4404,6 +4404,55 @@ template <typename TB> class Rm_sharedv {
     ~Rm_sharedv() {}; 
 };
 
+//@L3 Symetry
+
+//@T is_symetric
+//@U template &lt;typename T&gt; bool is_symetric(std::vector&lt;T&gt; &x)
+//@X
+//@D Returns 1 if the vector is symetric, 0 if not. See examples.
+//@A x : is the input vector of any type
+//@X
+//@E std::vector&lt;int&gt; vec = {0, 1, 2, 43, 2, 1, 0};
+//@E bool out = is_symetric(vec);
+//@E 1
+//@E vec = {0, 1, 2, 2, 1, 0};
+//@E out = is_symetric(vec);
+//@E 1
+//@E vec = {0, 1, 2, 2, 22, 0};
+//@E out = is_symetric(vec);
+//@E 0
+//@X
+
+template <typename T> bool is_symetric(std::vector<T> &x) {
+  int cnt = x.size();
+  int cnt2;
+  if (cnt % 2  == 0) {
+    cnt /= 2;
+    cnt -= 1;
+    cnt2 = cnt + 1;
+    while (cnt > -1) {
+      if (x[cnt] != x[cnt2]) {
+        return 0;
+      };
+      cnt -= 1;
+      cnt2 += 1;
+    };
+    return 1;
+  } else {
+    cnt /= 2;
+    cnt -= 1;
+    cnt2 = cnt + 2;
+    while (cnt > -1) {
+      if (x[cnt] != x[cnt2]) {
+        return 0;
+      };
+      cnt -= 1;
+      cnt2 += 1;
+    };
+    return 1;
+  };
+};
+
 //@L2 Finding closest elements in stl vector
 
 //@T closest_idx
