@@ -126,6 +126,30 @@
 <br>
 <a href="#rbeta" style="margin-left:100px;">rbeta</a>
 <br>
+<b><li style="margin-left:80px; color: #2c4786;">Chi Square distribution</li></b>
+<a href="#dchisq" style="margin-left:100px;">dchisq</a>
+<br>
+<a href="#pchisq" style="margin-left:100px;">pchisq</a>
+<br>
+<a href="#qchisq" style="margin-left:100px;">qchisq</a>
+<br>
+<a href="#rchisq" style="margin-left:100px;">rchisq</a>
+<br>
+<a href="#test_chisq_fit" style="margin-left:100px;">test_chisq_fit</a>
+<br>
+<a href="#test_chisq_independance" style="margin-left:100px;">test_chisq_independance</a>
+<br>
+<b><li style="margin-left:80px; color: #2c4786;">Geometric distributions</li></b>
+<a href="#dgeom" style="margin-left:100px;">dgeom</a>
+<br>
+<a href="#pgeom" style="margin-left:100px;">pgeom</a>
+<br>
+<a href="#qgeom" style="margin-left:100px;">qgeom</a>
+<br>
+<a href="#rgeom" style="margin-left:100px;">rgeom</a>
+<br>
+<a href="#dhyper" style="margin-left:100px;">dhyper</a>
+<br>
 <b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
 <a href="#min" style="margin-left:80px;">min</a>
 <br>
@@ -264,6 +288,9 @@
 <a href="#diff_mean" style="margin-left:60px;">diff_mean</a>
 <br>
 <b><li style="margin-left:20px; color: #2c4786;">Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;</li></b>
+<b><li style="margin-left:40px; color: #2c4786;">Sum elements for each rows and columns</li></b>
+<a href="#sum_nxp" style="margin-left:60px;">sum_nxp</a>
+<br>
 <b><li style="margin-left:40px; color: #2c4786;">Transposition</li></b>
 <a href="#t" style="margin-left:60px;">t</a>
 <br>
@@ -281,6 +308,15 @@
 <br>
 <b><li style="margin-left:20px; color: #2c4786;">Fulgurance Tools</li></b>
 <a href="#Parser_tokenizer_full" style="margin-left:40px;">Parser_tokenizer_full</a>
+<br>
+<a href="#is_symetric" style="margin-left:40px;">is_symetric</a>
+<br>
+<a href="#all_comb" style="margin-left:40px;">all_comb</a>
+<br>
+<b><li style="margin-left:40px; color: #2c4786;">Binary conversions</li></b>
+<a href="#int_to_binarydq" style="margin-left:60px;">int_to_binarydq</a>
+<br>
+<a href="#binarydq_to_int" style="margin-left:60px;">binarydq_to_int</a>
 <br>
 </ul><br>
 </div>
@@ -448,7 +484,7 @@ x </th><th> is a unsigned integer</th></tr>
 <hr class="hr">
 <h2 id="Comb" style="test-align: left;">Comb</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>unsigned int Comb(unsigned int r, unsigned int n)</code></div>
+<div class="Div"><code>double Comb(double r, double n)</code></div>
 <h3>#Description</h3>
 <p>Returns the result of the combination formula for given parameters.</p>
 <h3>#Arguments</h3>
@@ -1488,7 +1524,7 @@ x </th><th> is the vector of probabilities you want the probabilities from</th><
 n </th><th> is the number of observations, values to generate</th></tr>
 <tr><th>a </th><th> is alpha, the number of successes</th></tr>
 <tr><th>b </th><th> is beta, the number of failures</th></tr>
-<tr><th>step </th><th> the lower this value is, the more accurate the result will be</th></tr>
+<tr><th>step </th><th> the lower this value is, the more accurate the result will be. Have to be lowered if the output starts having clone values, it can happen when n is very high</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
@@ -1516,6 +1552,267 @@ n </th><th> is the number of observations, values to generate</th></tr>
 <br><code>0.46759 0.47196 0.47633 0.47633 0.4807 0.48507 0.49381 0.49818</code>
 <br><code>0.50692 0.52003</code>
 <br><code>:100: 0.3933</code>
+</div>
+<br>
+<hr class="hr">
+<h4 style="color:#2c4786;">Chi Square distribution</h4>
+<h2 id="dchisq" style="test-align: left;">dchisq</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; dchisq(std::vector&lt;double&gt; &x, double &degf)</code></div>
+<h3>#Description</h3>
+<p>Returns the chi square density probability function</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector of quantiles</th></tr>
+<tr><th>degf </th><th> is the degree of freedom</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; vec = {180, 200, 210, 250, 290, 310};</code>
+<br><code>double degf = 240;</code>
+<br><code>std::vector&lt;double&gt; out = dchisq(vec, degf);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.000263702 0.00333664 0.00747074 0.0157848 </code>
+<br><code>0.00152353 0.000193457</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="pchisq" style="test-align: left;">pchisq</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; pchisq(std::vector&lt;double&gt; &x, double &degf, double step = 0.05)</code></div>
+<h3>#Description</h3>
+<p>Returns the chi square cumulative probability function</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector of quantiles, must be ascendly sorted</th></tr>
+<tr><th>degf </th><th> is the degree of freedom</th></tr>
+<tr><th>step </th><th> the lower this value is the more accurate the result will be at a computational cost</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; vec = {180, 200, 210, 250, 290, 310};</code>
+<br><code>double degf = 240;</code>
+<br><code>std::vector&lt;double&gt; out = pchisq(vec, degf);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 1.31851e-05 0.0266942 0.0790938 0.682744 </code>
+<br><code>0.983524 0.996995</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="qchisq" style="test-align: left;">qchisq</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; qchisq(std::vector&lt;double&gt; &x, double &degf, double step = 0.05)</code></div>
+<h3>#Description</h3>
+<p>Returns the probability of the input quantile values</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector of probabilities, must be ascendly sorted</th></tr>
+<tr><th>degf </th><th> is the degree of freedom</th></tr>
+<tr><th>step </th><th> th lower this value is the more accurate the result will be at a computational cost</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; vec2 = {0.2, 0.45, 0.56, 0.69, 0.88};</code>
+<br><code>double degf = 240;</code>
+<br><code>std::vector&lt;double&gt; out = qchisq(vec2, degf);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 221.45 236.65 242.7 250.4 266</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="rchisq" style="test-align: left;">rchisq</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; rchisq(unsigned int &n, double &degf, double step = 0.05)</code></div>
+<h3>#Description</h3>
+<p>Returns pseudo-random values that follow a chi square probability distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+n </th><th> is the number of observations</th></tr>
+<tr><th>degf </th><th> is the degree of freedom</th></tr>
+<tr><th>step </th><th> the lower it is the more accurate the result is. Have to be lowered if the output begins to have clone values. It can happen if n is very high</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>unsigned int n = 100;</code>
+<br><code>double degf = 240;</code>
+<br><code>std::vector<double> out = rchisq(n, degf);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 192.049 197.248 200.571 203.09 205.181 206.95 </code>
+<br><code>208.558 209.951 211.238 212.417 213.542 214.614 215.579 </code>
+<br><code>216.544 217.402 218.313 219.117 219.921 220.671 221.422 </code>
+<br><code>222.172 222.869 223.566 224.262</code>
+<br><code>:25: 225.602 226.246 226.889 227.478 228.122 228.711 </code>
+<br><code>229.301 229.89 230.48 231.07 231.606 232.195 232.785 </code>
+<br><code>233.321 233.91 234.446 234.982 235.572 236.108 236.644 </code>
+<br><code>237.18 237.77 238.306 238.842</code>
+<br><code>:50: 239.914 240.503 241.039 241.575 242.165 242.701 </code>
+<br><code>243.29 243.826 244.416 244.952 245.542 246.131 246.721 </code>
+<br><code>247.31 247.9 248.543 249.133 249.776 250.419 251.062 251.706 </code>
+<br><code>252.349 253.046 253.742</code>
+<br><code>:75: 255.19 255.94 256.69 257.441 258.245 259.102 259.96 260.871 </code>
+<br><code>261.782 262.801 263.819 264.891 266.017 267.25 268.536 269.93 </code>
+<br><code>271.43 273.146 275.022 277.166 279.738 282.901 287.189 293.942</code>
+<br><code>:100: 223.914</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="test_chisq_fit" style="test-align: left;">test_chisq_fit</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>bool test_chisq_fit(std::vector&lt;double&gt; theoretical, std::vector&lt;double&gt; observed, double a_value = 0.05, double step = 0.05)</code></div>
+<h3>#Description</h3>
+<p>Performs a chi square goodness of fit test. Returns 1 if the observed values fit the observed values at a given p_value, 0 else</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+theoretical </th><th> is the vector containing all the theoretical data</th></tr>
+<tr><th>observed </th><th> is the vector containing all the observed data</th></tr>
+<tr><th>a_value </th><th> is the significance level</th></tr>
+<tr><th>step </th><th> the lower this value is the more accurate the result wil be at a computational cost</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector<double> theoretical = {20, 20, 30, 40, 60, 30};</code>
+<br><code>std::vector<double> observed = {30, 14, 34, 45, 57, 20};</code>
+<br><code>double a_value = 0.05;</code>
+<br><code>bool out = test_chisq_fit(theoretical, observed, a_value);</code>
+<br><code>0 // the observed data does not fit the theoretical data</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="test_chisq_independance" style="test-align: left;">test_chisq_independance</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>bool test_chisq_independance(std::vector&lt;std::vector&lt;double&gt;&gt; &matr, double a_value = 0.05, double step = 0.05)</code></div>
+<h3>#Description</h3>
+<p>Performs a chi square independance test. Returns 0 if the variables are independant, 1 else</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr is the input matrice (observed values)</th></tr>
+<tr><th>a_value </th><th> is the significance level (the greater it is the more likely the 2 variables will be percieved as independant) </th></tr>
+<tr><th>step </th><th> the lower this value is the more accurate the result will be at a computational cost</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;std::vector&lt;double&gt;&gt; matr = {{8, 16, 11, 10}, </code>
+<br><code>                                           {9, 27, 22, 16}, </code>
+<br><code>                                           {7, 13, 8, 12},</code>
+<br><code>                                           {9, 13, 12, 7}};</code>
+<br><code>print_matr(matr);</code>
+<br><code>double step = 0.05;</code>
+<br><code>double a_value = 0.05;</code>
+<br><code>bool out = test_chisq_independance(matr, a_value, step);</code>
+<br><code>0 // the variables are independant</code>
+</div>
+<br>
+<hr class="hr">
+<h4 style="color:#2c4786;">Geometric distributions</h4>
+<h2 id="dgeom" style="test-align: left;">dgeom</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; dgeom(std::vector&lt;unsigned int&gt; &x, double &p)</code></div>
+<h3>#Description</h3>
+<p>Returns the geometric density probability distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector of quantiles, representing the number of failures before success</th></tr>
+<tr><th>p </th><th> is the probability of success</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;unsigned int&gt; vec = {2, 3, 4, 5};</code>
+<br><code>double p = (double)1 / 6;</code>
+<br><code>std::vector&lt;double&gt; out = dgeom(vec, p);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.115741 0.0964506 0.0803755 0.0669796</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="pgeom" style="test-align: left;">pgeom</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; pgeom(std::vector&lt;unsigned int&gt; &x, double &p)</code></div>
+<h3>#Description</h3>
+<p>Returns the geometric cumulative probability distribution (interval between firts value in vector and last, see example)</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector of quantiles, representing the number of failures before success, must be ascendly sorted</th></tr>
+<tr><th>p </th><th> is the probability of success</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;unsigned int&gt; vec = {2, 3, 4, 5};</code>
+<br><code>double p = (double)1 / 6;</code>
+<br><code>std::vector&lt;double&gt; out = pgeom(vec, p);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.115741 0.212191 0.292567 0.359546</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="qgeom" style="test-align: left;">qgeom</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;unsigned int&gt; qgeom(std::vector&lt;double&gt; &x, double &p)</code></div>
+<h3>#Description</h3>
+<p>Returns the quantiles of the input probabilities according to a geometric probability distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector of probabilities, must be ascendly sorted</th></tr>
+<tr><th>p </th><th> is the probability of success</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; vec2 = {0.2, 0.3, 0.5, 0.52, 0.6, 0.85};</code>
+<br><code>double p = (double)1 / 6;</code>
+<br><code>std::vector&lt;unsigned int&gt; out = qgeom(vec2, p);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 1  1  3  4  5  10</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="rgeom" style="test-align: left;">rgeom</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;unsigned int&gt; rgeom(unsigned int &n, double &p)</code></div>
+<h3>#Description</h3>
+<p>Returns pseudo-randomly generated values that follow a geometric distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+n </th><th> is the number of observations</th></tr>
+<tr><th>p </th><th> is the probability of success</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double p = (double)2 / 9;</code>
+<br><code>unsigned int n = 100;</code>
+<br><code>std::vector&lt;unsigned int&gt; out = rgeom(n, p);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 8  13 3  0  4  2  0  4  2  11 4  1  12 3  9  </code>
+<br><code>5  2  10 15 7  0  5  7  2</code>
+<br><code>:25: 8  4  3  9  17 2  10 5  2  1  4  8  12 6  1  </code>
+<br><code>5  6  9  4  2  0  5  2  1</code>
+<br><code>:50: 8  2  6  1  13 6  0  4  7  1  4  7  1  5  1  </code>
+<br><code>4  3  9  4  2  10 5  2  10</code>
+<br><code>:75: 1  12 3  8  17 2  9  4  2  11 6  8  3  6  0  </code>
+<br><code>5  7  10 5  2  2  3  1  13</code>
+<br><code>:100: 6</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="dhyper" style="test-align: left;">dhyper</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; dhyper(std::vector&lt;int&gt; &x, unsigned int &n_ones, unsigned int &n_others, int &n_trials)</code></div>
+<h3>#Description</h3>
+<p>Returns the hypergeometric probability distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the vector of quantiles</th></tr>
+<tr><th>n_ones </th><th> is the number of desired elements in the set</th></tr>
+<tr><th>n_others </th><th> is the number of undesired elements in the set</th></tr>
+<tr><th>n_trials </th><th> is the number of drawns</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>unsigned int n_others = 1300;</code>
+<br><code>unsigned int n_ones = 415;</code>
+<br><code>std::vector<int> x = {150, 190, 400};</code>
+<br><code>int n_trials = 555;</code>
+<br><code>std::vector<double> out  = dhyper(x, n_ones, n_others, n_trials);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0.00807227 1.69452e-11 4.42674e-236</code>
 </div>
 <br>
 <hr class="hr">
@@ -2637,6 +2934,34 @@ x </th><th> is a stl vector (int, float, double, bool)</th></tr>
 <br>
 <hr class="hr">
 <h1 style="color:#2c4786;">Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;</h1>
+<h2 style="color:#2c4786;">Sum elements for each rows and columns</h2>
+<h2 id="sum_nxp" style="test-align: left;">sum_nxp</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;std::vector&lt;T&gt;&gt; sum_nxp(std::vector&lt;std::vector&lt;T&gt;&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Returns as the first vector the sum of elements in each row, and in the second vector the sum of each elements in each column</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the input matrice </th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;std::vector&lt;double&gt;&gt; matr = {{1, 2}, {3, 4}, {5, 6}};</code>
+<br><code>print_matr(matr);</code>
+<br><code>std::vector&lt;std::vector&lt;double&gt;&gt; outmatr = sum_xnx(matr);</code>
+<br><code>for (double i : outmatr[0]) {</code>
+<br><code>  std::cout &lt;&lt; i &lt;&lt; " ";</code>
+<br><code>};</code>
+<br><code>std::cout &lt;&lt; "\n";</code>
+<br><code>for (double i : outmatr[1]) {</code>
+<br><code>  std::cout &lt;&lt; i &lt;&lt; " ";</code>
+<br><code>};</code>
+<br><code>std::cout &lt;&lt; "\n";</code>
+<br><code>9 12</code>
+<br><code>3 7 11</code>
+</div>
+<br>
+<hr class="hr">
 <h2 style="color:#2c4786;">Transposition</h2>
 <h2 id="t" style="test-align: left;">t</h2>
 <h3>#Usage</h3>
@@ -2819,6 +3144,216 @@ x </th><th> is a stl string</th></tr>
 <br><code>std::vector&lt;std::vector&lt;unsigned int&gt;&gt; out = Parser_tokenizer_full(teste);</code>
 <br><code>{5 1 0 0 1 4 2 2 3 3 4 5 6 6 7 7}</code>
 <br><code>{0 2 3 8 11 14 16 17 18 19 21 24 25 26 27 28}</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="is_symetric" style="test-align: left;">is_symetric</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; bool is_symetric(std::vector&lt;T&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Returns 1 if the vector is symetric, 0 if not. See examples.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector of any type</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {0, 1, 2, 43, 2, 1, 0};</code>
+<br><code>bool out = is_symetric(vec);</code>
+<br><code>1</code>
+<br><code>vec = {0, 1, 2, 2, 1, 0};</code>
+<br><code>out = is_symetric(vec);</code>
+<br><code>1</code>
+<br><code>vec = {0, 1, 2, 2, 22, 0};</code>
+<br><code>out = is_symetric(vec);</code>
+<br><code>0</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="all_comb" style="test-align: left;">all_comb</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;std::vector&lt;bool&gt;&gt; all_comb(unsigned int &k, unsigned int &n)</code></div>
+<h3>#Description</h3>
+<p>Returns all the combinations of k elements in a set of n elements.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+k </th><th> is the k value</th></tr>
+<tr><th>n </th><th> is the total number of the set</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>unsigned int k = 5;</code>
+<br><code>unsigned int n = 9;</code>
+<br><code>std::vector&lt;std::vector&lt;bool&gt;&gt; outmatr = all_comb(k, n);</code>
+<br><code>int i2;</code>
+<br><code>for (int i = 0; i &lt; outmatr.size(); ++i) {</code>
+<br><code>  for (i2 = 0; i2 &lt; outmatr[0].size(); ++i2) {</code>
+<br><code>    std::cout &lt;&lt; outmatr[i][i2] &lt;&lt;< " ";</code>
+<br><code>  };</code>
+<br><code>  std::cout &lt;&lt; "\n";</code>
+<br><code>};</code>
+<br><code>1 1 1 1 1 0 0 0 0</code>
+<br><code>1 1 1 1 0 1 0 0 0</code>
+<br><code>1 1 1 1 0 0 1 0 0</code>
+<br><code>1 1 1 1 0 0 0 1 0</code>
+<br><code>1 1 1 1 0 0 0 0 1</code>
+<br><code>1 1 1 0 1 1 0 0 0</code>
+<br><code>1 1 1 0 1 0 1 0 0</code>
+<br><code>1 1 1 0 1 0 0 1 0</code>
+<br><code>1 1 1 0 1 0 0 0 1</code>
+<br><code>1 1 1 0 0 1 1 0 0</code>
+<br><code>1 1 1 0 0 1 0 1 0</code>
+<br><code>1 1 1 0 0 1 0 0 1</code>
+<br><code>1 1 1 0 0 0 1 1 0</code>
+<br><code>1 1 1 0 0 0 1 0 1</code>
+<br><code>1 1 1 0 0 0 0 1 1</code>
+<br><code>1 1 0 1 1 1 0 0 0</code>
+<br><code>1 1 0 1 1 0 1 0 0</code>
+<br><code>1 1 0 1 1 0 0 1 0</code>
+<br><code>1 1 0 1 1 0 0 0 1</code>
+<br><code>1 1 0 1 0 1 1 0 0</code>
+<br><code>1 1 0 1 0 1 0 1 0</code>
+<br><code>1 1 0 1 0 1 0 0 1</code>
+<br><code>1 1 0 1 0 0 1 1 0</code>
+<br><code>1 1 0 1 0 0 1 0 1</code>
+<br><code>1 1 0 1 0 0 0 1 1</code>
+<br><code>1 1 0 0 1 1 1 0 0</code>
+<br><code>1 1 0 0 1 1 0 1 0</code>
+<br><code>1 1 0 0 1 1 0 0 1</code>
+<br><code>1 1 0 0 1 0 1 1 0</code>
+<br><code>1 1 0 0 1 0 1 0 1</code>
+<br><code>1 1 0 0 1 0 0 1 1</code>
+<br><code>1 1 0 0 0 1 1 1 0</code>
+<br><code>1 1 0 0 0 1 1 0 1</code>
+<br><code>1 1 0 0 0 1 0 1 1</code>
+<br><code>1 1 0 0 0 0 1 1 1</code>
+<br><code>1 0 1 1 1 1 0 0 0</code>
+<br><code>1 0 1 1 1 0 1 0 0</code>
+<br><code>1 0 1 1 1 0 0 1 0</code>
+<br><code>1 0 1 1 1 0 0 0 1</code>
+<br><code>1 0 1 1 0 1 1 0 0</code>
+<br><code>1 0 1 1 0 1 0 1 0</code>
+<br><code>1 0 1 1 0 1 0 0 1</code>
+<br><code>1 0 1 1 0 0 1 1 0</code>
+<br><code>1 0 1 1 0 0 1 0 1</code>
+<br><code>1 0 1 1 0 0 0 1 1</code>
+<br><code>1 0 1 0 1 1 1 0 0</code>
+<br><code>1 0 1 0 1 1 0 1 0</code>
+<br><code>1 0 1 0 1 1 0 0 1</code>
+<br><code>1 0 1 0 1 0 1 1 0</code>
+<br><code>1 0 1 0 1 0 1 0 1</code>
+<br><code>1 0 1 0 1 0 0 1 1</code>
+<br><code>1 0 1 0 0 1 1 1 0</code>
+<br><code>1 0 1 0 0 1 1 0 1</code>
+<br><code>1 0 1 0 0 1 0 1 1</code>
+<br><code>1 0 1 0 0 0 1 1 1</code>
+<br><code>1 0 0 1 1 1 1 0 0</code>
+<br><code>1 0 0 1 1 1 0 1 0</code>
+<br><code>1 0 0 1 1 1 0 0 1</code>
+<br><code>1 0 0 1 1 0 1 1 0</code>
+<br><code>1 0 0 1 1 0 1 0 1</code>
+<br><code>1 0 0 1 1 0 0 1 1</code>
+<br><code>1 0 0 1 0 1 1 1 0</code>
+<br><code>1 0 0 1 0 1 1 0 1</code>
+<br><code>1 0 0 1 0 1 0 1 1</code>
+<br><code>1 0 0 1 0 0 1 1 1</code>
+<br><code>1 0 0 0 1 1 1 1 0</code>
+<br><code>1 0 0 0 1 1 1 0 1</code>
+<br><code>1 0 0 0 1 1 0 1 1</code>
+<br><code>1 0 0 0 1 0 1 1 1</code>
+<br><code>1 0 0 0 0 1 1 1 1</code>
+<br><code>0 1 1 1 1 1 0 0 0</code>
+<br><code>0 1 1 1 1 0 1 0 0</code>
+<br><code>0 1 1 1 1 0 0 1 0</code>
+<br><code>0 1 1 1 1 0 0 0 1</code>
+<br><code>0 1 1 1 0 1 1 0 0</code>
+<br><code>0 1 1 1 0 1 0 1 0</code>
+<br><code>0 1 1 1 0 1 0 0 1</code>
+<br><code>0 1 1 1 0 0 1 1 0</code>
+<br><code>0 1 1 1 0 0 1 0 1</code>
+<br><code>0 1 1 1 0 0 0 1 1</code>
+<br><code>0 1 1 0 1 1 1 0 0</code>
+<br><code>0 1 1 0 1 1 0 1 0</code>
+<br><code>0 1 1 0 1 1 0 0 1</code>
+<br><code>0 1 1 0 1 0 1 1 0</code>
+<br><code>0 1 1 0 1 0 1 0 1</code>
+<br><code>0 1 1 0 1 0 0 1 1</code>
+<br><code>0 1 1 0 0 1 1 1 0</code>
+<br><code>0 1 1 0 0 1 1 0 1</code>
+<br><code>0 1 1 0 0 1 0 1 1</code>
+<br><code>0 1 1 0 0 0 1 1 1</code>
+<br><code>0 1 0 1 1 1 1 0 0</code>
+<br><code>0 1 0 1 1 1 0 1 0</code>
+<br><code>0 1 0 1 1 1 0 0 1</code>
+<br><code>0 1 0 1 1 0 1 1 0</code>
+<br><code>0 1 0 1 1 0 1 0 1</code>
+<br><code>0 1 0 1 1 0 0 1 1</code>
+<br><code>0 1 0 1 0 1 1 1 0</code>
+<br><code>0 1 0 1 0 1 1 0 1</code>
+<br><code>0 1 0 1 0 1 0 1 1</code>
+<br><code>0 1 0 1 0 0 1 1 1</code>
+<br><code>0 1 0 0 1 1 1 1 0</code>
+<br><code>0 1 0 0 1 1 1 0 1</code>
+<br><code>0 1 0 0 1 1 0 1 1</code>
+<br><code>0 1 0 0 1 0 1 1 1</code>
+<br><code>0 1 0 0 0 1 1 1 1</code>
+<br><code>0 0 1 1 1 1 1 0 0</code>
+<br><code>0 0 1 1 1 1 0 1 0</code>
+<br><code>0 0 1 1 1 1 0 0 1</code>
+<br><code>0 0 1 1 1 0 1 1 0</code>
+<br><code>0 0 1 1 1 0 1 0 1</code>
+<br><code>0 0 1 1 1 0 0 1 1</code>
+<br><code>0 0 1 1 0 1 1 1 0</code>
+<br><code>0 0 1 1 0 1 1 0 1</code>
+<br><code>0 0 1 1 0 1 0 1 1</code>
+<br><code>0 0 1 1 0 0 1 1 1</code>
+<br><code>0 0 1 0 1 1 1 1 0</code>
+<br><code>0 0 1 0 1 1 1 0 1</code>
+<br><code>0 0 1 0 1 1 0 1 1</code>
+<br><code>0 0 1 0 1 0 1 1 1</code>
+<br><code>0 0 1 0 0 1 1 1 1</code>
+<br><code>0 0 0 1 1 1 1 1 0</code>
+<br><code>0 0 0 1 1 1 1 0 1</code>
+<br><code>0 0 0 1 1 1 0 1 1</code>
+<br><code>0 0 0 1 1 0 1 1 1</code>
+<br><code>0 0 0 1 0 1 1 1 1</code>
+<br><code>0 0 0 0 1 1 1 1 1</code>
+<br><code>std::cout &lt;&lt; outmatr.size() &lt;&lt; "\n";</code>
+<br><code>126</code>
+</div>
+<br>
+<hr class="hr">
+<h2 style="color:#2c4786;">Binary conversions</h2>
+<h2 id="int_to_binarydq" style="test-align: left;">int_to_binarydq</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::deque&lt;bool&gt; int_to_binarydq(unsigned int x)</code></div>
+<h3>#Description</h3>
+<p>Converts an unsigned int to a binary format as a boolean deque</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input unsigned int</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::deque<bool> rtn_dq  = int_to_binarydq(1286);</code>
+<br><code>1 0 1 0 0 0 0 0 1 1 0</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="binarydq_to_int" style="test-align: left;">binarydq_to_int</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>unsigned int binarydq_to_int(std::deque&lt;bool&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Converts a binary format as a boolean deque to an unsigned int</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input boolean std deque</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::deque&lt;bool&gt; dq_input = {1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0};</code>
+<br><code>unsigned int out = binarydq_to_int(rtn_dq);</code>
+<br><code>1286</code>
 </div>
 <br>
 <hr class="hr">
