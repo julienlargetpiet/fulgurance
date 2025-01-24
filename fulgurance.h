@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <deque>
 #include <math.h>
 #include <chrono>
 #include <thread>
@@ -5202,3 +5203,59 @@ std::vector<std::vector<bool>> all_comb(unsigned int &k, unsigned int &n) {
   };
   return matr;
 };
+
+//@L2 Binary conversions
+
+//@T int_to_binarydq
+//@U std::deque&lt;bool&gt; int_to_binarydq(unsigned int x)
+//@X
+//@D Converts an unsigned int to a binary format as a boolean deque
+//@A x : is the input unsigned int
+//@X
+//@E std::deque<bool> rtn_dq  = int_to_binarydq(1286);
+//@E 1 0 1 0 0 0 0 0 1 1 0
+//@X
+
+std::deque<bool> int_to_binarydq(unsigned int x) {
+  std::deque<bool> rtn_dq;
+  while (x > 0) {
+    if (x % 2 == 0) {
+      rtn_dq.push_front(0);
+    } else {
+      rtn_dq.push_front(1);
+    };
+    x /= 2;
+  };
+  return rtn_dq;
+};
+
+//@T binarydq_to_int
+//@U unsigned int binarydq_to_int(std::deque&lt;bool&gt; &x)
+//@X
+//@D Converts a binary format as a boolean deque to an unsigned int
+//@A x : is the input boolean std deque
+//@X
+//@E std::deque&lt;bool&gt; dq_input = {1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0};
+//@E unsigned int out = binarydq_to_int(rtn_dq);
+//@E 1286
+//@X
+
+unsigned int binarydq_to_int(std::deque<bool> &x) {
+  unsigned int rtn_int = 0;
+  std::deque<bool> ref_dq;
+  const unsigned int ref_n = x.size() - 1;
+  ref_dq.resize(ref_n + 1, 0);
+  int i;
+  while (ref_dq != x) {
+    i = ref_n;
+    while (ref_dq[i] == 1) {
+      ref_dq[i] = 0;
+      i -= 1;
+    };
+    ref_dq[i] = 1;
+    rtn_int += 1;
+  };
+  return rtn_int;
+};
+
+
