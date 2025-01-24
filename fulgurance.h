@@ -5204,6 +5204,142 @@ std::vector<std::vector<bool>> all_comb(unsigned int &k, unsigned int &n) {
   return matr;
 };
 
+//@T all_comb_iter
+//@U unsigned int all_comb_iter(std::deque&lt;bool&gt; &x)
+//@X
+//@D Returns the number of iterations to find the input boolean vector according to all_comb algorithm
+//@A x : is the input boolean vector
+//@X
+//@E std::vector&lt;bool&gt; teste_dq = {1, 0, 1, 1, 1, 1, 0};
+//@E unsigned int out = all_comb_iter(teste_dq);
+//@E 11
+//@X
+
+unsigned int all_comb_iter(std::vector<bool> &x) {
+  unsigned int n = x.size();
+  unsigned int k = 0;
+  unsigned int cnt = 0;
+  std::vector<unsigned int> cur_idx;
+  std::vector<unsigned int> max_idx;
+  std::vector<bool> cur_v;
+  std::vector<bool> ref_v;
+  unsigned int i;
+  for (i = 0; i < n; ++i) {
+    if (x[i] == 1) {
+      k += 1;
+    };
+  };
+  const unsigned int ref_k = k - 1;
+  int idx = ref_k;
+  unsigned int idx_val;
+  i = 0;
+  while (i < k) {
+    max_idx.push_back(n - k + i);
+    cur_idx.push_back(i);
+    ref_v.push_back(0);
+    i += 1;
+  };
+  while (i < n){
+    ref_v.push_back(0);
+    i += 1;
+  };
+  while (cur_idx[ref_k] < n) {
+    while (cur_idx[ref_k] != n) {
+      cur_v = ref_v;
+      for (i = 0; i < k; ++i) {
+        cur_v[cur_idx[i]] = 1;
+      };
+      cnt += 1;
+      if (cur_v == x) {
+        return cnt;
+      };
+      cur_idx[ref_k] += 1;
+    };
+    idx = ref_k - 1;
+    while (cur_idx[idx] == max_idx[idx] & idx > -1) {
+      idx -= 1;
+    };
+    if (idx < 0) {
+      idx = 0;
+    };
+    idx_val = cur_idx[idx] + 1;
+    while (idx < k) {
+      cur_idx[idx] = idx_val;
+      idx += 1;
+      idx_val += 1;
+    };
+  };
+  return 0;
+};
+
+//@T all_comb_iterdq
+//@U unsigned int all_comb_iterdq(std::deque&lt;bool&gt; &x)
+//@X
+//@D Returns the number of iterations to find the input boolean deque according to all_comb algorithm
+//@A x : is the input boolean deque
+//@X
+//@E std::deque&lt;bool&gt; teste_dq = {1, 0, 1, 1, 1, 1, 0};
+//@E unsigned int out = all_comb_iterdq(teste_dq);
+//@E 11
+//@X
+
+unsigned int all_comb_iterdq(std::deque<bool> &x) {
+  unsigned int n = x.size();
+  unsigned int k = 0;
+  unsigned int cnt = 0;
+  std::deque<unsigned int> cur_idx;
+  std::deque<unsigned int> max_idx;
+  std::deque<bool> cur_v;
+  std::deque<bool> ref_v;
+  unsigned int i;
+  for (i = 0; i < n; ++i) {
+    if (x[i] == 1) {
+      k += 1;
+    };
+  };
+  const unsigned int ref_k = k - 1;
+  int idx = ref_k;
+  unsigned int idx_val;
+  i = 0;
+  while (i < k) {
+    max_idx.push_back(n - k + i);
+    cur_idx.push_back(i);
+    ref_v.push_back(0);
+    i += 1;
+  };
+  while (i < n){
+    ref_v.push_back(0);
+    i += 1;
+  };
+  while (cur_idx[ref_k] < n) {
+    while (cur_idx[ref_k] != n) {
+      cur_v = ref_v;
+      for (i = 0; i < k; ++i) {
+        cur_v[cur_idx[i]] = 1;
+      };
+      cnt += 1;
+      if (cur_v == x) {
+        return cnt;
+      };
+      cur_idx[ref_k] += 1;
+    };
+    idx = ref_k - 1;
+    while (cur_idx[idx] == max_idx[idx] & idx > -1) {
+      idx -= 1;
+    };
+    if (idx < 0) {
+      idx = 0;
+    };
+    idx_val = cur_idx[idx] + 1;
+    while (idx < k) {
+      cur_idx[idx] = idx_val;
+      idx += 1;
+      idx_val += 1;
+    };
+  };
+  return 0;
+};
+
 //@L2 Binary conversions
 
 //@T int_to_binarydq
