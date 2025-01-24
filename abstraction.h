@@ -401,13 +401,16 @@ std::vector<bool> bool_gen(unsigned int &k, unsigned int &n, double seed = 0) {
     ref_v.push_back(0);
     i += 1;
   };
-  while (cnt < seed) {
+  while (1) {
     while (cur_idx[ref_k] != n) {
       cur_v = ref_v;
       for (i = 0; i < k; ++i) {
         cur_v[cur_idx[i]] = 1;
       };
       cnt += 1;
+      if (cnt >= seed) {
+        return cur_v;
+      };
       cur_idx[ref_k] += 1;
     };
     idx = ref_k - 1;
@@ -424,7 +427,6 @@ std::vector<bool> bool_gen(unsigned int &k, unsigned int &n, double seed = 0) {
       idx_val += 1;
     };
   };
-  return cur_v;
 };
 
 
