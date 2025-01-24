@@ -359,7 +359,73 @@ std::vector<unsigned int> rgeom(unsigned int &n, double &p) {
   return rtn_v;
 };
 
+//@T bool_gen
+//@U std::vector&lt;bool&gt; bool_gen(unsigned int &k, unsigned int &n, double seed = 0)
+//@X
+//@D Returns a boolean vector of size n, with k elements equal to 1
+//@A k : is the number of elements that should equal to 1
+//@A n : is the size of the vector
+//@A seed : 0, if the vector should be randomly generated, strictly positive values either
+//@X
+//@E unsigned int k = 5;
+//@E unsigned int n = 17;
+//@E std::vector&lt;bool&gt; out = bool_gen(k, n, 0);
+//@E print_nvec(out);
+//@E :0: 0 1 1 0 1 0 0 1 0 0 0 0 0 0 0 0 1
+//@X
 
+std::vector<bool> bool_gen(unsigned int &k, unsigned int &n, double seed = 0) {
+  std::vector<unsigned int> cur_idx;
+  std::vector<unsigned int> max_idx;
+  std::vector<bool> cur_v;
+  std::vector<bool> ref_v;
+  unsigned int i = 0;
+  const unsigned int ref_k = k - 1;
+  int idx = ref_k;
+  unsigned int idx_val;
+  double cnt = 0;
+  auto now = std::chrono::system_clock::now();
+  auto duration = now.time_since_epoch();
+  double ref_comb_val = Comb(k, n);
+  if (seed == 0) {
+    seed = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % (int)ref_comb_val;
+    seed += 1;
+  };
+  while (i < k) {
+    max_idx.push_back(n - k + i);
+    cur_idx.push_back(i);
+    ref_v.push_back(0);
+    i += 1;
+  };
+  while (i < n){
+    ref_v.push_back(0);
+    i += 1;
+  };
+  while (cnt < seed) {
+    while (cur_idx[ref_k] != n) {
+      cur_v = ref_v;
+      for (i = 0; i < k; ++i) {
+        cur_v[cur_idx[i]] = 1;
+      };
+      cnt += 1;
+      cur_idx[ref_k] += 1;
+    };
+    idx = ref_k - 1;
+    while (cur_idx[idx] == max_idx[idx] & idx > -1) {
+      idx -= 1;
+    };
+    if (idx < 0) {
+      idx = 0;
+    };
+    idx_val = cur_idx[idx] + 1;
+    while (idx < k) {
+      cur_idx[idx] = idx_val;
+      idx += 1;
+      idx_val += 1;
+    };
+  };
+  return cur_v;
+};
 
 
 
