@@ -5159,11 +5159,11 @@ template <typename T> bool is_symetric(std::vector<T> &x) {
 //@X
 
 std::vector<std::vector<bool>> all_comb(unsigned int &k, unsigned int &n) {
-  std::vector<std::vector<bool>> matr;
-  std::vector<unsigned int> cur_idx;
-  std::vector<unsigned int> max_idx;
-  std::vector<bool> cur_v;
-  std::vector<bool> ref_v;
+  std::vector<std::vector<bool>> matr = {};
+  std::vector<unsigned int> cur_idx = {};
+  std::vector<unsigned int> max_idx = {};
+  std::vector<bool> cur_v = {};
+  std::vector<bool> ref_v = {};
   unsigned int i = 0;
   const unsigned int ref_k = k - 1;
   int idx = ref_k;
@@ -5219,10 +5219,10 @@ unsigned int all_comb_iter(std::vector<bool> &x) {
   unsigned int n = x.size();
   unsigned int k = 0;
   unsigned int cnt = 0;
-  std::vector<unsigned int> cur_idx;
-  std::vector<unsigned int> max_idx;
-  std::vector<bool> cur_v;
-  std::vector<bool> ref_v;
+  std::vector<unsigned int> cur_idx = {};
+  std::vector<unsigned int> max_idx = {};
+  std::vector<bool> cur_v = {};
+  std::vector<bool> ref_v = {};
   unsigned int i;
   for (i = 0; i < n; ++i) {
     if (x[i] == 1) {
@@ -5287,10 +5287,10 @@ unsigned int all_comb_iterdq(std::deque<bool> &x) {
   unsigned int n = x.size();
   unsigned int k = 0;
   unsigned int cnt = 0;
-  std::deque<unsigned int> cur_idx;
-  std::deque<unsigned int> max_idx;
-  std::deque<bool> cur_v;
-  std::deque<bool> ref_v;
+  std::deque<unsigned int> cur_idx = {};
+  std::deque<unsigned int> max_idx = {};
+  std::deque<bool> cur_v = {};
+  std::deque<bool> ref_v = {};
   unsigned int i;
   for (i = 0; i < n; ++i) {
     if (x[i] == 1) {
@@ -5353,7 +5353,7 @@ unsigned int all_comb_iterdq(std::deque<bool> &x) {
 //@X
 
 std::deque<bool> int_to_binarydq(unsigned int x) {
-  std::deque<bool> rtn_dq;
+  std::deque<bool> rtn_dq = {};
   while (x > 0) {
     if (x % 2 == 0) {
       rtn_dq.push_front(0);
@@ -5378,7 +5378,7 @@ std::deque<bool> int_to_binarydq(unsigned int x) {
 
 unsigned int binarydq_to_int(std::deque<bool> &x) {
   unsigned int rtn_int = 0;
-  std::deque<bool> ref_dq;
+  std::deque<bool> ref_dq = {};
   const unsigned int ref_n = x.size() - 1;
   ref_dq.resize(ref_n + 1, 0);
   int i;

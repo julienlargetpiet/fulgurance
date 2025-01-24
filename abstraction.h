@@ -375,10 +375,10 @@ std::vector<unsigned int> rgeom(unsigned int &n, double &p) {
 //@X
 
 std::vector<bool> bool_gen(unsigned int &k, unsigned int &n, double seed = 0) {
-  std::vector<unsigned int> cur_idx;
-  std::vector<unsigned int> max_idx;
-  std::vector<bool> cur_v;
-  std::vector<bool> ref_v;
+  std::vector<unsigned int> cur_idx = {};
+  std::vector<unsigned int> max_idx = {};
+  std::vector<bool> cur_v = {};
+  std::vector<bool> ref_v = {};
   unsigned int i = 0;
   const unsigned int ref_k = k - 1;
   int idx = ref_k;
