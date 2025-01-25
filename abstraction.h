@@ -390,6 +390,8 @@ std::vector<bool> bool_gen(unsigned int &k, unsigned int &n, double seed = 0) {
   if (seed == 0) {
     seed = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % (int)ref_comb_val;
     seed += 1;
+  } else {
+    seed = (int)seed % (int)ref_comb_val;
   };
   while (i < k) {
     max_idx.push_back(n - k + i);
