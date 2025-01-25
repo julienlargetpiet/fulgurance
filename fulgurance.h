@@ -5340,6 +5340,21 @@ unsigned int all_comb_iterdq(std::deque<bool> &x) {
   return 0;
 };
 
+//@T bool_gen
+//@U std::vector&lt;bool&gt; bool_gen(unsigned int &k, unsigned int &n, double seed = 0)
+//@X
+//@D Returns a boolean vector of size n, with k elements equal to 1
+//@A k : is the number of elements that should equal to 1
+//@A n : is the size of the vector
+//@A seed : 0, if the vector should be randomly generated, strictly positive values either
+//@X
+//@E unsigned int k = 5;
+//@E unsigned int n = 17;
+//@E std::vector&lt;bool&gt; out = bool_gen(k, n, 0);
+//@E print_nvec(out);
+//@E :0: 0 1 1 0 1 0 0 1 0 0 0 0 0 0 0 0 1
+//@X
+
 //@L2 Binary conversions
 
 //@T int_to_binarydq
