@@ -4915,7 +4915,7 @@ template <typename T> std::vector<std::vector<T>> abs_matrout(const std::vector<
 //@L1 Fulgurance Tools
 
 //@T Parser_tokenizer_full
-//@U std::vector&lt;std::vector&lt;unsigned int&gt;&gt; Parser_tokenizer_full(std::string &x)
+//@U std::vector&lt;std::vector&lt;unsigned int&gt;&gt; Parser_tokenizer_full(std::string &x, char frst_chr = '(', char scd_chr = ')')
 //@X
 //@D Returns a 2d stl vectors. First vector is the pair of each parenthesis. Second stl vector is the index of each parenthesis. Takes a stl string as input. 
 //@A x : is a stl string
@@ -4926,7 +4926,7 @@ template <typename T> std::vector<std::vector<T>> abs_matrout(const std::vector<
 //@E {0 2 3 8 11 14 16 17 18 19 21 24 25 26 27 28}
 //@X
 
-std::vector<std::vector<unsigned int>> Parser_tokenizer_full(std::string &x) {
+std::vector<std::vector<unsigned int>> Parser_tokenizer_full(std::string &x, char frst_chr = '(', char scd_chr = ')') {
   std::vector<unsigned int> num_par;
   std::vector<int> cur_val;
   std::vector<unsigned int> idx_vec;
@@ -4935,14 +4935,14 @@ std::vector<std::vector<unsigned int>> Parser_tokenizer_full(std::string &x) {
   const unsigned int n = x.length();
   bool alrd;
   for (int i = 0; i < n; ++i) {
-    if (x[i] == '(') {
+    if (x[i] == frst_chr) {
       idx_vec.push_back(i);
       num_par.push_back(0);
       for (i2 = 0; i2 < cur_val.size(); ++i2) {
         cur_val[i2] += 1;
       };
       cur_val.push_back(1);
-    } else if (x[i] == ')') {
+    } else if (x[i] == scd_chr) {
         idx_vec.push_back(i);
         i2 = cur_val.size() - 1;
         num_par.push_back(0);
