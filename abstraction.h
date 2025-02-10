@@ -540,7 +540,7 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
   std::vector<unsigned int> multiple_cnt = {};
   std::vector<unsigned int> ref_multiple_cnt = {};
   std::string cur_matched_str = "";
-  std::vector<std::string> matched_str = "";
+  std::vector<std::string> matched_str;
   std::vector<std::string> pre_matched_str;
   std::string rtn_str;
   unsigned int lst_cnt;
@@ -854,6 +854,7 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
         ref_i = i;
         while (bf_cnt_zero + 1 < cnt) {
           multiple_cnt.push_back(bf_cnt_zero);
+          matched_str.push_back("");
           bf_cnt_zero += 1;
         };
       };
