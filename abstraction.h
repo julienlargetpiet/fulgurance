@@ -871,7 +871,7 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
     };
     if (or_state) {
       rep_val = 1;
-      if (cur_found) {
+      if (cur_found & rep_val != 0 & ref_rep_val != 0) {
         multiple_cnt.push_back(cnt);
         matched_str.push_back(cur_matched_str);
         ref_i = jump_i + 1;
@@ -889,7 +889,7 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
       } else {
         i = cur_ref_i; 
       };
-    } else if (cur_found & cnt < n2) {
+    } else if (cur_found & cnt < n2 & rep_val != 0 & ref_rep_val != 0) {
       multiple_cnt.push_back(cnt);
       matched_str.push_back(cur_matched_str);
       ref_i = i;
