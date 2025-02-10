@@ -539,7 +539,6 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
   bool greedy_state2 = 0;
   std::vector<unsigned int> multiple_cnt = {};
   std::vector<unsigned int> ref_multiple_cnt = {};
-  std::string str_cur_found;
   std::string cur_matched_str = "";
   std::vector<std::string> matched_str;
   std::vector<std::string> pre_matched_str;
