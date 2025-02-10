@@ -3336,6 +3336,87 @@ template <typename T, typename T2> std::vector<bool> grepl(const std::vector<T> 
   return rtn;
 };
 
+//@L3 RegEx
+
+//@T regex_findr
+//@U std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; regex_findr(std::string &searched, std::string &x)
+//@X
+//@D A minimalist RegEx flavor.
+//@D - <strong>or context</strong> which is the set of elements that are inside <code>[]</code>, evaluates the expression from left to right 
+//@D - <strong>range elements</strong> matches every elements that are between <code>x-y</code> acording to the ASCII table
+//@D - <strong>repetition</strong> is the number of times a set of elements have to be matched, this is declared inside <code>{n}</code> after the set of elements
+//@D - <strong>greedyness</strong> allows to match a given number of times a set of elements or more, this is declared by <code>{+n}</code> after the set of elements
+//@D - <code>\\</code> is used to escape special characters, apart when it is in a range context, so <code>\\-x</code> or <code>x-\\</code> are valid
+//@A searched : is the RegEx expression
+//@A x : is the input std::string
+//@X
+//@E
+//@E std::string inpt_str = "uouuupeieeeppppiimi";
+//@E std::string searched = "[u{1}p{2}]{2}ii[a-em]";
+//@E std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; outmp = regex_findr(searched, inpt_str);
+//@E std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator it = outmp.begin();
+//@E std::vector&lt;unsigned int&gt; vec1 = it-&gt;first;
+//@E std::map&lt;bool, std::string&gt;::iterator it2b = it-&gt;second.begin();
+//@E std::cout &lt;&lt; vec1[0] &lt;&lt; "\n";
+//@E std::cout &lt;&lt; vec1[1] &lt;&lt; "\n";
+//@E std::cout &lt;&lt; it2b-&gt;first &lt;&lt; "\n";
+//@E std::cout &lt;&lt; it2b-&gt;second &lt;&lt; "\n";
+//@E 
+//@E 11
+//@E 17
+//@E 1
+//@E ppppiim
+//@E 
+//@E std::string inpt_str = "uouuupeieeeppppiimi";
+//@E std::string searched = "[u{1}p{2}]{+1}ii[a-em]";
+//@E std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; outmp = regex_findr(searched, inpt_str);
+//@E std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator it = outmp.begin();
+//@E std::vector&lt;unsigned int&gt; vec1 = it-&gt;first;
+//@E std::map&lt;bool, std::string&gt;::iterator it2b = it-&gt;second.begin();
+//@E std::cout &lt;&lt; vec1[0] &lt;&lt; "\n";
+//@E std::cout &lt;&lt; vec1[1] &lt;&lt; "\n";
+//@E std::cout &lt;&lt; it2b-&gt;first &lt;&lt; "\n";
+//@E std::cout &lt;&lt; it2b-&gt;second &lt;&lt; "\n";
+//@E 
+//@E 11
+//@E 17
+//@E 1
+//@E ppppiim
+//@E 
+//@E std::string inpt_str = "uouuupeieeeppppiimi";
+//@E std::string searched = "e{+1}p{2}";
+//@E std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; outmp = regex_findr(searched, inpt_str);
+//@E std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator it = outmp.begin();
+//@E std::vector&lt;unsigned int&gt; vec1 = it-&gt;first;
+//@E std::map&lt;bool, std::string&gt;::iterator it2b = it-&gt;second.begin();
+//@E std::cout &lt;&lt; vec1[0] &lt;&lt; "\n";
+//@E std::cout &lt;&lt; vec1[1] &lt;&lt; "\n";
+//@E std::cout &lt;&lt; it2b-&gt;first &lt;&lt; "\n";
+//@E std::cout &lt;&lt; it2b-&gt;second &lt;&lt; "\n";
+//@E 
+//@E 8
+//@E 12
+//@E 1
+//@E eeepp
+//@E 
+//@E std::string inpt_str = "uouuupeieeeppppiimi";
+//@E std::string searched = "[a-ia-z]{+1}";
+//@E std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; outmp = regex_findr(searched, inpt_str);
+//@E std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator it = outmp.begin();
+//@E std::vector&lt;unsigned int&gt; vec1 = it-&gt;first;
+//@E std::map&lt;bool, std::string&gt;::iterator it2b = it-&gt;second.begin();
+//@E std::cout &lt;&lt; vec1[0] &lt;&lt; "\n";
+//@E std::cout &lt;&lt; vec1[1] &lt;&lt; "\n";
+//@E std::cout &lt;&lt; it2b-&gt;first &lt;&lt; "\n";
+//@E std::cout &lt;&lt; it2b-&gt;second &lt;&lt; "\n";
+//@E 
+//@E 6
+//@E 10
+//@E 1
+//@E eieee
+//@E
+//@X
+
 //@L3 Unique
 
 //@T unique

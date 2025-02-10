@@ -200,6 +200,9 @@
 <br>
 <a href="#grepl" style="margin-left:80px;">grepl</a>
 <br>
+<b><li style="margin-left:60px; color: #2c4786;">RegEx</li></b>
+<a href="#regex_findr" style="margin-left:80px;">regex_findr</a>
+<br>
 <b><li style="margin-left:60px; color: #2c4786;">Unique</li></b>
 <a href="#unique" style="margin-left:80px;">unique</a>
 <br>
@@ -312,6 +315,12 @@
 <a href="#is_symetric" style="margin-left:40px;">is_symetric</a>
 <br>
 <a href="#all_comb" style="margin-left:40px;">all_comb</a>
+<br>
+<a href="#all_comb_iter" style="margin-left:40px;">all_comb_iter</a>
+<br>
+<a href="#all_comb_iterdq" style="margin-left:40px;">all_comb_iterdq</a>
+<br>
+<a href="#bool_gen" style="margin-left:40px;">bool_gen</a>
 <br>
 <b><li style="margin-left:40px; color: #2c4786;">Binary conversions</li></b>
 <a href="#int_to_binarydq" style="margin-left:60px;">int_to_binarydq</a>
@@ -2227,6 +2236,92 @@ source </th><th> is an stl vector</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h3 style="color:#2c4786;">RegEx</h3>
+<h2 id="regex_findr" style="test-align: left;">regex_findr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; regex_findr(std::string &searched, std::string &x)</code></div>
+<h3>#Description</h3>
+<p>A minimalist RegEx flavor.</p>
+<p>- <strong>or context</strong> which is the set of elements that are inside <code>[]</code>, evaluates the expression from left to right </p>
+<p>- <strong>range elements</strong> matches every elements that are between <code>x-y</code> acording to the ASCII table</p>
+<p>- <strong>repetition</strong> is the number of times a set of elements have to be matched, this is declared inside <code>{n}</code> after the set of elements</p>
+<p>- <strong>greedyness</strong> allows to match a given number of times a set of elements or more, this is declared by <code>{+n}</code> after the set of elements</p>
+<p>- <code>\\</code> is used to escape special characters, apart when it is in a range context, so <code>\\-x</code> or <code>x-\\</code> are valid</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+searched </th><th> is the RegEx expression</th></tr>
+<tr><th>x </th><th> is the input std</th><th></th><th>string</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code>std::string inpt_str = "uouuupeieeeppppiimi";</code>
+<br><code>std::string searched = "[u{1}p{2}]{2}ii[a-em]";</code>
+<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; outmp = regex_findr(searched, inpt_str);</code>
+<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator it = outmp.begin();</code>
+<br><code>std::vector&lt;unsigned int&gt; vec1 = it-&gt;first;</code>
+<br><code>std::map&lt;bool, std::string&gt;::iterator it2b = it-&gt;second.begin();</code>
+<br><code>std::cout &lt;&lt; vec1[0] &lt;&lt; "\n";</code>
+<br><code>std::cout &lt;&lt; vec1[1] &lt;&lt; "\n";</code>
+<br><code>std::cout &lt;&lt; it2b-&gt;first &lt;&lt; "\n";</code>
+<br><code>std::cout &lt;&lt; it2b-&gt;second &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>11</code>
+<br><code>17</code>
+<br><code>1</code>
+<br><code>ppppiim</code>
+<br><code></code>
+<br><code>std::string inpt_str = "uouuupeieeeppppiimi";</code>
+<br><code>std::string searched = "[u{1}p{2}]{+1}ii[a-em]";</code>
+<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; outmp = regex_findr(searched, inpt_str);</code>
+<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator it = outmp.begin();</code>
+<br><code>std::vector&lt;unsigned int&gt; vec1 = it-&gt;first;</code>
+<br><code>std::map&lt;bool, std::string&gt;::iterator it2b = it-&gt;second.begin();</code>
+<br><code>std::cout &lt;&lt; vec1[0] &lt;&lt; "\n";</code>
+<br><code>std::cout &lt;&lt; vec1[1] &lt;&lt; "\n";</code>
+<br><code>std::cout &lt;&lt; it2b-&gt;first &lt;&lt; "\n";</code>
+<br><code>std::cout &lt;&lt; it2b-&gt;second &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>11</code>
+<br><code>17</code>
+<br><code>1</code>
+<br><code>ppppiim</code>
+<br><code></code>
+<br><code>std::string inpt_str = "uouuupeieeeppppiimi";</code>
+<br><code>std::string searched = "e{+1}p{2}";</code>
+<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; outmp = regex_findr(searched, inpt_str);</code>
+<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator it = outmp.begin();</code>
+<br><code>std::vector&lt;unsigned int&gt; vec1 = it-&gt;first;</code>
+<br><code>std::map&lt;bool, std::string&gt;::iterator it2b = it-&gt;second.begin();</code>
+<br><code>std::cout &lt;&lt; vec1[0] &lt;&lt; "\n";</code>
+<br><code>std::cout &lt;&lt; vec1[1] &lt;&lt; "\n";</code>
+<br><code>std::cout &lt;&lt; it2b-&gt;first &lt;&lt; "\n";</code>
+<br><code>std::cout &lt;&lt; it2b-&gt;second &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>8</code>
+<br><code>12</code>
+<br><code>1</code>
+<br><code>eeepp</code>
+<br><code></code>
+<br><code>std::string inpt_str = "uouuupeieeeppppiimi";</code>
+<br><code>std::string searched = "[a-ia-z]{+1}";</code>
+<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; outmp = regex_findr(searched, inpt_str);</code>
+<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator it = outmp.begin();</code>
+<br><code>std::vector&lt;unsigned int&gt; vec1 = it-&gt;first;</code>
+<br><code>std::map&lt;bool, std::string&gt;::iterator it2b = it-&gt;second.begin();</code>
+<br><code>std::cout &lt;&lt; vec1[0] &lt;&lt; "\n";</code>
+<br><code>std::cout &lt;&lt; vec1[1] &lt;&lt; "\n";</code>
+<br><code>std::cout &lt;&lt; it2b-&gt;first &lt;&lt; "\n";</code>
+<br><code>std::cout &lt;&lt; it2b-&gt;second &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>6</code>
+<br><code>10</code>
+<br><code>1</code>
+<br><code>eieee</code>
+<br><code></code>
+</div>
+<br>
+<hr class="hr">
 <h3 style="color:#2c4786;">Unique</h3>
 <h2 id="unique" style="test-align: left;">unique</h2>
 <h3>#Usage</h3>
@@ -3131,7 +3226,7 @@ x </th><th> is a matrix as 2D stl vector (int, float, double, bool)</th></tr>
 <h1 style="color:#2c4786;">Fulgurance Tools</h1>
 <h2 id="Parser_tokenizer_full" style="test-align: left;">Parser_tokenizer_full</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::vector&lt;std::vector&lt;unsigned int&gt;&gt; Parser_tokenizer_full(std::string &x)</code></div>
+<div class="Div"><code>std::vector&lt;std::vector&lt;unsigned int&gt;&gt; Parser_tokenizer_full(std::string &x, char frst_chr = '(', char scd_chr = ')')</code></div>
 <h3>#Description</h3>
 <p>Returns a 2d stl vectors. First vector is the pair of each parenthesis. Second stl vector is the index of each parenthesis. Takes a stl string as input. </p>
 <h3>#Arguments</h3>
@@ -3320,6 +3415,61 @@ k </th><th> is the k value</th></tr>
 <br><code>0 0 0 0 1 1 1 1 1</code>
 <br><code>std::cout &lt;&lt; outmatr.size() &lt;&lt; "\n";</code>
 <br><code>126</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="all_comb_iter" style="test-align: left;">all_comb_iter</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>unsigned int all_comb_iter(std::deque&lt;bool&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Returns the number of iterations to find the input boolean vector according to all_comb algorithm</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input boolean vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;bool&gt; teste_dq = {1, 0, 1, 1, 1, 1, 0};</code>
+<br><code>unsigned int out = all_comb_iter(teste_dq);</code>
+<br><code>11</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="all_comb_iterdq" style="test-align: left;">all_comb_iterdq</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>unsigned int all_comb_iterdq(std::deque&lt;bool&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Returns the number of iterations to find the input boolean deque according to all_comb algorithm</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input boolean deque</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::deque&lt;bool&gt; teste_dq = {1, 0, 1, 1, 1, 1, 0};</code>
+<br><code>unsigned int out = all_comb_iterdq(teste_dq);</code>
+<br><code>11</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="bool_gen" style="test-align: left;">bool_gen</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;bool&gt; bool_gen(unsigned int &k, unsigned int &n, double seed = 0)</code></div>
+<h3>#Description</h3>
+<p>Returns a boolean vector of size n, with k elements equal to 1</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+k </th><th> is the number of elements that should equal to 1</th></tr>
+<tr><th>n </th><th> is the size of the vector</th></tr>
+<tr><th>seed </th><th> 0, if the vector should be randomly generated, strictly positive values either</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>unsigned int k = 5;</code>
+<br><code>unsigned int n = 17;</code>
+<br><code>std::vector&lt;bool&gt; out = bool_gen(k, n, 0);</code>
+<br><code>print_nvec(out);</code>
+<br><code>:0: 0 1 1 0 1 0 0 1 0 0 0 0 0 0 0 0 1</code>
 </div>
 <br>
 <hr class="hr">
