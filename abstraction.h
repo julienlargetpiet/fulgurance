@@ -797,7 +797,7 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
           };
         };
       };
-      if (rep_val == 0 & ref_rep_val == 0) {
+      if (rep_val == 0 || ref_rep_val == 0) {
         cur_found = 0;
       };
     } else {
@@ -855,6 +855,7 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
     };
     if (rep_val == 0 || ref_rep_val == 0 || cnt == n2 & alrd_zero) {
       if (bf_cnt_zero + 1 < pre_cnt2) {
+        cur_found = 1;
         alrd_zero = 1;
         ref_i = i;
         while (bf_cnt_zero + 1 < pre_cnt2) {
@@ -867,6 +868,9 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
           multiple_cnt.push_back(bf_cnt_zero);
         };
         bf_cnt_zero = cnt;
+        if (or_state) {
+          ref_i = jump_i + 1;
+        };
       };
     };
     if (or_state) {
@@ -950,9 +954,9 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
     return {{{{pre_cnt, lst_cnt}}, {{1, matched_str[0]}}}};
   };
   if (pre_matched_str[0] != "") {
-    lst_cnt = multiple_cnt[idx_cnt] - 1;
+    lst_cnt = multiple_cnt[0] - 1;
   } else {
-    lst_cnt = multiple_cnt[idx_cnt];
+    lst_cnt = multiple_cnt[0];
   };
   matched_str = pre_matched_str;
   ref_rep_val = 1;
