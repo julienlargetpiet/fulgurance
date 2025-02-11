@@ -822,6 +822,7 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
         };
       } else if (i + 3 < n) {
         if (searched[i] == '{' & searched[i + 1] == '0' & searched[i + 2] == '}') {
+          rep_val = 0;
           if (cur_found) {
             cur_found = 0;
           } else {
@@ -831,6 +832,7 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
           };
           i += 3;
         } else if (searched[i] == '{' & searched[i + 1] == '+' & searched[i + 2] == '0' & searched[i + 3] == '}') {
+          rep_val = 0;
           if (cur_found) {
             cur_found = 0;
           } else {
@@ -842,6 +844,7 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
         };
       } else if (i + 3 == n) {
         if (searched[i] == '{' & searched[i + 1] == '0' & searched[i + 2] == '}') {
+          rep_val = 0;
           if (cur_found) {
             cur_found = 0;
           } else {
@@ -1270,4 +1273,5 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
   return {{{pre_cnt, lst_cnt}, 
           {{cur_found, rtn_str}}}}; 
 };
+
 
