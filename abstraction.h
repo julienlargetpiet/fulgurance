@@ -766,37 +766,6 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
         rep_val = 1;
       };
       pre_cnt2 = cnt;
-      if (range_state) {
-        agn2 = int(x[cnt]) >= ref_int1 & int(x[cnt]) <= ref_int2;
-        if (agn2) {
-          for (temp_i = 0; temp_i + 1 < cur_matched_str.length(); ++temp_i) {
-            cur_matched_str[temp_i] = cur_matched_str[temp_i + 1];   
-          };
-          cur_matched_str[cur_matched_str.length() - 1] = x[cnt];
-          cnt += 1;
-          while (agn2 & cnt < n2) {
-            agn2 = int(x[cnt]) >= ref_int1 & int(x[cnt]) <= ref_int2;
-            if (agn2) {
-              for (temp_i = 0; temp_i + 1 < cur_matched_str.length(); ++temp_i) {
-                cur_matched_str[temp_i] = cur_matched_str[temp_i + 1];   
-              };
-              cur_matched_str[cur_matched_str.length() - 1] = x[cnt];
-              cnt += 1;
-            };
-          };
-        };
-      } else {
-        agn2 = int(x[cnt]) == ref_int1;
-        if (agn2) {
-          cnt += 1;
-          while (agn2 & cnt < n2) {
-            agn2 = int(x[cnt]) == ref_int1;
-            if (agn2) {
-              cnt += 1;
-            };
-          };
-        };
-      };
       if (rep_val == 0 || ref_rep_val == 0) {
         cur_found = 0;
       };
@@ -853,6 +822,39 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
             cur_matched_str = ""; 
           };
           i += 3;
+        };
+      };
+    };
+    if (cnt < n2) {
+      if (range_state) {
+        agn2 = int(x[cnt]) >= ref_int1 & int(x[cnt]) <= ref_int2;
+        if (agn2) {
+          for (temp_i = 0; temp_i + 1 < cur_matched_str.length(); ++temp_i) {
+            cur_matched_str[temp_i] = cur_matched_str[temp_i + 1];   
+          };
+          cur_matched_str[cur_matched_str.length() - 1] = x[cnt];
+          cnt += 1;
+          while (agn2 & cnt < n2) {
+            agn2 = int(x[cnt]) >= ref_int1 & int(x[cnt]) <= ref_int2;
+            if (agn2) {
+              for (temp_i = 0; temp_i + 1 < cur_matched_str.length(); ++temp_i) {
+                cur_matched_str[temp_i] = cur_matched_str[temp_i + 1];   
+              };
+              cur_matched_str[cur_matched_str.length() - 1] = x[cnt];
+              cnt += 1;
+            };
+          };
+        };
+      } else {
+        agn2 = int(x[cnt]) == ref_int1;
+        if (agn2) {
+          cnt += 1;
+          while (agn2 & cnt < n2) {
+            agn2 = int(x[cnt]) == ref_int1;
+            if (agn2) {
+              cnt += 1;
+            };
+          };
         };
       };
     };
