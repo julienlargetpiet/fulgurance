@@ -867,11 +867,11 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
           matched_str.push_back("");
           multiple_cnt.push_back(bf_cnt_zero);
         };
-        bf_cnt_zero = cnt;
         if (or_state) {
           ref_i = jump_i + 1;
         };
       };
+      bf_cnt_zero = cnt;
     };
     if (or_state) {
       rep_val = 1;
