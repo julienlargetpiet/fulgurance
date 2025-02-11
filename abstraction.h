@@ -550,7 +550,6 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
   unsigned int cur_ref_i;
   unsigned int temp_i;
   bool is_repetition = 0;
-  bool alrd_zero = 0;
   std::vector<unsigned int> sorted_v;
   unsigned int cur_idx;
   unsigned int bf_cnt_zero = 0;
@@ -766,9 +765,9 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
         rep_val = 1;
       };
       pre_cnt2 = cnt;
-      if (rep_val == 0 || ref_rep_val == 0) {
-        cur_found = 0;
-      };
+      //if (rep_val == 0 || ref_rep_val == 0) {
+      //  cur_found = 0;
+      //};
     } else {
       if (ref_rep_val == 0) {
         if (cur_found) {
@@ -858,10 +857,9 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
         };
       };
     };
-    if (rep_val == 0 || ref_rep_val == 0 || cnt == n2 & alrd_zero) {
+    if (rep_val == 0 || ref_rep_val == 0) {
       if (bf_cnt_zero + 1 < pre_cnt2) {
         cur_found = 1;
-        alrd_zero = 1;
         ref_i = i;
         while (bf_cnt_zero + 1 < pre_cnt2) {
           matched_str.push_back("");
@@ -889,7 +887,6 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
         if (i < jump_i2) {
           cnt = 0;
           bf_cnt_zero = 0;
-          alrd_zero = 0;
         } else {
           or_state = 0;
           greedy_state1 = 0;
@@ -898,7 +895,7 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
       } else {
         i = cur_ref_i; 
       };
-    } else if (cur_found & cnt < n2 & rep_val != 0 & ref_rep_val != 0) {
+    } else if (cur_found & rep_val != 0 & ref_rep_val != 0) {
       multiple_cnt.push_back(cnt);
       matched_str.push_back(cur_matched_str);
       ref_i = i;
@@ -1275,5 +1272,3 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
   return {{{pre_cnt, lst_cnt}, 
           {{cur_found, rtn_str}}}}; 
 };
-
-
