@@ -825,7 +825,7 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr(std
         };
       };
     };
-    if (cnt < n2) {
+    if (cnt < n2 & cur_found) {
       if (range_state) {
         agn2 = int(x[cnt]) >= ref_int1 & int(x[cnt]) <= ref_int2;
         if (agn2) {
