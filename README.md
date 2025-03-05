@@ -206,6 +206,10 @@
 <br>
 <a href="#regex_grep" style="margin-left:80px;">regex_grep</a>
 <br>
+<a href="#regex_subout" style="margin-left:80px;">regex_subout</a>
+<br>
+<a href="#regex_subout_all" style="margin-left:80px;">regex_subout_all</a>
+<br>
 <b><li style="margin-left:60px; color: #2c4786;">Unique</li></b>
 <a href="#unique" style="margin-left:80px;">unique</a>
 <br>
@@ -2311,6 +2315,50 @@ searched </th><th> is the input regular expression</th></tr>
 <br><code>idx: 31 str: e radiateur fonctionne bien.</code>
 <br><code>idx: 31 str: r fonctionne bien.</code>
 <br><code>idx: 31 str: e bien.</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="regex_subout" style="test-align: left;">regex_subout</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::string regex_subout(std::string &searched, std::string &replacer, std::string x)</code></div>
+<h3>#Description</h3>
+<p>Substituates the first pattern matched by the regular expression, to a replacement pattern.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+searched </th><th> is the regular expression</th></tr>
+<tr><th>replacer </th><th> is the replacement pattern</th></tr>
+<tr><th>x </th><th> is the input string to replace searched by replacer into</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string inpt_str = "MMMLe radiateur fonctionne bien.... C'est un bon radiateur.";</code>
+<br><code>std::string rplcd = " moteur ";</code>
+<br><code>std::string searched = " a-z{9}[ .]";</code>
+<br><code>std::string out_txt = regex_subout(searched, rplcd, inpt_str);</code>
+<br><code>std::cout &lt;&lt; out_txt &lt;&lt; "\n";</code>
+<br><code>MMMLe moteur fonctionne bien.... C'est un bon radiateur.</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="regex_subout_all" style="test-align: left;">regex_subout_all</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::string regex_subout_all(std::string &searched, std::string &replacer, std::string x)</code></div>
+<h3>#Description</h3>
+<p>Substituates all patterns matched by the regular expression, to a replacement pattern.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+searched </th><th> is the regular expression</th></tr>
+<tr><th>replacer </th><th> is the replacement pattern</th></tr>
+<tr><th>x </th><th> is the input string to replace searched by replacer into</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string inpt_str = "MMMLe radiateur fonctionne bien.... C'est un bon radiateur.";</code>
+<br><code>std::string rplcd = " moteur ";</code>
+<br><code>std::string searched = " a-z{9}[ .]";</code>
+<br><code>std::string out_txt = regex_subout_all(searched, rplcd, inpt_str);</code>
+<br><code>std::cout &lt;&lt; out_txt &lt;&lt; "\n";</code>
+<br><code>MMMLe moteur fonctionne bien.... C'est un bon moteur.</code>
 </div>
 <br>
 <hr class="hr">
