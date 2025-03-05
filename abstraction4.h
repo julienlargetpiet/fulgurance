@@ -86,6 +86,9 @@ std::map<std::vector<int>, std::map<bool, std::string>> regex_match(std::string 
   std::map<std::vector<std::vector<unsigned int>>, std::vector<std::vector<std::string>>>::iterator bgn_it = bgn_mp.begin();
   std::vector<std::vector<std::string>> hmn_str_idxv = bgn_it->second;
   std::vector<std::vector<unsigned int>> hmn_idxv = bgn_it->first;
+  if (hmn_idxv.size() == 0) {
+    return {{{0, 0}, {{0, ""}}}};
+  };
   rtn_str = hmn_str_idxv[0][0];
   cnt = regex_findr_first_condition_idx(searched);
   ref_cnt = cnt;
@@ -494,6 +497,9 @@ std::map<std::vector<int>, std::vector<std::string>> regex_grep(std::string &sea
   std::map<std::vector<std::vector<unsigned int>>, std::vector<std::vector<std::string>>>::iterator bgn_it = bgn_mp.begin();
   std::vector<std::vector<std::string>> hmn_str_idxv = bgn_it->second;
   std::vector<std::vector<unsigned int>> hmn_idxv = bgn_it->first;
+  if (hmn_idxv.size() == 0) {
+    return {{{0, 0}, {{0, ""}}}};
+  };
   rtn_str = hmn_str_idxv[0][0];
   cnt = regex_findr_first_condition_idx(searched);
   ref_cnt = cnt;
