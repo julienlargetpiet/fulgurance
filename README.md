@@ -202,7 +202,9 @@
 <a href="#grepl" style="margin-left:80px;">grepl</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">RegEx</li></b>
-<a href="#regex_search" style="margin-left:80px;">regex_search</a>
+<a href="#regex_match" style="margin-left:80px;">regex_match</a>
+<br>
+<a href="#regex_grep" style="margin-left:80px;">regex_grep</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">Unique</li></b>
 <a href="#unique" style="margin-left:80px;">unique</a>
@@ -2240,11 +2242,13 @@ source </th><th> is an stl vector</th></tr>
 <br>
 <hr class="hr">
 <h3 style="color:#2c4786;">RegEx</h3>
-<h2 id="regex_search" style="test-align: left;">regex_search</h2>
+<h2 id="regex_match" style="test-align: left;">regex_match</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; regex_search(std::string &searched, std::string &x)</code></div>
+<div class="Div"><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; regex_match(std::string &searched, std::string &x)</code></div>
 <h3>#Description</h3>
-<p>A RegEx flavor. Read documentation in README_RegEx.md file.</p>
+<p>Performs a match with the regex flavor.</p>
+<p>This library provides an entirely new RegEx flavor. </p>
+<p>Read documentation in README_RegEx.md file for details about synthax.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 searched </th><th> is the regular expression</th></tr>
@@ -2252,7 +2256,61 @@ searched </th><th> is the regular expression</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>See at README_RegEx.md file</code>
+<div class = "Div"><code>std::string inpt_str = "Le radiateur fonctionne bien.";</code>
+<br><code>std::string searched = "[A-Z a-z][A-Z{+1}a-z{+1} {+1}]{?bien}[A-Z{0}]{+1}";</code>
+<br><code></code>
+<br><code>std::map&lt;std::vector&lt;int&gt;, std::map&lt;bool, std::string&gt;&gt; out_mp = regex_match(searched, inpt_str);</code>
+<br><code>std::map&lt;std::vector&lt;int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator out_it = out_mp.begin();</code>
+<br><code>std::vector&lt;int&gt; idx_v = out_it-&gt;first;</code>
+<br><code>std::map&lt;bool, std::string&gt;::iterator rslt_mp = out_it-&gt;second.begin();</code>
+<br><code>std::string rtn_str = rslt_mp-&gt;second;</code>
+<br><code>bool is_found = rslt_mp-&gt;first;</code>
+<br><code>if (is_found) {</code>
+<br><code>  std::cout &lt;&lt; idx_v[0] &lt;&lt; "\n";</code>
+<br><code>  std::cout &lt;&lt; idx_v[1] &lt;&lt; "\n";</code>
+<br><code>  std::cout &lt;&lt; is_found &lt;&lt; "\n";</code>
+<br><code>  std::cout &lt;&lt; rtn_str &lt;&lt; "\n";</code>
+<br><code>} else {</code>
+<br><code>  std::cout &lt;&lt; "not found\n";</code>
+<br><code>};</code>
+<br><code></code>
+<br><code>0</code>
+<br><code>28</code>
+<br><code>1</code>
+<br><code>Le radiateur fonctionne bien.</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="regex_grep" style="test-align: left;">regex_grep</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::map&lt;std::vector&lt;int&gt;, std::vector&lt;std::string&gt;&gt; regex_grep(std::string &searched, std::string &x)</code></div>
+<h3>#Description</h3>
+<p>Performs a grep with the regex flavor.</p>
+<p>This library provides an entirely new RegEx flavor. </p>
+<p>Read documentation in README_RegEx.md file for details about synthax.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+searched </th><th> is the input regular expression</th></tr>
+<tr><th>x </th><th> is the text to search into</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string inpt_str = "MMMLe radiateur fonctionne bien.";</code>
+<br><code>std::string searched = "[A-Z a-z][A-Z{+1}a-z{+1} {+1}]{?bien}[A-Z{0}]{+1}";</code>
+<br><code></code>
+<br><code>std::map&lt;std::vector&lt;int&gt;, std::vector&lt;std::string&gt;&gt; out_mp2 = regex_search_all(searched, inpt_str);</code>
+<br><code>std::map&lt;std::vector&lt;int&gt;, std::vector&lt;std::string&gt;&gt;::iterator out_it2 = out_mp2.begin();</code>
+<br><code>std::vector&lt;int&gt; idx_v2 = out_it2-&gt;first;</code>
+<br><code>std::vector&lt;std::string&gt; str_v2 = out_it2-&gt;second;</code>
+<br><code>for (int i = 0; i &lt; str_v2.size(); ++i) {</code>
+<br><code>  std::cout &lt;&lt; "idx: " &lt;&lt; idx_v2[i] &lt;&lt; " str: " &lt;&lt; str_v2[i] &lt;&lt; "\n";</code>
+<br><code>};</code>
+<br><code>idx: 31 str: Le radiateur fonctionne bien.</code>
+<br><code>idx: 31 str:  radiateur fonctionne bien.</code>
+<br><code>idx: 31 str:  fonctionne bien.</code>
+<br><code>idx: 31 str: e radiateur fonctionne bien.</code>
+<br><code>idx: 31 str: r fonctionne bien.</code>
+<br><code>idx: 31 str: e bien.</code>
 </div>
 <br>
 <hr class="hr">
