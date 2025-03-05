@@ -35,7 +35,7 @@
 <a href="#stod" style="margin-left:80px;">stod</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">Int, double, to string</li></b>
-<a href="#" style="margin-left:80px;"></a>
+<a href="#itos" style="margin-left:80px;">itos</a>
 <br>
 <b><li style="margin-left:40px; color: #2c4786;">On std::vector&lt;Type&gt;</li></b>
 <b><li style="margin-left:60px; color: #2c4786;">Statistical functions</li></b>
@@ -585,7 +585,7 @@ x </th><th> is a stl string</th></tr>
 <br>
 <hr class="hr">
 <h3 style="color:#2c4786;">Int, double, to string</h3>
-<h2 id="" style="test-align: left;"></h2>
+<h2 id="itos" style="test-align: left;">itos</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>std::string itos(unsigned int x) </code></div>
 <h3>#Description</h3>
