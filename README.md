@@ -1,3 +1,4 @@
+
 <body>
 <div class="Div2"><i><b>README</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
 <div class="container">
@@ -201,7 +202,7 @@
 <a href="#grepl" style="margin-left:80px;">grepl</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">RegEx</li></b>
-<a href="#regex_findr" style="margin-left:80px;">regex_findr</a>
+<a href="#regex_search" style="margin-left:80px;">regex_search</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">Unique</li></b>
 <a href="#unique" style="margin-left:80px;">unique</a>
@@ -2239,88 +2240,19 @@ source </th><th> is an stl vector</th></tr>
 <br>
 <hr class="hr">
 <h3 style="color:#2c4786;">RegEx</h3>
-<h2 id="regex_findr" style="test-align: left;">regex_findr</h2>
+<h2 id="regex_search" style="test-align: left;">regex_search</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; regex_findr(std::string &searched, std::string &x)</code></div>
+<div class="Div"><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; regex_search(std::string &searched, std::string &x)</code></div>
 <h3>#Description</h3>
-<p>A minimalist RegEx flavor.</p>
-<p>- <strong>or context</strong> which is the set of elements that are inside <code>[]</code>, evaluates the expression from left to right </p>
-<p>- <strong>range elements</strong> matches every elements that are between <code>x-y</code> acording to the ASCII table</p>
-<p>- <strong>repetition</strong> is the number of times a set of elements have to be matched, this is declared inside <code>{n}</code> after the set of elements</p>
-<p>- <strong>greedyness</strong> allows to match a given number of times a set of elements or more, this is declared by <code>{+n}</code> after the set of elements</p>
-<p>- <code>\\</code> is used to escape special characters, apart when it is in a range context, so <code>\\-x</code> or <code>x-\\</code> are valid</p>
+<p>A RegEx flavor. Read documentation in README_RegEx.md file.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-searched </th><th> is the RegEx expression</th></tr>
-<tr><th>x </th><th> is the input std</th><th></th><th>string</th></tr>
+searched </th><th> is the regular expression</th></tr>
+<tr><th>x </th><th> is the text to search into</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code></code>
-<br><code>std::string inpt_str = "uouuupeieeeppppiimi";</code>
-<br><code>std::string searched = "[u{1}p{2}]{2}ii[a-em]";</code>
-<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; outmp = regex_findr(searched, inpt_str);</code>
-<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator it = outmp.begin();</code>
-<br><code>std::vector&lt;unsigned int&gt; vec1 = it-&gt;first;</code>
-<br><code>std::map&lt;bool, std::string&gt;::iterator it2b = it-&gt;second.begin();</code>
-<br><code>std::cout &lt;&lt; vec1[0] &lt;&lt; "\n";</code>
-<br><code>std::cout &lt;&lt; vec1[1] &lt;&lt; "\n";</code>
-<br><code>std::cout &lt;&lt; it2b-&gt;first &lt;&lt; "\n";</code>
-<br><code>std::cout &lt;&lt; it2b-&gt;second &lt;&lt; "\n";</code>
-<br><code></code>
-<br><code>11</code>
-<br><code>17</code>
-<br><code>1</code>
-<br><code>ppppiim</code>
-<br><code></code>
-<br><code>std::string inpt_str = "uouuupeieeeppppiimi";</code>
-<br><code>std::string searched = "[u{1}p{2}]{+1}ii[a-em]";</code>
-<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; outmp = regex_findr(searched, inpt_str);</code>
-<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator it = outmp.begin();</code>
-<br><code>std::vector&lt;unsigned int&gt; vec1 = it-&gt;first;</code>
-<br><code>std::map&lt;bool, std::string&gt;::iterator it2b = it-&gt;second.begin();</code>
-<br><code>std::cout &lt;&lt; vec1[0] &lt;&lt; "\n";</code>
-<br><code>std::cout &lt;&lt; vec1[1] &lt;&lt; "\n";</code>
-<br><code>std::cout &lt;&lt; it2b-&gt;first &lt;&lt; "\n";</code>
-<br><code>std::cout &lt;&lt; it2b-&gt;second &lt;&lt; "\n";</code>
-<br><code></code>
-<br><code>11</code>
-<br><code>17</code>
-<br><code>1</code>
-<br><code>ppppiim</code>
-<br><code></code>
-<br><code>std::string inpt_str = "uouuupeieeeppppiimi";</code>
-<br><code>std::string searched = "e{+1}p{2}";</code>
-<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; outmp = regex_findr(searched, inpt_str);</code>
-<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator it = outmp.begin();</code>
-<br><code>std::vector&lt;unsigned int&gt; vec1 = it-&gt;first;</code>
-<br><code>std::map&lt;bool, std::string&gt;::iterator it2b = it-&gt;second.begin();</code>
-<br><code>std::cout &lt;&lt; vec1[0] &lt;&lt; "\n";</code>
-<br><code>std::cout &lt;&lt; vec1[1] &lt;&lt; "\n";</code>
-<br><code>std::cout &lt;&lt; it2b-&gt;first &lt;&lt; "\n";</code>
-<br><code>std::cout &lt;&lt; it2b-&gt;second &lt;&lt; "\n";</code>
-<br><code></code>
-<br><code>8</code>
-<br><code>12</code>
-<br><code>1</code>
-<br><code>eeepp</code>
-<br><code></code>
-<br><code>std::string inpt_str = "uouuupeieeeppppiimi";</code>
-<br><code>std::string searched = "[a-ia-z]{+1}";</code>
-<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; outmp = regex_findr(searched, inpt_str);</code>
-<br><code>std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator it = outmp.begin();</code>
-<br><code>std::vector&lt;unsigned int&gt; vec1 = it-&gt;first;</code>
-<br><code>std::map&lt;bool, std::string&gt;::iterator it2b = it-&gt;second.begin();</code>
-<br><code>std::cout &lt;&lt; vec1[0] &lt;&lt; "\n";</code>
-<br><code>std::cout &lt;&lt; vec1[1] &lt;&lt; "\n";</code>
-<br><code>std::cout &lt;&lt; it2b-&gt;first &lt;&lt; "\n";</code>
-<br><code>std::cout &lt;&lt; it2b-&gt;second &lt;&lt; "\n";</code>
-<br><code></code>
-<br><code>6</code>
-<br><code>10</code>
-<br><code>1</code>
-<br><code>eieee</code>
-<br><code></code>
+<div class = "Div"><code>See at README_RegEx.md file</code>
 </div>
 <br>
 <hr class="hr">
