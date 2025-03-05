@@ -1,7 +1,5 @@
 # Simple_RegEx
 
-![logo](logo.jpg)
-
 ## Features
 
 - **or context** which is the set of elements that are inside `[]`, evaluates the expression from left to right 
