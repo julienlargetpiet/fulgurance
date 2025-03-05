@@ -3373,6 +3373,31 @@ template <typename T, typename T2> std::vector<bool> grepl(const std::vector<T> 
 //@E Le radiateur fonctionne bien.
 //@X
 
+//@T regex_grep
+//@U std::map&lt;std::vector&lt;int&gt;, std::vector&lt;std::string&gt;&gt; regex_grep(std::string &searched, std::string &x)
+//@X
+//@D Performs a grep with the regex flavor. 
+//@A searched : is the input regular expression
+//@A x : is the text to search into
+//@X
+//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.";
+//@E std::string searched = "[A-Z a-z][A-Z{+1}a-z{+1} {+1}]{?bien}[A-Z{0}]{+1}";
+//@E 
+//@E std::map&lt;std::vector&lt;int&gt;, std::vector&lt;std::string&gt;&gt; out_mp2 = regex_search_all(searched, inpt_str);
+//@E std::map&lt;std::vector&lt;int&gt;, std::vector&lt;std::string&gt;&gt;::iterator out_it2 = out_mp2.begin();
+//@E std::vector&lt;int&gt; idx_v2 = out_it2-&gt;first;
+//@E std::vector&lt;std::string&gt; str_v2 = out_it2-&gt;second;
+//@E for (int i = 0; i &lt; str_v2.size(); ++i) {
+//@E   std::cout &lt;&lt; "idx: " &lt;&lt; idx_v2[i] &lt;&lt; " str: " &lt;&lt; str_v2[i] &lt;&lt; "\n";
+//@E };
+//@E idx: 31 str: Le radiateur fonctionne bien.
+//@E idx: 31 str:  radiateur fonctionne bien.
+//@E idx: 31 str:  fonctionne bien.
+//@E idx: 31 str: e radiateur fonctionne bien.
+//@E idx: 31 str: r fonctionne bien.
+//@E idx: 31 str: e bien.
+//@X
+
 //@L3 Unique
 
 //@T unique
