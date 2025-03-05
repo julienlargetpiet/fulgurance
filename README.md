@@ -312,6 +312,8 @@
 <b><li style="margin-left:20px; color: #2c4786;">Fulgurance Tools</li></b>
 <a href="#Parser_tokenizer_full" style="margin-left:40px;">Parser_tokenizer_full</a>
 <br>
+<a href="#is_intricated" style="margin-left:40px;">is_intricated</a>
+<br>
 <a href="#is_symetric" style="margin-left:40px;">is_symetric</a>
 <br>
 <a href="#all_comb" style="margin-left:40px;">all_comb</a>
@@ -3239,6 +3241,52 @@ x </th><th> is a stl string</th></tr>
 <br><code>std::vector&lt;std::vector&lt;unsigned int&gt;&gt; out = Parser_tokenizer_full(teste);</code>
 <br><code>{5 1 0 0 1 4 2 2 3 3 4 5 6 6 7 7}</code>
 <br><code>{0 2 3 8 11 14 16 17 18 19 21 24 25 26 27 28}</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="is_intricated" style="test-align: left;">is_intricated</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>bool is_intricated (unsigned int &idx, std::vector&lt;unsigned int&gt; &tkn_v)</code></div>
+<h3>#Description</h3>
+<p>Returns a boolean, 1 if the parenthesis refered is intricated in others parenthesis, 0 if not. See examples.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+tkn_v </th><th> is a std vector containing all the parenthesis pairs. The one outputed by <a href="#Parser_tokenizer_full">Parser_tokennizer_full</a> function.</th></tr>
+<tr><th>idx </th><th> is an unsigned int that indicates the parenthesis refered in tkn_v vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string inpt_str = "(ldkhf(f)ek(()))dkjf(gf())()()";</code>
+<br><code>std::vector&lt;std::vector&lt;unsigned int&gt;&gt; out_matr = Parser_tokenizer_full(inpt_str);</code>
+<br><code>std::vector&lt;unsigned int&gt; tkn_v = out_matr[0];</code>
+<br><code>std::vector&lt;unsigned int&gt; idx_v = out_matr[1];</code>
+<br><code>unsigned int i;</code>
+<br><code>for (i = 0; i &lt; tkn_v.size(); ++i) {</code>
+<br><code>  std::cout &lt;&lt; tkn_v[i] &lt;&lt; " ";</code>
+<br><code>};</code>
+<br><code>std::cout &lt;&lt; "\n";</code>
+<br><code>for (i = 0; i &lt; tkn_v.size(); ++i) {</code>
+<br><code>  std::cout &lt;&lt; idx_v[i] &lt;&lt; " ";</code>
+<br><code>};</code>
+<br><code>3 0 0 2 1 1 2 3 5 4 4 5 6 6 7 7</code>
+<br><code>0 6 8 11 12 13 14 15 20 23 24 25 26 27 28 29</code>
+<br><code>std::cout &lt;&lt; "\n";</code>
+<br><code>unsigned int cur_idx = 15;</code>
+<br><code>bool is_it = is_intricated(cur_idx, tkn_v);</code>
+<br><code>std::cout &lt;&lt; is_it &lt;&lt; "\n";</code>
+<br><code>0</code>
+<br><code>cur_idx = 3;</code>
+<br><code>is_it = is_intricated(cur_idx, tkn_v);</code>
+<br><code>std::cout &lt;&lt; is_it &lt;&lt; "\n";</code>
+<br><code>1</code>
+<br><code>cur_idx = 7;</code>
+<br><code>is_it = is_intricated(cur_idx, tkn_v);</code>
+<br><code>std::cout &lt;&lt; is_it &lt;&lt; "\n";</code>
+<br><code>0</code>
+<br><code>cur_idx = 6;</code>
+<br><code>is_it = is_intricated(cur_idx, tkn_v);</code>
+<br><code>std::cout &lt;&lt; is_it &lt;&lt; "\n";</code>
+<br><code>1</code>
 </div>
 <br>
 <hr class="hr">
