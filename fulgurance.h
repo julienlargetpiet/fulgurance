@@ -3339,10 +3339,13 @@ template <typename T, typename T2> std::vector<bool> grepl(const std::vector<T> 
 
 //@L3 RegEx
 
+//@I This library provides an entirely new RegEx flavor. 
+//@I Read documentation in README_RegEx.md file for details about synthax.
+
 //@T regex_match
 //@U std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; regex_match(std::string &searched, std::string &x)
 //@X
-//@D A RegEx flavor. Read documentation in README_RegEx.md file.
+//@D A RegEx flavor. 
 //@A searched : is the regular expression
 //@A x : is the text to search into
 //@X
