@@ -5045,6 +5045,78 @@ std::vector<std::vector<unsigned int>> Parser_tokenizer_full(std::string &x, cha
   return {num_par, idx_vec};
 };
 
+//@T is_intricated
+//@U bool is_intricated (unsigned int &idx, std::vector&lt;unsigned int&gt; &tkn_v)
+//@X
+//@D Returns a boolean, 1 if the parenthesis refered is intricated in others parenthesis, 0 if not. See examples.
+//@A tkn_v : is a std vector containing all the parenthesis pairs. The one outputed by <a href="#Parser_tokenizer_full">Parser_tokennizer_full</a> function.
+//@A idx : is an unsigned int that indicates the parenthesis refered in tkn_v vector
+//@X
+//@E std::string inpt_str = "(ldkhf(f)ek(()))dkjf(gf())()()";
+//@E std::vector&lt;std::vector&lt;unsigned int&gt;&gt; out_matr = Parser_tokenizer_full(inpt_str);
+//@E std::vector&lt;unsigned int&gt; tkn_v = out_matr[0];
+//@E std::vector&lt;unsigned int&gt; idx_v = out_matr[1];
+//@E unsigned int i;
+//@E for (i = 0; i &lt; tkn_v.size(); ++i) {
+//@E   std::cout &lt;&lt; tkn_v[i] &lt;&lt; " ";
+//@E };
+//@E std::cout &lt;&lt; "\n";
+//@E for (i = 0; i &lt; tkn_v.size(); ++i) {
+//@E   std::cout &lt;&lt; idx_v[i] &lt;&lt; " ";
+//@E };
+//@E 3 0 0 2 1 1 2 3 5 4 4 5 6 6 7 7
+//@E 0 6 8 11 12 13 14 15 20 23 24 25 26 27 28 29
+//@E std::cout &lt;&lt; "\n";
+//@E unsigned int cur_idx = 15;
+//@E bool is_it = is_intricated(cur_idx, tkn_v);
+//@E std::cout &lt;&lt; is_it &lt;&lt; "\n";
+//@E 0
+//@E cur_idx = 3;
+//@E is_it = is_intricated(cur_idx, tkn_v);
+//@E std::cout &lt;&lt; is_it &lt;&lt; "\n";
+//@E 1
+//@E cur_idx = 7;
+//@E is_it = is_intricated(cur_idx, tkn_v);
+//@E std::cout &lt;&lt; is_it &lt;&lt; "\n";
+//@E 0
+//@E cur_idx = 6;
+//@E is_it = is_intricated(cur_idx, tkn_v);
+//@E std::cout &lt;&lt; is_it &lt;&lt; "\n";
+//@E 1
+//@X
+
+bool is_intricated (unsigned int &idx, std::vector<unsigned int> &tkn_v) {
+  std::vector<int> alrd_tkn = {};
+  unsigned int i;
+  unsigned int i2;
+  unsigned int cur_tkn;
+  if (idx == 0) {
+    return 0;
+  };
+  for (i = 0; i < idx + 1; ++i) {
+    alrd_tkn.push_back(tkn_v[i]);
+  };
+  i = 0;
+  const unsigned int n2 = alrd_tkn.size();
+  while (i + 1 < n2) {
+    if (alrd_tkn[i] != -1) {
+      cur_tkn = alrd_tkn[i];
+      i2 = i + 1;
+      while (1) {
+        if (i2 == n2) {
+          return 1;
+        } else if (cur_tkn == alrd_tkn[i2]) {
+          alrd_tkn[i2] = -1;
+          break;
+        };
+        i2 += 1;
+      };
+    };
+    i += 1;
+  };
+  return 0;
+};
+
 //@T is_symetric
 //@U template &lt;typename T&gt; bool is_symetric(std::vector&lt;T&gt; &x)
 //@X
