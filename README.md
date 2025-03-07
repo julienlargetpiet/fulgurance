@@ -154,6 +154,8 @@
 <br>
 <a href="#phyper" style="margin-left:100px;">phyper</a>
 <br>
+<a href="#qhyper" style="margin-left:100px;">qhyper</a>
+<br>
 <b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
 <a href="#min" style="margin-left:80px;">min</a>
 <br>
@@ -1868,6 +1870,34 @@ x </th><th> is the vector of qualtiles</th></tr>
 <br><code></code>
 <br><code>:0: 2.59543e-84 0.973988</code>
 <br><code></code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="qhyper" style="test-align: left;">qhyper</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;unsigned int&gt; qhyper(std::vector&lt;double&gt; &x, unsigned int &n_ones, unsigned int &n_others, int &n_trials)</code></div>
+<h3>#Description</h3>
+<p>Returns the quantiles of the input probabilities according to the hypergeometric probability distribution.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the vector of the input probabilities, must be ascendly sorted</th></tr>
+<tr><th>n_ones </th><th> is the number of desired elements in the set</th></tr>
+<tr><th>n_others </th><th> is the number of undesired elements in the set</th></tr>
+<tr><th>n_trials </th><th> is the number of drawns</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>unsigned int n_others = 1300;</code>
+<br><code>unsigned int n_ones = 415;</code>
+<br><code>std::vector&lt;double&gt; x = {0.05, 0.12, 0.35, 0.36, 0.36, 0.56, 0.78};</code>
+<br><code></code>
+<br><code>int n_trials = 555;</code>
+<br><code></code>
+<br><code>std::vector&lt;unsigned int&gt; out_v = qhyper(x, n_ones, n_others, n_trials);</code>
+<br><code></code>
+<br><code>print_nvec(out_v);</code>
+<br><code></code>
+<br><code>:0: 121 124 131 131 131 135 139</code>
 </div>
 <br>
 <hr class="hr">
