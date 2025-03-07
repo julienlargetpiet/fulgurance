@@ -5761,7 +5761,7 @@ unsigned int all_comb_iterdq(std::deque<bool> &x) {
 //@D Converts an unsigned int to a binary format as a boolean deque
 //@A x : is the input unsigned int
 //@X
-//@E std::deque<bool> rtn_dq  = int_to_binarydq(1286);
+//@E std::deque&lt;bool&gt; rtn_dq  = int_to_binarydq(1286);
 //@E 1 0 1 0 0 0 0 0 1 1 0
 //@X
 
