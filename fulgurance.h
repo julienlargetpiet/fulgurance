@@ -433,7 +433,7 @@ double stod(const std::string &x) {
 
 //@L3 Int, double, to string
 
-//@T
+//@T itos
 //@U std::string itos(unsigned int x) 
 //@X
 //@D Returns the input integer as a std string.
@@ -2562,6 +2562,8 @@ std::vector<unsigned int> qgeom(std::vector<double> &x, double &p) {
 //@E :100: 6
 //@X
 
+//@L4 Hypergeometric distribution
+
 //@T dhyper
 //@U std::vector&lt;double&gt; dhyper(std::vector&lt;int&gt; &x, unsigned int &n_ones, unsigned int &n_others, int &n_trials)
 //@X
@@ -2594,29 +2596,33 @@ std::vector<double> dhyper(std::vector<int> &x, unsigned int &n_ones, unsigned i
   double divided_trial;
   int goal_bottom;
   for (int n_desired : x) {
-    divided_trial = n_trials;
-    n_tot = ref_n_tot;
-    n_ones_left = ref_n_ones;
-    i = n_desired;
-    cur_prob = n_ones_left / n_tot * divided_trial / i;
-    n_ones_left -= 1;
-    n_tot -= 1;
-    i -= 1;
-    divided_trial -= 1;
-    while (i > 0) {
-      cur_prob *= (n_ones_left / n_tot) * divided_trial / i;
-      divided_trial -= 1;
+    if (n_desired <= n_trials) {
+      divided_trial = n_trials;
+      n_tot = ref_n_tot;
+      n_ones_left = ref_n_ones;
+      i = n_desired;
+      cur_prob = n_ones_left / n_tot * divided_trial / i;
       n_ones_left -= 1;
       n_tot -= 1;
       i -= 1;
+      divided_trial -= 1;
+      while (i > 0) {
+        cur_prob *= (n_ones_left / n_tot) * divided_trial / i;
+        divided_trial -= 1;
+        n_ones_left -= 1;
+        n_tot -= 1;
+        i -= 1;
+      };
+      goal_bottom = n_desired - n_trials;
+      while (i > goal_bottom) {
+        cur_prob *= (1 - n_ones_left / n_tot);
+        n_tot -= 1;
+        i -= 1;
+      };
+      rtn_v.push_back(cur_prob);
+    } else {
+      rtn_v.push_back(0);
     };
-    goal_bottom = n_desired - n_trials;
-    while (i > goal_bottom) {
-      cur_prob *= (1 - n_ones_left / n_tot);
-      n_tot -= 1;
-      i -= 1;
-    };
-    rtn_v.push_back(cur_prob);
   };
   return rtn_v;
 };
@@ -3339,13 +3345,12 @@ template <typename T, typename T2> std::vector<bool> grepl(const std::vector<T> 
 
 //@L3 RegEx
 
-//@I This library provides an entirely new RegEx flavor. 
-//@I Read documentation in README_RegEx.md file for details about synthax.
-
 //@T regex_match
 //@U std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; regex_match(std::string &searched, std::string &x)
 //@X
-//@D A RegEx flavor. 
+//@D Performs a match with the regex flavor.
+//@D This library provides an entirely new RegEx flavor. 
+//@D Read documentation in README_RegEx.md file for details about synthax.
 //@A searched : is the regular expression
 //@A x : is the text to search into
 //@X
@@ -3376,7 +3381,9 @@ template <typename T, typename T2> std::vector<bool> grepl(const std::vector<T> 
 //@T regex_grep
 //@U std::map&lt;std::vector&lt;int&gt;, std::vector&lt;std::string&gt;&gt; regex_grep(std::string &searched, std::string &x)
 //@X
-//@D Performs a grep with the regex flavor. 
+//@D Performs a grep with the regex flavor.
+//@D This library provides an entirely new RegEx flavor. 
+//@D Read documentation in README_RegEx.md file for details about synthax.
 //@A searched : is the input regular expression
 //@A x : is the text to search into
 //@X
@@ -3397,6 +3404,71 @@ template <typename T, typename T2> std::vector<bool> grepl(const std::vector<T> 
 //@E idx: 31 str: r fonctionne bien.
 //@E idx: 31 str: e bien.
 //@X
+
+//@T regex_subout
+//@U std::string regex_subout(std::string &searched, std::string &replacer, std::string x)
+//@X
+//@D Substituates the first pattern matched by the regular expression, to a replacement pattern.
+//@A searched : is the regular expression
+//@A replacer : is the replacement pattern
+//@A x : is the input string to replace searched by replacer into
+//@X
+//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.... C'est un bon radiateur.";
+//@E std::string rplcd = " moteur ";
+//@E std::string searched = " a-z{9}[ .]";
+//@E std::string out_txt = regex_subout(searched, rplcd, inpt_str);
+//@E std::cout &lt;&lt; out_txt &lt;&lt; "\n";
+//@E MMMLe moteur fonctionne bien.... C'est un bon radiateur.
+//@X
+
+//@T regex_subout_all
+//@U std::string regex_subout_all(std::string &searched, std::string &replacer, std::string x)
+//@X
+//@D Substituates all patterns matched by the regular expression, to a replacement pattern.
+//@A searched : is the regular expression
+//@A replacer : is the replacement pattern
+//@A x : is the input string to replace searched by replacer into
+//@X
+//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.... C'est un bon radiateur.";
+//@E std::string rplcd = " moteur ";
+//@E std::string searched = " a-z{9}[ .]";
+//@E std::string out_txt = regex_subout_all(searched, rplcd, inpt_str);
+//@E std::cout &lt;&lt; out_txt &lt;&lt; "\n";
+//@E MMMLe moteur fonctionne bien.... C'est un bon moteur.
+//@X
+
+//@T regex_subin
+//@U void regex_subin(std::string &searched, std::string &replacer, std::string &x)
+//@X
+//@D Substituates the first pattern matched by the regular expression, to a replacement pattern.
+//@A searched : is the regular expression
+//@A replacer : is the replacement pattern
+//@A x : is the input string to replace searched by replacer into
+//@X
+//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.... C'est un bon radiateur.";
+//@E std::string rplcd = " moteur ";
+//@E std::string searched = " a-z{9}[ .]";
+//@E regex_subin(searched, rplcd, inpt_str);
+//@E std::cout &lt;&lt; inpt_str &lt;&lt; "\n";
+//@E MMMLe moteur fonctionne bien.... C'est un bon radiateur.
+//@X
+
+//@T regex_subin_all
+//@U void regex_subin_all(std::string &searched, std::string &replacer, std::string &x)
+//@X
+//@D Substituates all patterns matched by the regular expression, to a replacement pattern.
+//@A searched : is the regular expression
+//@A replacer : is the replacement pattern
+//@A x : is the input string to replace searched by replacer into
+//@X
+//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.... C'est un bon radiateur.";
+//@E std::string rplcd = " moteur ";
+//@E std::string searched = " a-z{9}[ .]";
+//@E regex_subin_all(searched, rplcd, inpt_str);
+//@E std::cout &lt;&lt; inpt_str &lt;&lt; "\n";
+//@E MMMLe moteur fonctionne bien.... C'est un bon moteur.
+//@X
+
 
 //@L3 Unique
 
