@@ -156,6 +156,8 @@
 <br>
 <a href="#qhyper" style="margin-left:100px;">qhyper</a>
 <br>
+<a href="#rhyper" style="margin-left:100px;">rhyper</a>
+<br>
 <b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
 <a href="#min" style="margin-left:80px;">min</a>
 <br>
@@ -1898,6 +1900,34 @@ x </th><th> is the vector of the input probabilities, must be ascendly sorted</t
 <br><code>print_nvec(out_v);</code>
 <br><code></code>
 <br><code>:0: 121 124 131 131 131 135 139</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="rhyper" style="test-align: left;">rhyper</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;unsigned int&gt; rhyper(unsigned int &n_obs, unsigned int &n_ones, unsigned int n_others, int &n_trials)</code></div>
+<h3>#Description</h3>
+<p>Returns pseudo-randomly generated values that follow a hypergeometric distribution</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+n_obs </th><th> is the number of observations</th></tr>
+<tr><th>n_ones </th><th> is the number of desired elements in the set</th></tr>
+<tr><th>n_others </th><th> is the number of undesired elements in the set</th></tr>
+<tr><th>n_trials </th><th> is the number of drawns</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>unsigned int n_others = 1300;</code>
+<br><code>unsigned int n_ones = 415;</code>
+<br><code></code>
+<br><code>int n_trials = 555;</code>
+<br><code>unsigned int n_obs = 12;</code>
+<br><code></code>
+<br><code>std::vector&lt;unsigned int&gt; out_v = rhyper(n_obs, n_ones, n_others, n_trials);</code>
+<br><code></code>
+<br><code>print_nvec(out_v);</code>
+<br><code></code>
+<br><code>:0: 129 133 136 139 143 149 124 129 133 136 139 143</code>
 </div>
 <br>
 <hr class="hr">
@@ -3682,7 +3712,7 @@ x </th><th> is the input unsigned int</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::deque<bool> rtn_dq  = int_to_binarydq(1286);</code>
+<div class = "Div"><code>std::deque&lt;bool&gt; rtn_dq  = int_to_binarydq(1286);</code>
 <br><code>1 0 1 0 0 0 0 0 1 1 0</code>
 </div>
 <br>
