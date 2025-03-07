@@ -2712,6 +2712,95 @@ std::vector<double> phyper(std::vector<int> &x, unsigned int &n_ones, unsigned i
   return rtn_v;
 };
 
+//@T qhyper
+//@U std::vector&lt;unsigned int&gt; qhyper(std::vector&lt;double&gt; &x, unsigned int &n_ones, unsigned int &n_others, int &n_trials)
+//@X
+//@D Returns the quantiles of the input probabilities according to the hypergeometric probability distribution.
+//@A x : is the vector of the input probabilities, must be ascendly sorted
+//@A n_ones : is the number of desired elements in the set
+//@A n_others : is the number of undesired elements in the set
+//@A n_trials : is the number of drawns
+//@X
+//@E unsigned int n_others = 1300;
+//@E unsigned int n_ones = 415;
+//@E std::vector<double> x = {0.05, 0.12, 0.35, 0.36, 0.36, 0.56, 0.78};
+//@E 
+//@E int n_trials = 555;
+//@E
+//@E std::vector<unsigned int> out_v = qhyper(x, n_ones, n_others, n_trials);
+//@E
+//@E print_nvec(out_v);
+//@E
+//@E :0: 121 124 131 131 131 135 139
+//@X
+
+std::vector<unsigned int> qhyper(std::vector<double> &x, unsigned int &n_ones, unsigned int &n_others, int &n_trials) {
+  std::vector<unsigned int> rtn_v;
+  unsigned int n_tot;
+  if (n_trials > n_tot) {
+    return {0};
+  };
+  double n_ones_left;
+  double cur_prob;
+  double rtn_prob = 0;
+  double lst_rtn_prob = 0;
+  const int ref_n_tot = n_ones + n_others;
+  const int ref_n_ones = n_ones;
+  const unsigned int n = x.size();
+  int i;
+  double divided_trial;
+  double p_delta1;
+  double p_delta2;
+  int goal_bottom;
+  bool alrd_menos = 1;
+  unsigned int n_desired = 0;
+  const int stop_val = x[x.size() - 1];
+  for (double p_desired : x) {
+    if (rtn_prob < p_desired) {
+      alrd_menos = 0;
+    };
+    while (rtn_prob < p_desired) {
+      lst_rtn_prob = rtn_prob;
+      divided_trial = n_trials;
+      n_tot = ref_n_tot;
+      n_ones_left = ref_n_ones;
+      i = n_desired;
+      if (i > 0) {
+        cur_prob = n_ones_left / n_tot * divided_trial / i;
+        n_ones_left -= 1;
+        n_tot -= 1;
+        i -= 1;
+        divided_trial -= 1;
+        while (i > 0) {
+          cur_prob *= (n_ones_left / n_tot) * divided_trial / i;
+          divided_trial -= 1;
+          n_ones_left -= 1;
+          n_tot -= 1;
+          i -= 1;
+        };
+      } else {
+        cur_prob = 1;  
+      };
+      goal_bottom = n_desired - n_trials;
+      while (i > goal_bottom) {
+        cur_prob *= (1 - n_ones_left / n_tot);
+        n_tot -= 1;
+        i -= 1;
+      };
+      rtn_prob += cur_prob;
+      n_desired += 1;
+    };
+    p_delta1 = p_desired - lst_rtn_prob;
+    p_delta2 = rtn_prob - p_desired;
+    if (p_delta1 < p_delta2 & !alrd_menos) {
+      alrd_menos = 1;
+      n_desired -= 1;
+    };
+    rtn_v.push_back(n_desired);
+  };
+  return rtn_v;
+};
+
 //@L3 Min - Max
 
 //@T min
