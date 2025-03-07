@@ -2755,9 +2755,7 @@ std::vector<unsigned int> qhyper(std::vector<double> &x, unsigned int &n_ones, u
   unsigned int n_desired = 0;
   const int stop_val = x[x.size() - 1];
   for (double p_desired : x) {
-    std::cout << "p_desired: " << p_desired << " rtn_prob: " << rtn_prob << " n_desired: " << n_desired << "\n";
     while (rtn_prob < p_desired) {
-      std::cout << "loop\n";
       lst_rtn_prob = rtn_prob;
       divided_trial = n_trials;
       n_tot = ref_n_tot;
