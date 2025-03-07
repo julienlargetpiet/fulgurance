@@ -359,6 +359,45 @@ std::vector<unsigned int> rgeom(unsigned int &n, double &p) {
   return rtn_v;
 };
 
+
+std::vector<unsigned int> rhyper(unsigned int &n_obs, unsigned int &n_ones, unsigned int n_others, int &n_trials) {
+  std::vector<double> probv = {};
+  std::vector<unsigned int> rtn_v = {};
+  rtn_v.reserve(n_obs);
+  probv.reserve(399);
+  double cnt = 0.0025;
+  auto now = std::chrono::system_clock::now();
+  auto duration = now.time_since_epoch();
+  unsigned int r_idx;
+  while (cnt <= 0.9975) {
+    probv.push_back(cnt);
+    cnt += 0.0025;
+  };
+  std::vector<unsigned int> int_v = qhyper(probv, n_ones, n_others, n_trials);
+  for (int i = 0; i < n_obs; ++i) {
+    now = std::chrono::system_clock::now();
+    duration = now.time_since_epoch();
+    r_idx = std::chrono::duration_cast<std::chrono::microseconds>(duration).count() % 399;
+    if (r_idx % 9 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(9));
+    } else if (r_idx % 8 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(8));
+    } else if (r_idx % 6 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(6));
+    } else if (r_idx % 5 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(5));
+    } else if (r_idx % 3 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(3));
+    } else if (r_idx % 2 == 0) {
+      std::this_thread::sleep_for(std::chrono::microseconds(2));
+    } else {
+      std::this_thread::sleep_for(std::chrono::microseconds(1));
+    };
+    rtn_v.push_back(int_v[r_idx]);
+  };
+  return rtn_v;
+};
+
 //@T bool_gen
 //@U std::vector&lt;bool&gt; bool_gen(unsigned int &k, unsigned int &n, double seed = 0)
 //@X
