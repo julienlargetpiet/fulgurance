@@ -2815,6 +2815,8 @@ std::vector<unsigned int> qhyper(std::vector<double> &x, unsigned int &n_ones, u
 //@E std::vector&lt;unsigned int&gt; out_v = rhyper(n_obs, n_ones, n_others, n_trials);
 //@E
 //@E print_nvec(out_v);
+//@E
+//@E :0: 129 133 136 139 143 149 124 129 133 136 139 143
 //@X
 
 //@L3 Min - Max

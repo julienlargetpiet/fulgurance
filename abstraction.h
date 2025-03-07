@@ -377,6 +377,8 @@ std::vector<unsigned int> rgeom(unsigned int &n, double &p) {
 //@E std::vector&lt;unsigned int&gt; out_v = rhyper(n_obs, n_ones, n_others, n_trials);
 //@E
 //@E print_nvec(out_v);
+//@E
+//@E :0: 129 133 136 139 143 149 124 129 133 136 139 143
 //@X
 
 std::vector<unsigned int> rhyper(unsigned int &n_obs, unsigned int &n_ones, unsigned int n_others, int &n_trials) {
