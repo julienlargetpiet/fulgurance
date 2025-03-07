@@ -2723,11 +2723,11 @@ std::vector<double> phyper(std::vector<int> &x, unsigned int &n_ones, unsigned i
 //@X
 //@E unsigned int n_others = 1300;
 //@E unsigned int n_ones = 415;
-//@E std::vector<double> x = {0.05, 0.12, 0.35, 0.36, 0.36, 0.56, 0.78};
+//@E std::vector&lt;double&gt; x = {0.05, 0.12, 0.35, 0.36, 0.36, 0.56, 0.78};
 //@E 
 //@E int n_trials = 555;
 //@E
-//@E std::vector<unsigned int> out_v = qhyper(x, n_ones, n_others, n_trials);
+//@E std::vector&lt;unsigned int&gt; out_v = qhyper(x, n_ones, n_others, n_trials);
 //@E
 //@E print_nvec(out_v);
 //@E
@@ -2752,14 +2752,12 @@ std::vector<unsigned int> qhyper(std::vector<double> &x, unsigned int &n_ones, u
   double p_delta1;
   double p_delta2;
   int goal_bottom;
-  bool alrd_menos = 1;
   unsigned int n_desired = 0;
   const int stop_val = x[x.size() - 1];
   for (double p_desired : x) {
-    if (rtn_prob < p_desired) {
-      alrd_menos = 0;
-    };
+    std::cout << "p_desired: " << p_desired << " rtn_prob: " << rtn_prob << " n_desired: " << n_desired << "\n";
     while (rtn_prob < p_desired) {
+      std::cout << "loop\n";
       lst_rtn_prob = rtn_prob;
       divided_trial = n_trials;
       n_tot = ref_n_tot;
@@ -2792,11 +2790,11 @@ std::vector<unsigned int> qhyper(std::vector<double> &x, unsigned int &n_ones, u
     };
     p_delta1 = p_desired - lst_rtn_prob;
     p_delta2 = rtn_prob - p_desired;
-    if (p_delta1 < p_delta2 & !alrd_menos) {
-      alrd_menos = 1;
-      n_desired -= 1;
+    if (p_delta1 < p_delta2) {
+      rtn_v.push_back(n_desired - 1);
+    } else {
+      rtn_v.push_back(n_desired);
     };
-    rtn_v.push_back(n_desired);
   };
   return rtn_v;
 };
