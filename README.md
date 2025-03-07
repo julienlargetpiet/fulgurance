@@ -149,7 +149,10 @@
 <br>
 <a href="#rgeom" style="margin-left:100px;">rgeom</a>
 <br>
+<b><li style="margin-left:80px; color: #2c4786;">Hypergeometric distribution</li></b>
 <a href="#dhyper" style="margin-left:100px;">dhyper</a>
+<br>
+<a href="#phyper" style="margin-left:100px;">phyper</a>
 <br>
 <b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
 <a href="#min" style="margin-left:80px;">min</a>
@@ -1814,6 +1817,7 @@ n </th><th> is the number of observations</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h4 style="color:#2c4786;">Hypergeometric distribution</h4>
 <h2 id="dhyper" style="test-align: left;">dhyper</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>std::vector&lt;double&gt; dhyper(std::vector&lt;int&gt; &x, unsigned int &n_ones, unsigned int &n_others, int &n_trials)</code></div>
@@ -1830,11 +1834,40 @@ x </th><th> is the vector of quantiles</th></tr>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>unsigned int n_others = 1300;</code>
 <br><code>unsigned int n_ones = 415;</code>
-<br><code>std::vector<int> x = {150, 190, 400};</code>
+<br><code>std::vector&lt;int&gt; x = {150, 190, 400};</code>
 <br><code>int n_trials = 555;</code>
-<br><code>std::vector<double> out  = dhyper(x, n_ones, n_others, n_trials);</code>
+<br><code>std::vector&lt;double&gt; out  = dhyper(x, n_ones, n_others, n_trials);</code>
 <br><code>print_nvec(out);</code>
 <br><code>:0: 0.00807227 1.69452e-11 4.42674e-236</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="phyper" style="test-align: left;">phyper</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;double&gt; phyper(std::vector&lt;int&gt; &x, unsigned int &n_ones, unsigned int &n_others, int &n_trials)</code></div>
+<h3>#Description</h3>
+<p>Returns the cumulative hypergeometric distribution (interval between the first value of the input quantiles and last value)</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the vector of qualtiles</th></tr>
+<tr><th>n_ones </th><th> is the number of desired elements in the set</th></tr>
+<tr><th>n_others </th><th> is the number of undesired elements in the set</th></tr>
+<tr><th>n_trials </th><th> is the number of drawns</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>unsigned int n_others = 1300;</code>
+<br><code>unsigned int n_ones = 415;</code>
+<br><code>std::vector&lt;int&gt; x = {0, 150};</code>
+<br><code></code>
+<br><code>int n_trials = 555;</code>
+<br><code></code>
+<br><code>std::vector&lt;double&gt; out_v = phyper(x, n_ones, n_others, n_trials);</code>
+<br><code></code>
+<br><code>print_nvec(out_v);</code>
+<br><code></code>
+<br><code>:0: 2.59543e-84 0.973988</code>
+<br><code></code>
 </div>
 <br>
 <hr class="hr">
