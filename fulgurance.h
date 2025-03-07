@@ -2575,9 +2575,9 @@ std::vector<unsigned int> qgeom(std::vector<double> &x, double &p) {
 //@X
 //@E unsigned int n_others = 1300;
 //@E unsigned int n_ones = 415;
-//@E std::vector<int> x = {150, 190, 400};
+//@E std::vector&lt;int&gt; x = {150, 190, 400};
 //@E int n_trials = 555;
-//@E std::vector<double> out  = dhyper(x, n_ones, n_others, n_trials);
+//@E std::vector&lt;double&gt; out  = dhyper(x, n_ones, n_others, n_trials);
 //@E print_nvec(out);
 //@E :0: 0.00807227 1.69452e-11 4.42674e-236
 //@X
@@ -2627,6 +2627,87 @@ std::vector<double> dhyper(std::vector<int> &x, unsigned int &n_ones, unsigned i
     } else {
       rtn_v.push_back(0);
     };
+  };
+  return rtn_v;
+};
+
+//@T phyper
+//@U std::vector&lt;double&gt; phyper(std::vector&lt;int&gt; &x, unsigned int &n_ones, unsigned int &n_others, int &n_trials)
+//@X
+//@D Returns the cumulative hypergeometric distribution (interval between the first value of the input quantiles and last value)
+//@A x : is the vector of qualtiles
+//@A n_ones : is the number of desired elements in the set
+//@A n_others : is the number of undesired elements in the set
+//@A n_trials : is the number of drawns
+//@X
+//@E unsigned int n_others = 1300;
+//@E unsigned int n_ones = 415;
+//@E std::vector&lt;int&gt; x = {0, 150};
+//@E 
+//@E int n_trials = 555;
+//@E
+//@E std::vector&lt;double&gt; out_v = phyper(x, n_ones, n_others, n_trials);
+//@E
+//@E print_nvec(out_v);
+//@E
+//@E :0: 2.59543e-84 0.973988
+//@E
+//@X
+
+std::vector<double> phyper(std::vector<int> &x, unsigned int &n_ones, unsigned int &n_others, int &n_trials) {
+  std::vector<double> rtn_v;
+  unsigned int n_tot;
+  if (n_trials > n_tot) {
+    return {0};
+  };
+  double n_ones_left;
+  double cur_prob;
+  double rtn_prob = 0;
+  unsigned int cnt = 0;
+  const int ref_n_tot = n_ones + n_others;
+  const int ref_n_ones = n_ones;
+  const unsigned int n = x.size();
+  int i;
+  double divided_trial;
+  int goal_bottom;
+  const int stop_val = x[x.size() - 1];
+  int n_desired = x[0];
+  if (n_desired > n_trials) {
+    return {};
+  };
+  while (n_desired <= stop_val) {
+    divided_trial = n_trials;
+    n_tot = ref_n_tot;
+    n_ones_left = ref_n_ones;
+    i = n_desired;
+    if (i > 0) {
+      cur_prob = n_ones_left / n_tot * divided_trial / i;
+      n_ones_left -= 1;
+      n_tot -= 1;
+      i -= 1;
+      divided_trial -= 1;
+      while (i > 0) {
+        cur_prob *= (n_ones_left / n_tot) * divided_trial / i;
+        divided_trial -= 1;
+        n_ones_left -= 1;
+        n_tot -= 1;
+        i -= 1;
+      };
+    } else {
+      cur_prob = 1;  
+    };
+    goal_bottom = n_desired - n_trials;
+    while (i > goal_bottom) {
+      cur_prob *= (1 - n_ones_left / n_tot);
+      n_tot -= 1;
+      i -= 1;
+    };
+    rtn_prob += cur_prob;
+    if (n_desired == x[cnt]) {
+      rtn_v.push_back(rtn_prob);
+      cnt += 1;
+    };
+    n_desired += 1;
   };
   return rtn_v;
 };
