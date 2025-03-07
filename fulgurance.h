@@ -2601,17 +2601,21 @@ std::vector<double> dhyper(std::vector<int> &x, unsigned int &n_ones, unsigned i
       n_tot = ref_n_tot;
       n_ones_left = ref_n_ones;
       i = n_desired;
-      cur_prob = n_ones_left / n_tot * divided_trial / i;
-      n_ones_left -= 1;
-      n_tot -= 1;
-      i -= 1;
-      divided_trial -= 1;
-      while (i > 0) {
-        cur_prob *= (n_ones_left / n_tot) * divided_trial / i;
-        divided_trial -= 1;
+      if (i > 0) {
+        cur_prob = n_ones_left / n_tot * divided_trial / i;
         n_ones_left -= 1;
         n_tot -= 1;
         i -= 1;
+        divided_trial -= 1;
+        while (i > 0) {
+          cur_prob *= (n_ones_left / n_tot) * divided_trial / i;
+          divided_trial -= 1;
+          n_ones_left -= 1;
+          n_tot -= 1;
+          i -= 1;
+        };
+      } else {
+        cur_prob = 1;
       };
       goal_bottom = n_desired - n_trials;
       while (i > goal_bottom) {
