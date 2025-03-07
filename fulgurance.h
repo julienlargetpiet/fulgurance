@@ -2797,6 +2797,26 @@ std::vector<unsigned int> qhyper(std::vector<double> &x, unsigned int &n_ones, u
   return rtn_v;
 };
 
+//@T rhyper
+//@U std::vector&lt;unsigned int&gt; rhyper(unsigned int &n_obs, unsigned int &n_ones, unsigned int n_others, int &n_trials)
+//@X
+//@D Returns pseudo-randomly generated values that follow a hypergeometric distribution
+//@A n_obs : is the number of observations
+//@A n_ones : is the number of desired elements in the set
+//@A n_others : is the number of undesired elements in the set
+//@A n_trials : is the number of drawns
+//@X
+//@E unsigned int n_others = 1300;
+//@E unsigned int n_ones = 415;
+//@E 
+//@E int n_trials = 555;
+//@E unsigned int n_obs = 12;
+//@E
+//@E std::vector&lt;unsigned int&gt; out_v = rhyper(n_obs, n_ones, n_others, n_trials);
+//@E
+//@E print_nvec(out_v);
+//@X
+
 //@L3 Min - Max
 
 //@T min
