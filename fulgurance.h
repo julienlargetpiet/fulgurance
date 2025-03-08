@@ -5844,6 +5844,48 @@ unsigned int letter_to_nb(std::string &x) {
   return rtn_val;
 };
 
+//@T nb_to_letter
+//@U std::string nb_to_letter(unsigned int &x)
+//@X
+//@D Returns a unique combination of letters based on an input number, see examples.
+//@A x : is the input number
+//@X
+//@E unsigned int inpt_val = 702;
+//@E std::string out_val = nb_to_letter(inpt_val);
+//@E std::cout &lt;&lt; out_val &lt;&lt; "\n";
+//@E
+//@E "zz"
+//@E
+//@E unsigned int inpt_val = 104601;
+//@E std::string out_val = nb_to_letter(inpt_val);
+//@E std::cout &lt;&lt; out_val &lt;&lt; "\n";
+//@E
+//@E "exsc"
+//@E
+//@X
+
+std::string nb_to_letter(unsigned int &x) {
+  std::string alphabet_v = "abcdefghijklmnopqrstuvwxyz";
+  std::string rtn_str = "";
+  unsigned int cnt = 1;
+  unsigned int rest_val2;
+  unsigned int rest_val;
+  unsigned int cur_val = 0;
+  while (cur_val < x) {
+    cur_val = std::pow(26, cnt);
+    rest_val = x % cur_val;
+    if (rest_val > 0) {
+      rest_val2 = rest_val / std::pow(26, cnt - 1); 
+      rtn_str.insert(0, 1, alphabet_v[rest_val2 - 1]);
+    } else {
+      rest_val = std::pow(26, cnt);
+      rtn_str.insert(0, 1, 'z');
+    };
+    x -= rest_val;
+    cnt += 1;
+  };
+  return rtn_str;
+};
 
 
 std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr2sub(std::string &searched, std::string &x) {
