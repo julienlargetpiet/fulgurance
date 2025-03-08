@@ -347,6 +347,7 @@
 <br>
 <a href="#binarydq_to_int" style="margin-left:60px;">binarydq_to_int</a>
 <br>
+<b><li style="margin-left:40px; color: #2c4786;">Unique string from int</li></b>
 <a href="#letter_to_nb" style="margin-left:60px;">letter_to_nb</a>
 <br>
 <a href="#nb_to_letter" style="margin-left:60px;">nb_to_letter</a>
@@ -3738,6 +3739,7 @@ x </th><th> is the input boolean std deque</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h2 style="color:#2c4786;">Unique string from int</h2>
 <h2 id="letter_to_nb" style="test-align: left;">letter_to_nb</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>unsigned int letter_to_nb(std::string &x)</code></div>
