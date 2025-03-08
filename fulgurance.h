@@ -5807,6 +5807,8 @@ unsigned int binarydq_to_int(std::deque<bool> &x) {
   return rtn_int;
 };
 
+//@L2 Unique string from int
+
 //@T letter_to_nb
 //@U unsigned int letter_to_nb(std::string &x)
 //@X
