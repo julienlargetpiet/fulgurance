@@ -5807,6 +5807,43 @@ unsigned int binarydq_to_int(std::deque<bool> &x) {
   return rtn_int;
 };
 
+//@T letter_to_nb
+//@U unsigned int letter_to_nb(std::string &x)
+//@X
+//@D Returns an int corresponding to the input letter.
+//@D This algorithm can be used to get which unique id number it is, if we know that it has been generated with <a href="#nb_to_letter">nb_to_letter</a> function
+//@A x : is the input string
+//@X
+//@E std::string inpt_str = "ecfy";
+//@E unsigned int rtn_val = letter_to_nb(inpt_str);
+//@E std::cout << rtn_val << "\n";
+//@E 90089
+//@E 
+//@E inpt_str = "ajf";
+//@E rtn_val = letter_to_nb(inpt_str);
+//@E std::cout << rtn_val << "\n";
+//@E 
+//@E 942
+//@X
+
+unsigned int letter_to_nb(std::string &x) {
+  std::string alphabet_v = "abcdefghijklmnopqrstuvwxyz";
+  char cur_chr;
+  unsigned int rtn_val = 0;
+  unsigned int cnt2;
+  const unsigned int n = x.length();
+  for (int cnt = n - 1; cnt > -1; --cnt) {
+    cur_chr = x[cnt];
+    cnt2 = 0;
+    while (alphabet_v[cnt2] != cur_chr) {
+      cnt2 += 1;
+    };
+    cnt2 += 1;
+    rtn_val += (cnt2 * std::pow(26, (n - 1 - cnt)));
+  };
+  return rtn_val;
+};
+
 
 
 std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr2sub(std::string &searched, std::string &x) {
