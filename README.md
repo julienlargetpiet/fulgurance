@@ -347,6 +347,10 @@
 <br>
 <a href="#binarydq_to_int" style="margin-left:60px;">binarydq_to_int</a>
 <br>
+<a href="#letter_to_nb" style="margin-left:60px;">letter_to_nb</a>
+<br>
+<a href="#nb_to_letter" style="margin-left:60px;">nb_to_letter</a>
+<br>
 </ul><br>
 </div>
 </div>
@@ -3731,6 +3735,57 @@ x </th><th> is the input boolean std deque</th></tr>
 <div class = "Div"><code>std::deque&lt;bool&gt; dq_input = {1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0};</code>
 <br><code>unsigned int out = binarydq_to_int(rtn_dq);</code>
 <br><code>1286</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="letter_to_nb" style="test-align: left;">letter_to_nb</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>unsigned int letter_to_nb(std::string &x)</code></div>
+<h3>#Description</h3>
+<p>Returns an int corresponding to the input letter.</p>
+<p>This algorithm can be used to get which unique id number it is, if we know that it has been generated with <a href="#nb_to_letter">nb_to_letter</a> function</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input string</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string inpt_str = "ecfy";</code>
+<br><code>unsigned int rtn_val = letter_to_nb(inpt_str);</code>
+<br><code>std::cout << rtn_val << "\n";</code>
+<br><code>90089</code>
+<br><code></code>
+<br><code>inpt_str = "ajf";</code>
+<br><code>rtn_val = letter_to_nb(inpt_str);</code>
+<br><code>std::cout << rtn_val << "\n";</code>
+<br><code></code>
+<br><code>942</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="nb_to_letter" style="test-align: left;">nb_to_letter</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::string nb_to_letter(unsigned int &x)</code></div>
+<h3>#Description</h3>
+<p>Returns a unique combination of letters based on an input number, see examples.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input number</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>unsigned int inpt_val = 702;</code>
+<br><code>std::string out_val = nb_to_letter(inpt_val);</code>
+<br><code>std::cout &lt;&lt; out_val &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>"zz"</code>
+<br><code></code>
+<br><code>unsigned int inpt_val = 104601;</code>
+<br><code>std::string out_val = nb_to_letter(inpt_val);</code>
+<br><code>std::cout &lt;&lt; out_val &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>"exsc"</code>
+<br><code></code>
 </div>
 <br>
 <hr class="hr">
