@@ -459,6 +459,73 @@ std::string itos(unsigned int x) {
   return rtn_str;
 };
 
+//@L2 Can be num ?
+
+//@T can_be_num
+//@U bool can_be_nb(std::string &x)
+//@X
+//@D Returns a boolean, 1 if the input <code>std::string</code> can be converted to a number (int, float...), 0 if not.
+//@A x : is the input std::string 
+//@X
+//@E std::string inpt_str = "15.69596";
+//@E bool rslt = can_be_nb(inpt_str);
+//@E std::cout &lt;&lt; rslt &lt;&lt; "\n";
+//@E 
+//@E 1
+//@E
+//@E inpt_str = "1569596";
+//@E rslt = can_be_nb(inpt_str);
+//@E std::cout &lt;&lt; rslt &lt;&lt; "\n";
+//@E 
+//@E 1
+//@E
+//@E inpt_str = "1569T596";
+//@E rslt = can_be_nb(inpt_str);
+//@E std::cout &lt;&lt; rslt &lt;&lt; "\n";
+//@E
+//@E 0
+//@E
+//@E inpt_str = "15.69.596";
+//@E rslt = can_be_nb(inpt_str);
+//@E std::cout &lt;&lt; rslt &lt;&lt; "\n";
+//@E
+//@E 0
+//@E
+//@X
+
+bool can_be_nb(std::string &x) {
+  const unsigned int n = x.length();
+  std::string numeric_v = "0123456789";
+  if (x[0] == '.' || x[n - 1] == '.') {
+    return 0;
+  };
+  bool alrd_point = 0;
+  unsigned int i2;
+  char cur_chr;
+  for (unsigned int i = 0; i < n; ++i) {
+    if (x[i] == '.') {
+      if (!alrd_point) {
+        alrd_point = 1;
+      } else {
+        return 0;
+      };
+    } else {
+      cur_chr = x[i];
+      i2 = 0;
+      while (i2 < 10) {
+        if (cur_chr == numeric_v[i2]) {
+          break;
+        };
+        i2 += 1;
+      };
+      if (i2 == 10) {
+        return 0;
+      };
+    };
+  };
+  return 1;
+};
+
 //@L2 On std::vector&lt;Type&gt;
 //@L3 Statistical functions
 
