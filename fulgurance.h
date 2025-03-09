@@ -12,8 +12,8 @@
 //@I The framework is developped with C++ 14 but should work properly with 11 and 17 and furthers.
 //@I The main branch provides algorithms developped on the top of stl vector, but a deque version is coming.
 //@G2 Philosophy
-//@I Matrices and dataframes implementation are classes. All functions that will transform 'voidly' (internaly) the relative data are built in the classes. All functions that copy and transform the relative data are extern to classes.
-//@I Also, all the functions relative to matrices classes exist for more standard type of matrices that is stl 2D vectors.
+//@I Dataframes implementation is a class. All functions that will transform 'voidly' (internaly) the relative data are built in the class. All functions that copy and transform the relative data are extern to classes.
+//@I Matrices are stl 2D vectors.
 //@X
 
 //@L1 Commun functions  
