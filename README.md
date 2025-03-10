@@ -37,6 +37,11 @@
 <b><li style="margin-left:60px; color: #2c4786;">Int, double, to string</li></b>
 <a href="#itos" style="margin-left:80px;">itos</a>
 <br>
+<b><li style="margin-left:40px; color: #2c4786;">Can be num ?</li></b>
+<a href="#can_be_num" style="margin-left:60px;">can_be_num</a>
+<br>
+<a href="#can_be_flt_dbl" style="margin-left:60px;">can_be_flt_dbl</a>
+<br>
 <b><li style="margin-left:40px; color: #2c4786;">On std::vector&lt;Type&gt;</li></b>
 <b><li style="margin-left:60px; color: #2c4786;">Statistical functions</li></b>
 <a href="#sum" style="margin-left:80px;">sum</a>
@@ -326,6 +331,8 @@
 <a href="#abs_matrin" style="margin-left:60px;">abs_matrin</a>
 <br>
 <a href="#abs_matrout" style="margin-left:60px;">abs_matrout</a>
+<br>
+<a href="#det_small" style="margin-left:60px;">det_small</a>
 <br>
 <b><li style="margin-left:20px; color: #2c4786;">Fulgurance Tools</li></b>
 <a href="#Parser_tokenizer_full" style="margin-left:40px;">Parser_tokenizer_full</a>
@@ -618,6 +625,83 @@ x </th><th> is a stl string</th></tr>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>itos(45897);</code>
 <br><code>"45897"</code>
+</div>
+<br>
+<hr class="hr">
+<h2 style="color:#2c4786;">Can be num ?</h2>
+<h2 id="can_be_num" style="test-align: left;">can_be_num</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>bool can_be_nb(std::string &x)</code></div>
+<h3>#Description</h3>
+<p>Returns a boolean, 1 if the input <code>std::string</code> can be converted to a number (int, float...), 0 if not.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input std</th><th></th><th>string </th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string inpt_str = "15.69596";</code>
+<br><code>bool rslt = can_be_nb(inpt_str);</code>
+<br><code>std::cout &lt;&lt; rslt &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>1</code>
+<br><code></code>
+<br><code>inpt_str = "1569596";</code>
+<br><code>rslt = can_be_nb(inpt_str);</code>
+<br><code>std::cout &lt;&lt; rslt &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>1</code>
+<br><code></code>
+<br><code>inpt_str = "1569T596";</code>
+<br><code>rslt = can_be_nb(inpt_str);</code>
+<br><code>std::cout &lt;&lt; rslt &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>0</code>
+<br><code></code>
+<br><code>inpt_str = "15.69.596";</code>
+<br><code>rslt = can_be_nb(inpt_str);</code>
+<br><code>std::cout &lt;&lt; rslt &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>0</code>
+<br><code></code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="can_be_flt_dbl" style="test-align: left;">can_be_flt_dbl</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>bool can_be_flt_dbl(std::string &x)</code></div>
+<h3>#Description</h3>
+<p>Returns a boolean, 1 if the input <code>std::string</code> can be converted to a float or double, 0 if not.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input std</th><th></th><th>string </th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string inpt_str = "15.69596";</code>
+<br><code>bool rslt = can_be_flt_dbl(inpt_str);</code>
+<br><code>std::cout &lt;&lt; rslt &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>1</code>
+<br><code></code>
+<br><code>inpt_str = "1569596";</code>
+<br><code>rslt = can_be_flt_dbl(inpt_str);</code>
+<br><code>std::cout &lt;&lt; rslt &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>0</code>
+<br><code></code>
+<br><code>inpt_str = "1569T596";</code>
+<br><code>rslt = can_be_flt_dbl(inpt_str);</code>
+<br><code>std::cout &lt;&lt; rslt &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>0</code>
+<br><code></code>
+<br><code>inpt_str = "15.69.596";</code>
+<br><code>rslt = can_be_flt_dbl(inpt_str);</code>
+<br><code>std::cout &lt;&lt; rslt &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>0</code>
+<br><code></code>
 </div>
 <br>
 <hr class="hr">
@@ -3406,6 +3490,32 @@ x </th><th> is a matrix as 2D stl vector (int, float, double, bool)</th></tr>
 <br><code>:0:         1         4         7</code>
 <br><code>:1:         2         5         8</code>
 <br><code>:2:         3         6         9</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="det_small" style="test-align: left;">det_small</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; double det_small(std::vector&lt;std::vector&lt;T&gt;&gt; &inpt_matr)</code></div>
+<h3>#Description</h3>
+<p>Calculates matrix determinant up to 5x5.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+impt_matr </th><th> is the input matrix</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code>std::vector&lt;std::vector&lt;int&gt;&gt; inpt_matr = {</code>
+<br><code>                                              {81, 55, 1, 81, 40},</code>
+<br><code>                                              {42, 48, 41, 37, 5},</code>
+<br><code>                                              {84, 1, 61, 612, 6},</code>
+<br><code>                                              {52, 59, 23, 50, 22},</code>
+<br><code>                                              {39, 6, 95, 69, 23},</code>
+<br><code>                                            };</code>
+<br><code>int out_val = det_small(inpt_matr);</code>
+<br><code>std::cout &lt;&lt; out_val &lt;&lt; "\n";</code>
+<br><code>1473982232</code>
+<br><code></code>
 </div>
 <br>
 <hr class="hr">
