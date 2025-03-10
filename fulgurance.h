@@ -459,6 +459,132 @@ std::string itos(unsigned int x) {
   return rtn_str;
 };
 
+//@L3 RegEx
+
+//@T regex_match
+//@U std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; regex_match(std::string &searched, std::string &x)
+//@X
+//@D Performs a match with the regex flavor.
+//@D This library provides an entirely new RegEx flavor. 
+//@D Read documentation in README_RegEx.md file for details about synthax.
+//@A searched : is the regular expression
+//@A x : is the text to search into
+//@X
+//@E std::string inpt_str = "Le radiateur fonctionne bien.";
+//@E std::string searched = "[A-Z a-z][A-Z{+1}a-z{+1} {+1}]{?bien}[A-Z{0}]{+1}";
+//@E 
+//@E std::map&lt;std::vector&lt;int&gt;, std::map&lt;bool, std::string&gt;&gt; out_mp = regex_match(searched, inpt_str);
+//@E std::map&lt;std::vector&lt;int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator out_it = out_mp.begin();
+//@E std::vector&lt;int&gt; idx_v = out_it-&gt;first;
+//@E std::map&lt;bool, std::string&gt;::iterator rslt_mp = out_it-&gt;second.begin();
+//@E std::string rtn_str = rslt_mp-&gt;second;
+//@E bool is_found = rslt_mp-&gt;first;
+//@E if (is_found) {
+//@E   std::cout &lt;&lt; idx_v[0] &lt;&lt; "\n";
+//@E   std::cout &lt;&lt; idx_v[1] &lt;&lt; "\n";
+//@E   std::cout &lt;&lt; is_found &lt;&lt; "\n";
+//@E   std::cout &lt;&lt; rtn_str &lt;&lt; "\n";
+//@E } else {
+//@E   std::cout &lt;&lt; "not found\n";
+//@E };
+//@E 
+//@E 0
+//@E 28
+//@E 1
+//@E Le radiateur fonctionne bien.
+//@X
+
+//@T regex_grep
+//@U std::map&lt;std::vector&lt;int&gt;, std::vector&lt;std::string&gt;&gt; regex_grep(std::string &searched, std::string &x)
+//@X
+//@D Performs a grep with the regex flavor.
+//@D This library provides an entirely new RegEx flavor. 
+//@D Read documentation in README_RegEx.md file for details about synthax.
+//@A searched : is the input regular expression
+//@A x : is the text to search into
+//@X
+//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.";
+//@E std::string searched = "[A-Z a-z][A-Z{+1}a-z{+1} {+1}]{?bien}[A-Z{0}]{+1}";
+//@E 
+//@E std::map&lt;std::vector&lt;int&gt;, std::vector&lt;std::string&gt;&gt; out_mp2 = regex_search_all(searched, inpt_str);
+//@E std::map&lt;std::vector&lt;int&gt;, std::vector&lt;std::string&gt;&gt;::iterator out_it2 = out_mp2.begin();
+//@E std::vector&lt;int&gt; idx_v2 = out_it2-&gt;first;
+//@E std::vector&lt;std::string&gt; str_v2 = out_it2-&gt;second;
+//@E for (int i = 0; i &lt; str_v2.size(); ++i) {
+//@E   std::cout &lt;&lt; "idx: " &lt;&lt; idx_v2[i] &lt;&lt; " str: " &lt;&lt; str_v2[i] &lt;&lt; "\n";
+//@E };
+//@E idx: 31 str: Le radiateur fonctionne bien.
+//@E idx: 31 str:  radiateur fonctionne bien.
+//@E idx: 31 str:  fonctionne bien.
+//@E idx: 31 str: e radiateur fonctionne bien.
+//@E idx: 31 str: r fonctionne bien.
+//@E idx: 31 str: e bien.
+//@X
+
+//@T regex_subout
+//@U std::string regex_subout(std::string &searched, std::string &replacer, std::string x)
+//@X
+//@D Substituates the first pattern matched by the regular expression, to a replacement pattern.
+//@A searched : is the regular expression
+//@A replacer : is the replacement pattern
+//@A x : is the input string to replace searched by replacer into
+//@X
+//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.... C'est un bon radiateur.";
+//@E std::string rplcd = " moteur ";
+//@E std::string searched = " a-z{9}[ .]";
+//@E std::string out_txt = regex_subout(searched, rplcd, inpt_str);
+//@E std::cout &lt;&lt; out_txt &lt;&lt; "\n";
+//@E MMMLe moteur fonctionne bien.... C'est un bon radiateur.
+//@X
+
+//@T regex_subout_all
+//@U std::string regex_subout_all(std::string &searched, std::string &replacer, std::string x)
+//@X
+//@D Substituates all patterns matched by the regular expression, to a replacement pattern.
+//@A searched : is the regular expression
+//@A replacer : is the replacement pattern
+//@A x : is the input string to replace searched by replacer into
+//@X
+//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.... C'est un bon radiateur.";
+//@E std::string rplcd = " moteur ";
+//@E std::string searched = " a-z{9}[ .]";
+//@E std::string out_txt = regex_subout_all(searched, rplcd, inpt_str);
+//@E std::cout &lt;&lt; out_txt &lt;&lt; "\n";
+//@E MMMLe moteur fonctionne bien.... C'est un bon moteur.
+//@X
+
+//@T regex_subin
+//@U void regex_subin(std::string &searched, std::string &replacer, std::string &x)
+//@X
+//@D Substituates the first pattern matched by the regular expression, to a replacement pattern.
+//@A searched : is the regular expression
+//@A replacer : is the replacement pattern
+//@A x : is the input string to replace searched by replacer into
+//@X
+//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.... C'est un bon radiateur.";
+//@E std::string rplcd = " moteur ";
+//@E std::string searched = " a-z{9}[ .]";
+//@E regex_subin(searched, rplcd, inpt_str);
+//@E std::cout &lt;&lt; inpt_str &lt;&lt; "\n";
+//@E MMMLe moteur fonctionne bien.... C'est un bon radiateur.
+//@X
+
+//@T regex_subin_all
+//@U void regex_subin_all(std::string &searched, std::string &replacer, std::string &x)
+//@X
+//@D Substituates all patterns matched by the regular expression, to a replacement pattern.
+//@A searched : is the regular expression
+//@A replacer : is the replacement pattern
+//@A x : is the input string to replace searched by replacer into
+//@X
+//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.... C'est un bon radiateur.";
+//@E std::string rplcd = " moteur ";
+//@E std::string searched = " a-z{9}[ .]";
+//@E regex_subin_all(searched, rplcd, inpt_str);
+//@E std::cout &lt;&lt; inpt_str &lt;&lt; "\n";
+//@E MMMLe moteur fonctionne bien.... C'est un bon moteur.
+//@X
+
 //@L2 Can be num ?
 
 //@T can_be_num
@@ -3670,133 +3796,6 @@ template <typename T, typename T2> std::vector<bool> grepl(const std::vector<T> 
   };
   return rtn;
 };
-
-//@L3 RegEx
-
-//@T regex_match
-//@U std::map&lt;std::vector&lt;unsigned int&gt;, std::map&lt;bool, std::string&gt;&gt; regex_match(std::string &searched, std::string &x)
-//@X
-//@D Performs a match with the regex flavor.
-//@D This library provides an entirely new RegEx flavor. 
-//@D Read documentation in README_RegEx.md file for details about synthax.
-//@A searched : is the regular expression
-//@A x : is the text to search into
-//@X
-//@E std::string inpt_str = "Le radiateur fonctionne bien.";
-//@E std::string searched = "[A-Z a-z][A-Z{+1}a-z{+1} {+1}]{?bien}[A-Z{0}]{+1}";
-//@E 
-//@E std::map&lt;std::vector&lt;int&gt;, std::map&lt;bool, std::string&gt;&gt; out_mp = regex_match(searched, inpt_str);
-//@E std::map&lt;std::vector&lt;int&gt;, std::map&lt;bool, std::string&gt;&gt;::iterator out_it = out_mp.begin();
-//@E std::vector&lt;int&gt; idx_v = out_it-&gt;first;
-//@E std::map&lt;bool, std::string&gt;::iterator rslt_mp = out_it-&gt;second.begin();
-//@E std::string rtn_str = rslt_mp-&gt;second;
-//@E bool is_found = rslt_mp-&gt;first;
-//@E if (is_found) {
-//@E   std::cout &lt;&lt; idx_v[0] &lt;&lt; "\n";
-//@E   std::cout &lt;&lt; idx_v[1] &lt;&lt; "\n";
-//@E   std::cout &lt;&lt; is_found &lt;&lt; "\n";
-//@E   std::cout &lt;&lt; rtn_str &lt;&lt; "\n";
-//@E } else {
-//@E   std::cout &lt;&lt; "not found\n";
-//@E };
-//@E 
-//@E 0
-//@E 28
-//@E 1
-//@E Le radiateur fonctionne bien.
-//@X
-
-//@T regex_grep
-//@U std::map&lt;std::vector&lt;int&gt;, std::vector&lt;std::string&gt;&gt; regex_grep(std::string &searched, std::string &x)
-//@X
-//@D Performs a grep with the regex flavor.
-//@D This library provides an entirely new RegEx flavor. 
-//@D Read documentation in README_RegEx.md file for details about synthax.
-//@A searched : is the input regular expression
-//@A x : is the text to search into
-//@X
-//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.";
-//@E std::string searched = "[A-Z a-z][A-Z{+1}a-z{+1} {+1}]{?bien}[A-Z{0}]{+1}";
-//@E 
-//@E std::map&lt;std::vector&lt;int&gt;, std::vector&lt;std::string&gt;&gt; out_mp2 = regex_search_all(searched, inpt_str);
-//@E std::map&lt;std::vector&lt;int&gt;, std::vector&lt;std::string&gt;&gt;::iterator out_it2 = out_mp2.begin();
-//@E std::vector&lt;int&gt; idx_v2 = out_it2-&gt;first;
-//@E std::vector&lt;std::string&gt; str_v2 = out_it2-&gt;second;
-//@E for (int i = 0; i &lt; str_v2.size(); ++i) {
-//@E   std::cout &lt;&lt; "idx: " &lt;&lt; idx_v2[i] &lt;&lt; " str: " &lt;&lt; str_v2[i] &lt;&lt; "\n";
-//@E };
-//@E idx: 31 str: Le radiateur fonctionne bien.
-//@E idx: 31 str:  radiateur fonctionne bien.
-//@E idx: 31 str:  fonctionne bien.
-//@E idx: 31 str: e radiateur fonctionne bien.
-//@E idx: 31 str: r fonctionne bien.
-//@E idx: 31 str: e bien.
-//@X
-
-//@T regex_subout
-//@U std::string regex_subout(std::string &searched, std::string &replacer, std::string x)
-//@X
-//@D Substituates the first pattern matched by the regular expression, to a replacement pattern.
-//@A searched : is the regular expression
-//@A replacer : is the replacement pattern
-//@A x : is the input string to replace searched by replacer into
-//@X
-//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.... C'est un bon radiateur.";
-//@E std::string rplcd = " moteur ";
-//@E std::string searched = " a-z{9}[ .]";
-//@E std::string out_txt = regex_subout(searched, rplcd, inpt_str);
-//@E std::cout &lt;&lt; out_txt &lt;&lt; "\n";
-//@E MMMLe moteur fonctionne bien.... C'est un bon radiateur.
-//@X
-
-//@T regex_subout_all
-//@U std::string regex_subout_all(std::string &searched, std::string &replacer, std::string x)
-//@X
-//@D Substituates all patterns matched by the regular expression, to a replacement pattern.
-//@A searched : is the regular expression
-//@A replacer : is the replacement pattern
-//@A x : is the input string to replace searched by replacer into
-//@X
-//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.... C'est un bon radiateur.";
-//@E std::string rplcd = " moteur ";
-//@E std::string searched = " a-z{9}[ .]";
-//@E std::string out_txt = regex_subout_all(searched, rplcd, inpt_str);
-//@E std::cout &lt;&lt; out_txt &lt;&lt; "\n";
-//@E MMMLe moteur fonctionne bien.... C'est un bon moteur.
-//@X
-
-//@T regex_subin
-//@U void regex_subin(std::string &searched, std::string &replacer, std::string &x)
-//@X
-//@D Substituates the first pattern matched by the regular expression, to a replacement pattern.
-//@A searched : is the regular expression
-//@A replacer : is the replacement pattern
-//@A x : is the input string to replace searched by replacer into
-//@X
-//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.... C'est un bon radiateur.";
-//@E std::string rplcd = " moteur ";
-//@E std::string searched = " a-z{9}[ .]";
-//@E regex_subin(searched, rplcd, inpt_str);
-//@E std::cout &lt;&lt; inpt_str &lt;&lt; "\n";
-//@E MMMLe moteur fonctionne bien.... C'est un bon radiateur.
-//@X
-
-//@T regex_subin_all
-//@U void regex_subin_all(std::string &searched, std::string &replacer, std::string &x)
-//@X
-//@D Substituates all patterns matched by the regular expression, to a replacement pattern.
-//@A searched : is the regular expression
-//@A replacer : is the replacement pattern
-//@A x : is the input string to replace searched by replacer into
-//@X
-//@E std::string inpt_str = "MMMLe radiateur fonctionne bien.... C'est un bon radiateur.";
-//@E std::string rplcd = " moteur ";
-//@E std::string searched = " a-z{9}[ .]";
-//@E regex_subin_all(searched, rplcd, inpt_str);
-//@E std::cout &lt;&lt; inpt_str &lt;&lt; "\n";
-//@E MMMLe moteur fonctionne bien.... C'est un bon moteur.
-//@X
-
 
 //@L3 Unique
 
