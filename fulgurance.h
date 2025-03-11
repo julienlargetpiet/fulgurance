@@ -3418,8 +3418,10 @@ template <typename T> void print_nvec(const std::vector<T> &x, int untl = -1) {
 //@E std::vector&lt;std::string&gt; vec = {"peugeot", "wolkswagen", "honda", "renault", "stellantis"};
 //@E for (int i = 0; i &lt; 20; ++i) { vec.push_back("yesss"); }
 //@E print_svec(vec);
-//@E :0: peugeot    wolkswagen honda      renault    stellantis yesss     yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      
-//@E :18: yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss 
+//@E :0: peugeot    wolkswagen honda      renault    stellantis yesss      yesss
+//@E :8: yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss
+//@E:16: yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss
+//@E:24: yesss      yesss
 //@X
 
 void print_svec(const std::vector<std::string> &x, int untl = -1) {
@@ -3447,12 +3449,12 @@ void print_svec(const std::vector<std::string> &x, int untl = -1) {
   };
   std::cout << ":" << 0 << ": ";
   for (i = 0; i < Untl; ++i) {
-    if ((i + 1) % 18 == 0) {
+    if ((i + 1) % 8 == 0) {
       std::cout << "\n";
-      for (cl = 0; cl < ref_delta - std::to_string(r * 18).length(); ++cl) {
+      for (cl = 0; cl < ref_delta - std::to_string(r * 8).length(); ++cl) {
         std::cout << " ";
       };
-      std::cout << ":" << r * 18 << ": ";
+      std::cout << ":" << r * 8 << ": ";
       r += 1;
       std::cout << x[i] << " ";
       ref_str = x[i];
