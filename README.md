@@ -317,6 +317,8 @@
 <b><li style="margin-left:40px; color: #2c4786;">Read matrix from file</li></b>
 <a href="#read_matr" style="margin-left:60px;">read_matr</a>
 <br>
+<a href="#write_matr" style="margin-left:60px;">write_matr</a>
+<br>
 <b><li style="margin-left:40px; color: #2c4786;">Sum elements for each rows and columns</li></b>
 <a href="#sum_nxp" style="margin-left:60px;">sum_nxp</a>
 <br>
@@ -3330,6 +3332,35 @@ file_name </th><th> is the name of the file</th></tr>
 <br><code> :5:  6  7  8  9 10</code>
 <br><code> :6:  1  2  3  4  5</code>
 <br><code> :7:  6  7  8  9 10</code>
+<br><code></code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="write_matr" style="test-align: left;">write_matr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void write_matr(std::string &file_name, std::vector&lt;std::vector&lt;T&gt;&gt; &in_matr, char delim = ',')</code></div>
+<h3>#Description</h3>
+<p>Writes a matrix into a file.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+file_name </th><th> is the name of the file</th></tr>
+<tr><th>in_matr </th><th> is the input matrix</th></tr>
+<tr><th>delim </th><th> is the chosen column delimiter</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code> std::string teste_file = "teste2.csv";</code>
+<br><code> std::vector&lt;std::vector&lt;int&gt;&gt; in_matr = {</code>
+<br><code>         {1, 2, 3, 4},</code>
+<br><code>         {1, 2, 3, 4},</code>
+<br><code>         {1, 2, 3, 4},</code>
+<br><code>         {1, 2, 3, 4},</code>
+<br><code>         {1, 2, 3, 4},</code>
+<br><code>         {1, 2, 3, 4}</code>
+<br><code> };</code>
+<br><code></code>
+<br><code> write_matr(teste_file, in_matr);</code>
 <br><code></code>
 </div>
 <br>
