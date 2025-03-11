@@ -3366,6 +3366,7 @@ template <typename T> void mixind(std::vector<T> &x) {
 //@E :30: 24    25    26    27    28    29    30    31    32    33
 //@E :40: 34    35    36    37    38    39    40    41    42    43
 //@E :50: 44    45    46    47    48    49
+//@M print_nvec.jpg
 //@X
 
 template <typename T> void print_nvec(const std::vector<T> &x, int untl = -1) {
@@ -3426,6 +3427,7 @@ template <typename T> void print_nvec(const std::vector<T> &x, int untl = -1) {
 //@E  :8: yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss
 //@E :16: yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss
 //@E :24: yesss
+//@M print_svec.jpg
 //@X
 
 void print_svec(const std::vector<std::string> &x, int untl = -1) {
@@ -5551,31 +5553,167 @@ template <typename T> void t_in(std::vector<std::vector<T>> &x) {
 
 //@L2 Print
 
-//@T print_matr
-//@U template &lt;typename T&gt; void print_matr(const std::vector&lt;std::vector&lt;T&gt;&gt; &x) 
+//@T print_nmatr
+//@U template &lt;typename T&gt; void print_nmatr(const std::vector&lt;std::vector&lt;T&gt;&gt; &x) 
 //@X
-//@D Print a matrix as 2D stl vector.
-//@A x : is a 2D stl vector
+//@D Print a matrix (float, int, double...) as 2D stl vector.
+//@A x : is a 2D stl vector (float, int, double...)
 //@X
-//@E std::vector&lt;std::vector&lt;int&gt;&gt; matr = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-//@E print_matr(matr);
-//@E           [0]       [1]       [2]
-//@E :0:         1         4         7
-//@E :1:         2         5         8
-//@E :2:         3         6         9
+//@E
+//@E std::vector<std::vector<int>> out_matr = {
+//@E     {1, 2, 3, 4},
+//@E     {1, 2, 3, 4},
+//@E     {1, 2, 333, 4},
+//@E     {1, 2, 3, 4},
+//@E     {1, 2, 3, 4}
+//@E   };
+//@E print_nmatr(out_matr);
+//@E
+//@E           [0]       [1]       [2]       [3]       [4]
+//@E :0:         1         1         1         1         1
+//@E :1:         2         2         2         2         2
+//@E :2:         3         3       333         3         3
+//@E :3:         4         4         4         4         4
+//@E
+//@M print_nmatr1.jpg
+//@E
+//@E std::vector<std::vector<double>> out_matr2 = {
+//@E   {1, 2, 3, 4},
+//@E   {1, 2, 3, 4},
+//@E   {1, 2, 333.23, 4},
+//@E   {1, 2, 3, 4},
+//@E   {1, 2, 3, 4}
+//@E };
+//@E print_nmatr(out_matr2);
+//@E
+//@E           [0]       [1]       [2]       [3]       [4]
+//@E :0:         1         1         1         1         1
+//@E :1:         2         2         2         2         2
+//@E :2:         3         3    333.23         3         3
+//@E :3:         4         4         4         4         4
+//@E
+//@M print_nmatr2.jpg
 //@X
 
-template <typename T> void print_matr(const std::vector<std::vector<T>> &x) {
+template <typename T> void print_nmatr(const std::vector<std::vector<T>> &x) {
   unsigned int i;
   unsigned int i2;
   unsigned int i3;
   unsigned int lngth;
+  unsigned int cnt;
   const unsigned int n = x.size();
   const unsigned int n2 = x[0].size();
+  std::string cur_val;
   std::cout << "   ";
   for (i = 0; i < n; ++i) {
     lngth = std::to_string(i).length();
     for (i3 = 0; i3 < 8 - lngth; ++i3) {
+      std::cout << " ";
+    };
+    std::cout << "[" << i << "]";
+  };
+  std::cout << "\n";
+  if (typeid(T).name() == typeid(float).name() || typeid(T).name() == typeid(double).name() || typeid(T).name() == typeid(long double).name()) {
+    for (int i2 = 0; i2 < n2; ++i2) {
+      std::cout << ":" << i2 << ":";
+      for (i = 0; i < n; ++i) {
+        if (i != 0) {
+          for (i3 = 0; i3 < std::to_string(i2).length() - 1; ++i3) {
+            std::cout << " "; 
+          };
+        };
+        cur_val = std::to_string(x[i][i2]);
+        cnt = cur_val.length() - 1;
+        while (cur_val[cnt] == '0') {
+          cur_val.pop_back();
+          cnt -= 1;
+        };
+        if (cur_val[cnt] == '.') {
+          cur_val.pop_back();
+        };
+        lngth = cur_val.length() + std::to_string(i2).length() - 1;
+        for (i3 = 0; i3 < 10 - lngth; ++i3) {
+          std::cout << " ";
+        };
+        std::cout << cur_val;
+      };
+      std::cout << "\n";
+    };
+  } else {
+    for (int i2 = 0; i2 < n2; ++i2) {
+      std::cout << ":" << i2 << ":";
+      for (i = 0; i < n; ++i) {
+        if (i != 0) {
+          for (i3 = 0; i3 < std::to_string(i2).length() - 1; ++i3) {
+            std::cout << " "; 
+          };
+        };
+        cur_val = std::to_string(x[i][i2]);
+        lngth = cur_val.length() + std::to_string(i2).length() - 1;
+        for (i3 = 0; i3 < 10 - lngth; ++i3) {
+          std::cout << " ";
+        };
+        std::cout << x[i][i2];
+      };
+      std::cout << "\n";
+    };
+  };
+};
+
+//@T print_smatr
+//@U template &lt;typename T&gt; void print_smatr(const std::vector&lt;std::vector&lt;T&gt;&gt; &x) 
+//@X
+//@D Print a matrix (std::string, char) as 2D stl vector.
+//@A x : is a 2D stl vector (std::string, char)
+//@X
+//@E std::vector<std::vector<std::string>> out_matr3 = {
+//@E    {"1", "2", "3", "4"},
+//@E    {"1", "2", "3", "4"},
+//@E    {"1", "2", "333", "44224441111111"},
+//@E    {"1", "2", "3", "4"},
+//@E    {"1", "2", "3", "4"}
+//@E  };
+//@E print_smatr(out_matr3);
+//@E
+//@E                     [0]                 [1]                 [2]                 [3]                 [4]
+//@E :0:                    1                    1                    1                    1                    1
+//@E :1:                    2                    2                    2                    2                    2
+//@E :2:                    3                    3                  333                    3                    3
+//@E :3:                    4                    4       44224441111111                    4                    4
+//@E
+//@M print_smatr1.jpg
+//@E
+//@E std::vector<std::vector<char>> out_matr4 = {
+//@E    {'1', '2', '3', '4'},
+//@E    {'1', '2', '3', '4'},
+//@E    {'1', '2', '3', '4'},
+//@E    {'1', '2', '3', '4'},
+//@E    {'1', '2', '3', '4'}
+//@E };
+//@E
+//@E print_smatr(out_matr4);
+//@E
+//@E                     [0]                 [1]                 [2]                 [3]                 [4]
+//@E :0:                    1                    1                    1                    1                    1
+//@E :1:                    2                    2                    2                    2                    2
+//@E :2:                    3                    3                    3                    3                    3
+//@E :3:                    4                    4                    4                    4                    4
+//@E
+//@M print_smatr2.jpg
+//@X
+
+template <typename T> void print_smatr(const std::vector<std::vector<T>> &x) {
+  unsigned int i;
+  unsigned int i2;
+  int i3;
+  int lngth;
+  const unsigned int n = x.size();
+  const unsigned int n2 = x[0].size();
+  std::string cur_val;
+  std::cout << "   ";
+  for (i = 0; i < n; ++i) {
+    lngth = std::to_string(i).length();
+    for (i3 = 0; i3 < 18 - lngth; ++i3) {
       std::cout << " ";
     };
     std::cout << "[" << i << "]";
@@ -5589,8 +5727,9 @@ template <typename T> void print_matr(const std::vector<std::vector<T>> &x) {
           std::cout << " "; 
         };
       };
-      lngth = std::to_string(x[i][i2]).length() + std::to_string(i2).length() - 1;
-      for (i3 = 0; i3 < 10 - lngth; ++i3) {
+      cur_val = x[i][i2];
+      lngth = cur_val.length() + std::to_string(i2).length() - 1;
+      for (i3 = 0; i3 < 21 - lngth; ++i3) {
         std::cout << " ";
       };
       std::cout << x[i][i2];
