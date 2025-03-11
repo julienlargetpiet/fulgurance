@@ -330,7 +330,9 @@
 <a href="#t_in" style="margin-left:60px;">t_in</a>
 <br>
 <b><li style="margin-left:40px; color: #2c4786;">Print</li></b>
-<a href="#print_matr" style="margin-left:60px;">print_matr</a>
+<a href="#print_nmatr" style="margin-left:60px;">print_nmatr</a>
+<br>
+<a href="#print_smatr" style="margin-left:60px;">print_smatr</a>
 <br>
 <b><li style="margin-left:40px; color: #2c4786;">Absolute values</li></b>
 <a href="#abs_matrin" style="margin-left:60px;">abs_matrin</a>
@@ -3495,24 +3497,100 @@ x </th><th> is a matrix as a 2D stl vector</th></tr>
 <br>
 <hr class="hr">
 <h2 style="color:#2c4786;">Print</h2>
-<h2 id="print_matr" style="test-align: left;">print_matr</h2>
+<h2 id="print_nmatr" style="test-align: left;">print_nmatr</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; void print_matr(const std::vector&lt;std::vector&lt;T&gt;&gt; &x) </code></div>
+<div class="Div"><code>template &lt;typename T&gt; void print_nmatr(const std::vector&lt;std::vector&lt;T&gt;&gt; &x) </code></div>
 <h3>#Description</h3>
-<p>Print a matrix as 2D stl vector.</p>
+<p>Print a matrix (float, int, double...) as 2D stl vector.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-x </th><th> is a 2D stl vector</th></tr>
+x </th><th> is a 2D stl vector (float, int, double...)</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector&lt;std::vector&lt;int&gt;&gt; matr = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};</code>
-<br><code>print_matr(matr);</code>
-<br><code>          [0]       [1]       [2]</code>
-<br><code>:0:         1         4         7</code>
-<br><code>:1:         2         5         8</code>
-<br><code>:2:         3         6         9</code>
-</div>
+<div class = "Div"><code></code>
+<br><code>std::vector<std::vector<int>> out_matr = {</code>
+<br><code>    {1, 2, 3, 4},</code>
+<br><code>    {1, 2, 3, 4},</code>
+<br><code>    {1, 2, 333, 4},</code>
+<br><code>    {1, 2, 3, 4},</code>
+<br><code>    {1, 2, 3, 4}</code>
+<br><code>  };</code>
+<br><code>print_nmatr(out_matr);</code>
+<br><code></code>
+<br><code>          [0]       [1]       [2]       [3]       [4]</code>
+<br><code>:0:         1         1         1         1         1</code>
+<br><code>:1:         2         2         2         2         2</code>
+<br><code>:2:         3         3       333         3         3</code>
+<br><code>:3:         4         4         4         4         4</code>
+<br><code></code>
+<br>
+<img style="margin-left: 20px;" height="220" width="360" src="print_nmatr1.jpg"><br><br><code></code>
+<br><code>std::vector<std::vector<double>> out_matr2 = {</code>
+<br><code>  {1, 2, 3, 4},</code>
+<br><code>  {1, 2, 3, 4},</code>
+<br><code>  {1, 2, 333.23, 4},</code>
+<br><code>  {1, 2, 3, 4},</code>
+<br><code>  {1, 2, 3, 4}</code>
+<br><code>};</code>
+<br><code>print_nmatr(out_matr2);</code>
+<br><code></code>
+<br><code>          [0]       [1]       [2]       [3]       [4]</code>
+<br><code>:0:         1         1         1         1         1</code>
+<br><code>:1:         2         2         2         2         2</code>
+<br><code>:2:         3         3    333.23         3         3</code>
+<br><code>:3:         4         4         4         4         4</code>
+<br><code></code>
+<br>
+<img style="margin-left: 20px;" height="220" width="360" src="print_nmatr2.jpg"><br></div>
+<br>
+<hr class="hr">
+<h2 id="print_smatr" style="test-align: left;">print_smatr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void print_smatr(const std::vector&lt;std::vector&lt;T&gt;&gt; &x) </code></div>
+<h3>#Description</h3>
+<p>Print a matrix (std::string, char) as 2D stl vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is a 2D stl vector (std</th><th></th><th>string, char)</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector<std::vector<std::string>> out_matr3 = {</code>
+<br><code>   {"1", "2", "3", "4"},</code>
+<br><code>   {"1", "2", "3", "4"},</code>
+<br><code>   {"1", "2", "333", "44224441111111"},</code>
+<br><code>   {"1", "2", "3", "4"},</code>
+<br><code>   {"1", "2", "3", "4"}</code>
+<br><code> };</code>
+<br><code>print_smatr(out_matr3);</code>
+<br><code></code>
+<br><code>                    [0]                 [1]                 [2]                 [3]                 [4]</code>
+<br><code>:0:                    1                    1                    1                    1                    1</code>
+<br><code>:1:                    2                    2                    2                    2                    2</code>
+<br><code>:2:                    3                    3                  333                    3                    3</code>
+<br><code>:3:                    4                    4       44224441111111                    4                    4</code>
+<br><code></code>
+<br>
+<img style="margin-left: 20px;" height="220" width="360" src="print_smatr1.jpg"><br><br><code></code>
+<br><code>std::vector<std::vector<char>> out_matr4 = {</code>
+<br><code>   {'1', '2', '3', '4'},</code>
+<br><code>   {'1', '2', '3', '4'},</code>
+<br><code>   {'1', '2', '3', '4'},</code>
+<br><code>   {'1', '2', '3', '4'},</code>
+<br><code>   {'1', '2', '3', '4'}</code>
+<br><code>};</code>
+<br><code></code>
+<br><code>print_smatr(out_matr4);</code>
+<br><code></code>
+<br><code>                    [0]                 [1]                 [2]                 [3]                 [4]</code>
+<br><code>:0:                    1                    1                    1                    1                    1</code>
+<br><code>:1:                    2                    2                    2                    2                    2</code>
+<br><code>:2:                    3                    3                    3                    3                    3</code>
+<br><code>:3:                    4                    4                    4                    4                    4</code>
+<br><code></code>
+<br>
+<img style="margin-left: 20px;" height="220" width="360" src="print_smatr2.jpg"><br></div>
 <br>
 <hr class="hr">
 <h2 style="color:#2c4786;">Absolute values</h2>
