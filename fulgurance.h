@@ -3418,8 +3418,8 @@ template <typename T> void print_nvec(const std::vector<T> &x, int untl = -1) {
 //@E std::vector&lt;std::string&gt; vec = {"peugeot", "wolkswagen", "honda", "renault", "stellantis"};
 //@E for (int i = 0; i &lt; 20; ++i) { vec.push_back("yesss"); }
 //@E print_svec(vec);
-//@E :0: peugeot    wolkswagen honda      renault    stellantis yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      
-//@E :18: yesss      yesss      yesss      yesss      yesss      yesss      yesss       
+//@E :0: peugeot    wolkswagen honda      renault    stellantis yesss     yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      
+//@E :18: yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss 
 //@X
 
 void print_svec(const std::vector<std::string> &x, int untl = -1) {
@@ -3454,8 +3454,10 @@ void print_svec(const std::vector<std::string> &x, int untl = -1) {
       };
       std::cout << ":" << r * 18 << ": ";
       r += 1;
-      if ((i + 1) == Untl) {
-        std::cout << x[i];
+      std::cout << x[i] << " ";
+      ref_str = x[i];
+      for (cl = 0; cl < cmax - ref_str.length(); ++cl) {
+        std::cout << " ";
       };
     } else {
       std::cout << x[i] << " ";
