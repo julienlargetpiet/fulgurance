@@ -5,6 +5,8 @@
 #include <chrono>
 #include <thread>
 #include <map>
+#include <fstream>
+#include <typeinfo>
 
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
@@ -5053,6 +5055,235 @@ template <typename T> double diff_mean(std::vector<T> &x) {
 };
 
 //@L1 Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;
+
+//@L2 Read matrix from file
+
+//@T read_matr
+//@U template &lt;typename T&gt; void read_matr(std::string &file_name, std::vector&lt;std::vector&lt;T&gt;&gt; &out_matr, char delim = ',')
+//@X
+//@D Returns a matrix stored in a file. 
+//@A file_name : is the name of the file
+//@A out_matr : is a declared matrix
+//@A delim : is the column delimiter
+//@X
+//@E  std::string teste_file = "teste.csv";
+//@E  std::vector&lt;std::vector&lt;double&gt;&gt; out_matr;
+//@E  read_matr(teste_file, out_matr);
+//@E  print_matr(out_matr);
+//@E
+//@E  [0] [1] [2] [3] [4]
+//@E  :0:  1  2  3  4  5
+//@E  :1:  6  7  8  9 10
+//@E  :2:  1  2  3  4  5
+//@E  :3:  6  7  8  9 10
+//@E  :4:  1  2  3  4  5
+//@E  :5:  6  7  8  9 10
+//@E  :6:  1  2  3  4  5
+//@E  :7:  6  7  8  9 10
+//@E
+//@X
+
+template <typename T> void read_matr(std::string &file_name, std::vector<std::vector<T>> &out_matr, char delim = ',') {
+  std::fstream read_file(file_name);
+  std::vector<T> cur_col = {};
+  std::string currow;
+  std::string cur_cell = "";
+  unsigned int cnt;
+  unsigned int cnt2;
+  int cur_val;
+  getline(read_file, currow);
+  if (typeid(T).name() == typeid(int).name() || typeid(T).name() == typeid(unsigned int).name()) {
+    for (cnt = 0; cnt < currow.length(); ++cnt) {
+      if (currow[cnt] == delim) {
+        cur_val = std::stoi(cur_cell);
+        cur_col.push_back(cur_val);
+        out_matr.push_back(cur_col);
+        cur_col = {};
+        cur_cell = "";
+      } else if (currow[cnt] != ' ') {
+        cur_cell.push_back(currow[cnt]);
+      };
+    };
+    cur_val = std::stoi(cur_cell);
+    cur_col.push_back(cur_val);
+    out_matr.push_back(cur_col);
+    cur_cell = "";
+    while (getline(read_file, currow)) {
+      cnt2 = 0;
+      for (cnt = 0; cnt < currow.length(); ++cnt) {
+        if (currow[cnt] == delim) {
+          cur_val = std::stoi(cur_cell);
+          out_matr[cnt2].push_back(cur_val);
+          cur_cell = "";
+          cnt2 += 1;
+        } else if (currow[cnt] != ' ') {
+          cur_cell.push_back(currow[cnt]);
+        };
+      };
+      cur_val = std::stoi(cur_cell);
+      out_matr[cnt2].push_back(cur_val);
+    };
+  } else if (typeid(T).name() == typeid(float).name()) {
+    for (cnt = 0; cnt < currow.length(); ++cnt) {
+      if (currow[cnt] == delim) {
+        cur_val = std::stof(cur_cell);
+        cur_col.push_back(cur_val);
+        out_matr.push_back(cur_col);
+        cur_col = {};
+        cur_cell = "";
+      } else if (currow[cnt] != ' ') {
+        cur_cell.push_back(currow[cnt]);
+      };
+    };
+    cur_val = std::stof(cur_cell);
+    cur_col.push_back(cur_val);
+    out_matr.push_back(cur_col);
+    cur_cell = "";
+    while (getline(read_file, currow)) {
+      cnt2 = 0;
+      for (cnt = 0; cnt < currow.length(); ++cnt) {
+        if (currow[cnt] == delim) {
+          cur_val = std::stof(cur_cell);
+          out_matr[cnt2].push_back(cur_val);
+          cur_cell = "";
+          cnt2 += 1;
+        } else if (currow[cnt] != ' ') {
+          cur_cell.push_back(currow[cnt]);
+        };
+      };
+      cur_val = std::stof(cur_cell);
+      out_matr[cnt2].push_back(cur_val);
+    };
+  } else if (typeid(T).name() == typeid(double).name()) {
+    for (cnt = 0; cnt < currow.length(); ++cnt) {
+      if (currow[cnt] == delim) {
+        cur_val = std::stod(cur_cell);
+        cur_col.push_back(cur_val);
+        out_matr.push_back(cur_col);
+        cur_col = {};
+        cur_cell = "";
+      } else if (currow[cnt] != ' ') {
+        cur_cell.push_back(currow[cnt]);
+      };
+    };
+    cur_val = std::stod(cur_cell);
+    cur_col.push_back(cur_val);
+    out_matr.push_back(cur_col);
+    cur_cell = "";
+    while (getline(read_file, currow)) {
+      cnt2 = 0;
+      for (cnt = 0; cnt < currow.length(); ++cnt) {
+        if (currow[cnt] == delim) {
+          cur_val = std::stod(cur_cell);
+          out_matr[cnt2].push_back(cur_val);
+          cur_cell = "";
+          cnt2 += 1;
+        } else if (currow[cnt] != ' ') {
+          cur_cell.push_back(currow[cnt]);
+        };
+      };
+      cur_val = std::stod(cur_cell);
+      out_matr[cnt2].push_back(cur_val);
+      cur_cell = "";
+    };
+  } else if (typeid(T).name() == typeid(long double).name()) {
+    for (cnt = 0; cnt < currow.length(); ++cnt) {
+      if (currow[cnt] == delim) {
+        cur_val = std::stold(cur_cell);
+        cur_col.push_back(cur_val);
+        out_matr.push_back(cur_col);
+        cur_col = {};
+        cur_cell = "";
+      } else if (currow[cnt] != ' ') {
+        cur_cell.push_back(currow[cnt]);
+      };
+    };
+    cur_val = std::stold(cur_cell);
+    cur_col.push_back(cur_val);
+    out_matr.push_back(cur_col);
+    cur_cell = "";
+    while (getline(read_file, currow)) {
+      cnt2 = 0;
+      for (cnt = 0; cnt < currow.length(); ++cnt) {
+        if (currow[cnt] == delim) {
+          cur_val = std::stold(cur_cell);
+          out_matr[cnt2].push_back(cur_val);
+          cur_cell = "";
+          cnt2 += 1;
+        } else if (currow[cnt] != ' ') {
+          cur_cell.push_back(currow[cnt]);
+        };
+      };
+      cur_val = std::stold(cur_cell);
+      out_matr[cnt2].push_back(cur_val);
+      cur_cell = "";
+    };
+  } else if (typeid(T).name() == typeid(long int).name() || typeid(T).name() == typeid(long unsigned int).name()) {
+    for (cnt = 0; cnt < currow.length(); ++cnt) {
+      if (currow[cnt] == delim) {
+        cur_val = std::stol(cur_cell);
+        cur_col.push_back(cur_val);
+        out_matr.push_back(cur_col);
+        cur_col = {};
+        cur_cell = "";
+      } else if (currow[cnt] != ' ') {
+        cur_cell.push_back(currow[cnt]);
+      };
+    };
+    cur_val = std::stol(cur_cell);
+    cur_col.push_back(cur_val);
+    out_matr.push_back(cur_col);
+    cur_cell = "";
+    while (getline(read_file, currow)) {
+      cnt2 = 0;
+      for (cnt = 0; cnt < currow.length(); ++cnt) {
+        if (currow[cnt] == delim) {
+          cur_val = std::stol(cur_cell);
+          out_matr[cnt2].push_back(cur_val);
+          cur_cell = "";
+          cnt2 += 1;
+        } else if (currow[cnt] != ' ') {
+          cur_cell.push_back(currow[cnt]);
+        };
+      };
+      cur_val = std::stol(cur_cell);
+      out_matr[cnt2].push_back(cur_val);
+      cur_cell = "";
+    };
+  } else if (typeid(T).name() == typeid(long long int).name() || typeid(T).name() == typeid(long long unsigned int).name()) {
+    for (cnt = 0; cnt < currow.length(); ++cnt) {
+      if (currow[cnt] == delim) {
+        cur_val = std::stoll(cur_cell);
+        cur_col.push_back(cur_val);
+        out_matr.push_back(cur_col);
+        cur_col = {};
+        cur_cell = "";
+      } else if (currow[cnt] != ' ') {
+        cur_cell.push_back(currow[cnt]);
+      };
+    };
+    cur_val = std::stoll(cur_cell);
+    cur_col.push_back(cur_val);
+    out_matr.push_back(cur_col);
+    cur_cell = "";
+    while (getline(read_file, currow)) {
+      cnt2 = 0;
+      for (cnt = 0; cnt < currow.length(); ++cnt) {
+        if (currow[cnt] == delim) {
+          cur_val = std::stoll(cur_cell);
+          out_matr[cnt2].push_back(cur_val);
+          cur_cell = "";
+          cnt2 += 1;
+        } else if (currow[cnt] != ' ') {
+          cur_cell.push_back(currow[cnt]);
+        };
+      };
+      cur_val = std::stoll(cur_cell);
+      out_matr[cnt2].push_back(cur_val);
+      cur_cell = "";
+    };
+  };
+};
 
 //@L2 Sum elements for each rows and columns
 
