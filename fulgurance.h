@@ -3365,7 +3365,7 @@ template <typename T> void mixind(std::vector<T> &x) {
 //@X
 
 template <typename T> void print_nvec(const std::vector<T> &x, int untl = -1) {
-  int r = 1;
+  unsigned int r = 1;
   int i;
   int cmax = 1;
   int cl;
@@ -3393,10 +3393,11 @@ template <typename T> void print_nvec(const std::vector<T> &x, int untl = -1) {
         std::cout << " ";
       };
       std::cout << ":" << r * 25 << ": ";
-      r += 1;
-      if ((i + 1) == Untl) {
-        std::cout << x[i];
+      std::cout << x[i] << " ";
+      for (cl = 0; cl < cmax - std::to_string(x[i]).length(); ++cl) {
+        std::cout << " ";
       };
+      r += 1;
     } else {
       std::cout << x[i] << " ";
       for (cl = 0; cl < cmax - std::to_string(x[i]).length(); ++cl) {
@@ -4422,6 +4423,7 @@ template <typename T> std::vector<T> union2(std::vector<T> &x, std::vector<T> &x
 //@E std::vector&lt;int&gt; out = union1.result();
 //@E print_nvec(out);
 //@E :0: 3  4  4  5  7  8  2  4  11 0  1  2  3  9  11 4  0  1  2  3  11 9  0  1  
+//@E :25: 2 3 11 9
 //@E union1.reinitiate(vec2);
 //@E union1.to_union(vec1);
 //@E out = union1.result();
