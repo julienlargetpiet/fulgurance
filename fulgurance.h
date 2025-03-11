@@ -3358,10 +3358,14 @@ template <typename T> void mixind(std::vector<T> &x) {
 //@A untl : is an int idicating how many elements must be printed, defaults to -1, so by default all elements will be printed
 //@X
 //@E std::vector&lt;int&gt; vec = {12, 2, 4534, 7, -78, 12122};
-//@E for (int i = 0; i &lt; 20; ++i) { vec.push_back(7); }
+//@E for (int i = 0; i &lt; 50; ++i) { vec.push_back(i); }
 //@E print_nvec(vec);
-//@E :0: 12    2     4534  7     -78   12122 23323 12    6     2     8     45    7     7     7     7     7     7     7     7     7     7     7     7     
-//@E :25: 7     7     7     7     7     7     7     
+//@E  :0: 12    2     4534  7     -78   12122 0     1     2     3
+//@E :10: 4     5     6     7     8     9     10    11    12    13
+//@E :20: 14    15    16    17    18    19    20    21    22    23
+//@E :30: 24    25    26    27    28    29    30    31    32    33
+//@E :40: 34    35    36    37    38    39    40    41    42    43
+//@E :50: 44    45    46    47    48    49
 //@X
 
 template <typename T> void print_nvec(const std::vector<T> &x, int untl = -1) {
@@ -3387,16 +3391,16 @@ template <typename T> void print_nvec(const std::vector<T> &x, int untl = -1) {
   };
   std::cout << ":" << 0 << ": ";
   for (i = 0; i < Untl; ++i) {
-    if ((i + 1) % 25 == 0) {
-      std::cout << "\n";
-      for (cl = 0; cl < ref_delta - std::to_string(r * 25).length(); ++cl) {
-        std::cout << " ";
-      };
-      std::cout << ":" << r * 25 << ": ";
+    if ((i + 1) % 10 == 0) {
       std::cout << x[i] << " ";
       for (cl = 0; cl < cmax - std::to_string(x[i]).length(); ++cl) {
         std::cout << " ";
       };
+      std::cout << "\n";
+      for (cl = 0; cl < ref_delta - std::to_string(r * 10).length(); ++cl) {
+        std::cout << " ";
+      };
+      std::cout << ":" << r * 10 << ": ";
       r += 1;
     } else {
       std::cout << x[i] << " ";
@@ -3415,13 +3419,13 @@ template <typename T> void print_nvec(const std::vector<T> &x, int untl = -1) {
 //@A x : stl vector (int, float, double, bool)
 //@A untl : is an int idicating how many elements must be printed, defaults to -1, so by default all elements will be printed
 //@X
-//@E std::vector&lt;std::string&gt; vec = {"peugeot", "wolkswagen", "honda", "renault", "stellantis"};
-//@E for (int i = 0; i &lt; 20; ++i) { vec.push_back("yesss"); }
-//@E print_svec(vec);
-//@E :0: peugeot    wolkswagen honda      renault    stellantis yesss      yesss
-//@E :8: yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss
-//@E:16: yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss
-//@E:24: yesss      yesss
+//@E std::vector&lt;std::string&gt; vec2 = {"peugeot", "wolkswagen", "honda", "renault", "stellantis"};
+//@E for (int i = 0; i &lt; 20; ++i) { vec2.push_back("yesss"); }
+//@E print_svec(vec2);
+//@E  :0: peugeot    wolkswagen honda      renault    stellantis yesss      yesss      yesss
+//@E  :8: yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss
+//@E :16: yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss
+//@E :24: yesss
 //@X
 
 void print_svec(const std::vector<std::string> &x, int untl = -1) {
@@ -3450,17 +3454,17 @@ void print_svec(const std::vector<std::string> &x, int untl = -1) {
   std::cout << ":" << 0 << ": ";
   for (i = 0; i < Untl; ++i) {
     if ((i + 1) % 8 == 0) {
+      std::cout << x[i] << " ";
+      ref_str = x[i];
+      for (cl = 0; cl < cmax - ref_str.length(); ++cl) {
+        std::cout << " ";
+      };
       std::cout << "\n";
       for (cl = 0; cl < ref_delta - std::to_string(r * 8).length(); ++cl) {
         std::cout << " ";
       };
       std::cout << ":" << r * 8 << ": ";
       r += 1;
-      std::cout << x[i] << " ";
-      ref_str = x[i];
-      for (cl = 0; cl < cmax - ref_str.length(); ++cl) {
-        std::cout << " ";
-      };
     } else {
       std::cout << x[i] << " ";
       ref_str = x[i];
