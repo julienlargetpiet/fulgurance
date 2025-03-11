@@ -5607,7 +5607,7 @@ template <typename T> void print_nmatr(const std::vector<std::vector<T>> &x) {
   std::cout << "   ";
   for (i = 0; i < n; ++i) {
     lngth = std::to_string(i).length();
-    for (i3 = 0; i3 < 8 - lngth; ++i3) {
+    for (i3 = 0; i3 < 16 - lngth; ++i3) {
       std::cout << " ";
     };
     std::cout << "[" << i << "]";
@@ -5632,7 +5632,7 @@ template <typename T> void print_nmatr(const std::vector<std::vector<T>> &x) {
           cur_val.pop_back();
         };
         lngth = cur_val.length() + std::to_string(i2).length() - 1;
-        for (i3 = 0; i3 < 10 - lngth; ++i3) {
+        for (i3 = 0; i3 < 18 - lngth; ++i3) {
           std::cout << " ";
         };
         std::cout << cur_val;
@@ -5650,7 +5650,7 @@ template <typename T> void print_nmatr(const std::vector<std::vector<T>> &x) {
         };
         cur_val = std::to_string(x[i][i2]);
         lngth = cur_val.length() + std::to_string(i2).length() - 1;
-        for (i3 = 0; i3 < 10 - lngth; ++i3) {
+        for (i3 = 0; i3 < 18 - lngth; ++i3) {
           std::cout << " ";
         };
         std::cout << x[i][i2];
