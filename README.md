@@ -2348,7 +2348,8 @@ x </th><th> stl vector (int, float, double, bool)</th></tr>
 <br><code>:30: 24    25    26    27    28    29    30    31    32    33</code>
 <br><code>:40: 34    35    36    37    38    39    40    41    42    43</code>
 <br><code>:50: 44    45    46    47    48    49</code>
-</div>
+<br>
+<img style="margin-left: 20px;" height="220" width="360" src="print_nvec.jpg"><br></div>
 <br>
 <hr class="hr">
 <h2 id="print_svec" style="test-align: left;">print_svec</h2>
@@ -2370,7 +2371,8 @@ x </th><th> stl vector (int, float, double, bool)</th></tr>
 <br><code> :8: yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss</code>
 <br><code>:16: yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss</code>
 <br><code>:24: yesss</code>
-</div>
+<br>
+<img style="margin-left: 20px;" height="220" width="360" src="print_svec.jpg"><br></div>
 <br>
 <hr class="hr">
 <h3 style="color:#2c4786;">Parts </h3>
