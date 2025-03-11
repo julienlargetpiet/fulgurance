@@ -2340,10 +2340,14 @@ x </th><th> stl vector (int, float, double, bool)</th></tr>
 <br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::vector&lt;int&gt; vec = {12, 2, 4534, 7, -78, 12122};</code>
-<br><code>for (int i = 0; i &lt; 20; ++i) { vec.push_back(7); }</code>
+<br><code>for (int i = 0; i &lt; 50; ++i) { vec.push_back(i); }</code>
 <br><code>print_nvec(vec);</code>
-<br><code>:0: 12    2     4534  7     -78   12122 23323 12    6     2     8     45    7     7     7     7     7     7     7     7     7     7     7     7     </code>
-<br><code>:25: 7     7     7     7     7     7     7     </code>
+<br><code> :0: 12    2     4534  7     -78   12122 0     1     2     3</code>
+<br><code>:10: 4     5     6     7     8     9     10    11    12    13</code>
+<br><code>:20: 14    15    16    17    18    19    20    21    22    23</code>
+<br><code>:30: 24    25    26    27    28    29    30    31    32    33</code>
+<br><code>:40: 34    35    36    37    38    39    40    41    42    43</code>
+<br><code>:50: 44    45    46    47    48    49</code>
 </div>
 <br>
 <hr class="hr">
@@ -2359,11 +2363,13 @@ x </th><th> stl vector (int, float, double, bool)</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector&lt;std::string&gt; vec = {"peugeot", "wolkswagen", "honda", "renault", "stellantis"};</code>
-<br><code>for (int i = 0; i &lt; 20; ++i) { vec.push_back("yesss"); }</code>
-<br><code>print_svec(vec);</code>
-<br><code>:0: peugeot    wolkswagen honda      renault    stellantis yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss      </code>
-<br><code>:18: yesss      yesss      yesss      yesss      yesss      yesss      yesss       </code>
+<div class = "Div"><code>std::vector&lt;std::string&gt; vec2 = {"peugeot", "wolkswagen", "honda", "renault", "stellantis"};</code>
+<br><code>for (int i = 0; i &lt; 20; ++i) { vec2.push_back("yesss"); }</code>
+<br><code>print_svec(vec2);</code>
+<br><code> :0: peugeot    wolkswagen honda      renault    stellantis yesss      yesss      yesss</code>
+<br><code> :8: yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss</code>
+<br><code>:16: yesss      yesss      yesss      yesss      yesss      yesss      yesss      yesss</code>
+<br><code>:24: yesss</code>
 </div>
 <br>
 <hr class="hr">
@@ -2997,6 +3003,7 @@ x </th><th> is an stl vector</th></tr>
 <br><code>std::vector&lt;int&gt; out = union1.result();</code>
 <br><code>print_nvec(out);</code>
 <br><code>:0: 3  4  4  5  7  8  2  4  11 0  1  2  3  9  11 4  0  1  2  3  11 9  0  1  </code>
+<br><code>:25: 2 3 11 9</code>
 <br><code>union1.reinitiate(vec2);</code>
 <br><code>union1.to_union(vec1);</code>
 <br><code>out = union1.result();</code>
