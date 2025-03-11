@@ -5598,8 +5598,8 @@ template <typename T> void t_in(std::vector<std::vector<T>> &x) {
 template <typename T> void print_nmatr(const std::vector<std::vector<T>> &x) {
   unsigned int i;
   unsigned int i2;
-  unsigned int i3;
-  unsigned int lngth;
+  int i3;
+  int lngth;
   unsigned int cnt;
   const unsigned int n = x.size();
   const unsigned int n2 = x[0].size();
