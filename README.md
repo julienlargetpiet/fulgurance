@@ -314,6 +314,9 @@
 <a href="#diff_mean" style="margin-left:60px;">diff_mean</a>
 <br>
 <b><li style="margin-left:20px; color: #2c4786;">Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;</li></b>
+<b><li style="margin-left:40px; color: #2c4786;">Read matrix from file</li></b>
+<a href="#read_matr" style="margin-left:60px;">read_matr</a>
+<br>
 <b><li style="margin-left:40px; color: #2c4786;">Sum elements for each rows and columns</li></b>
 <a href="#sum_nxp" style="margin-left:60px;">sum_nxp</a>
 <br>
@@ -3299,6 +3302,38 @@ x </th><th> is a stl vector (int, float, double, bool)</th></tr>
 <br>
 <hr class="hr">
 <h1 style="color:#2c4786;">Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;</h1>
+<h2 style="color:#2c4786;">Read matrix from file</h2>
+<h2 id="read_matr" style="test-align: left;">read_matr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void read_matr(std::string &file_name, std::vector&lt;std::vector&lt;T&gt;&gt; &out_matr, char delim = ',')</code></div>
+<h3>#Description</h3>
+<p>Returns a matrix stored in a file. </p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+file_name </th><th> is the name of the file</th></tr>
+<tr><th>out_matr </th><th> is a declared matrix</th></tr>
+<tr><th>delim </th><th> is the column delimiter</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code> std::string teste_file = "teste.csv";</code>
+<br><code> std::vector&lt;std::vector&lt;double&gt;&gt; out_matr;</code>
+<br><code> read_matr(teste_file, out_matr);</code>
+<br><code> print_matr(out_matr);</code>
+<br><code></code>
+<br><code> [0] [1] [2] [3] [4]</code>
+<br><code> :0:  1  2  3  4  5</code>
+<br><code> :1:  6  7  8  9 10</code>
+<br><code> :2:  1  2  3  4  5</code>
+<br><code> :3:  6  7  8  9 10</code>
+<br><code> :4:  1  2  3  4  5</code>
+<br><code> :5:  6  7  8  9 10</code>
+<br><code> :6:  1  2  3  4  5</code>
+<br><code> :7:  6  7  8  9 10</code>
+<br><code></code>
+</div>
+<br>
+<hr class="hr">
 <h2 style="color:#2c4786;">Sum elements for each rows and columns</h2>
 <h2 id="sum_nxp" style="test-align: left;">sum_nxp</h2>
 <h3>#Usage</h3>
