@@ -5285,6 +5285,59 @@ template <typename T> void read_matr(std::string &file_name, std::vector<std::ve
   };
 };
 
+//@T write_matr
+//@U template &lt;typename T&gt; void write_matr(std::string &file_name, std::vector&lt;std::vector&lt;T&gt;&gt; &in_matr, char delim = ',')
+//@X
+//@D Writes a matrix into a file.
+//@A file_name : is the name of the file
+//@A in_matr : is the input matrix
+//@A delim : is the chosen column delimiter
+//@X
+//@E
+//@E  std::string teste_file = "teste2.csv";
+//@E  std::vector&lt;std::vector&lt;int&gt;&gt; in_matr = {
+//@E          {1, 2, 3, 4},
+//@E          {1, 2, 3, 4},
+//@E          {1, 2, 3, 4},
+//@E          {1, 2, 3, 4},
+//@E          {1, 2, 3, 4},
+//@E          {1, 2, 3, 4}
+//@E  };
+//@E
+//@E  write_matr(teste_file, in_matr);
+//@E
+//@X
+
+template <typename T> void write_matr(std::string &file_name, std::vector<std::vector<T>> &in_matr, char delim = ',') {
+  std::string currow;
+  std::fstream outfile(file_name, std::ios::out);
+  T cur_val;
+  std::string cur_str;
+  unsigned int i = 0;
+  unsigned int i2;
+  const unsigned int n = in_matr.size();
+  const unsigned int n2 = in_matr[0].size();
+  std::vector<T> cur_v = {};
+  cur_v.reserve(n2);
+  while (i < n) {
+    i2 = 0;
+    currow = "";
+    cur_v = in_matr[i];
+    while (i2 < n2 - 1) {
+      cur_val = cur_v[i2];
+      cur_str = std::to_string(cur_val);
+      currow += cur_str;
+      currow.push_back(delim);
+      i2 += 1;
+    };
+    cur_val = cur_v[i2];
+    cur_str = std::to_string(cur_val);
+    currow += cur_str;
+    outfile << currow + "\n";
+    i += 1;
+  };
+};
+
 //@L2 Sum elements for each rows and columns
 
 //@T sum_nxp
