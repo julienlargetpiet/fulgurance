@@ -589,7 +589,7 @@ std::string itos(unsigned int x) {
 
 //@L2 Can be num ?
 
-//@T can_be_num
+//@T can_be_nb
 //@U bool can_be_nb(std::string &x)
 //@X
 //@D Returns a boolean, 1 if the input <code>std::string</code> can be converted to a number (int, float...), 0 if not.
