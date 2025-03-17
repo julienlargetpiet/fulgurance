@@ -5934,6 +5934,56 @@ class Dataframe{
       return ncol;
     };
 
+    void name_dataframe(std::vector<int> &rows, std::vector<std::string> &name_cols, Dataframe &cur_obj) {
+      unsigned int i2;
+      unsigned int max_nrow = cur_obj.get_nrow();
+      unsigned int max_ncol = cur_obj.get_ncol();
+      std::vector<std::string> objcname = cur_obj.get_colname();
+      nrow = rows.size();
+      ncol = name_cols.size();
+      if (objcname.size() == 0) {
+        std::cout << "The dataframe has no column name\n";
+        reinitiate();
+        return;
+      };
+      std::vector<int> cols = {};
+      for (std::string valstr : objcname) {
+        for (i2 = 0; i2 < ncol; ++i2) {
+          if (valstr == objcname[i2]) {
+            cols.push_back(i2);
+            break;
+          };
+        };
+      };
+      std::vector<std::vector<std::string>> cur_tmp = cur_obj.get_tmp_val_refv();
+      std::vector<std::string> cur_v = {};
+      if (rows[0] == -1) {
+        rows.pop_back();
+        for (i2 = 0; i2 < max_nrow; ++i2) {
+          rows.push_back(i2);
+        };
+        nrow = max_nrow;
+      };
+      if (cols[0] == -1) {
+        cols.pop_back();
+        for (i2 = 0; i2 < max_ncol; ++i2) {
+          cols.push_back(i2);
+        };
+        ncol = max_ncol;
+      };
+      for (unsigned int i : cols) {
+        cur_v = {};
+        for (i2 = 0; i2 < nrow; ++i2) {
+          cur_v.push_back(cur_tmp[i][rows[i2]]);  
+        };
+        tmp_val_refv.push_back(cur_v);
+      };
+      type_classification();
+      name_v = cur_obj.get_colname();
+      name_v_row = cur_obj.get_rowname(); 
+      longest_determine();
+    };
+
     void idx_dataframe(std::vector<int> &rows, std::vector<int> &cols, Dataframe &cur_obj) {
       unsigned int i2;
       unsigned int max_nrow = cur_obj.get_nrow();
@@ -6038,14 +6088,48 @@ class Dataframe{
 //@X
 //@D Allow to copy a dataframe choosing rows and columns (by index) of the copied dataframe. 
 //@A rows : is the vector containing all the rows to copy (<code>{-1}</code>) for all
-//@A cols : is the vector of the index of the column to copy
+//@A cols : is the vector of the index of the columns to copy
 //@A cur_obj : is the dataframe that will contain all the rows and columns of the copied dataframe
 //@X
 //@E // after reading teste_dataframe.csv as obj1
 //@E Dataframe obj2;
-//@E std::vector<int> idx_rows = {-1};
-//@E std::vector<int> idx_cols2 = {1, 2, 3};
+//@E std::vector&lt;int&gt; idx_rows = {-1};
+//@E std::vector&lt;int&gt; idx_cols2 = {1, 2, 3};
 //@E obj2.idx_dataframe(idx_rows, idx_cols2, obj1);
+//@E 
+//@E obj2.display();
+//@E     col1 col2 col3
+//@E :0:  2    3    aa
+//@E :1:  7    8    bb
+//@E :2:  2    3    cc
+//@E :3:  7    8    uu
+//@E :4:  2    3    s4
+//@E :5:  7    8    s9
+//@E :6:  2    3    a4
+//@E :7:  7    8    m9
+//@E :8:  7    8    s9
+//@E :9:  2    3    a4
+//@E :10: 7    8    m9
+//@E :11: 7    8    m9
+//@E :12: 7    8    s9
+//@E :13: 2    3    a4
+//@E :14: 7    8    m9
+//@X
+
+//@T Dataframe.name_dataframe
+//@U void name_dataframe(std::vector&lt;int&gt; &rows, std::vector&lt;int&gt; &name_cols, Dataframe &cur_obj)
+//@X
+//@X
+//@D Allow to copy a dataframe choosing rows and columns (by name) of the copied dataframe. 
+//@A rows : is the vector containing all the rows to copy (<code>{-1}</code>) for all
+//@A cols : is the vector of the name of the columns to copy
+//@A cur_obj : is the dataframe that will contain all the rows and columns of the copied dataframe
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E Dataframe obj2;
+//@E std::vector&lt;int&gt; idx_rows = {-1};
+//@E std::vector&lt;std::string&gt; idx_cols2 = {"col2", "col3", "col3"};
+//@E obj2.name_dataframe(idx_rows, idx_cols2, obj1);
 //@E 
 //@E obj2.display();
 //@E     col1 col2 col3
