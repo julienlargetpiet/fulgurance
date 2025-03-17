@@ -51,7 +51,7 @@
 <a href="#regex_subin_all" style="margin-left:80px;">regex_subin_all</a>
 <br>
 <b><li style="margin-left:40px; color: #2c4786;">Can be num ?</li></b>
-<a href="#can_be_num" style="margin-left:60px;">can_be_num</a>
+<a href="#can_be_nb" style="margin-left:60px;">can_be_nb</a>
 <br>
 <a href="#can_be_flt_dbl" style="margin-left:60px;">can_be_flt_dbl</a>
 <br>
@@ -312,6 +312,55 @@
 <a href="#pct_to_idx" style="margin-left:60px;">pct_to_idx</a>
 <br>
 <a href="#diff_mean" style="margin-left:60px;">diff_mean</a>
+<br>
+<b><li style="margin-left:20px; color: #2c4786;">The Dataframe Object</li></b>
+<a href="#Dataframe" style="margin-left:40px;">Dataframe</a>
+<br>
+<a href="#Dataframe.readf" style="margin-left:40px;">Dataframe.readf</a>
+<br>
+<a href="#Dataframe.writef" style="margin-left:40px;">Dataframe.writef</a>
+<br>
+<a href="#Dataframe.display" style="margin-left:40px;">Dataframe.display</a>
+<br>
+<a href="#Dataframe.idx_dataframe" style="margin-left:40px;">Dataframe.idx_dataframe</a>
+<br>
+<a href="#Dataframe.name_dataframe" style="margin-left:40px;">Dataframe.name_dataframe</a>
+<br>
+<a href="#Dataframe.idx_colint" style="margin-left:40px;">Dataframe.idx_colint</a>
+<br>
+<a href="#Dataframe.name_colint" style="margin-left:40px;">Dataframe.name_colint</a>
+<br>
+<a href="#Dataframe.idx_colstr" style="margin-left:40px;">Dataframe.idx_colstr</a>
+<br>
+<a href="#Dataframe.name_colstr" style="margin-left:40px;">Dataframe.name_colstr</a>
+<br>
+<a href="#Dataframe.idx_colchr" style="margin-left:40px;">Dataframe.idx_colchr</a>
+<br>
+<a href="#Dataframe.name_colchr" style="margin-left:40px;">Dataframe.name_colchr</a>
+<br>
+<a href="#Dataframe.idx_matrint" style="margin-left:40px;">Dataframe.idx_matrint</a>
+<br>
+<a href="#Dataframe.name_matrint" style="margin-left:40px;">Dataframe.name_matrint</a>
+<br>
+<a href="#Dataframe.idx_matrstr" style="margin-left:40px;">Dataframe.idx_matrstr</a>
+<br>
+<a href="#Dataframe.name_matrstr" style="margin-left:40px;">Dataframe.name_matrstr</a>
+<br>
+<a href="#Dataframe.idx_matrchr" style="margin-left:40px;">Dataframe.idx_matrchr</a>
+<br>
+<a href="#Dataframe.name_matrchr" style="margin-left:40px;">Dataframe.name_matrchr</a>
+<br>
+<a href="#Dataframe.get_nrow" style="margin-left:40px;">Dataframe.get_nrow</a>
+<br>
+<a href="#Dataframe.get_ncol" style="margin-left:40px;">Dataframe.get_ncol</a>
+<br>
+<a href="#Dataframe.get_rowname" style="margin-left:40px;">Dataframe.get_rowname</a>
+<br>
+<a href="#Dataframe.get_colname" style="margin-left:40px;">Dataframe.get_colname</a>
+<br>
+<a href="#Dataframe.set_rowname" style="margin-left:40px;">Dataframe.set_rowname</a>
+<br>
+<a href="#Dataframe.set_colname" style="margin-left:40px;">Dataframe.set_colname</a>
 <br>
 <b><li style="margin-left:20px; color: #2c4786;">Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;</li></b>
 <b><li style="margin-left:40px; color: #2c4786;">Read matrix from file</li></b>
@@ -797,7 +846,7 @@ searched </th><th> is the regular expression</th></tr>
 <br>
 <hr class="hr">
 <h2 style="color:#2c4786;">Can be num ?</h2>
-<h2 id="can_be_num" style="test-align: left;">can_be_num</h2>
+<h2 id="can_be_nb" style="test-align: left;">can_be_nb</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>bool can_be_nb(std::string &x)</code></div>
 <h3>#Description</h3>
@@ -3314,12 +3363,531 @@ x </th><th> is a stl vector (int, float, double, bool)</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h1 style="color:#2c4786;">The Dataframe Object</h1>
+<h2 id="Dataframe" style="test-align: left;">Dataframe</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>Dataframe my_dataframe</code></div>
+<h3>#Description</h3>
+<p>Dataframe objects supporting reading csv, with custom separator, storing columns in differents type vectors, creating a new Dataframe object on top of an already existing one specifying the rows and columns to copy, the same goes for a matrix (as <code>std::vector<std::vector<T>></code>) and <code>std::vector<T></code>. See examples.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+See_below </th><th> See below</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>See below</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.readf" style="test-align: left;">Dataframe.readf</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'')</code></div>
+<h3>#Description</h3>
+<p>Import a csv as a Dataframe object.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+file_name </th><th> is the file_name of the csv to read</th></tr>
+<tr><th>delim </th><th> is the column delimiter</th></tr>
+<tr><th>header_name </th><th> is if the first row is in fact the column names</th></tr>
+<tr><th>str_context_begin </th><th> is the first symbol of a quote, (to not take in count a comma as a new column if it is in a quote for example)</th></tr>
+<tr><th>str_context_end </th><th> is the end symbol for a quote context</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>Dataframe obj1;</code>
+<br><code>std::string file_name = "teste_dataframe.csv";</code>
+<br><code>obj1.readf(file_name);</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.writef" style="test-align: left;">Dataframe.writef</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void writef(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_bgn = '\'', char str_context_end = '\'')</code></div>
+<h3>#Description</h3>
+<p>Write a dataframe object into a csv file.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+file_name </th><th> is the file name to write data into</th></tr>
+<tr><th>delim </th><th> is the column delimiter</th></tr>
+<tr><th>header_name </th><th> 1 to write the column names, 0 else</th></tr>
+<tr><th>str_context_begin </th><th> is the first symbol of a quote, (to not take in count a comma as a new column if it is in a quote for example)</th></tr>
+<tr><th>str_context_end </th><th> is the end symbol for a quote context</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::string out_file = "out.csv";</code>
+<br><code>obj1.writef(out_file);</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.display" style="test-align: left;">Dataframe.display</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void display();</code></div>
+<h3>#Description</h3>
+<p>Print the current dataframe.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+no </th><th> no</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>obj1.display();</code>
+<br><code>col1 col2 col3 col4 col5 col6</code>
+<br><code>:0:  1    2    3    aa   5    z</code>
+<br><code>:1:  6    7    8    bb   10   e</code>
+<br><code>:2:  1    2    3    cc   5    h</code>
+<br><code>:3:  6    7    8    uu   10   a</code>
+<br><code>:4:  1    2    3    s4   -5   q</code>
+<br><code>:5:  6    7    8    s9   10   p</code>
+<br><code>:6:  1    2    3    a4   5    j</code>
+<br><code>:7:  6    7    8    m9   10   i</code>
+<br><code>:8:  6    7    8    s9   10   p</code>
+<br><code>:9:  1    2    3    a4   5    j</code>
+<br><code>:10: 6    7    8    m9   10   i</code>
+<br><code>:11: 6    7    8    m9   10   i</code>
+<br><code>:12: 6    7    8    s9   10   p</code>
+<br><code>:13: 1    2    3    a4   5    j</code>
+<br><code>:14: 6    7    8    m9   10   i</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.idx_dataframe" style="test-align: left;">Dataframe.idx_dataframe</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void idx_dataframe(std::vector&lt;int&gt; &rows, std::vector&lt;int&gt; &cols, Dataframe &cur_obj)</code></div>
+<h3>#Description</h3>
+<p>Allow to copy a dataframe choosing rows and columns (by index) of the copied dataframe. </p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+rows </th><th> is the vector containing all the rows to copy (<code>{-1}</code>) for all</th></tr>
+<tr><th>cols </th><th> is the vector of the index of the columns to copy</th></tr>
+<tr><th>cur_obj </th><th> is the dataframe that will contain all the rows and columns of the copied dataframe</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>Dataframe obj2;</code>
+<br><code>std::vector&lt;int&gt; idx_rows = {-1};</code>
+<br><code>std::vector&lt;int&gt; idx_cols2 = {1, 2, 3};</code>
+<br><code>obj2.idx_dataframe(idx_rows, idx_cols2, obj1);</code>
+<br><code></code>
+<br><code>obj2.display();</code>
+<br><code>    col1 col2 col3</code>
+<br><code>:0:  2    3    aa</code>
+<br><code>:1:  7    8    bb</code>
+<br><code>:2:  2    3    cc</code>
+<br><code>:3:  7    8    uu</code>
+<br><code>:4:  2    3    s4</code>
+<br><code>:5:  7    8    s9</code>
+<br><code>:6:  2    3    a4</code>
+<br><code>:7:  7    8    m9</code>
+<br><code>:8:  7    8    s9</code>
+<br><code>:9:  2    3    a4</code>
+<br><code>:10: 7    8    m9</code>
+<br><code>:11: 7    8    m9</code>
+<br><code>:12: 7    8    s9</code>
+<br><code>:13: 2    3    a4</code>
+<br><code>:14: 7    8    m9</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.name_dataframe" style="test-align: left;">Dataframe.name_dataframe</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void name_dataframe(std::vector&lt;int&gt; &rows, std::vector&lt;int&gt; &name_cols, Dataframe &cur_obj)</code></div>
+<h3>#Description</h3>
+<p>Allow to copy a dataframe choosing rows and columns (by name) of the copied dataframe. </p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+rows </th><th> is the vector containing all the rows to copy (<code>{-1}</code>) for all</th></tr>
+<tr><th>cols </th><th> is the vector of the name of the columns to copy</th></tr>
+<tr><th>cur_obj </th><th> is the dataframe that will contain all the rows and columns of the copied dataframe</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>Dataframe obj2;</code>
+<br><code>std::vector&lt;int&gt; idx_rows = {-1};</code>
+<br><code>std::vector&lt;std::string&gt; idx_cols2 = {"col2", "col3", "col3"};</code>
+<br><code>obj2.name_dataframe(idx_rows, idx_cols2, obj1);</code>
+<br><code></code>
+<br><code>obj2.display();</code>
+<br><code>    col1 col2 col3</code>
+<br><code>:0:  2    3    aa</code>
+<br><code>:1:  7    8    bb</code>
+<br><code>:2:  2    3    cc</code>
+<br><code>:3:  7    8    uu</code>
+<br><code>:4:  2    3    s4</code>
+<br><code>:5:  7    8    s9</code>
+<br><code>:6:  2    3    a4</code>
+<br><code>:7:  7    8    m9</code>
+<br><code>:8:  7    8    s9</code>
+<br><code>:9:  2    3    a4</code>
+<br><code>:10: 7    8    m9</code>
+<br><code>:11: 7    8    m9</code>
+<br><code>:12: 7    8    s9</code>
+<br><code>:13: 2    3    a4</code>
+<br><code>:14: 7    8    m9</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.idx_colint" style="test-align: left;">Dataframe.idx_colint</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void idx_colint(std::vector&lt;int&gt; rows, unsigned int x, std::vector&lt;T&gt; &rtn_v)</code></div>
+<h3>#Description</h3>
+<p>Allow to copy a int, unsigned int , bool or double column as a vector&lt;T&gt;, by column index.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+rows </th><th> is a vector containing the row indices to copy (<code>{-1}</code>) for all</th></tr>
+<tr><th>x </th><th> is the index of the column to copy</th></tr>
+<tr><th>rtn_v </th><th> is the vector that will contain the column to copy</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;int&gt; currows = {1, 0, 1};</code>
+<br><code>std::vector&lt;unsigned int&gt; outv = {};</code>
+<br><code>obj1.idx_colint(currows, 2, outv);</code>
+<br><code>print_nvec(outv);</code>
+<br><code>:0: 8 3 8</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.name_colint" style="test-align: left;">Dataframe.name_colint</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void name_colint(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;T&gt; &rtn_v)</code></div>
+<h3>#Description</h3>
+<p>Allow to copy a int, unsigned int , bool or double column as a vector&lt;T&gt;, by column name.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+rows </th><th> is a vector containing the row indices to copy (<code>{-1}</code>) for all</th></tr>
+<tr><th>x </th><th> is the name of the column to copy</th></tr>
+<tr><th>rtn_v </th><th> is the vector that will contain the column to copy</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;int&gt; currows = {1, 0, 1};</code>
+<br><code>std::vector&lt;unsigned int&gt; outv = {};</code>
+<br><code>obj1.idx_colint(currows, "col2", outv);</code>
+<br><code>print_nvec(outv);</code>
+<br><code>:0: 8 3 8</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.idx_colstr" style="test-align: left;">Dataframe.idx_colstr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void idx_colstr(std::vector&lt;int&gt; rows, unsigned int x, std::vector&lt;std::string&gt; &rtn_v)</code></div>
+<h3>#Description</h3>
+<p>Allow to copy a std::string column as a vector&lt;std::string&gt;, by column index.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+rows </th><th> is a vector containing the row indices to copy (<code>{-1}</code>) for all</th></tr>
+<tr><th>x </th><th> is the index of the column to copy</th></tr>
+<tr><th>rtn_v </th><th> is the vector that will contain the column to copy</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;std::string&gt; outv2 = {};</code>
+<br><code>obj1.idx_colstr(currows, 3, outv2);</code>
+<br><code>print_svec(outv2);</code>
+<br><code>:0: bb aa bb</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.name_colstr" style="test-align: left;">Dataframe.name_colstr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void name_colint(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;T&gt; &rtn_v)</code></div>
+<h3>#Description</h3>
+<p>Allow to copy a int, unsigned int , bool or double column as a vector&lt;std::string&gt;, by column name.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+rows </th><th> is a vector containing the row indices to copy (<code>{-1}</code>) for all</th></tr>
+<tr><th>x </th><th> is the name of the column to copy</th></tr>
+<tr><th>rtn_v </th><th> is the vector that will contain the column to copy</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;std::string&gt; outv2 = {};</code>
+<br><code>obj1.name_colstr(currows, "col4", outv2);</code>
+<br><code>print_svec(outv2);</code>
+<br><code>:0: bb aa bb</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.idx_colchr" style="test-align: left;">Dataframe.idx_colchr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void idx_colchr(std::vector&lt;int&gt; rows, unsigned int x, std::vector&lt;char&gt; &rtn_v)</code></div>
+<h3>#Description</h3>
+<p>Allow to copy a char column as a vector&lt;char&gt;, by column index.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+rows </th><th> is a vector containing the row indices to copy (<code>{-1}</code>) for all</th></tr>
+<tr><th>x </th><th> is the index of the column to copy</th></tr>
+<tr><th>rtn_v </th><th> is the vector that will contain the column to copy</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;char&gt; outv3 = {};</code>
+<br><code>obj1.idx_colchr(currows, 5, outv3);</code>
+<br><code>for (char i : outv3) {</code>
+<br><code>  std::cout &lt;&lt; i &lt;&lt; " ";</code>
+<br><code>};</code>
+<br><code>std::cout &lt;&lt; "\n";</code>
+<br><code>e z e</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.name_colchr" style="test-align: left;">Dataframe.name_colchr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void name_colchr(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;char&gt; &rtn_v)</code></div>
+<h3>#Description</h3>
+<p>Allow to copy a char column as a vector&lt;char&gt;, by column name.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+rows </th><th> is a vector containing the row indices to copy (<code>{-1}</code>) for all</th></tr>
+<tr><th>x </th><th> is the name of the column to copy</th></tr>
+<tr><th>rtn_v </th><th> is the vector that will contain the column to copy</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;char&gt; outv3 = {};</code>
+<br><code>obj1.name_colchr(currows, "col6", outv3);</code>
+<br><code>for (char i : outv3) {</code>
+<br><code>  std::cout &lt;&lt; i &lt;&lt; " ";</code>
+<br><code>};</code>
+<br><code>std::cout &lt;&lt; "\n";</code>
+<br><code>e z e</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.idx_matrint" style="test-align: left;">Dataframe.idx_matrint</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void idx_matrint(std::vector&lt;int&gt; rows, std::vector&lt;unsigned int&gt; x_v, std::vector&lt;std::vector&lt;T&gt;&gt; &rtn_matr)</code></div>
+<h3>#Description</h3>
+<p>Allow to copy a set of columns that are same type (int, unsigned int, bool or double) as a <code> std::vector&lt;std::vector&lt;T&gt;&gt; </code>, by column index.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+rows </th><th> is a vector containing the row indices to copy (<code> {-1} </code>) for all</th></tr>
+<tr><th>x_v </th><th> is the vector containing the indices of the column to copy</th></tr>
+<tr><th>rtn_matr </th><th> is the matrix that will contain all the columns copyed</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;std::vector&lt;unsigned int&gt;&gt; out_matr = {};</code>
+<br><code>std::vector&lt;unsigned int&gt; idx_cols = {1, 0, 2, 2};</code>
+<br><code>obj1.idx_matrint(currows, idx_cols, out_matr);</code>
+<br><code>print_nmatr(out_matr);</code>
+<br><code>                  [0]               [1]               [2]               [3]</code>
+<br><code>:0:                 7                 6                 8                 8</code>
+<br><code>:1:                 2                 1                 3                 3</code>
+<br><code>:2:                 7                 6                 8                 8</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.name_matrint" style="test-align: left;">Dataframe.name_matrint</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void name_matrint(std::vector&lt;int&gt; rows, std::vector&lt;std::string&gt; x_v, std::vector&lt;std::vector&lt;T&gt;&gt; &rtn_matr)</code></div>
+<h3>#Description</h3>
+<p>Allow to copy a set of columns that are same type (int, unsigned int, bool or double) as a <code>std::vector&lt;std::vector&lt;T&gt;&gt;</code>, by column name.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+rows </th><th> is a vector containing the row indices to copy (<code>{-1}</code>) for all</th></tr>
+<tr><th>x_v </th><th> is the vector containing the names of the column to copy</th></tr>
+<tr><th>rtn_matr </th><th> is the matrix that will contain all the columns copyed</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;std::vector&lt;unsigned int&gt;&gt; out_matr = {};</code>
+<br><code>std::vector&lt;std::string&gt; idx_vec2 = {"col1", "col2", "col3"};</code>
+<br><code>obj1.name_matrint(currows, idx_vec2, out_matr);</code>
+<br><code>print_nmatr(out_matr);</code>
+<br><code>                  [0]               [1]               [2]</code>
+<br><code>:0:                 6                 7                 8</code>
+<br><code>:1:                 1                 2                 3</code>
+<br><code>:2:                 6                 7                 8</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.idx_matrstr" style="test-align: left;">Dataframe.idx_matrstr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void idx_matrstr(std::vector&lt;int&gt; rows, std::vector&lt;unsigned int&gt; x_v, std::vector&lt;std::vector&lt;std::string&gt;&gt; &rtn_matr)</code></div>
+<h3>#Description</h3>
+<p>Allow to copy a set of columns that are <code>std::string</code> type as a <code>std::vector&lt;std::vector&lt;std::string&gt;&gt;</code>, by column index.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+rows </th><th> is a vector containing the row indices to copy (<code>{-1}</code>) for all</th></tr>
+<tr><th>x_v </th><th> is the vector containing the indices of the column to copy</th></tr>
+<tr><th>rtn_matr </th><th> is the matrix that will contain all the columns copyed</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;std::vector&lt;std::string&gt;&gt; out_matr2 = {};</code>
+<br><code>std::vector&lt;unsigned int&gt; idx_cols = {3};</code>
+<br><code>obj1.idx_matrstr(currows, idx_cols, out_matr2);</code>
+<br><code>print_smatr(out_matr2);</code>
+<br><code>                    [0]</code>
+<br><code>:0:                   bb</code>
+<br><code>:1:                   aa</code>
+<br><code>:2:                   bb</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.name_matrstr" style="test-align: left;">Dataframe.name_matrstr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void name_matrstr(std::vector&lt;int&gt; rows, std::vector&lt;std::string&gt; x_v, std::vector&lt;std::vector&lt;std::string&gt;&gt; &rtn_matr)</code></div>
+<h3>#Description</h3>
+<p>Allow to copy a set of columns that are <code>std::string</code> type as a <code>std::vector&lt;std::vector&lt;std::string&gt;&gt;</code>, by column name.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+rows </th><th> is a vector containing the row indices to copy (<code>{-1}</code>) for all</th></tr>
+<tr><th>x_v </th><th> is the vector containing the names of the column to copy</th></tr>
+<tr><th>rtn_matr </th><th> is the matrix that will contain all the columns copyed</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;std::vector&lt;std::string&gt;&gt; out_matr2 = {};</code>
+<br><code>std::vector&lt;std::string&gt; idx_vec2 = {"col4"};</code>
+<br><code>obj1.name_matrstr(currows, idx_vec2, out_matr2);</code>
+<br><code>print_smatr(out_matr2);</code>
+<br><code>                    [0]</code>
+<br><code>:0:                   bb</code>
+<br><code>:1:                   aa</code>
+<br><code>:2:                   bb</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.idx_matrchr" style="test-align: left;">Dataframe.idx_matrchr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void idx_matrchr(std::vector&lt;int&gt; rows, std::vector&lt;unsigned int&gt; x_v, std::vector&lt;std::vector&lt;char&gt;&gt; &rtn_matr)</code></div>
+<h3>#Description</h3>
+<p>Allow to copy a set of columns that are <code>char</code> type as a <code>std::vector&lt;std::vector&lt;char&gt;&gt;</code>, by column index.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+rows </th><th> is a vector containing the row indices to copy (<code>{-1}</code>) for all</th></tr>
+<tr><th>x_v </th><th> is the vector containing the indices of the column to copy</th></tr>
+<tr><th>rtn_matr </th><th> is the matrix that will contain all the columns copyed</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;std::vector&lt;char&gt;&gt; out_matr3 = {};</code>
+<br><code>std::vector&lt;unsigned int&gt; idx_cols = {5};</code>
+<br><code>obj1.idx_matrchr(currows, idx_cols, out_matr3);</code>
+<br><code>print_smatr(out_matr3);</code>
+<br><code>                    [0]</code>
+<br><code>:0:                    e</code>
+<br><code>:1:                    z</code>
+<br><code>:2:                    e</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.name_matrchr" style="test-align: left;">Dataframe.name_matrchr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void name_matrchr(std::vector&lt;int&gt; rows, std::vector&lt;std::string&gt; x_v, std::vector&lt;std::vector&lt;char&gt;&gt; &rtn_matr)</code></div>
+<h3>#Description</h3>
+<p>Allow to copy a set of columns that are <code>char</code> type as a <code>std::vector&lt;std::vector&lt;char&gt;&gt;</code>, by column name.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+rows </th><th> is a vector containing the row indices to copy (<code>{-1}</code>) for all</th></tr>
+<tr><th>x_v </th><th> is the vector containing the names of the column to copy</th></tr>
+<tr><th>rtn_matr </th><th> is the matrix that will contain all the columns copyed</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;char&gt; out_matr3 = {};</code>
+<br><code>std::vector&lt;std::string&gt; idx_vec2 = {"col6"};</code>
+<br><code>obj1.name_matrchr(currows, idx_vec2, out_matr3);</code>
+<br><code>print_smatr(out_matr3);</code>
+<br><code>                    [0]</code>
+<br><code>:0:                    e</code>
+<br><code>:1:                    z</code>
+<br><code>:2:                    e</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.get_nrow" style="test-align: left;">Dataframe.get_nrow</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>unsigned int get_nrow();</code></div>
+<h3>#Description</h3>
+<p>Returns the number of rows for the associated dataframe.</p>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>unsigned int nrow = obj1.get_nrow();</code>
+<br><code>15</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.get_ncol" style="test-align: left;">Dataframe.get_ncol</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>unsigned int get_ncol();</code></div>
+<p>Returns the number of columns for the associated dataframe.</p>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>unsigned int ncol = obj1.get_ncol();</code>
+<br><code>6</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.get_rowname" style="test-align: left;">Dataframe.get_rowname</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;std::string&gt; get_rowname();</code></div>
+<p>Returns the rowname of the associated dataframe.</p>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;std::string&gt; row_names = obj1.get_rowname();</code>
+<br><code>nothing becuase obj1 has no rownames</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.get_colname" style="test-align: left;">Dataframe.get_colname</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;std::string&gt; get_colname();</code></div>
+<p>Returns the colname of the associated dataframe.</p>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;std::string&gt; col_names = obj1.get_colname();</code>
+<br><code>col1 col2 col3 col4 col5 col6</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.set_rowname" style="test-align: left;">Dataframe.set_rowname</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void set_rowname(std::vector&lt;std::string&gt; &x);</code></div>
+<p>Set rowname to the associated dataframe.</p>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;std::string&gt; row_names = {"n1", "n2", "n3"..."n15"};</code>
+<br><code>obj1.set_rowname(row_names);</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.set_colname" style="test-align: left;">Dataframe.set_colname</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void set_colname(std::vector&lt;std::string&gt; &x);</code></div>
+<p>Set colname to the associated dataframe.</p>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;std::string&gt; col_names = {"col1", "col2", "col3", "col4", </code>
+<br><code>"col5", "col6"};</code>
+<br><code>obj1.set_colname();</code>
+</div>
+<br>
+<hr class="hr">
 <h1 style="color:#2c4786;">Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;</h1>
 <h2 style="color:#2c4786;">Read matrix from file</h2>
 <h2 id="read_matr" style="test-align: left;">read_matr</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename T&gt; void read_matr(std::string &file_name, std::vector&lt;std::vector&lt;T&gt;&gt; &out_matr, char delim = ',')</code></div>
-<h3>#Description</h3>
 <p>Returns a matrix stored in a file. </p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
@@ -3509,7 +4077,7 @@ x </th><th> is a 2D stl vector (float, int, double...)</th></tr>
 <br>
 <h3>#Example(s)</h3>
 <div class = "Div"><code></code>
-<br><code>std::vector<std::vector<int>> out_matr = {</code>
+<br><code>std::vector&lt;std::vector&lt;int&gt;&gt; out_matr = {</code>
 <br><code>    {1, 2, 3, 4},</code>
 <br><code>    {1, 2, 3, 4},</code>
 <br><code>    {1, 2, 333, 4},</code>
@@ -3526,7 +4094,7 @@ x </th><th> is a 2D stl vector (float, int, double...)</th></tr>
 <br><code></code>
 <br>
 <img style="margin-left: 20px;" height="220" width="360" src="print_nmatr1.jpg"><br><br><code></code>
-<br><code>std::vector<std::vector<double>> out_matr2 = {</code>
+<br><code>std::vector&lt;std::vector&lt;double&gt;&gt; out_matr2 = {</code>
 <br><code>  {1, 2, 3, 4},</code>
 <br><code>  {1, 2, 3, 4},</code>
 <br><code>  {1, 2, 333.23, 4},</code>
@@ -3556,7 +4124,7 @@ x </th><th> is a 2D stl vector (std</th><th></th><th>string, char)</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector<std::vector<std::string>> out_matr3 = {</code>
+<div class = "Div"><code>std::vector&lt;std::vector&lt;std::string&gt;&gt; out_matr3 = {</code>
 <br><code>   {"1", "2", "3", "4"},</code>
 <br><code>   {"1", "2", "3", "4"},</code>
 <br><code>   {"1", "2", "333", "44224441111111"},</code>
@@ -3573,7 +4141,7 @@ x </th><th> is a 2D stl vector (std</th><th></th><th>string, char)</th></tr>
 <br><code></code>
 <br>
 <img style="margin-left: 20px;" height="220" width="360" src="print_smatr1.jpg"><br><br><code></code>
-<br><code>std::vector<std::vector<char>> out_matr4 = {</code>
+<br><code>std::vector&lt;std::vector&lt;char&gt;&gt; out_matr4 = {</code>
 <br><code>   {'1', '2', '3', '4'},</code>
 <br><code>   {'1', '2', '3', '4'},</code>
 <br><code>   {'1', '2', '3', '4'},</code>
