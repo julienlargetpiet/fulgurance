@@ -6032,7 +6032,247 @@ class Dataframe{
 //@E :14: 6    7    8    m9   10   i
 //@X
 
+//@T Dataframe.idx_dataframe
+//@U void idx_dataframe(std::vector&lt;int&gt; &rows, std::vector&lt;int&gt; &cols, Dataframe &cur_obj)
+//@X
+//@X
+//@D Allow to copy a dataframe choosing rows and columns (by index) of the copied dataframe. 
+//@A rows : is the vector containing all the rows to copy (<code>{-1}</code>) for all
+//@A cols : is the vector of the index of the column to copy
+//@A cur_obj : is the dataframe that will contain all the rows and columns of the copied dataframe
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E Dataframe obj2;
+//@E std::vector<int> idx_rows = {-1};
+//@E std::vector<int> idx_cols2 = {1, 2, 3};
+//@E obj2.idx_dataframe(idx_rows, idx_cols2, obj1);
+//@E 
+//@E obj2.display();
+//@E     col1 col2 col3
+//@E :0:  2    3    aa
+//@E :1:  7    8    bb
+//@E :2:  2    3    cc
+//@E :3:  7    8    uu
+//@E :4:  2    3    s4
+//@E :5:  7    8    s9
+//@E :6:  2    3    a4
+//@E :7:  7    8    m9
+//@E :8:  7    8    s9
+//@E :9:  2    3    a4
+//@E :10: 7    8    m9
+//@E :11: 7    8    m9
+//@E :12: 7    8    s9
+//@E :13: 2    3    a4
+//@E :14: 7    8    m9
+//@X
 
+//@T Dataframe.idx_colint
+//@U template &lt;typename T&gt; void idx_colint(std::vector&lt;int&gt; rows, unsigned int x, std::vector&lt;T&gt; &rtn_v)
+//@X
+//@D Allow to copy a int, unsigned int , bool or double column as a vector&lt;T&gt;, by column index.
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@A x : is the index of the column to copy
+//@A rtn_v : is the vector that will contain the column to copy
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;int&gt; currows = {1, 0, 1};
+//@E std::vector&lt;unsigned int&gt; outv = {};
+//@E obj1.idx_colint(currows, 2, outv);
+//@E print_nvec(outv);
+//@E :0: 8 3 8
+//@X
+
+//@T Dataframe.name_colint
+//@U template &lt;typename T&gt; void name_colint(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;T&gt; &rtn_v)
+//@X
+//@D Allow to copy a int, unsigned int , bool or double column as a vector&lt;T&gt;, by column name.
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@A x : is the name of the column to copy
+//@A rtn_v : is the vector that will contain the column to copy
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;int&gt; currows = {1, 0, 1};
+//@E std::vector&lt;unsigned int&gt; outv = {};
+//@E obj1.idx_colint(currows, "col2", outv);
+//@E print_nvec(outv);
+//@E :0: 8 3 8
+//@X
+
+//@T Dataframe.idx_colstr
+//@U void idx_colstr(std::vector&lt;int&gt; rows, unsigned int x, std::vector&lt;std::string&gt; &rtn_v)
+//@X
+//@D Allow to copy a std::string column as a vector&lt;std::string&gt;, by column index.
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@A x : is the index of the column to copy
+//@A rtn_v : is the vector that will contain the column to copy
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;std::string&gt; outv2 = {};
+//@E obj1.idx_colstr(currows, 3, outv2);
+//@E print_svec(outv2);
+//@E :0: bb aa bb
+//@X
+
+//@T Dataframe.name_colstr
+//@U template &lt;typename T&gt; void name_colint(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;T&gt; &rtn_v)
+//@X
+//@D Allow to copy a int, unsigned int , bool or double column as a vector&lt;std::string&gt;, by column name.
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@A x : is the name of the column to copy
+//@A rtn_v : is the vector that will contain the column to copy
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;std::string&gt; outv2 = {};
+//@E obj1.name_colstr(currows, "col4", outv2);
+//@E print_svec(outv2);
+//@E :0: bb aa bb
+//@X
+
+//@T Dataframe.idx_colchr
+//@U void idx_colchr(std::vector&lt;int&gt; rows, unsigned int x, std::vector&lt;char&gt; &rtn_v)
+//@X
+//@D Allow to copy a char column as a vector&lt;char&gt;, by column index.
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@A x : is the index of the column to copy
+//@A rtn_v : is the vector that will contain the column to copy
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;char&gt; outv3 = {};
+//@E obj1.idx_colchr(currows, 5, outv3);
+//@E for (char i : outv3) {
+//@E   std::cout &lt;&lt; i &lt;&lt; " ";
+//@E };
+//@E std::cout &lt;&lt; "\n";
+//@E e z e
+//@X
+
+//@T Dataframe.name_colchr
+//@U void name_colchr(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;char&gt; &rtn_v)
+//@X
+//@D Allow to copy a char column as a vector&lt;char&gt;, by column name.
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@A x : is the name of the column to copy
+//@A rtn_v : is the vector that will contain the column to copy
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;char&gt; outv3 = {};
+//@E obj1.name_colchr(currows, "col6", outv3);
+//@E for (char i : outv3) {
+//@E   std::cout &lt;&lt; i &lt;&lt; " ";
+//@E };
+//@E std::cout &lt;&lt; "\n";
+//@E e z e
+//@X
+
+//@T Dataframe.idx_matrint
+//@U template &lt;typename T&gt; void idx_matrint(std::vector&lt;int&gt; rows, std::vector&lt;unsigned int&gt; x_v, std::vector&lt;std::vector&lt;T&gt;&gt; &rtn_matr)
+//@X
+//@D Allow to copy a set of columns that are same type (int, unsigned int, bool or double) as a <code>std::vector<std::vector<T>></code>, by column index.
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@A x_v : is the vector containing the indices of the column to copy
+//@A rtn_matr : is the matrix that will contain all the columns copyed
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;std::vector<unsigned int&gt;&gt; out_matr = {};
+//@E std::vector&lt;unsigned int&gt; idx_cols = {1, 0, 2, 2};
+//@E obj1.idx_matrint(currows, idx_cols, out_matr);
+//@E print_nmatr(out_matr);
+//@E                   [0]               [1]               [2]               [3]
+//@E :0:                 7                 6                 8                 8
+//@E :1:                 2                 1                 3                 3
+//@E :2:                 7                 6                 8                 8
+//@X
+
+//@T Dataframe.name_matrint
+//@U template &lt;typename T&gt; void name_matrint(std::vector&lt;int&gt; rows, std::vector&lt;std::string&gt; x_v, std::vector&lt;std::vector&lt;T&gt;&gt; &rtn_matr)
+//@X
+//@D Allow to copy a set of columns that are same type (int, unsigned int, bool or double) as a <code>std::vector<std::vector<T>></code>, by column name.
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@A x_v : is the vector containing the names of the column to copy
+//@A rtn_matr : is the matrix that will contain all the columns copyed
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;std::vector&lt;unsigned int&gt;&gt; out_matr = {};
+//@E std::vector&lt;std::string&gt; idx_vec2 = {"col1", "col2", "col3"};
+//@E obj1.name_matrint(currows, idx_vec2, out_matr);
+//@E print_nmatr(out_matr);
+//@E                   [0]               [1]               [2]
+//@E :0:                 6                 7                 8
+//@E :1:                 1                 2                 3
+//@E :2:                 6                 7                 8
+//@X
+
+//@T Dataframe.idx_matrstr
+//@U void idx_matrstr(std::vector&lt;int&gt; rows, std::vector&lt;unsigned int&gt; x_v, std::vector&lt;std::vector&lt;std::string&gt;&gt; &rtn_matr)
+//@X
+//@D Allow to copy a set of columns that are <code>std::string</code> type as a <code>std::vector<std::vector<std::string>></code>, by column index.
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@A x_v : is the vector containing the indices of the column to copy
+//@A rtn_matr : is the matrix that will contain all the columns copyed
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;std::vector&lt;std::string&gt;&gt; out_matr2 = {};
+//@E std::vector&lt;unsigned int&gt; idx_cols = {3};
+//@E obj1.idx_matrstr(currows, idx_cols, out_matr2);
+//@E print_smatr(out_matr2);
+//@E                     [0]
+//@E :0:                   bb
+//@E :1:                   aa
+//@E :2:                   bb
+//@X
+
+//@T Dataframe.name_matrstr
+//@U void name_matrstr(std::vector&lt;int&gt; rows, std::vector&lt;std::string&gt; x_v, std::vector&lt;std::vector&lt;std::string&gt;&gt; &rtn_matr)
+//@X
+//@D Allow to copy a set of columns that are <code>std::string</code> type as a <code>std::vector<std::vector<std::string>></code>, by column name.
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@A x_v : is the vector containing the names of the column to copy
+//@A rtn_matr : is the matrix that will contain all the columns copyed
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;std::vector&lt;std::string&gt;&gt; out_matr2 = {};
+//@E std::vector&lt;std::string&gt; idx_vec2 = {"col4"};
+//@E obj1.name_matrstr(currows, idx_vec2, out_matr2);
+//@E print_smatr(out_matr2);
+//@E                     [0]
+//@E :0:                   bb
+//@E :1:                   aa
+//@E :2:                   bb
+//@X
+
+//@T Dataframe.idx_matrchr
+//@U void idx_matrchr(std::vector&lt;int&gt; rows, std::vector&lt;unsigned int&gt; x_v, std::vector&lt;std::vector&lt;char&gt;&gt; &rtn_matr)
+//@X
+//@D Allow to copy a set of columns that are <code>char</code> type as a <code>std::vector<std::vector<char>></code>, by column index.
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@A x_v : is the vector containing the indices of the column to copy
+//@A rtn_matr : is the matrix that will contain all the columns copyed
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;std::vector&lt;char&gt;&gt; out_matr3 = {};
+//@E std::vector&lt;unsigned int&gt; idx_cols = {5};
+//@E obj1.idx_matrchr(currows, idx_cols, out_matr3);
+//@E print_smatr(out_matr3);
+//@X
+
+//@T Dataframe.name_matrchr
+//@U void name_matrchr(std::vector&lt;int&gt; rows, std::vector&lt;std::string&gt; x_v, std::vector&lt;std::vector&lt;char&gt;&gt; &rtn_matr)
+//@X
+//@D Allow to copy a set of columns that are <code>char</code> type as a <code>std::vector<std::vector<char>></code>, by column name.
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@A x_v : is the vector containing the names of the column to copy
+//@A rtn_matr : is the matrix that will contain all the columns copyed
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;char&gt; out_matr3 = {};
+//@E std::vector&lt;std::string&gt; idx_vec2 = {"col6"};
+//@E obj1.name_matrchr(currows, idx_vec2, out_matr3);
+//@E print_smatr(out_matr3);
+//@E                     [0]
+//@E :0:                    e
+//@E :1:                    z
+//@E :2:                    e
+//@X
 
 //@L1 Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;
 
