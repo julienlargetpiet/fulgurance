@@ -5855,6 +5855,73 @@ class Dataframe{
       };
     };
 
+    void name_matrchr(std::vector<int> rows, std::vector<std::string> x_v, std::vector<std::vector<char>> &rtn_matr) {
+      std::vector<char> rtn_v;
+      unsigned int i;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      unsigned int x;
+      if (name_v.size() == 0) {
+        std::cout << "There are no column names\n";
+        reinitiate();
+        return;
+      };
+      for (std::string cur_name : x_v) {
+        x = 0;
+        while (cur_name != name_v[x]) {
+          x += 1;
+        };
+        rtn_v = {};
+        rtn_v.reserve(nrow);
+        i2 = 0;
+        while (i2 < matr_idx[1].size()) {
+          if (x == matr_idx[1][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+        i2 = nrow * i2;
+        for (i = 0; i < rows.size(); ++i) {
+          rtn_v.push_back(chr_v[i2 + rows[i]]);
+        }; 
+        rtn_matr.push_back(rtn_v);
+      };
+    };
+
+    void idx_matrchr(std::vector<int> rows, std::vector<unsigned int> x_v, std::vector<std::vector<char>> &rtn_matr) {
+      std::vector<char> rtn_v;
+      unsigned int i;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      for (unsigned int x : x_v) {
+        rtn_v = {};
+        rtn_v.reserve(nrow);
+        i = 2;
+        i2 = 0;
+        while (i2 < matr_idx[1].size()) {
+          if (x == matr_idx[1][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+        i2 = nrow * i2;
+        for (i = 0; i < rows.size(); ++i) {
+          rtn_v.push_back(chr_v[i2 + rows[i]]);
+        };
+        rtn_matr.push_back(rtn_v);
+      };
+    };
+
     std::vector<std::vector<std::string>> get_tmp_val_refv() {
       return tmp_val_refv;
     };
