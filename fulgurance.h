@@ -5364,6 +5364,9 @@ class Dataframe{
       unsigned int i3;
       unsigned int i4;
       unsigned int max_nblngth = std::to_string(nrow).length();
+      for (i2 = 0; i2 < max_nblngth + 2; ++i2) {
+        std::cout << " ";
+      };
       std::string cur_str;
       bool is_found;
       if (name_v.size() > 0) {
@@ -5961,6 +5964,8 @@ class Dataframe{
 //@E :13: 1    2    3    a4   5    j
 //@E :14: 6    7    8    m9   10   i
 //@X
+
+
 
 //@L1 Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;
 
