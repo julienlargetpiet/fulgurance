@@ -6019,12 +6019,75 @@ class Dataframe{
       longest_determine();
     };
 
+    void writef(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_bgn = '\'', char str_context_end = '\'') {
+      unsigned int i2;
+      unsigned int i3;
+      std::fstream outfile(file_name, std::ios::out);
+      std::string cur_str;
+      if (header_name) {
+        i2 = 0;
+        while (i2 + 1 < ncol) {
+          outfile << name_v[i2];
+          outfile << delim;
+          i2 += 1;
+        };
+        outfile << name_v[i2];
+        outfile << "\n";
+      };
+      for (unsigned int i = 0; i < nrow; ++i) {
+        i2 = 0;
+        while (i2 + 1 < ncol) {
+          cur_str = tmp_val_refv[i2][i];
+          if (type_refv[i2] == typeid(std::string).name()) {
+            for (i3 = 0; i3 < cur_str.length(); ++i3) {
+              if (cur_str[i3] == delim) {
+                cur_str.insert(0, 1, str_context_bgn);
+                cur_str.push_back(str_context_end);
+                break;
+              };
+            };
+          } else if (cur_str[0] == delim) {
+            cur_str.insert(0, 1, str_context_bgn);
+            cur_str.push_back(str_context_end);
+          };
+          outfile << cur_str;
+          i2 += 1;
+          outfile << delim;
+        };
+        cur_str = tmp_val_refv[i2][i];
+        if (type_refv[i2] == typeid(std::string).name()) {
+          for (i3 = 0; i3 < cur_str.length(); ++i3) {
+            if (cur_str[i3] == delim) {
+              cur_str.insert(0, 1, str_context_bgn);
+              cur_str.push_back(str_context_end);
+              break;
+            };
+          };
+        } else if (cur_str[0] == delim) {
+          cur_str.insert(0, 1, str_context_bgn);
+          cur_str.push_back(str_context_end);
+        };
+        outfile << cur_str;
+        outfile << "\n";
+      };
+    };
+
     void set_colname(std::vector<std::string> &x) {
-      name_v = x;
+      if (x.size() != ncol) {
+        std::cout << "the number of columns of the dataframe does not correspond to the size of the input column name vector";
+        return;
+      } else {
+        name_v = x;
+      };
     };
 
     void set_rowname(std::vector<std::string> &x) {
-      name_v_row = x;
+      if (x.size() != nrow) {
+        std::cout << "the number of columns of the dataframe does not correspond to the size of the input column name vector";
+        return;
+      } else {
+        name_v_row = x;
+      };
     };
 
     std::vector<std::string> get_colname() {
@@ -6048,12 +6111,27 @@ class Dataframe{
 //@A file_name : is the file_name of the csv to read
 //@A delim : is the column delimiter
 //@A header_name : is if the first row is in fact the column names
-//@A str_context_begin is the first symbol of a quote, (to not take in count a comma as a new column if it is in a quote for example)
+//@A str_context_begin : is the first symbol of a quote, (to not take in count a comma as a new column if it is in a quote for example)
 //@A str_context_end : is the end symbol for a quote context
 //@X
 //@E Dataframe obj1;
 //@E std::string file_name = "teste_dataframe.csv";
 //@E obj1.readf(file_name);
+//@X
+
+//@T Dataframe.writef
+//@U void writef(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_bgn = '\'', char str_context_end = '\'')
+//@X
+//@D Write a dataframe object into a csv file.
+//@A file_name : is the file name to write data into
+//@A delim : is the column delimiter
+//@A header_name : 1 to write the column names, 0 else
+//@A str_context_begin : is the first symbol of a quote, (to not take in count a comma as a new column if it is in a quote for example)
+//@A str_context_end : is the end symbol for a quote context
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::string out_file = "out.csv";
+//@E obj1.writef(out_file);
 //@X
 
 //@T Dataframe.display
@@ -6062,7 +6140,7 @@ class Dataframe{
 //@D Print the current dataframe.
 //@A no : no
 //@X
-//@E // after reading teste_dataframe.csv
+//@E // after reading teste_dataframe.csv as obj1
 //@E obj1.display();
 //@E col1 col2 col3 col4 col5 col6
 //@E :0:  1    2    3    aa   5    z
@@ -6084,7 +6162,6 @@ class Dataframe{
 
 //@T Dataframe.idx_dataframe
 //@U void idx_dataframe(std::vector&lt;int&gt; &rows, std::vector&lt;int&gt; &cols, Dataframe &cur_obj)
-//@X
 //@X
 //@D Allow to copy a dataframe choosing rows and columns (by index) of the copied dataframe. 
 //@A rows : is the vector containing all the rows to copy (<code>{-1}</code>) for all
@@ -6118,7 +6195,6 @@ class Dataframe{
 
 //@T Dataframe.name_dataframe
 //@U void name_dataframe(std::vector&lt;int&gt; &rows, std::vector&lt;int&gt; &name_cols, Dataframe &cur_obj)
-//@X
 //@X
 //@D Allow to copy a dataframe choosing rows and columns (by name) of the copied dataframe. 
 //@A rows : is the vector containing all the rows to copy (<code>{-1}</code>) for all
@@ -6251,13 +6327,13 @@ class Dataframe{
 //@T Dataframe.idx_matrint
 //@U template &lt;typename T&gt; void idx_matrint(std::vector&lt;int&gt; rows, std::vector&lt;unsigned int&gt; x_v, std::vector&lt;std::vector&lt;T&gt;&gt; &rtn_matr)
 //@X
-//@D Allow to copy a set of columns that are same type (int, unsigned int, bool or double) as a <code>std::vector<std::vector<T>></code>, by column index.
-//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@D Allow to copy a set of columns that are same type (int, unsigned int, bool or double) as a <code> std::vector&lt;std::vector&lt;T&gt;&gt; </code>, by column index.
+//@A rows : is a vector containing the row indices to copy (<code> {-1} </code>) for all
 //@A x_v : is the vector containing the indices of the column to copy
 //@A rtn_matr : is the matrix that will contain all the columns copyed
 //@X
 //@E // after reading teste_dataframe.csv as obj1
-//@E std::vector&lt;std::vector<unsigned int&gt;&gt; out_matr = {};
+//@E std::vector&lt;std::vector&lt;unsigned int&gt;&gt; out_matr = {};
 //@E std::vector&lt;unsigned int&gt; idx_cols = {1, 0, 2, 2};
 //@E obj1.idx_matrint(currows, idx_cols, out_matr);
 //@E print_nmatr(out_matr);
@@ -6270,7 +6346,7 @@ class Dataframe{
 //@T Dataframe.name_matrint
 //@U template &lt;typename T&gt; void name_matrint(std::vector&lt;int&gt; rows, std::vector&lt;std::string&gt; x_v, std::vector&lt;std::vector&lt;T&gt;&gt; &rtn_matr)
 //@X
-//@D Allow to copy a set of columns that are same type (int, unsigned int, bool or double) as a <code>std::vector<std::vector<T>></code>, by column name.
+//@D Allow to copy a set of columns that are same type (int, unsigned int, bool or double) as a <code>std::vector&lt;std::vector&lt;T&gt;&gt;</code>, by column name.
 //@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
 //@A x_v : is the vector containing the names of the column to copy
 //@A rtn_matr : is the matrix that will contain all the columns copyed
@@ -6289,7 +6365,7 @@ class Dataframe{
 //@T Dataframe.idx_matrstr
 //@U void idx_matrstr(std::vector&lt;int&gt; rows, std::vector&lt;unsigned int&gt; x_v, std::vector&lt;std::vector&lt;std::string&gt;&gt; &rtn_matr)
 //@X
-//@D Allow to copy a set of columns that are <code>std::string</code> type as a <code>std::vector<std::vector<std::string>></code>, by column index.
+//@D Allow to copy a set of columns that are <code>std::string</code> type as a <code>std::vector&lt;std::vector&lt;std::string&gt;&gt;</code>, by column index.
 //@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
 //@A x_v : is the vector containing the indices of the column to copy
 //@A rtn_matr : is the matrix that will contain all the columns copyed
@@ -6308,7 +6384,7 @@ class Dataframe{
 //@T Dataframe.name_matrstr
 //@U void name_matrstr(std::vector&lt;int&gt; rows, std::vector&lt;std::string&gt; x_v, std::vector&lt;std::vector&lt;std::string&gt;&gt; &rtn_matr)
 //@X
-//@D Allow to copy a set of columns that are <code>std::string</code> type as a <code>std::vector<std::vector<std::string>></code>, by column name.
+//@D Allow to copy a set of columns that are <code>std::string</code> type as a <code>std::vector&lt;std::vector&lt;std::string&gt;&gt;</code>, by column name.
 //@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
 //@A x_v : is the vector containing the names of the column to copy
 //@A rtn_matr : is the matrix that will contain all the columns copyed
@@ -6327,7 +6403,7 @@ class Dataframe{
 //@T Dataframe.idx_matrchr
 //@U void idx_matrchr(std::vector&lt;int&gt; rows, std::vector&lt;unsigned int&gt; x_v, std::vector&lt;std::vector&lt;char&gt;&gt; &rtn_matr)
 //@X
-//@D Allow to copy a set of columns that are <code>char</code> type as a <code>std::vector<std::vector<char>></code>, by column index.
+//@D Allow to copy a set of columns that are <code>char</code> type as a <code>std::vector&lt;std::vector&lt;char&gt;&gt;</code>, by column index.
 //@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
 //@A x_v : is the vector containing the indices of the column to copy
 //@A rtn_matr : is the matrix that will contain all the columns copyed
@@ -6337,12 +6413,16 @@ class Dataframe{
 //@E std::vector&lt;unsigned int&gt; idx_cols = {5};
 //@E obj1.idx_matrchr(currows, idx_cols, out_matr3);
 //@E print_smatr(out_matr3);
+//@E                     [0]
+//@E :0:                    e
+//@E :1:                    z
+//@E :2:                    e
 //@X
 
 //@T Dataframe.name_matrchr
 //@U void name_matrchr(std::vector&lt;int&gt; rows, std::vector&lt;std::string&gt; x_v, std::vector&lt;std::vector&lt;char&gt;&gt; &rtn_matr)
 //@X
-//@D Allow to copy a set of columns that are <code>char</code> type as a <code>std::vector<std::vector<char>></code>, by column name.
+//@D Allow to copy a set of columns that are <code>char</code> type as a <code>std::vector&lt;std::vector&lt;char&gt;&gt;</code>, by column name.
 //@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
 //@A x_v : is the vector containing the names of the column to copy
 //@A rtn_matr : is the matrix that will contain all the columns copyed
@@ -6356,6 +6436,61 @@ class Dataframe{
 //@E :0:                    e
 //@E :1:                    z
 //@E :2:                    e
+//@X
+
+//@T Dataframe.get_nrow
+//@U unsigned int get_nrow();
+//@X
+//@D Returns the number of rows for the associated dataframe.
+//@E // after reading teste_dataframe.csv as obj1
+//@E unsigned int nrow = obj1.get_nrow();
+//@E 15
+//@X
+
+//@T Dataframe.get_ncol
+//@U unsigned int get_ncol();
+//@X
+//@D Returns the number of columns for the associated dataframe.
+//@E // after reading teste_dataframe.csv as obj1
+//@E unsigned int ncol = obj1.get_ncol();
+//@E 6
+//@X
+
+//@T Dataframe.get_rowname
+//@U std::vector&lt;std::string&gt; get_rowname();
+//@X
+//@D Returns the rowname of the associated dataframe.
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;std::string&gt; row_names = obj1.get_rowname();
+//@E nothing becuase obj1 has no rownames
+//@X
+
+//@T Dataframe.get_colname
+//@U std::vector&lt;std::string&gt; get_colname();
+//@X
+//@D Returns the colname of the associated dataframe.
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;std::string&gt; col_names = obj1.get_colname();
+//@E col1 col2 col3 col4 col5 col6
+//@X
+
+//@T Dataframe.set_rowname
+//@U void set_rowname(std::vector&lt;std::string&gt; &x);
+//@X
+//@D Set rowname to the associated dataframe.
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;std::string&gt; row_names = {"n1", "n2", "n3"..."n15"};
+//@E obj1.set_rowname(row_names);
+//@X
+
+//@T Dataframe.set_colname
+//@U void set_colname(std::vector&lt;std::string&gt; &x);
+//@X
+//@D Set colname to the associated dataframe.
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;std::string&gt; col_names = {"col1", "col2", "col3", "col4", 
+//@E "col5", "col6"};
+//@E obj1.set_colname();
 //@X
 
 //@L1 Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;
@@ -6852,7 +6987,7 @@ template <typename T> void t_in(std::vector<std::vector<T>> &x) {
 //@A x : is a 2D stl vector (float, int, double...)
 //@X
 //@E
-//@E std::vector<std::vector<int>> out_matr = {
+//@E std::vector&lt;std::vector&lt;int&gt;&gt; out_matr = {
 //@E     {1, 2, 3, 4},
 //@E     {1, 2, 3, 4},
 //@E     {1, 2, 333, 4},
@@ -6869,7 +7004,7 @@ template <typename T> void t_in(std::vector<std::vector<T>> &x) {
 //@E
 //@M print_nmatr1.jpg
 //@E
-//@E std::vector<std::vector<double>> out_matr2 = {
+//@E std::vector&lt;std::vector&lt;double&gt;&gt; out_matr2 = {
 //@E   {1, 2, 3, 4},
 //@E   {1, 2, 3, 4},
 //@E   {1, 2, 333.23, 4},
@@ -6958,7 +7093,7 @@ template <typename T> void print_nmatr(const std::vector<std::vector<T>> &x) {
 //@D Print a matrix (std::string, char) as 2D stl vector.
 //@A x : is a 2D stl vector (std::string, char)
 //@X
-//@E std::vector<std::vector<std::string>> out_matr3 = {
+//@E std::vector&lt;std::vector&lt;std::string&gt;&gt; out_matr3 = {
 //@E    {"1", "2", "3", "4"},
 //@E    {"1", "2", "3", "4"},
 //@E    {"1", "2", "333", "44224441111111"},
@@ -6975,7 +7110,7 @@ template <typename T> void print_nmatr(const std::vector<std::vector<T>> &x) {
 //@E
 //@M print_smatr1.jpg
 //@E
-//@E std::vector<std::vector<char>> out_matr4 = {
+//@E std::vector&lt;std::vector&lt;char&gt;&gt; out_matr4 = {
 //@E    {'1', '2', '3', '4'},
 //@E    {'1', '2', '3', '4'},
 //@E    {'1', '2', '3', '4'},
