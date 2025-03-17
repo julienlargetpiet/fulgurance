@@ -5066,6 +5066,902 @@ template <typename T> double diff_mean(std::vector<T> &x) {
   return tsum / (n - 1);
 };
 
+//@L1 The Dataframe Object
+
+//@T Dataframe
+//@U Dataframe my_dataframe
+//@X
+//@D Dataframe objects supporting reading csv, with custom separator, storing columns in differents type vectors, creating a new Dataframe object on top of an already existing one specifying the rows and columns to copy, the same goes for a matrix (as <code>std::vector<std::vector<T>></code>) and <code>std::vector<T></code>. See examples.
+//@A See_below : See below
+//@X
+//@E See below
+//@X
+
+class Dataframe{
+  private:
+    
+    unsigned int nrow = 0;
+    unsigned int ncol = 0;
+  
+    std::vector<std::string> str_v = {};
+    std::vector<char> chr_v = {};
+    std::vector<bool> bool_v = {};
+    std::vector<int> int_v = {};
+    std::vector<unsigned int> uint_v = {};
+    std::vector<double> dbl_v = {};
+   
+    std::vector<int> pre_str_v = {};
+    std::vector<unsigned int> pre_chr_v = {};
+
+    std::vector<std::vector<unsigned int>> matr_idx = {{}, {}, {}, {}, {}, {}};
+    std::vector<std::vector<unsigned int>> matr_unknown = {};
+    std::vector<std::string> name_v = {};
+    std::vector<std::string> name_v_row = {};
+    std::vector<unsigned int> longest_v = {};
+
+    std::vector<const char*> type_refv = {};
+    std::vector<std::vector<std::string>> tmp_val_refv = {};
+
+    void longest_determine() {
+      unsigned int i;
+      unsigned int i2;
+      if (name_v.size() > 0) {
+        for (i = 0; i < ncol; ++i) {
+          longest_v.push_back(name_v[i].length());
+        };
+      } else {
+        longest_v.resize(ncol, 0);
+      }; 
+      for (i = 0; i < ncol; ++i) {
+        for (i2 = 0; i2 < nrow; ++i2) {
+          if (tmp_val_refv[i][i2].length() > longest_v[i]) {
+            longest_v[i] = tmp_val_refv[i][i2].length();
+          };
+        };
+      };
+      print_nvec(longest_v);
+    };
+
+  public:
+    
+    void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'') {
+      std::string currow;
+      std::string cur_str = "";
+      std::fstream readfile(file_name);
+      getline(readfile, currow);
+      ncol = 1;
+      std::vector<std::string> ex_vec = {};
+      std::vector<unsigned int> matr_unknown_vec = {};
+      unsigned int i = 0;
+      unsigned int verif_ncol;
+      unsigned int max_lngth;
+      bool str_cxt = 0;
+      if (header_name) {
+        while (i < currow.length()) {
+          if (currow[i] == delim & !str_cxt) {
+            matr_unknown.push_back(matr_unknown_vec);
+            if (i == 0) {
+              max_lngth = 2;
+              name_v.push_back("NA");
+            } else if (currow[i - 1] == delim) {
+              max_lngth = 2;
+              name_v.push_back("NA");
+            } else {
+              max_lngth = cur_str.length();
+              name_v.push_back(cur_str);
+            };
+            tmp_val_refv.push_back(ex_vec);
+            ncol += 1;
+            cur_str = "";
+            longest_v.push_back(max_lngth);
+          } else if (currow[i] == str_context_begin) {
+            str_cxt = 1; 
+          } else if (currow[i] == str_context_end) {
+            str_cxt = 0;
+          } else {
+            cur_str.push_back(currow[i]);
+          };
+          i += 1;
+        };
+        if (currow[i - 1] == delim) {
+          max_lngth = 2;
+          name_v.push_back("NA");
+        } else {
+          max_lngth = cur_str.length();
+          name_v.push_back(cur_str);
+        };
+        tmp_val_refv.push_back(ex_vec);
+        cur_str = "";
+        longest_v.push_back(max_lngth);
+      } else {
+        while (i < currow.length()) {
+          if (currow[i] == delim & !str_cxt) {
+            matr_unknown.push_back(matr_unknown_vec);
+            if (i == 0) {
+              max_lngth = 2;
+              matr_unknown[ncol - 1].push_back(0);
+            } else if (currow[i - 1] == delim) {
+              max_lngth = 2;
+              matr_unknown[ncol - 1].push_back(0);
+            } else {
+              max_lngth = cur_str.length();
+              ex_vec.push_back(cur_str);
+              tmp_val_refv.push_back(ex_vec);
+              ex_vec = {};
+            };
+            ncol += 1;
+            cur_str = "";
+            longest_v.push_back(max_lngth);
+          } else if (currow[i] == str_context_begin) {
+            str_cxt = 1;
+          } else if (currow[i] == str_context_end) {
+            str_cxt = 0;
+          } else {
+            cur_str.push_back(currow[i]);
+          };
+          i += 1;
+        };
+        if (currow[i - 1] == delim) {
+          max_lngth = 2;
+          matr_unknown[ncol - 1].push_back(0);
+        } else {
+          max_lngth = cur_str.length();
+          ex_vec.push_back(cur_str);
+          tmp_val_refv.push_back(ex_vec);
+          ex_vec = {};
+        };
+        cur_str = "";
+        longest_v.push_back(max_lngth);
+        nrow += 1;
+      };
+      type_refv.reserve(ncol);
+      while (getline(readfile, currow)) {
+        verif_ncol = 1;
+        str_cxt = 0;
+        i = 0;
+        while (i < currow.length()) {
+          if (currow[i] == delim & !str_cxt) {
+            if (i == 0) {
+              if (longest_v[verif_ncol - 1] < 2) {
+                longest_v[verif_ncol - 1] = 2;
+              };
+              tmp_val_refv[0].push_back("0");
+              matr_unknown[0].push_back(nrow);
+            } else if (currow[i - 1] == delim) {
+              if (longest_v[verif_ncol - 1] < 2) {
+                longest_v[verif_ncol - 1] = 2;
+              };
+              tmp_val_refv[verif_ncol - 1].push_back("0");
+              matr_unknown[verif_ncol - 1].push_back(nrow);
+            } else {
+              if (longest_v[verif_ncol - 1] < cur_str.length()) {
+                longest_v[verif_ncol - 1] = cur_str.length();
+              };
+              tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+            };
+            cur_str = "";
+            verif_ncol += 1;
+          } else if (currow[i] == str_context_begin) {
+            str_cxt = 1;
+          } else if (currow[i] == str_context_end) {
+            str_cxt = 0;
+          } else {
+            cur_str.push_back(currow[i]);
+          };
+          i += 1;
+        };
+        if (currow[i - 1] == delim) {
+          if (longest_v[verif_ncol - 1] < 2) {
+            longest_v[verif_ncol - 1] = 2;
+          };
+          tmp_val_refv[verif_ncol - 1].push_back("0");
+          matr_unknown[verif_ncol - 1].push_back(nrow);
+        } else {
+          if (longest_v[verif_ncol - 1] < cur_str.length()) {
+            longest_v[verif_ncol - 1] = cur_str.length();
+          };
+          tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+        };
+        cur_str = "";
+        if (verif_ncol != ncol) {
+          std::cout << "column number problem at row: " << nrow << "\n";
+          reinitiate();
+          return;
+        };
+        nrow += 1;
+      };
+      type_classification();
+    };
+
+    void type_classification() {
+      unsigned int i;
+      unsigned int i2;
+      unsigned int n;
+      bool is_nb;
+      bool is_flt_dbl;
+      bool is_unsigned = 1;
+      bool is_bool = 1;
+      std::string cur_str = "";
+      for (i = 0; i < ncol; ++i) {
+        i2 = 0;
+        while (i2 < nrow) {
+          cur_str = tmp_val_refv[i][i2];
+          is_nb = can_be_nb(cur_str);
+          if (!is_nb) {
+            if (cur_str.length() > 1) {
+              type_refv.push_back(typeid(std::string).name());
+              matr_idx[0].push_back(i);
+              break;
+            };
+          } else {
+            is_flt_dbl = can_be_flt_dbl(cur_str);
+            if (is_flt_dbl) {
+              type_refv.push_back(typeid(double).name());
+              matr_idx[5].push_back(i);
+              break;
+            };
+            if (is_unsigned) {
+              if (cur_str[0] == '-') {
+                is_unsigned = 0;
+              };
+            };
+            if (is_bool) {
+              if (cur_str != "0" & cur_str != "1") {
+                is_bool = 0;
+              };
+            };
+          };
+          i2 += 1;
+        };
+        if (i2 == nrow) {
+          if (!is_nb) {
+            type_refv.push_back(typeid(char).name());
+            matr_idx[1].push_back(i);
+          } else if (is_bool) {
+            type_refv.push_back(typeid(bool).name());
+            matr_idx[2].push_back(i);
+          } else if (!is_unsigned) {
+            type_refv.push_back(typeid(int).name());
+            matr_idx[3].push_back(i);
+          } else {
+            type_refv.push_back(typeid(unsigned int).name());
+            matr_idx[4].push_back(i);
+          };
+        };
+      };
+      for (i = 0; i < ncol; ++i) {
+        if (type_refv[i] == typeid(std::string).name()) {
+          for (i2 = 0; i2 < nrow; ++i2) {
+            cur_str = tmp_val_refv[i][i2];
+            str_v.push_back(cur_str);
+          };
+        } else if (type_refv[i] == typeid(char).name()) {
+          for (i2 = 0; i2 < nrow; ++i2) {
+            cur_str = tmp_val_refv[i][i2];
+            chr_v.push_back(cur_str[0]);
+          };
+        } else if (type_refv[i] == typeid(bool).name()) {
+          for (i2 = 0; i2 < nrow; ++i2) {
+            cur_str = tmp_val_refv[i][i2];
+            bool_v.push_back(std::stoi(cur_str));
+          };
+        } else if (type_refv[i] == typeid(int).name()) {
+          for (i2 = 0; i2 < nrow; ++i2) {
+            cur_str = tmp_val_refv[i][i2];
+            int_v.push_back(std::stoi(cur_str));
+          };
+        } else if (type_refv[i] == typeid(unsigned int).name()) {
+          for (i2 = 0; i2 < nrow; ++i2) {
+            cur_str = tmp_val_refv[i][i2];
+            uint_v.push_back(std::stoi(cur_str));
+          };
+        };
+      };
+    };
+ 
+    void display() {
+      unsigned int i2;
+      unsigned int i3;
+      unsigned int i4;
+      unsigned int max_nblngth = std::to_string(nrow).length();
+      std::string cur_str;
+      bool is_found;
+      if (name_v.size() > 0) {
+        for (i2 = 0; i2 < ncol; ++i2) {
+          cur_str = name_v[i2];
+          std::cout << cur_str << " ";  
+          for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
+            std::cout << " ";
+          };
+        };
+      } else {
+        for (i2 = 0; i2 < ncol; ++i2) {
+          cur_str = "[" + std::to_string(i2) + "]";
+          std::cout << cur_str << " ";
+          for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
+            std::cout << " ";
+          };
+        };
+      };
+      std::cout << "\n";
+      for (unsigned int i = 0; i < nrow; ++i) {
+        std::cout << ":" << i << ": ";
+        for (i3 = std::to_string(i).length(); i3 < max_nblngth; ++i3) {
+          std::cout << " ";
+        };
+        for (i2 = 0; i2 < ncol; ++i2) {
+          i3 = 0;
+          is_found = 0;
+          while (!is_found) {
+            i4 = 0;
+            while (i4 < matr_idx[i3].size()) {
+              if (matr_idx[i3][i4] == i2) {
+                is_found = 1;
+                break;
+              };
+              i4 += 1;
+            };
+            i3 += 1;
+          };
+          i3 -= 1;
+          if (i3 == 0) {
+            cur_str = str_v[i4 * nrow + i];
+            std::cout << cur_str << " ";
+            for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
+              std::cout << " ";
+            };
+          } else if (i3 == 1) {
+            std::cout << chr_v[i4 * nrow + i] << " ";
+            for (i4 = 1; i4 < longest_v[i2]; ++i4) {
+              std::cout << " ";
+            };
+          } else if (i3 == 2) {
+            std::cout << bool_v[i4 * nrow + i] << " ";
+            for (i4 = 1; i4 < longest_v[i2]; ++i4) {
+              std::cout << " ";
+            };
+          } else if (i3 == 3) {
+            cur_str = std::to_string(int_v[i4 * nrow + i]);
+            std::cout << cur_str << " ";
+            for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
+              std::cout << " ";
+            };
+          } else if (i3 == 4) {
+            cur_str = std::to_string(uint_v[i4 * nrow + i]);
+            std::cout << cur_str << " ";
+            for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
+              std::cout << " ";
+            };
+          } else if (i3 == 5) {
+            cur_str = std::to_string(dbl_v[i4 * nrow + i]);
+            std::cout << cur_str << " ";
+            for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
+              std::cout << " ";
+            };
+          };
+        };
+        std::cout << "\n";
+      };
+    };
+
+    void reinitiate() {
+     
+      nrow = 0;
+      ncol = 0;
+ 
+      str_v = {};
+      chr_v = {};
+      bool_v = {};
+      int_v = {};
+      uint_v = {};
+      dbl_v = {};
+   
+      pre_str_v = {};
+      pre_chr_v = {};
+
+      matr_idx = {{}, {}, {}, {}, {}, {}};
+      matr_unknown = {};
+      name_v = {};
+      name_v_row = {};
+      longest_v = {};
+
+      type_refv = {};
+      tmp_val_refv = {};
+
+    };
+
+    template <typename T> void name_colint(std::vector<int> rows, std::string colname, std::vector<T> &rtn_v) {
+      if (name_v.size() == 0) {
+        std::cout << "no column names\n";
+        reinitiate();
+        return;
+      };
+      unsigned int x = 0;
+      while (colname != name_v[x]) {
+        x += 1;
+      };
+      rtn_v.reserve(nrow);
+      unsigned int i = 2;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      i2 = 0;
+      bool is_found = 0;
+      while (!is_found) {
+        while (i2 < matr_idx[i].size()) {
+          if (x == matr_idx[i][i2]) {
+            is_found = 1;
+            break;
+          };
+          i2 += 1;
+        };
+        i += 1;
+      };
+      i -= 1;
+      i2 = nrow * i2;
+      if (i == 2) {
+        for (i = 0; i < rows.size(); ++i) {
+          rtn_v.push_back(bool_v[i2 + rows[i]]);
+        };
+      } else if (i == 3) {
+        for (i = 0; i < rows.size(); ++i) {
+          rtn_v.push_back(int_v[i2 + rows[i]]);
+        };
+      } else if (i == 4) {
+        for (i = 0; i < rows.size(); ++i) {
+          rtn_v.push_back(uint_v[i2 + rows[i]]);
+        };
+      } else if (i == 5) {
+        for (i = 0; i < rows.size(); ++i) {
+          rtn_v.push_back(dbl_v[i2 + rows[i]]);
+        };
+      };
+    };
+
+    template <typename T> void idx_colint(std::vector<int> rows, unsigned int x, std::vector<T> &rtn_v) {
+      rtn_v.reserve(nrow);
+      unsigned int i = 2;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      i2 = 0;
+      bool is_found = 0;
+      while (!is_found) {
+        while (i2 < matr_idx[i].size()) {
+          if (x == matr_idx[i][i2]) {
+            is_found = 1;
+            break;
+          };
+          i2 += 1;
+        };
+        i += 1;
+      };
+      i -= 1;
+      i2 = nrow * i2;
+      if (i == 2) {
+        for (i = 0; i < rows.size(); ++i) {
+          rtn_v.push_back(bool_v[i2 + rows[i]]);
+        };
+      } else if (i == 3) {
+        for (i = 0; i < rows.size(); ++i) {
+          rtn_v.push_back(int_v[i2 + rows[i]]);
+        };
+      } else if (i == 4) {
+        for (i = 0; i < rows.size(); ++i) {
+          rtn_v.push_back(uint_v[i2 + rows[i]]);
+        };
+      } else if (i == 5) {
+        for (i = 0; i < rows.size(); ++i) {
+          rtn_v.push_back(dbl_v[i2 + rows[i]]);
+        };
+      };
+    };
+
+    void name_colstr(std::vector<int> rows, std::string colname, std::vector<std::string> &rtn_v) {
+      if (name_v.size() == 0) {
+        std::cout << "no column names\n";
+        reinitiate();
+        return;
+      };
+      unsigned int x = 0;
+      while (colname != name_v[x]) {
+        x += 1;
+      };
+      rtn_v.reserve(nrow);
+      unsigned int i;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      i2 = 0;
+      while (i2 < matr_idx[0].size()) {
+        if (x == matr_idx[0][i2]) {
+          break;
+        };
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+      for (i = 0; i < rows.size(); ++i) {
+        rtn_v.push_back(str_v[i2 + rows[i]]);
+      };
+    };
+
+    void idx_colstr(std::vector<int> rows, unsigned int x, std::vector<std::string> &rtn_v) {
+      rtn_v.reserve(nrow);
+      unsigned int i;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      i2 = 0;
+      while (i2 < matr_idx[0].size()) {
+        if (x == matr_idx[0][i2]) {
+          break;
+        };
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+      for (i = 0; i < rows.size(); ++i) {
+        rtn_v.push_back(str_v[i2 + rows[i]]);
+      };
+    };
+
+    void name_colchr(std::vector<int> rows, std::string colname, std::vector<char> &rtn_v) {
+      if (name_v.size() == 0) {
+        std::cout << "no column names\n";
+        reinitiate();
+        return;
+      };
+      unsigned int x = 0;
+      while (colname != name_v[x]) {
+        x += 1;
+      };
+      rtn_v.reserve(nrow);
+      unsigned int i;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      i2 = 0;
+      while (i2 < matr_idx[1].size()) {
+        if (x == matr_idx[1][i2]) {
+          break;
+        };
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+      for (i = 0; i < rows.size(); ++i) {
+        rtn_v.push_back(chr_v[i2 + rows[i]]);
+      };
+    };
+
+    void idx_colchr(std::vector<int> rows, unsigned int x, std::vector<char> &rtn_v) {
+      rtn_v.reserve(nrow);
+      unsigned int i;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      i2 = 0;
+      while (i2 < matr_idx[1].size()) {
+        if (x == matr_idx[1][i2]) {
+          break;
+        };
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+      for (i = 0; i < rows.size(); ++i) {
+        rtn_v.push_back(chr_v[i2 + rows[i]]);
+      };
+    };
+
+    template <typename T> void name_matrint(std::vector<int> rows, std::vector<std::string> x_v, std::vector<std::vector<T>> &rtn_matr) {
+      std::vector<T> rtn_v;
+      unsigned int i;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      bool is_found;
+      unsigned int x;
+      if (name_v.size() == 0) {
+        std::cout << "There are no column names\n";
+        reinitiate();
+        return;
+      };
+      for (std::string cur_name : x_v) {
+        x = 0;
+        while (cur_name != name_v[x]) {
+          x += 1;
+        };
+        rtn_v = {};
+        rtn_v.reserve(nrow);
+        i = 2;
+        i2 = 0;
+        is_found = 0;
+        while (!is_found) {
+          while (i2 < matr_idx[i].size()) {
+            if (x == matr_idx[i][i2]) {
+              is_found = 1;
+              break;
+            };
+            i2 += 1;
+          };
+          i += 1;
+        };
+        i -= 1;
+        i2 = nrow * i2;
+        if (i == 2) {
+          for (i = 0; i < rows.size(); ++i) {
+            rtn_v.push_back(bool_v[i2 + rows[i]]);
+          };
+        } else if (i == 3) {
+          for (i = 0; i < rows.size(); ++i) {
+            rtn_v.push_back(int_v[i2 + rows[i]]);
+          };
+        } else if (i == 4) {
+          for (i = 0; i < rows.size(); ++i) {
+            rtn_v.push_back(uint_v[i2 + rows[i]]);
+          };
+        } else if (i == 5) {
+          for (i = 0; i < rows.size(); ++i) {
+            rtn_v.push_back(dbl_v[i2 + rows[i]]);
+          };
+        };
+        rtn_matr.push_back(rtn_v);
+      };
+    };
+
+    template <typename T> void idx_matrint(std::vector<int> rows, std::vector<unsigned int> x_v, std::vector<std::vector<T>> &rtn_matr) {
+      std::vector<T> rtn_v;
+      unsigned int i;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      bool is_found;
+      for (unsigned int x : x_v) {
+        rtn_v = {};
+        rtn_v.reserve(nrow);
+        i = 2;
+        i2 = 0;
+        is_found = 0;
+        while (!is_found) {
+          while (i2 < matr_idx[i].size()) {
+            if (x == matr_idx[i][i2]) {
+              is_found = 1;
+              break;
+            };
+            i2 += 1;
+          };
+          i += 1;
+        };
+        i -= 1;
+        i2 = nrow * i2;
+        if (i == 2) {
+          for (i = 0; i < rows.size(); ++i) {
+            rtn_v.push_back(bool_v[i2 + rows[i]]);
+          };
+        } else if (i == 3) {
+          for (i = 0; i < rows.size(); ++i) {
+            rtn_v.push_back(int_v[i2 + rows[i]]);
+          };
+        } else if (i == 4) {
+          for (i = 0; i < rows.size(); ++i) {
+            rtn_v.push_back(uint_v[i2 + rows[i]]);
+          };
+        } else if (i == 5) {
+          for (i = 0; i < rows.size(); ++i) {
+            rtn_v.push_back(dbl_v[i2 + rows[i]]);
+          };
+        };
+        rtn_matr.push_back(rtn_v);
+      };
+    };
+
+    void name_matrstr(std::vector<int> rows, std::vector<std::string> x_v, std::vector<std::vector<std::string>> &rtn_matr) {
+      std::vector<std::string> rtn_v;
+      unsigned int i;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      unsigned int x;
+      if (name_v.size() == 0) {
+        std::cout << "There are no column names\n";
+        reinitiate();
+        return;
+      };
+      for (std::string cur_name : x_v) {
+        x = 0;
+        while (cur_name != name_v[x]) {
+          x += 1;
+        };
+        rtn_v = {};
+        rtn_v.reserve(nrow);
+        i2 = 0;
+        while (i2 < matr_idx[0].size()) {
+          if (x == matr_idx[0][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+        i2 = nrow * i2;
+        for (i = 0; i < rows.size(); ++i) {
+          rtn_v.push_back(str_v[i2 + rows[i]]);
+        }; 
+        rtn_matr.push_back(rtn_v);
+      };
+    };
+
+    void idx_matrstr(std::vector<int> rows, std::vector<unsigned int> x_v, std::vector<std::vector<std::string>> &rtn_matr) {
+      std::vector<std::string> rtn_v;
+      unsigned int i;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      for (unsigned int x : x_v) {
+        rtn_v = {};
+        rtn_v.reserve(nrow);
+        i = 2;
+        i2 = 0;
+        while (i2 < matr_idx[0].size()) {
+          if (x == matr_idx[0][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+        i2 = nrow * i2;
+        for (i = 0; i < rows.size(); ++i) {
+          rtn_v.push_back(str_v[i2 + rows[i]]);
+        };
+        rtn_matr.push_back(rtn_v);
+      };
+    };
+
+    std::vector<std::vector<std::string>> get_tmp_val_refv() {
+      return tmp_val_refv;
+    };
+
+    unsigned int get_nrow() {
+      return nrow;
+    };
+
+    unsigned int get_ncol() {
+      return ncol;
+    };
+
+    void idx_dataframe(std::vector<int> &rows, std::vector<int> &cols, Dataframe &cur_obj) {
+      unsigned int i2;
+      unsigned int max_nrow = cur_obj.get_nrow();
+      unsigned int max_ncol = cur_obj.get_ncol();
+      nrow = rows.size();
+      ncol = cols.size();
+      std::vector<std::vector<std::string>> cur_tmp = cur_obj.get_tmp_val_refv();
+      std::vector<std::string> cur_v = {};
+      if (rows[0] == -1) {
+        rows.pop_back();
+        for (i2 = 0; i2 < max_nrow; ++i2) {
+          rows.push_back(i2);
+        };
+        nrow = max_nrow;
+      };
+      if (cols[0] == -1) {
+        cols.pop_back();
+        for (i2 = 0; i2 < max_ncol; ++i2) {
+          cols.push_back(i2);
+        };
+        ncol = max_ncol;
+      };
+      for (unsigned int i : cols) {
+        cur_v = {};
+        for (i2 = 0; i2 < nrow; ++i2) {
+          cur_v.push_back(cur_tmp[i][rows[i2]]);  
+        };
+        tmp_val_refv.push_back(cur_v);
+      };
+      type_classification();
+      name_v = cur_obj.get_colname();
+      name_v_row = cur_obj.get_rowname(); 
+      longest_determine();
+    };
+
+    void set_colname(std::vector<std::string> &x) {
+      name_v = x;
+    };
+
+    void set_rowname(std::vector<std::string> &x) {
+      name_v_row = x;
+    };
+
+    std::vector<std::string> get_colname() {
+      return name_v;
+    };
+
+    std::vector<std::string> get_rowname() {
+      return name_v_row;
+    };
+
+    Dataframe() {};
+
+    ~Dataframe() {};
+
+};
+
+//@T Dataframe.readf
+//@U void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'')
+//@X
+//@D Import a csv as a Dataframe object.
+//@A file_name : is the file_name of the csv to read
+//@A delim : is the column delimiter
+//@A header_name : is if the first row is in fact the column names
+//@A str_context_begin is the first symbol of a quote, (to not take in count a comma as a new column if it is in a quote for example)
+//@A str_context_end : is the end symbol for a quote context
+//@X
+//@E Dataframe obj1;
+//@E std::string file_name = "teste_dataframe.csv";
+//@E obj1.readf(file_name);
+//@X
+
+//@T Dataframe.display
+//@U void display();
+//@X
+//@D Print the current dataframe.
+//@A no : no
+//@X
+//@E // after reading teste_dataframe.csv
+//@E obj1.display();
+//@E col1 col2 col3 col4 col5 col6
+//@E :0:  1    2    3    aa   5    z
+//@E :1:  6    7    8    bb   10   e
+//@E :2:  1    2    3    cc   5    h
+//@E :3:  6    7    8    uu   10   a
+//@E :4:  1    2    3    s4   -5   q
+//@E :5:  6    7    8    s9   10   p
+//@E :6:  1    2    3    a4   5    j
+//@E :7:  6    7    8    m9   10   i
+//@E :8:  6    7    8    s9   10   p
+//@E :9:  1    2    3    a4   5    j
+//@E :10: 6    7    8    m9   10   i
+//@E :11: 6    7    8    m9   10   i
+//@E :12: 6    7    8    s9   10   p
+//@E :13: 1    2    3    a4   5    j
+//@E :14: 6    7    8    m9   10   i
+//@X
+
 //@L1 Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;
 
 //@L2 Read matrix from file
