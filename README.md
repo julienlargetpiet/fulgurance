@@ -3368,7 +3368,7 @@ x </th><th> is a stl vector (int, float, double, bool)</th></tr>
 <h3>#Usage</h3>
 <div class="Div"><code>Dataframe my_dataframe</code></div>
 <h3>#Description</h3>
-<p>Dataframe objects supporting reading csv, with custom separator, storing columns in differents type vectors, creating a new Dataframe object on top of an already existing one specifying the rows and columns to copy, the same goes for a matrix (as <code>std::vector<std::vector<T>></code>) and <code>std::vector<T></code>. See examples.</p>
+<p>Dataframe objects supporting reading csv, with custom separator, storing columns in differents type vectors, creating a new Dataframe object on top of an already existing one specifying the rows and columns to copy, the same goes for a matrix (as <code>std::vector&lt;std::vector&lt;T&gt;&gt;</code>) and <code>std::vector&lt;T&gt;</code>. See examples.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 See_below </th><th> See below</th></tr>
