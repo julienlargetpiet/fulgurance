@@ -6232,20 +6232,19 @@ class Dataframe{
           };
           i += 1;
         };
-        std::cout << "ok2\n";
         i-= 1;
         matr_idx[i].erase(matr_idx[i].begin() + i2);
         tmp_val_refv.erase(tmp_val_refv.begin() + nbcol);
         type_refv.erase(type_refv.begin() + nbcol);
         i2 = nrow * i2;
         if (i == 2) {
-          bool_v.erase(bool_v.begin() + i2, bool_v.begin() + i2 + nrow - 1);
+          bool_v.erase(bool_v.begin() + i2, bool_v.begin() + i2 + nrow);
         } else if (i == 3) {
-          int_v.erase(int_v.begin() + i2, int_v.begin() + i2 + nrow - 1);
+          int_v.erase(int_v.begin() + i2, int_v.begin() + i2 + nrow);
         } else if (i == 4) {
-          uint_v.erase(uint_v.begin() + i2, uint_v.begin() + i2 + nrow - 1);
+          uint_v.erase(uint_v.begin() + i2, uint_v.begin() + i2 + nrow);
         } else if (i == 5) {
-          dbl_v.erase(dbl_v.begin() + i2, dbl_v.begin() + i2 + nrow - 1);
+          dbl_v.erase(dbl_v.begin() + i2, dbl_v.begin() + i2 + nrow);
         };
         ncol -= 1;
       };
@@ -6269,7 +6268,7 @@ class Dataframe{
         tmp_val_refv.erase(tmp_val_refv.begin() + nbcol);
         type_refv.erase(type_refv.begin() + nbcol);
         i2 = nrow * i2;
-        str_v.erase(str_v.begin() + i2, str_v.begin() + i2 + nrow - 1);
+        str_v.erase(str_v.begin() + i2, str_v.begin() + i2 + nrow);
         ncol -= 1;
       };
     };
@@ -6292,8 +6291,43 @@ class Dataframe{
         tmp_val_refv.erase(tmp_val_refv.begin() + nbcol);
         type_refv.erase(type_refv.begin() + nbcol);
         i2 = nrow * i2;
-        chr_v.erase(chr_v.begin() + i2, chr_v.begin() + i2 + nrow - 1);
+        chr_v.erase(chr_v.begin() + i2, chr_v.begin() + i2 + nrow);
         ncol -= 1;
+      };
+    };
+
+    // must be descendly sorted
+    void rm_row(std::vector<unsigned int> &x) {
+      unsigned int i;
+      unsigned int cnt = 0;
+      std::vector<unsigned int> alrd_v = {0, 0, 0, 0, 0, 0};
+      for (unsigned int i2 = nrow - 1; i2 > 0; --i2) {
+        if (i2 == x[cnt]) {
+          for (i = 0; i < ncol; ++i) {
+            tmp_val_refv[i].erase(tmp_val_refv[i].begin() + i2);
+            if (type_refv[i] == typeid(std::string).name()) {
+              str_v.erase(str_v.begin() + alrd_v[0] * nrow + i2);
+              alrd_v[0] += 1;
+            } else if (type_refv[i] == typeid(char).name()) {
+              chr_v.erase(chr_v.begin() + alrd_v[1] * nrow + i2);
+              alrd_v[1] += 1;
+            } else if (type_refv[i] == typeid(bool).name()) {
+              bool_v.erase(bool_v.begin() + alrd_v[2] * nrow + i2);
+              alrd_v[2] += 1;
+            } else if (type_refv[i] == typeid(int).name()) {
+              int_v.erase(int_v.begin() + alrd_v[3] * nrow + i2);
+              alrd_v[3] += 1;
+            } else if (type_refv[i] == typeid(unsigned int).name()) {
+              uint_v.erase(uint_v.begin() + alrd_v[4] * nrow + i2);
+              alrd_v[4] += 1;
+            } else if (type_refv[i] == typeid(double).name()) {
+              dbl_v.erase(dbl_v.begin() + alrd_v[5] * nrow + i2);
+              alrd_v[5] += 1;
+            };
+          };
+          nrow -= 1;
+          cnt += 1;
+        };
       };
     };
 
