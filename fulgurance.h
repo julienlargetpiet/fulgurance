@@ -6151,24 +6151,28 @@ class Dataframe{
       std::vector<std::string> cur_v = {};
       if (typeid(T).name() == typeid(bool).name()) {
         matr_idx[2].push_back(ncol);
+        type_refv.push_back(typeid(bool).name());
         for (i = 0; i < nrow; ++i) {
           bool_v.push_back(x[i]);
           cur_v.push_back(std::to_string(x[i]));
         };
       } else if (typeid(T).name() == typeid(int).name()) {
         matr_idx[3].push_back(ncol);
+        type_refv.push_back(typeid(int).name());
         for (i = 0; i < nrow; ++i) {
           int_v.push_back(x[i]);
           cur_v.push_back(std::to_string(x[i]));
         };
       } else if (typeid(T).name() == typeid(unsigned int).name()) {
         matr_idx[4].push_back(ncol);
+        type_refv.push_back(typeid(unsigned int).name());
         for (i = 0; i < nrow; ++i) {
           uint_v.push_back(x[i]);
           cur_v.push_back(std::to_string(x[i]));
         };
-      } else if (typeid(T).name() == typeid(bool).name()) {
+      } else if (typeid(T).name() == typeid(double).name()) {
         matr_idx[5].push_back(ncol);
+        type_refv.push_back(typeid(double).name());
         for (i = 0; i < nrow; ++i) {
           dbl_v.push_back(x[i]);
           cur_v.push_back(std::to_string(x[i]));
@@ -6182,6 +6186,7 @@ class Dataframe{
       unsigned int i;
       std::vector<std::string> cur_v = {};
       matr_idx[0].push_back(ncol);
+      type_refv.push_back(typeid(std::string).name());
       for (i = 0; i < nrow; ++i) {
         str_v.push_back(x[i]);
         cur_v.push_back(x[i]);
@@ -6194,6 +6199,7 @@ class Dataframe{
       unsigned int i;
       std::vector<std::string> cur_v = {};
       matr_idx[1].push_back(ncol);
+      type_refv.push_back(typeid(char).name());
       for (i = 0; i < nrow; ++i) {
         chr_v.push_back(x[i]);
         cur_v.push_back(std::to_string(x[i]));
@@ -6230,6 +6236,7 @@ class Dataframe{
         i-= 1;
         matr_idx[i].erase(matr_idx[i].begin() + i2);
         tmp_val_refv.erase(tmp_val_refv.begin() + nbcol);
+        type_refv.erase(type_refv.begin() + nbcol);
         i2 = nrow * i2;
         if (i == 2) {
           bool_v.erase(bool_v.begin() + i2, bool_v.begin() + i2 + nrow - 1);
@@ -6260,6 +6267,7 @@ class Dataframe{
         };
         matr_idx[0].erase(matr_idx[0].begin() + i2);
         tmp_val_refv.erase(tmp_val_refv.begin() + nbcol);
+        type_refv.erase(type_refv.begin() + nbcol);
         i2 = nrow * i2;
         str_v.erase(str_v.begin() + i2, str_v.begin() + i2 + nrow - 1);
         ncol -= 1;
@@ -6282,6 +6290,7 @@ class Dataframe{
         };
         matr_idx[1].erase(matr_idx[1].begin() + i2);
         tmp_val_refv.erase(tmp_val_refv.begin() + nbcol);
+        type_refv.erase(type_refv.begin() + nbcol);
         i2 = nrow * i2;
         chr_v.erase(chr_v.begin() + i2, chr_v.begin() + i2 + nrow - 1);
         ncol -= 1;
