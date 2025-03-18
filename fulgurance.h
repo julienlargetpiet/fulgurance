@@ -5071,7 +5071,7 @@ template <typename T> double diff_mean(std::vector<T> &x) {
 //@T Dataframe
 //@U Dataframe my_dataframe
 //@X
-//@D Dataframe objects supporting reading csv, with custom separator, storing columns in differents type vectors, creating a new Dataframe object on top of an already existing one specifying the rows and columns to copy, the same goes for a matrix (as <code>std::vector<std::vector<T>></code>) and <code>std::vector<T></code>. See examples.
+//@D Dataframe objects supporting reading csv, with custom separator, storing columns in differents type vectors, creating a new Dataframe object on top of an already existing one specifying the rows and columns to copy, the same goes for a matrix (as <code>std::vector&lt;std::vector&lt;T&gt;&gt;</code>) and <code>std::vector&lt;T&gt;</code>. See examples.
 //@A See_below : See below
 //@X
 //@E See below
@@ -5393,54 +5393,10 @@ class Dataframe{
           std::cout << " ";
         };
         for (i2 = 0; i2 < ncol; ++i2) {
-          i3 = 0;
-          is_found = 0;
-          while (!is_found) {
-            i4 = 0;
-            while (i4 < matr_idx[i3].size()) {
-              if (matr_idx[i3][i4] == i2) {
-                is_found = 1;
-                break;
-              };
-              i4 += 1;
-            };
-            i3 += 1;
-          };
-          i3 -= 1;
-          if (i3 == 0) {
-            cur_str = str_v[i4 * nrow + i];
-            std::cout << cur_str << " ";
-            for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
-              std::cout << " ";
-            };
-          } else if (i3 == 1) {
-            std::cout << chr_v[i4 * nrow + i] << " ";
-            for (i4 = 1; i4 < longest_v[i2]; ++i4) {
-              std::cout << " ";
-            };
-          } else if (i3 == 2) {
-            std::cout << bool_v[i4 * nrow + i] << " ";
-            for (i4 = 1; i4 < longest_v[i2]; ++i4) {
-              std::cout << " ";
-            };
-          } else if (i3 == 3) {
-            cur_str = std::to_string(int_v[i4 * nrow + i]);
-            std::cout << cur_str << " ";
-            for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
-              std::cout << " ";
-            };
-          } else if (i3 == 4) {
-            cur_str = std::to_string(uint_v[i4 * nrow + i]);
-            std::cout << cur_str << " ";
-            for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
-              std::cout << " ";
-            };
-          } else if (i3 == 5) {
-            cur_str = std::to_string(dbl_v[i4 * nrow + i]);
-            std::cout << cur_str << " ";
-            for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
-              std::cout << " ";
-            };
+          cur_str = tmp_val_refv[i2][i];
+          std::cout << cur_str << " ";
+          for (i3 = cur_str.length(); i3 < longest_v[i2]; ++i3) {
+            std::cout << " ";
           };
         };
         std::cout << "\n";
