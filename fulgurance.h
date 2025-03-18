@@ -5281,12 +5281,17 @@ class Dataframe{
       bool is_flt_dbl;
       bool is_unsigned = 1;
       bool is_bool = 1;
-      std::string cur_str = "";
+      std::string cur_str;
+      std::string cur_str2;
       for (i = 0; i < ncol; ++i) {
         i2 = 0;
         while (i2 < nrow) {
           cur_str = tmp_val_refv[i][i2];
-          is_nb = can_be_nb(cur_str);
+          cur_str2 = cur_str;
+          if (cur_str[0] == '-' & cur_str.length() > 1) {
+            cur_str2.erase(cur_str2.begin());
+          };
+          is_nb = can_be_nb(cur_str2);
           if (!is_nb) {
             if (cur_str.length() > 1) {
               type_refv.push_back(typeid(std::string).name());
@@ -5294,7 +5299,7 @@ class Dataframe{
               break;
             };
           } else {
-            is_flt_dbl = can_be_flt_dbl(cur_str);
+            is_flt_dbl = can_be_flt_dbl(cur_str2);
             if (is_flt_dbl) {
               type_refv.push_back(typeid(double).name());
               matr_idx[5].push_back(i);
@@ -5369,6 +5374,47 @@ class Dataframe{
       };
       std::string cur_str;
       bool is_found;
+      for (i2 = 0; i2 < ncol; ++i2) {
+        if (type_refv[i2] == typeid(std::string).name()) {
+          cur_str = "<str>";
+          if (longest_v[i2] < 5) {
+            longest_v[i2] = 5;
+          };
+        } else if (type_refv[i2] == typeid(char).name()) {
+          cur_str = "<char>";
+          if (longest_v[i2] < 6) {
+            longest_v[i2] = 6;
+          };
+        } else if (type_refv[i2] == typeid(bool).name()) {
+          cur_str = "<bool>";
+          if (longest_v[i2] < 6) {
+            longest_v[i2] = 6;
+          };
+        } else if (type_refv[i2] == typeid(int).name()) {
+          cur_str = "<int>";
+          if (longest_v[i2] < 5) {
+            longest_v[i2] = 5;
+          };
+        } else if (type_refv[i2] == typeid(unsigned int).name()) {
+          cur_str = "<uint>";
+          if (longest_v[i2] < 6) {
+            longest_v[i2] = 6;
+          };
+        } else if (type_refv[i2] == typeid(double).name()) {
+          cur_str = "<double>";
+          if (longest_v[i2] < 8) {
+            longest_v[i2] = 8;
+          };
+        };
+        std::cout << cur_str << " ";  
+        for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
+          std::cout << " ";
+        };
+      };
+      std::cout << "\n";
+      for (i2 = 0; i2 < max_nblngth + 2; ++i2) {
+        std::cout << " ";
+      };
       if (name_v.size() > 0) {
         for (i2 = 0; i2 < ncol; ++i2) {
           cur_str = name_v[i2];
@@ -6025,6 +6071,220 @@ class Dataframe{
         };
         outfile << cur_str;
         outfile << "\n";
+      };
+    };
+
+    template <typename T> void replace_colint(std::vector<T> &x, unsigned int &colnb) {
+      unsigned int i = 2;
+      unsigned int i2;
+      bool is_found = 0;
+      while (!is_found) {
+        i2 = 0;
+        while (1) {
+          if (colnb == matr_idx[i][i2]) {
+            is_found = 1;
+            break;
+          };
+          i2 += 1;
+        };
+        i += 1;
+      };
+      i -= 1;
+      i2 = nrow * i2;
+      if (i == 2) {
+        for (i = 0; i < nrow; ++i) {
+          bool_v[i2 + i] = x[i];
+          tmp_val_refv[colnb][i] = std::to_string(x[i]);
+        };
+      } else if (i == 3) {
+        for (i = 0; i < nrow; ++i) {
+          int_v[i2 + i] = x[i];
+          tmp_val_refv[colnb][i] = std::to_string(x[i]);
+        };
+      } else if (i == 4) {
+        for (i = 0; i < nrow; ++i) {
+          uint_v[i2 + i] = x[i];
+          tmp_val_refv[colnb][i] = std::to_string(x[i]);
+        };
+      } else if (i == 5) {
+        for (i = 0; i < nrow; ++i) {
+          dbl_v[i2 + i] = x[i];
+          tmp_val_refv[colnb][i] = std::to_string(x[i]);
+        };
+      };
+    };
+
+    void replace_colstr(std::vector<std::string> &x, unsigned int &colnb) {
+      unsigned int i;
+      unsigned int i2 = 0;
+      while (1) {
+        if (colnb == matr_idx[0][i2]) {
+          break;
+        };
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+      for (i = 0; i < nrow; ++i) {
+        str_v[i2 + i] = x[i];
+        tmp_val_refv[colnb][i] = x[i];
+      };
+    };
+
+    void replace_colchr(std::vector<char> &x, unsigned int &colnb) {
+      unsigned int i;
+      unsigned int i2 = 0;
+      while (1) {
+        if (colnb == matr_idx[1][i2]) {
+          break;
+        };
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+      for (i = 0; i < nrow; ++i) {
+        chr_v[i2 + i] = x[i];
+        tmp_val_refv[colnb][i] = std::to_string(x[i]);
+      };
+    };
+
+    template <typename T> void add_colint(std::vector<T> &x) {
+      unsigned int i;
+      std::vector<std::string> cur_v = {};
+      if (typeid(T).name() == typeid(bool).name()) {
+        matr_idx[2].push_back(ncol);
+        for (i = 0; i < nrow; ++i) {
+          bool_v.push_back(x[i]);
+          cur_v.push_back(std::to_string(x[i]));
+        };
+      } else if (typeid(T).name() == typeid(int).name()) {
+        matr_idx[3].push_back(ncol);
+        for (i = 0; i < nrow; ++i) {
+          int_v.push_back(x[i]);
+          cur_v.push_back(std::to_string(x[i]));
+        };
+      } else if (typeid(T).name() == typeid(unsigned int).name()) {
+        matr_idx[4].push_back(ncol);
+        for (i = 0; i < nrow; ++i) {
+          uint_v.push_back(x[i]);
+          cur_v.push_back(std::to_string(x[i]));
+        };
+      } else if (typeid(T).name() == typeid(bool).name()) {
+        matr_idx[5].push_back(ncol);
+        for (i = 0; i < nrow; ++i) {
+          dbl_v.push_back(x[i]);
+          cur_v.push_back(std::to_string(x[i]));
+        }; 
+      };
+      tmp_val_refv.push_back(cur_v);
+      ncol += 1;
+    };
+
+    void add_colstr(std::vector<std::string> &x) {
+      unsigned int i;
+      std::vector<std::string> cur_v = {};
+      matr_idx[0].push_back(ncol);
+      for (i = 0; i < nrow; ++i) {
+        str_v.push_back(x[i]);
+        cur_v.push_back(x[i]);
+      };
+      tmp_val_refv.push_back(cur_v);
+      ncol += 1;
+    };
+
+    void add_colchr(std::vector<char> &x) {
+      unsigned int i;
+      std::vector<std::string> cur_v = {};
+      matr_idx[1].push_back(ncol);
+      for (i = 0; i < nrow; ++i) {
+        chr_v.push_back(x[i]);
+        cur_v.push_back(std::to_string(x[i]));
+      };
+      tmp_val_refv.push_back(cur_v);
+      ncol += 1;
+    };
+
+    // vec must be descendly sorted
+    void rm_colint(std::vector<unsigned int> &nbcolv) {
+      unsigned int i;
+      unsigned int i2;
+      bool is_found;
+      for (int nbcol : nbcolv) {
+        if (nbcol >= ncol) {
+          std::cout << "The column does not exist\n";
+          return;
+        };
+        i = 2;
+        i2;
+        is_found = 0;
+        while (!is_found) {
+          i2 = 0;
+          while (i2 < matr_idx[i].size()) {
+            if (nbcol == matr_idx[i][i2]) {
+              is_found = 1;
+              break;
+            };
+            i2 += 1;
+          };
+          i += 1;
+        };
+        std::cout << "ok2\n";
+        i-= 1;
+        matr_idx[i].erase(matr_idx[i].begin() + i2);
+        tmp_val_refv.erase(tmp_val_refv.begin() + nbcol);
+        i2 = nrow * i2;
+        if (i == 2) {
+          bool_v.erase(bool_v.begin() + i2, bool_v.begin() + i2 + nrow - 1);
+        } else if (i == 3) {
+          int_v.erase(int_v.begin() + i2, int_v.begin() + i2 + nrow - 1);
+        } else if (i == 4) {
+          uint_v.erase(uint_v.begin() + i2, uint_v.begin() + i2 + nrow - 1);
+        } else if (i == 5) {
+          dbl_v.erase(dbl_v.begin() + i2, dbl_v.begin() + i2 + nrow - 1);
+        };
+        ncol -= 1;
+      };
+    };
+
+    void rm_colstr(std::vector<unsigned int> &nbcolv) {
+      unsigned int i2;
+      for (int nbcol : nbcolv) {
+        if (nbcol >= ncol) {
+          std::cout << "The column does not exist\n";
+          return;
+        };
+        i2 = 0;
+        while (i2 < matr_idx[0].size()) {
+          if (nbcol == matr_idx[0][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+        matr_idx[0].erase(matr_idx[0].begin() + i2);
+        tmp_val_refv.erase(tmp_val_refv.begin() + nbcol);
+        i2 = nrow * i2;
+        str_v.erase(str_v.begin() + i2, str_v.begin() + i2 + nrow - 1);
+        ncol -= 1;
+      };
+    };
+
+    void rm_colchr(std::vector<unsigned int> &nbcolv) {
+      unsigned int i2;
+      for (int nbcol : nbcolv) {
+        if (nbcol >= ncol) {
+          std::cout << "The column does not exist\n";
+          return;
+        };
+        i2 = 0;
+        while (i2 < matr_idx[1].size()) {
+          if (nbcol == matr_idx[1][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+        matr_idx[1].erase(matr_idx[1].begin() + i2);
+        tmp_val_refv.erase(tmp_val_refv.begin() + nbcol);
+        i2 = nrow * i2;
+        chr_v.erase(chr_v.begin() + i2, chr_v.begin() + i2 + nrow - 1);
+        ncol -= 1;
       };
     };
 
