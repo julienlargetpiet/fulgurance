@@ -5225,13 +5225,13 @@ class Dataframe{
               if (longest_v[verif_ncol - 1] < 2) {
                 longest_v[verif_ncol - 1] = 2;
               };
-              tmp_val_refv[0].push_back("0");
+              tmp_val_refv[0].push_back("NA");
               matr_unknown[0].push_back(nrow);
             } else if (currow[i - 1] == delim) {
               if (longest_v[verif_ncol - 1] < 2) {
                 longest_v[verif_ncol - 1] = 2;
               };
-              tmp_val_refv[verif_ncol - 1].push_back("0");
+              tmp_val_refv[verif_ncol - 1].push_back("NA");
               matr_unknown[verif_ncol - 1].push_back(nrow);
             } else {
               if (longest_v[verif_ncol - 1] < cur_str.length()) {
