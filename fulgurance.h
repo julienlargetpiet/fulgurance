@@ -6080,7 +6080,7 @@ class Dataframe{
       bool is_found = 0;
       while (!is_found) {
         i2 = 0;
-        while (1) {
+        while (i2 < matr_idx[i].size()) {
           if (colnb == matr_idx[i][i2]) {
             is_found = 1;
             break;
@@ -6208,7 +6208,6 @@ class Dataframe{
       ncol += 1;
     };
 
-    // vec must be descendly sorted
     void rm_colint(std::vector<unsigned int> &nbcolv) {
       unsigned int i;
       unsigned int i2;
@@ -6296,7 +6295,6 @@ class Dataframe{
       };
     };
 
-    // must be descendly sorted
     void rm_row(std::vector<unsigned int> &x) {
       unsigned int i;
       unsigned int cnt = 0;
@@ -6750,6 +6748,17 @@ class Dataframe{
 //@E std::vector&lt;std::string&gt; col_names = {"col1", "col2", "col3", "col4", 
 //@E "col5", "col6"};
 //@E obj1.set_colname();
+//@X
+
+//@T Dataframe.replace_colint
+//@U template &lt;typename T&gt; void replace_colint(std::vector&lt;T&gt; &x, unsigned int &colnb)
+//@X
+//@D Replace a int, unsigned int, bool or double column of the associated dataframe.
+//@A x : is the column (as vector) that will replace the dataframe column
+//@A colnb : is the index of the column to replace
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E 
 //@X
 
 //@L1 Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;
