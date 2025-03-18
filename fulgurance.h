@@ -6142,7 +6142,7 @@ class Dataframe{
       i2 = nrow * i2;
       for (i = 0; i < nrow; ++i) {
         chr_v[i2 + i] = x[i];
-        tmp_val_refv[colnb][i] = std::to_string(x[i]);
+        tmp_val_refv[colnb][i] = x[i];
       };
     };
 
