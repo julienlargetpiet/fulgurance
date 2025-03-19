@@ -5178,7 +5178,6 @@ class Dataframe{
           };
         };
       };
-      print_nvec(longest_v);
     };
 
   public:
