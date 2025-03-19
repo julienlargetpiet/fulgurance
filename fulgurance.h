@@ -6425,6 +6425,7 @@ class Dataframe{
 //@X
 //@E // after reading teste_dataframe.csv as obj1
 //@E obj1.display();
+//@E &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;
 //@E col1 col2 col3 col4 col5 col6
 //@E :0:  1    2    3    aa   5    z
 //@E :1:  6    7    8    bb   10   e
@@ -6441,6 +6442,7 @@ class Dataframe{
 //@E :12: 6    7    8    s9   10   p
 //@E :13: 1    2    3    a4   5    j
 //@E :14: 6    7    8    m9   10   i
+//@M img_dataframe.jpg
 //@X
 
 //@T Dataframe.idx_dataframe
