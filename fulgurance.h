@@ -4114,6 +4114,65 @@ template <typename TB> class Compv {
     ~Compv() {}; 
 };
 
+//@L3 Bool and indices conversions
+
+//@T bool_to_idx
+//@U std::vector&lt;unsigned int&gt; bool_to_idx(std::vector&lt;bool&gt; &x)
+//@X
+//@D Converts a boolean vector to an indices vector.
+//@A x : is the input boolean vector
+//@X
+//@E std::vector&lt;bool&gt; xbool = {0, 0, 1, 1, 0, 1, 0};
+//@E std::vector<unsigned int> xidx = bool_to_idx(xbool);
+//@E print_nvec(xidx);
+//@E 2 3 5
+//@X
+
+std::vector<unsigned int> bool_to_idx(std::vector<bool> &x) {
+  std::vector<unsigned int> rtn_v;
+  for (unsigned int i = 0; i <  x.size(); ++i) {
+    if (x[i] == 1) {
+      rtn_v.push_back(i);
+    };
+  };
+  return rtn_v;
+};
+
+//@T idx_to_bool
+//@U std::vector&lt;bool&gt; idx_to_bool(std::vector&lt;unsigned int&gt; &x, int target_size = -1)
+//@X
+//@D Converts a indice vector to a boolean vector
+//@A x : is the input indices vector
+//@A target_size : is the size of the wanted output boolean vector
+//@X
+//@E std::vector&lt;unsigned int&gt; xidx = {2, 3, 5};
+//@E std::vector&lt;bool&gt; xbool = idx_to_bool(xidx, 7);
+//@E print_nvec(xbool);
+//@E :0: 0 0 1 1 0 1 0
+//@X
+
+std::vector<bool> idx_to_bool(std::vector<unsigned int> &x, int target_size = -1) {
+  if (target_size == -1) {
+    target_size = x[x.size() - 1] + 1;
+  };
+  std::vector<bool> rtn_v;
+  unsigned int i2 = 0;
+  for (unsigned int i = 0; i < target_size; ++i) {
+    if (i2 < x.size()) {
+      if (i == x[i2]) {
+        rtn_v.push_back(1);
+        i2 += 1;
+      } else {
+        rtn_v.push_back(0);
+      };
+    } else {
+      rtn_v.push_back(0);
+    };
+  };
+  return rtn_v;
+};
+
+
 //@L3 Lower
 
 //@T lowercomp2
@@ -6133,6 +6192,7 @@ class Dataframe{
     void replace_colchr(std::vector<char> &x, unsigned int &colnb) {
       unsigned int i;
       unsigned int i2 = 0;
+      std::string cur_str;
       while (1) {
         if (colnb == matr_idx[1][i2]) {
           break;
@@ -6142,11 +6202,14 @@ class Dataframe{
       i2 = nrow * i2;
       for (i = 0; i < nrow; ++i) {
         chr_v[i2 + i] = x[i];
-        tmp_val_refv[colnb][i] = x[i];
+        cur_str = "";
+        cur_str.push_back(x[i]);
+        tmp_val_refv[colnb][i] = cur_str;
       };
     };
 
-    template <typename T> void add_colint(std::vector<T> &x) {
+    template <typename T> void add_colint(std::vector<T> &x, std::string name = "NA") {
+      name_v.push_back(name);
       unsigned int i;
       std::vector<std::string> cur_v = {};
       if (typeid(T).name() == typeid(bool).name()) {
@@ -6182,7 +6245,8 @@ class Dataframe{
       ncol += 1;
     };
 
-    void add_colstr(std::vector<std::string> &x) {
+    void add_colstr(std::vector<std::string> &x, std::string name = "NA") {
+      name_v.push_back(name);
       unsigned int i;
       std::vector<std::string> cur_v = {};
       matr_idx[0].push_back(ncol);
@@ -6195,20 +6259,24 @@ class Dataframe{
       ncol += 1;
     };
 
-    void add_colchr(std::vector<char> &x) {
+    void add_colchr(std::vector<char> &x, std::string name = "NA") {
+      name_v.push_back(name);
       unsigned int i;
       std::vector<std::string> cur_v = {};
       matr_idx[1].push_back(ncol);
       type_refv.push_back(typeid(char).name());
+      std::string cur_str;
       for (i = 0; i < nrow; ++i) {
         chr_v.push_back(x[i]);
-        cur_v.push_back(std::to_string(x[i]));
+        cur_str = "";
+        cur_str.push_back(x[i]);
+        cur_v.push_back(cur_str);
       };
       tmp_val_refv.push_back(cur_v);
       ncol += 1;
     };
 
-    void rm_colint(std::vector<unsigned int> &nbcolv) {
+    void rm_col(std::vector<unsigned int> &nbcolv) {
       unsigned int i;
       unsigned int i2;
       bool is_found;
@@ -6217,7 +6285,7 @@ class Dataframe{
           std::cout << "The column does not exist\n";
           return;
         };
-        i = 2;
+        i = 0;
         i2;
         is_found = 0;
         while (!is_found) {
@@ -6232,11 +6300,16 @@ class Dataframe{
           i += 1;
         };
         i-= 1;
+        name_v.erase(name_v.begin() + nbcol);
         matr_idx[i].erase(matr_idx[i].begin() + i2);
         tmp_val_refv.erase(tmp_val_refv.begin() + nbcol);
         type_refv.erase(type_refv.begin() + nbcol);
         i2 = nrow * i2;
-        if (i == 2) {
+        if (i == 0) {
+          str_v.erase(str_v.begin() + i2, str_v.begin() + i2 + nrow);
+        } else if (i == 1) {
+          chr_v.erase(chr_v.begin() + i2, chr_v.begin() + i2 + nrow);
+        } else if (i == 2) {
           bool_v.erase(bool_v.begin() + i2, bool_v.begin() + i2 + nrow);
         } else if (i == 3) {
           int_v.erase(int_v.begin() + i2, int_v.begin() + i2 + nrow);
@@ -6245,52 +6318,6 @@ class Dataframe{
         } else if (i == 5) {
           dbl_v.erase(dbl_v.begin() + i2, dbl_v.begin() + i2 + nrow);
         };
-        ncol -= 1;
-      };
-    };
-
-    void rm_colstr(std::vector<unsigned int> &nbcolv) {
-      unsigned int i2;
-      for (int nbcol : nbcolv) {
-        if (nbcol >= ncol) {
-          std::cout << "The column does not exist\n";
-          return;
-        };
-        i2 = 0;
-        while (i2 < matr_idx[0].size()) {
-          if (nbcol == matr_idx[0][i2]) {
-            break;
-          };
-          i2 += 1;
-        };
-        matr_idx[0].erase(matr_idx[0].begin() + i2);
-        tmp_val_refv.erase(tmp_val_refv.begin() + nbcol);
-        type_refv.erase(type_refv.begin() + nbcol);
-        i2 = nrow * i2;
-        str_v.erase(str_v.begin() + i2, str_v.begin() + i2 + nrow);
-        ncol -= 1;
-      };
-    };
-
-    void rm_colchr(std::vector<unsigned int> &nbcolv) {
-      unsigned int i2;
-      for (int nbcol : nbcolv) {
-        if (nbcol >= ncol) {
-          std::cout << "The column does not exist\n";
-          return;
-        };
-        i2 = 0;
-        while (i2 < matr_idx[1].size()) {
-          if (nbcol == matr_idx[1][i2]) {
-            break;
-          };
-          i2 += 1;
-        };
-        matr_idx[1].erase(matr_idx[1].begin() + i2);
-        tmp_val_refv.erase(tmp_val_refv.begin() + nbcol);
-        type_refv.erase(type_refv.begin() + nbcol);
-        i2 = nrow * i2;
-        chr_v.erase(chr_v.begin() + i2, chr_v.begin() + i2 + nrow);
         ncol -= 1;
       };
     };
@@ -6759,6 +6786,247 @@ class Dataframe{
 //@X
 //@E // after reading teste_dataframe.csv as obj1
 //@E 
+//@E std::vector&lt;unsigned int&gt; rpl_col = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 
+//@E                                       10, 11, 12, 13, 14};
+//@E unsigned int col = 0;
+//@E obj1.replace_colint(rpl_col, col);
+//@E obj1.display();
+//@E      &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;
+//@E      col1   col2   col3   col4  col5  col6
+//@E  :0:  0      2      3      aa    5     z
+//@E  :1:  1      7      8      bb    10    e
+//@E  :2:  2      2      3      cc    5     h
+//@E  :3:  3      7      8      uu    10    a
+//@E  :4:  4      2      3      s4    -5    q
+//@E  :5:  5      7      8      s9    10    p
+//@E  :6:  6      2      3      a4    5     j
+//@E  :7:  7      7      8      m9    10    i
+//@E  :8:  8      7      8      s9    10    p
+//@E  :9:  9      2      3      a4    5     j
+//@E  :10: 10     7      8      m9    10    i
+//@E  :11: 11     7      8      m9    10    i
+//@E  :12: 12     7      8      s9    10    p
+//@E  :13: 13     2      3      NA    5     j
+//@E  :14: 14     7      8      m9    10    i
+//@X
+
+//@T Dataframe.replace_colstr
+//@U void replace_colstr(std::vector&lt;std::string&gt; &x, unsigned int &colnb)
+//@X
+//@D Replace a string column of the associated dataframe.
+//@A x : is the column (as vector) that will replace the dataframe column
+//@A colnb : is the index of the column to replace
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E
+//@E std::vector&lt;std::string&gt; rpl_col = {"0", "1", "2", "3", "4", "5", "6", 
+//@E                                         "7", "8", "9", 
+//@E                                         "10", "11", "12", "13", "14"};
+//@E unsigned int col = 3;
+//@E obj1.replace_colstr(rpl_col, col);
+//@E obj1.display();
+//@E     &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;
+//@E     col1   col2   col3   col4  col5  col6
+//@E :0:  1      2      3      0     5     z
+//@E :1:  6      7      8      1     10    e
+//@E :2:  1      2      3      2     5     h
+//@E :3:  6      7      8      3     10    a
+//@E :4:  1      2      3      4     -5    q
+//@E :5:  6      7      8      5     10    p
+//@E :6:  1      2      3      6     5     j
+//@E :7:  6      7      8      7     10    i
+//@E :8:  6      7      8      8     10    p
+//@E :9:  1      2      3      9     5     j
+//@E :10: 6      7      8      10    10    i
+//@E :11: 6      7      8      11    10    i
+//@E :12: 6      7      8      12    10    p
+//@E :13: 1      2      3      13    5     j
+//@E :14: 6      7      8      14    10    i
+//@X
+
+//@T Dataframe.replace_colchr
+//@U void replace_colchr(std::vector&lt;char&gt; &x, unsigned int &colnb)
+//@X
+//@D Replace a string column of the associated dataframe.
+//@A x : is the column (as vector) that will replace the dataframe column
+//@A colnb : is the index of the column to replace
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E
+//@E std::vector&lt;char&gt; rpl_col = {'c', 'c', 'c', 'c', 'c', 'c', 'c', 
+//@E                                       'c', 'c', 'c', 
+//@E                                       'b', 'b', 'v', 'v', 'v'};
+//@E unsigned int col = 5;
+//@E obj1.replace_colchr(rpl_col, col);
+//@E obj1.display();
+//@E     &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;
+//@E     col1   col2   col3   col4  col5  col6
+//@E :0:  1      2      3      aa    5     c
+//@E :1:  6      7      8      bb    10    c
+//@E :2:  1      2      3      cc    5     c
+//@E :3:  6      7      8      uu    10    c
+//@E :4:  1      2      3      s4    -5    c
+//@E :5:  6      7      8      s9    10    c
+//@E :6:  1      2      3      a4    5     c
+//@E :7:  6      7      8      m9    10    c
+//@E :8:  6      7      8      s9    10    c
+//@E :9:  1      2      3      a4    5     c
+//@E :10: 6      7      8      m9    10    b
+//@E :11: 6      7      8      m9    10    b
+//@E :12: 6      7      8      s9    10    v
+//@E :13: 1      2      3      NA    5     v
+//@E :14: 6      7      8      m9    10    v
+//@X
+
+//@T Dataframe.add_colint
+//@U template &lt;typename T&gt; void add_colint(std::vector&lt;T&gt; &x, std::string name = "NA")
+//@X
+//@D Add a column int, unsigned int, bool or double type to the associated dataframe
+//@A x : is the column to add
+//@A name : is the column to add name
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;unsigned int&gt; rpl_col = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 
+//@E                                       10, 11, 12, 13, 14};
+//@E obj1.add_colint(rpl_col);
+//@E obj1.display();
+//@E     &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt; &lt;uint&gt;
+//@E     col1   col2   col3   col4  col5  col6   NA
+//@E :0:  1      2      3      aa    5     z      0
+//@E :1:  6      7      8      bb    10    e      1
+//@E :2:  1      2      3      cc    5     h      2
+//@E :3:  6      7      8      uu    10    a      3
+//@E :4:  1      2      3      s4    -5    q      4
+//@E :5:  6      7      8      s9    10    p      5
+//@E :6:  1      2      3      a4    5     j      6
+//@E :7:  6      7      8      m9    10    i      7
+//@E :8:  6      7      8      s9    10    p      8
+//@E :9:  1      2      3      a4    5     j      9
+//@E :10: 6      7      8      m9    10    i      10
+//@E :11: 6      7      8      m9    10    i      11
+//@E :12: 6      7      8      s9    10    p      12
+//@E :13: 1      2      3      NA    5     j      13
+//@E :14: 6      7      8      m9    10    i      14
+//@X
+
+//@T Dataframe.add_colstr
+//@U void add_colstr(std::vector&lt;std::string&gt; &x, std::string name = "NA")
+//@X
+//@D Add a column string type to the associated dataframe.
+//@A x : is the column to add
+//@A name : is the column to add name
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E 
+//@E std::vector&lt;std::string&gt; rpl_col = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", 
+//@E                                       "10", "11", "12", "13", "14"};
+//@E obj1.add_colstr(rpl_col);
+//@E obj1.display();
+//@E     &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt; &lt;str&gt;
+//@E     col1   col2   col3   col4  col5  col6   NA
+//@E :0:  1      2      3      aa    5     z      0
+//@E :1:  6      7      8      bb    10    e      1
+//@E :2:  1      2      3      cc    5     h      2
+//@E :3:  6      7      8      uu    10    a      3
+//@E :4:  1      2      3      s4    -5    q      4
+//@E :5:  6      7      8      s9    10    p      5
+//@E :6:  1      2      3      a4    5     j      6
+//@E :7:  6      7      8      m9    10    i      7
+//@E :8:  6      7      8      s9    10    p      8
+//@E :9:  1      2      3      a4    5     j      9
+//@E :10: 6      7      8      m9    10    i      10
+//@E :11: 6      7      8      m9    10    i      11
+//@E :12: 6      7      8      s9    10    p      12
+//@E :13: 1      2      3      NA    5     j      13
+//@E :14: 6      7      8      m9    10    i      14
+//@X
+
+//@T Dataframe.add_colchr
+//@U add_colchr(std::vector&lt;char&gt; &x, std::string name = "NA")
+//@X
+//@D Add a column char type to the associated dataframe.
+//@A x : is the column to add
+//@A name : is the column to add name
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;char&gt; rpl_col = {'c', 'c', 'c', 'c', 'c', 'c', 'c', 
+//@E                                       'c', 'c', 'c', 
+//@E                                       'b', 'b', 'v', 'v', 'v'};
+//@E obj1.add_colchr(rpl_col);
+//@E obj1.display();
+//@E     &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt; &lt;char&gt;
+//@E     col1   col2   col3   col4  col5  col6   NA
+//@E :0:  1      2      3      aa    5     z      c
+//@E :1:  6      7      8      bb    10    e      c
+//@E :2:  1      2      3      cc    5     h      c
+//@E :3:  6      7      8      uu    10    a      c
+//@E :4:  1      2      3      s4    -5    q      c
+//@E :5:  6      7      8      s9    10    p      c
+//@E :6:  1      2      3      a4    5     j      c
+//@E :7:  6      7      8      m9    10    i      c
+//@E :8:  6      7      8      s9    10    p      c
+//@E :9:  1      2      3      a4    5     j      c
+//@E :10: 6      7      8      m9    10    i      b
+//@E :11: 6      7      8      m9    10    i      b
+//@E :12: 6      7      8      s9    10    p      v
+//@E :13: 1      2      3      NA    5     j      v
+//@E :14: 6      7      8      m9    10    i      v
+//@X
+
+//@T Dataframe.rm_col
+//@U void rm_col(std::vector&lt;unsigned int&gt; &nbcolv)
+//@X
+//@D Removes columns from associated dataframe.
+//@A nbcolv : is a vector containing all the indices of the columns to erase from the associated dataframe. The indices must be sorted descendly.
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;unsigned int&gt; colv = {4, 1};
+//@E obj1.rm_col(colv);
+//@E obj1.display();
+//@E     &lt;uint&gt; &lt;uint&gt; &lt;str&gt;  &lt;char&gt;
+//@E     col1   col3   col4   col6
+//@E :0:  1      3      aa     z
+//@E :1:  6      8      bb     e
+//@E :2:  1      3      cc     h
+//@E :3:  6      8      uu     a
+//@E :4:  1      3      s4     q
+//@E :5:  6      8      s9     p
+//@E :6:  1      3      a4     j
+//@E :7:  6      8      m9     i
+//@E :8:  6      8      s9     p
+//@E :9:  1      3      a4     j
+//@E :10: 6      8      m9     i
+//@E :11: 6      8      m9     i
+//@E :12: 6      8      s9     p
+//@E :13: 1      3      NA     j
+//@E :14: 6      8      m9     i
+//@X
+
+//@T Dataframe.rm_row
+//@U void rm_col(std::vector&lt;unsigned int&gt; &nbcolv)
+//@X
+//@D Removes rows from associated dataframe.
+//@A nbcolv : is a vector containing all the indices of the rows to erase from the associated dataframe. The indices must be sorted descendly.
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E std::vector&lt;unsigned int&gt; rowv = {4, 1};
+//@E obj1.rm_row(rowv);
+//@E obj1.display();
+//@E     &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;
+//@E     col1   col2   col3   col4  col5  col6
+//@E :0:  1      2      3      aa    5     z
+//@E :1:  1      2      3      cc    5     h
+//@E :2:  6      7      8      uu    10    a
+//@E :3:  6      7      8      s9    10    p
+//@E :4:  1      2      3      a4    5     j
+//@E :5:  6      7      8      m9    10    i
+//@E :6:  6      7      8      s9    10    p
+//@E :7:  1      2      3      a4    5     j
+//@E :8:  6      7      8      m9    10    i
+//@E :9:  6      7      8      m9    10    i
+//@E :10: 6      7      8      s9    10    p
+//@E :11: 1      2      3      NA    5     j
+//@E :12: 6      7      8      m9    10    i
 //@X
 
 //@L1 Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;
