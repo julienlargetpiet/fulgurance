@@ -248,6 +248,11 @@
 <b><li style="margin-left:80px; color: #2c4786;">Variadic / Indefinite number of arguments - Compv Class</li></b>
 <a href="#Compv.to_comp()" style="margin-left:100px;">Compv.to_comp()</a>
 <br>
+<b><li style="margin-left:60px; color: #2c4786;">Bool and indices conversions</li></b>
+<a href="#bool_to_idx" style="margin-left:80px;">bool_to_idx</a>
+<br>
+<a href="#idx_to_bool" style="margin-left:80px;">idx_to_bool</a>
+<br>
 <b><li style="margin-left:60px; color: #2c4786;">Lower</li></b>
 <a href="#lowercomp2" style="margin-left:80px;">lowercomp2</a>
 <br>
@@ -361,6 +366,22 @@
 <a href="#Dataframe.set_rowname" style="margin-left:40px;">Dataframe.set_rowname</a>
 <br>
 <a href="#Dataframe.set_colname" style="margin-left:40px;">Dataframe.set_colname</a>
+<br>
+<a href="#Dataframe.replace_colint" style="margin-left:40px;">Dataframe.replace_colint</a>
+<br>
+<a href="#Dataframe.replace_colstr" style="margin-left:40px;">Dataframe.replace_colstr</a>
+<br>
+<a href="#Dataframe.replace_colchr" style="margin-left:40px;">Dataframe.replace_colchr</a>
+<br>
+<a href="#Dataframe.add_colint" style="margin-left:40px;">Dataframe.add_colint</a>
+<br>
+<a href="#Dataframe.add_colstr" style="margin-left:40px;">Dataframe.add_colstr</a>
+<br>
+<a href="#Dataframe.add_colchr" style="margin-left:40px;">Dataframe.add_colchr</a>
+<br>
+<a href="#Dataframe.rm_col" style="margin-left:40px;">Dataframe.rm_col</a>
+<br>
+<a href="#Dataframe.rm_row" style="margin-left:40px;">Dataframe.rm_row</a>
 <br>
 <b><li style="margin-left:20px; color: #2c4786;">Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;</li></b>
 <b><li style="margin-left:40px; color: #2c4786;">Read matrix from file</li></b>
@@ -2826,6 +2847,44 @@ x </th><th> is an stl vector </th></tr>
 </div>
 <br>
 <hr class="hr">
+<h3 style="color:#2c4786;">Bool and indices conversions</h3>
+<h2 id="bool_to_idx" style="test-align: left;">bool_to_idx</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;unsigned int&gt; bool_to_idx(std::vector&lt;bool&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Converts a boolean vector to an indices vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input boolean vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;bool&gt; xbool = {0, 0, 1, 1, 0, 1, 0};</code>
+<br><code>std::vector<unsigned int> xidx = bool_to_idx(xbool);</code>
+<br><code>print_nvec(xidx);</code>
+<br><code>2 3 5</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="idx_to_bool" style="test-align: left;">idx_to_bool</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;bool&gt; idx_to_bool(std::vector&lt;unsigned int&gt; &x, int target_size = -1)</code></div>
+<h3>#Description</h3>
+<p>Converts a indice vector to a boolean vector</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input indices vector</th></tr>
+<tr><th>target_size </th><th> is the size of the wanted output boolean vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;unsigned int&gt; xidx = {2, 3, 5};</code>
+<br><code>std::vector&lt;bool&gt; xbool = idx_to_bool(xidx, 7);</code>
+<br><code>print_nvec(xbool);</code>
+<br><code>:0: 0 0 1 1 0 1 0</code>
+</div>
+<br>
+<hr class="hr">
 <h3 style="color:#2c4786;">Lower</h3>
 <h2 id="lowercomp2" style="test-align: left;">lowercomp2</h2>
 <h3>#Usage</h3>
@@ -3883,11 +3942,311 @@ rows </th><th> is a vector containing the row indices to copy (<code>{-1}</code>
 </div>
 <br>
 <hr class="hr">
+<h2 id="Dataframe.replace_colint" style="test-align: left;">Dataframe.replace_colint</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void replace_colint(std::vector&lt;T&gt; &x, unsigned int &colnb)</code></div>
+<p>Replace a int, unsigned int, bool or double column of the associated dataframe.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the column (as vector) that will replace the dataframe column</th></tr>
+<tr><th>colnb </th><th> is the index of the column to replace</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code></code>
+<br><code>std::vector&lt;unsigned int&gt; rpl_col = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, </code>
+<br><code>                                      10, 11, 12, 13, 14};</code>
+<br><code>unsigned int col = 0;</code>
+<br><code>obj1.replace_colint(rpl_col, col);</code>
+<br><code>obj1.display();</code>
+<br><code>     &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;</code>
+<br><code>     col1   col2   col3   col4  col5  col6</code>
+<br><code> :0:  0      2      3      aa    5     z</code>
+<br><code> :1:  1      7      8      bb    10    e</code>
+<br><code> :2:  2      2      3      cc    5     h</code>
+<br><code> :3:  3      7      8      uu    10    a</code>
+<br><code> :4:  4      2      3      s4    -5    q</code>
+<br><code> :5:  5      7      8      s9    10    p</code>
+<br><code> :6:  6      2      3      a4    5     j</code>
+<br><code> :7:  7      7      8      m9    10    i</code>
+<br><code> :8:  8      7      8      s9    10    p</code>
+<br><code> :9:  9      2      3      a4    5     j</code>
+<br><code> :10: 10     7      8      m9    10    i</code>
+<br><code> :11: 11     7      8      m9    10    i</code>
+<br><code> :12: 12     7      8      s9    10    p</code>
+<br><code> :13: 13     2      3      NA    5     j</code>
+<br><code> :14: 14     7      8      m9    10    i</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.replace_colstr" style="test-align: left;">Dataframe.replace_colstr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void replace_colstr(std::vector&lt;std::string&gt; &x, unsigned int &colnb)</code></div>
+<h3>#Description</h3>
+<p>Replace a string column of the associated dataframe.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the column (as vector) that will replace the dataframe column</th></tr>
+<tr><th>colnb </th><th> is the index of the column to replace</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code></code>
+<br><code>std::vector&lt;std::string&gt; rpl_col = {"0", "1", "2", "3", "4", "5", "6", </code>
+<br><code>                                        "7", "8", "9", </code>
+<br><code>                                        "10", "11", "12", "13", "14"};</code>
+<br><code>unsigned int col = 3;</code>
+<br><code>obj1.replace_colstr(rpl_col, col);</code>
+<br><code>obj1.display();</code>
+<br><code>    &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;</code>
+<br><code>    col1   col2   col3   col4  col5  col6</code>
+<br><code>:0:  1      2      3      0     5     z</code>
+<br><code>:1:  6      7      8      1     10    e</code>
+<br><code>:2:  1      2      3      2     5     h</code>
+<br><code>:3:  6      7      8      3     10    a</code>
+<br><code>:4:  1      2      3      4     -5    q</code>
+<br><code>:5:  6      7      8      5     10    p</code>
+<br><code>:6:  1      2      3      6     5     j</code>
+<br><code>:7:  6      7      8      7     10    i</code>
+<br><code>:8:  6      7      8      8     10    p</code>
+<br><code>:9:  1      2      3      9     5     j</code>
+<br><code>:10: 6      7      8      10    10    i</code>
+<br><code>:11: 6      7      8      11    10    i</code>
+<br><code>:12: 6      7      8      12    10    p</code>
+<br><code>:13: 1      2      3      13    5     j</code>
+<br><code>:14: 6      7      8      14    10    i</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.replace_colchr" style="test-align: left;">Dataframe.replace_colchr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void replace_colchr(std::vector&lt;char&gt; &x, unsigned int &colnb)</code></div>
+<h3>#Description</h3>
+<p>Replace a string column of the associated dataframe.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the column (as vector) that will replace the dataframe column</th></tr>
+<tr><th>colnb </th><th> is the index of the column to replace</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code></code>
+<br><code>std::vector&lt;char&gt; rpl_col = {'c', 'c', 'c', 'c', 'c', 'c', 'c', </code>
+<br><code>                                      'c', 'c', 'c', </code>
+<br><code>                                      'b', 'b', 'v', 'v', 'v'};</code>
+<br><code>unsigned int col = 5;</code>
+<br><code>obj1.replace_colchr(rpl_col, col);</code>
+<br><code>obj1.display();</code>
+<br><code>    &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;</code>
+<br><code>    col1   col2   col3   col4  col5  col6</code>
+<br><code>:0:  1      2      3      aa    5     c</code>
+<br><code>:1:  6      7      8      bb    10    c</code>
+<br><code>:2:  1      2      3      cc    5     c</code>
+<br><code>:3:  6      7      8      uu    10    c</code>
+<br><code>:4:  1      2      3      s4    -5    c</code>
+<br><code>:5:  6      7      8      s9    10    c</code>
+<br><code>:6:  1      2      3      a4    5     c</code>
+<br><code>:7:  6      7      8      m9    10    c</code>
+<br><code>:8:  6      7      8      s9    10    c</code>
+<br><code>:9:  1      2      3      a4    5     c</code>
+<br><code>:10: 6      7      8      m9    10    b</code>
+<br><code>:11: 6      7      8      m9    10    b</code>
+<br><code>:12: 6      7      8      s9    10    v</code>
+<br><code>:13: 1      2      3      NA    5     v</code>
+<br><code>:14: 6      7      8      m9    10    v</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.add_colint" style="test-align: left;">Dataframe.add_colint</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void add_colint(std::vector&lt;T&gt; &x, std::string name = "NA")</code></div>
+<h3>#Description</h3>
+<p>Add a column int, unsigned int, bool or double type to the associated dataframe</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the column to add</th></tr>
+<tr><th>name </th><th> is the column to add name</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;unsigned int&gt; rpl_col = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, </code>
+<br><code>                                      10, 11, 12, 13, 14};</code>
+<br><code>obj1.add_colint(rpl_col);</code>
+<br><code>obj1.display();</code>
+<br><code>    &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt; &lt;uint&gt;</code>
+<br><code>    col1   col2   col3   col4  col5  col6   NA</code>
+<br><code>:0:  1      2      3      aa    5     z      0</code>
+<br><code>:1:  6      7      8      bb    10    e      1</code>
+<br><code>:2:  1      2      3      cc    5     h      2</code>
+<br><code>:3:  6      7      8      uu    10    a      3</code>
+<br><code>:4:  1      2      3      s4    -5    q      4</code>
+<br><code>:5:  6      7      8      s9    10    p      5</code>
+<br><code>:6:  1      2      3      a4    5     j      6</code>
+<br><code>:7:  6      7      8      m9    10    i      7</code>
+<br><code>:8:  6      7      8      s9    10    p      8</code>
+<br><code>:9:  1      2      3      a4    5     j      9</code>
+<br><code>:10: 6      7      8      m9    10    i      10</code>
+<br><code>:11: 6      7      8      m9    10    i      11</code>
+<br><code>:12: 6      7      8      s9    10    p      12</code>
+<br><code>:13: 1      2      3      NA    5     j      13</code>
+<br><code>:14: 6      7      8      m9    10    i      14</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.add_colstr" style="test-align: left;">Dataframe.add_colstr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void add_colstr(std::vector&lt;std::string&gt; &x, std::string name = "NA")</code></div>
+<h3>#Description</h3>
+<p>Add a column string type to the associated dataframe.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the column to add</th></tr>
+<tr><th>name </th><th> is the column to add name</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code></code>
+<br><code>std::vector&lt;std::string&gt; rpl_col = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", </code>
+<br><code>                                      "10", "11", "12", "13", "14"};</code>
+<br><code>obj1.add_colstr(rpl_col);</code>
+<br><code>obj1.display();</code>
+<br><code>    &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt; &lt;str&gt;</code>
+<br><code>    col1   col2   col3   col4  col5  col6   NA</code>
+<br><code>:0:  1      2      3      aa    5     z      0</code>
+<br><code>:1:  6      7      8      bb    10    e      1</code>
+<br><code>:2:  1      2      3      cc    5     h      2</code>
+<br><code>:3:  6      7      8      uu    10    a      3</code>
+<br><code>:4:  1      2      3      s4    -5    q      4</code>
+<br><code>:5:  6      7      8      s9    10    p      5</code>
+<br><code>:6:  1      2      3      a4    5     j      6</code>
+<br><code>:7:  6      7      8      m9    10    i      7</code>
+<br><code>:8:  6      7      8      s9    10    p      8</code>
+<br><code>:9:  1      2      3      a4    5     j      9</code>
+<br><code>:10: 6      7      8      m9    10    i      10</code>
+<br><code>:11: 6      7      8      m9    10    i      11</code>
+<br><code>:12: 6      7      8      s9    10    p      12</code>
+<br><code>:13: 1      2      3      NA    5     j      13</code>
+<br><code>:14: 6      7      8      m9    10    i      14</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.add_colchr" style="test-align: left;">Dataframe.add_colchr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>add_colchr(std::vector&lt;char&gt; &x, std::string name = "NA")</code></div>
+<h3>#Description</h3>
+<p>Add a column char type to the associated dataframe.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the column to add</th></tr>
+<tr><th>name </th><th> is the column to add name</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;char&gt; rpl_col = {'c', 'c', 'c', 'c', 'c', 'c', 'c', </code>
+<br><code>                                      'c', 'c', 'c', </code>
+<br><code>                                      'b', 'b', 'v', 'v', 'v'};</code>
+<br><code>obj1.add_colchr(rpl_col);</code>
+<br><code>obj1.display();</code>
+<br><code>    &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt; &lt;char&gt;</code>
+<br><code>    col1   col2   col3   col4  col5  col6   NA</code>
+<br><code>:0:  1      2      3      aa    5     z      c</code>
+<br><code>:1:  6      7      8      bb    10    e      c</code>
+<br><code>:2:  1      2      3      cc    5     h      c</code>
+<br><code>:3:  6      7      8      uu    10    a      c</code>
+<br><code>:4:  1      2      3      s4    -5    q      c</code>
+<br><code>:5:  6      7      8      s9    10    p      c</code>
+<br><code>:6:  1      2      3      a4    5     j      c</code>
+<br><code>:7:  6      7      8      m9    10    i      c</code>
+<br><code>:8:  6      7      8      s9    10    p      c</code>
+<br><code>:9:  1      2      3      a4    5     j      c</code>
+<br><code>:10: 6      7      8      m9    10    i      b</code>
+<br><code>:11: 6      7      8      m9    10    i      b</code>
+<br><code>:12: 6      7      8      s9    10    p      v</code>
+<br><code>:13: 1      2      3      NA    5     j      v</code>
+<br><code>:14: 6      7      8      m9    10    i      v</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.rm_col" style="test-align: left;">Dataframe.rm_col</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void rm_col(std::vector&lt;unsigned int&gt; &nbcolv)</code></div>
+<h3>#Description</h3>
+<p>Removes columns from associated dataframe.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+nbcolv </th><th> is a vector containing all the indices of the columns to erase from the associated dataframe. The indices must be sorted descendly.</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;unsigned int&gt; colv = {4, 1};</code>
+<br><code>obj1.rm_col(colv);</code>
+<br><code>obj1.display();</code>
+<br><code>    &lt;uint&gt; &lt;uint&gt; &lt;str&gt;  &lt;char&gt;</code>
+<br><code>    col1   col3   col4   col6</code>
+<br><code>:0:  1      3      aa     z</code>
+<br><code>:1:  6      8      bb     e</code>
+<br><code>:2:  1      3      cc     h</code>
+<br><code>:3:  6      8      uu     a</code>
+<br><code>:4:  1      3      s4     q</code>
+<br><code>:5:  6      8      s9     p</code>
+<br><code>:6:  1      3      a4     j</code>
+<br><code>:7:  6      8      m9     i</code>
+<br><code>:8:  6      8      s9     p</code>
+<br><code>:9:  1      3      a4     j</code>
+<br><code>:10: 6      8      m9     i</code>
+<br><code>:11: 6      8      m9     i</code>
+<br><code>:12: 6      8      s9     p</code>
+<br><code>:13: 1      3      NA     j</code>
+<br><code>:14: 6      8      m9     i</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.rm_row" style="test-align: left;">Dataframe.rm_row</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void rm_col(std::vector&lt;unsigned int&gt; &nbcolv)</code></div>
+<h3>#Description</h3>
+<p>Removes rows from associated dataframe.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+nbcolv </th><th> is a vector containing all the indices of the rows to erase from the associated dataframe. The indices must be sorted descendly.</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
+<br><code>std::vector&lt;unsigned int&gt; rowv = {4, 1};</code>
+<br><code>obj1.rm_row(rowv);</code>
+<br><code>obj1.display();</code>
+<br><code>    &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;</code>
+<br><code>    col1   col2   col3   col4  col5  col6</code>
+<br><code>:0:  1      2      3      aa    5     z</code>
+<br><code>:1:  1      2      3      cc    5     h</code>
+<br><code>:2:  6      7      8      uu    10    a</code>
+<br><code>:3:  6      7      8      s9    10    p</code>
+<br><code>:4:  1      2      3      a4    5     j</code>
+<br><code>:5:  6      7      8      m9    10    i</code>
+<br><code>:6:  6      7      8      s9    10    p</code>
+<br><code>:7:  1      2      3      a4    5     j</code>
+<br><code>:8:  6      7      8      m9    10    i</code>
+<br><code>:9:  6      7      8      m9    10    i</code>
+<br><code>:10: 6      7      8      s9    10    p</code>
+<br><code>:11: 1      2      3      NA    5     j</code>
+<br><code>:12: 6      7      8      m9    10    i</code>
+</div>
+<br>
+<hr class="hr">
 <h1 style="color:#2c4786;">Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;</h1>
 <h2 style="color:#2c4786;">Read matrix from file</h2>
 <h2 id="read_matr" style="test-align: left;">read_matr</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename T&gt; void read_matr(std::string &file_name, std::vector&lt;std::vector&lt;T&gt;&gt; &out_matr, char delim = ',')</code></div>
+<h3>#Description</h3>
 <p>Returns a matrix stored in a file. </p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
