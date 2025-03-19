@@ -3493,6 +3493,7 @@ no </th><th> no</th></tr>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
 <br><code>obj1.display();</code>
+<br><code>&lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;</code>
 <br><code>col1 col2 col3 col4 col5 col6</code>
 <br><code>:0:  1    2    3    aa   5    z</code>
 <br><code>:1:  6    7    8    bb   10   e</code>
@@ -3509,7 +3510,8 @@ no </th><th> no</th></tr>
 <br><code>:12: 6    7    8    s9   10   p</code>
 <br><code>:13: 1    2    3    a4   5    j</code>
 <br><code>:14: 6    7    8    m9   10   i</code>
-</div>
+<br>
+<img style="margin-left: 20px;" height="220" width="360" src="img_dataframe.jpg"><br></div>
 <br>
 <hr class="hr">
 <h2 id="Dataframe.idx_dataframe" style="test-align: left;">Dataframe.idx_dataframe</h2>
