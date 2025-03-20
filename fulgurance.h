@@ -6345,6 +6345,79 @@ class Dataframe{
       };
     };
 
+    void transform_inner(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col) {
+      unsigned int i2;
+      std::vector<std::vector<std::string>> cur_tmp = cur_obj.get_tmp_val_refv();
+      std::vector<std::string> ext_colv = cur_tmp[ext_col];
+      std::vector<std::string> in_colv = tmp_val_refv[in_col];
+      std::string cur_val;
+      const unsigned int ext_nrow = cur_obj.get_nrow();
+      for (int i = nrow - 1; i >= 0; --i) {
+        i2 = 0;
+        cur_val = in_colv[i];
+        while (i2 < ext_nrow) {
+          if (cur_val == ext_colv[i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+        if (i2 == ext_nrow) {
+          nrow -= 1;
+          for (i2 = 0; i2 < ncol; ++i2) {
+            tmp_val_refv[i2].erase(tmp_val_refv[i2].begin() + i);
+            if (type_refv[i2] == typeid(std::string).name()) {
+              str_v.erase(str_v.begin() + nrow * i2 + i);
+            } else if (type_refv[i2] == typeid(char).name()) {
+              chr_v.erase(chr_v.begin() + nrow * i2 + i);
+            } else if (type_refv[i2] == typeid(bool).name()) {
+              bool_v.erase(bool_v.begin() + nrow * i2 + i);
+            } else if (type_refv[i2] == typeid(int).name()) {
+              int_v.erase(int_v.begin() + nrow * i2 + i);
+            } else if (type_refv[i2] == typeid(unsigned int).name()) {
+              uint_v.erase(uint_v.begin() + nrow * i2 + i);
+            } else if (type_refv[i2] == typeid(double).name()) {
+              dbl_v.erase(dbl_v.begin() + nrow * i2 + i);
+            };
+          };
+        };
+      };
+    };
+
+    void transform_excluding(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col) {
+      unsigned int i2;
+      unsigned int i3;
+      std::vector<std::vector<std::string>> cur_tmp = cur_obj.get_tmp_val_refv();
+      std::vector<std::string> ext_colv = cur_tmp[ext_col];
+      std::vector<std::string> in_colv = tmp_val_refv[in_col];
+      std::string cur_val;
+      const unsigned int ext_nrow = cur_obj.get_nrow();
+      for (int i = nrow - 1; i >= 0; --i) {
+        cur_val = in_colv[i];
+        for (i2 = 0; i2 < ext_nrow; ++i2) {
+          if (cur_val == ext_colv[i2]) {
+            nrow -= 1;
+            for (i3 = 0; i3 < ncol; ++i3) {
+              tmp_val_refv[i3].erase(tmp_val_refv[i3].begin() + i);
+              if (type_refv[i3] == typeid(std::string).name()) {
+                str_v.erase(str_v.begin() + nrow * i3 + i);
+              } else if (type_refv[i3] == typeid(char).name()) {
+                chr_v.erase(chr_v.begin() + nrow * i3 + i);
+              } else if (type_refv[i3] == typeid(bool).name()) {
+                bool_v.erase(bool_v.begin() + nrow * i3 + i);
+              } else if (type_refv[i3] == typeid(int).name()) {
+                int_v.erase(int_v.begin() + nrow * i3 + i);
+              } else if (type_refv[i3] == typeid(unsigned int).name()) {
+                uint_v.erase(uint_v.begin() + nrow * i3 + i);
+              } else if (type_refv[i3] == typeid(double).name()) {
+                dbl_v.erase(dbl_v.begin() + nrow * i3 + i);
+              };
+            };
+            break;
+          };
+        };
+      };
+    };
+
     void set_colname(std::vector<std::string> &x) {
       if (x.size() != ncol) {
         std::cout << "the number of columns of the dataframe does not correspond to the size of the input column name vector";
