@@ -5153,7 +5153,6 @@ class Dataframe{
     std::vector<unsigned int> pre_chr_v = {};
 
     std::vector<std::vector<unsigned int>> matr_idx = {{}, {}, {}, {}, {}, {}};
-    std::vector<std::vector<unsigned int>> matr_unknown = {};
     std::vector<std::string> name_v = {};
     std::vector<std::string> name_v_row = {};
     std::vector<unsigned int> longest_v = {};
@@ -5197,7 +5196,6 @@ class Dataframe{
       if (header_name) {
         while (i < currow.length()) {
           if (currow[i] == delim & !str_cxt) {
-            matr_unknown.push_back(matr_unknown_vec);
             if (i == 0) {
               max_lngth = 2;
               name_v.push_back("NA");
@@ -5234,13 +5232,10 @@ class Dataframe{
       } else {
         while (i < currow.length()) {
           if (currow[i] == delim & !str_cxt) {
-            matr_unknown.push_back(matr_unknown_vec);
             if (i == 0) {
               max_lngth = 2;
-              matr_unknown[ncol - 1].push_back(0);
             } else if (currow[i - 1] == delim) {
               max_lngth = 2;
-              matr_unknown[ncol - 1].push_back(0);
             } else {
               max_lngth = cur_str.length();
               ex_vec.push_back(cur_str);
@@ -5261,7 +5256,6 @@ class Dataframe{
         };
         if (currow[i - 1] == delim) {
           max_lngth = 2;
-          matr_unknown[ncol - 1].push_back(0);
         } else {
           max_lngth = cur_str.length();
           ex_vec.push_back(cur_str);
@@ -5284,13 +5278,11 @@ class Dataframe{
                 longest_v[verif_ncol - 1] = 2;
               };
               tmp_val_refv[0].push_back("NA");
-              matr_unknown[0].push_back(nrow);
             } else if (currow[i - 1] == delim) {
               if (longest_v[verif_ncol - 1] < 2) {
                 longest_v[verif_ncol - 1] = 2;
               };
               tmp_val_refv[verif_ncol - 1].push_back("NA");
-              matr_unknown[verif_ncol - 1].push_back(nrow);
             } else {
               if (longest_v[verif_ncol - 1] < cur_str.length()) {
                 longest_v[verif_ncol - 1] = cur_str.length();
@@ -5313,7 +5305,6 @@ class Dataframe{
             longest_v[verif_ncol - 1] = 2;
           };
           tmp_val_refv[verif_ncol - 1].push_back("0");
-          matr_unknown[verif_ncol - 1].push_back(nrow);
         } else {
           if (longest_v[verif_ncol - 1] < cur_str.length()) {
             longest_v[verif_ncol - 1] = cur_str.length();
@@ -5523,7 +5514,6 @@ class Dataframe{
       pre_chr_v = {};
 
       matr_idx = {{}, {}, {}, {}, {}, {}};
-      matr_unknown = {};
       name_v = {};
       name_v_row = {};
       longest_v = {};
