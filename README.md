@@ -383,6 +383,10 @@
 <br>
 <a href="#Dataframe.rm_row" style="margin-left:40px;">Dataframe.rm_row</a>
 <br>
+<a href="#Dataframe.transform_inner" style="margin-left:40px;">Dataframe.transform_inner</a>
+<br>
+<a href="#Dataframe.transform_excluding" style="margin-left:40px;">Dataframe.transform_excluding</a>
+<br>
 <b><li style="margin-left:20px; color: #2c4786;">Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;</li></b>
 <b><li style="margin-left:40px; color: #2c4786;">Read matrix from file</li></b>
 <a href="#read_matr" style="margin-left:60px;">read_matr</a>
@@ -4240,6 +4244,89 @@ nbcolv </th><th> is a vector containing all the indices of the rows to erase fro
 <br><code>:10: 6      7      8      s9    10    p</code>
 <br><code>:11: 1      2      3      NA    5     j</code>
 <br><code>:12: 6      7      8      m9    10    i</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.transform_inner" style="test-align: left;">Dataframe.transform_inner</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void transform_inner(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col)</code></div>
+<h3>#Description</h3>
+<p>Applies a inner join on the associated dataframe.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+cur_obj </th><th> is the other dataframe used for inner join</th></tr>
+<tr><th>in_col </th><th> is the index of the column representing the key (primary) of the associated dataframe</th></tr>
+<tr><th>ext_col </th><th> is the index of the column representing the key (foreign) of the other dataframe used for the inner join</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code>Dataframe obj1, obj2;</code>
+<br><code>std::string filename = "outb.csv";</code>
+<br><code>obj1.readf(filename);</code>
+<br><code></code>
+<br><code>std::vector&lt;unsigned int&gt; colv = {4, 3, 2};</code>
+<br><code>obj1.rm_col(colv);</code>
+<br><code></code>
+<br><code>std::string f2 = "outb2.csv";</code>
+<br><code>obj2.readf(f2);</code>
+<br><code></code>
+<br><code>unsigned int col1 = 0;</code>
+<br><code>unsigned int col2 = 0;</code>
+<br><code></code>
+<br><code>obj1.transform_excluding(obj2, col1, col2);</code>
+<br><code>obj1.display();</code>
+<br><code>   &lt;str&gt; &lt;uint&gt;</code>
+<br><code>   col1  col2</code>
+<br><code>:0: id3   1</code>
+<br><code>:1: id10  1</code>
+<br><code>:2: id13  6</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Dataframe.transform_excluding" style="test-align: left;">Dataframe.transform_excluding</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void transform_excluding(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col)</code></div>
+<h3>#Description</h3>
+<p>Applies a excluding join on the associated dataframe.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+cur_obj </th><th> is the other dataframe used for the excluding join</th></tr>
+<tr><th>in_col </th><th> is the index of the column representing the key (primary) of the associated dataframe</th></tr>
+<tr><th>ext_col </th><th> is the index of the column representing the key (foreign) of the other dataframe used for the inner join</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code>Dataframe obj1, obj2;</code>
+<br><code>std::string filename = "outb.csv";</code>
+<br><code>obj1.readf(filename);</code>
+<br><code></code>
+<br><code>std::vector&lt;unsigned int&gt; colv = {4, 3, 2};</code>
+<br><code>obj1.rm_col(colv);</code>
+<br><code></code>
+<br><code>std::string f2 = "outb2.csv";</code>
+<br><code>obj2.readf(f2);</code>
+<br><code></code>
+<br><code>unsigned int col1 = 0;</code>
+<br><code>unsigned int col2 = 0;</code>
+<br><code></code>
+<br><code>obj1.transform_inner(obj2, col1, col2);</code>
+<br><code>obj1.display();</code>
+<br><code>    &lt;str&gt; &lt;uint&gt;</code>
+<br><code>    col1  col2</code>
+<br><code>:0:  id1   1</code>
+<br><code>:1:  id2   6</code>
+<br><code>:2:  id4   6</code>
+<br><code>:3:  id5   1</code>
+<br><code>:4:  id6   6</code>
+<br><code>:5:  id7   1</code>
+<br><code>:6:  id8   6</code>
+<br><code>:7:  id9   6</code>
+<br><code>:8:  id11  6</code>
+<br><code>:9:  id12  6</code>
+<br><code>:10: id14  1</code>
+<br><code>:11: id15  6</code>
 </div>
 <br>
 <hr class="hr">
