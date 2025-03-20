@@ -4302,7 +4302,7 @@ cur_obj </th><th> is the other dataframe used for inner join</th></tr>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 cur_obj </th><th> is the other dataframe used for the excluding join</th></tr>
 <tr><th>in_col </th><th> is the index of the column representing the key (primary) of the associated dataframe</th></tr>
-<tr><th>ext_col </th><th> is the index of the column representing the key (foreign) of the other dataframe used for the inner join</th></tr>
+<tr><th>ext_col </th><th> is the index of the column representing the key (foreign) of the other dataframe used for the excluding join</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>

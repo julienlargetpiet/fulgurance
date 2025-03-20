@@ -7140,7 +7140,7 @@ class Dataframe{
 //@D Applies a excluding join on the associated dataframe.
 //@A cur_obj : is the other dataframe used for the excluding join
 //@A in_col : is the index of the column representing the key (primary) of the associated dataframe
-//@A ext_col : is the index of the column representing the key (foreign) of the other dataframe used for the inner join
+//@A ext_col : is the index of the column representing the key (foreign) of the other dataframe used for the excluding join
 //@X
 //@E
 //@E Dataframe obj1, obj2;
