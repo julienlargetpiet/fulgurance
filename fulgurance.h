@@ -7475,7 +7475,7 @@ class Dataframe{
 //@E :2: id13  6
 //@X
 
-//@D Dataframe.merge_inner
+//@T Dataframe.merge_inner
 //@U void merge_inner(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
 //@X
 //@D Performs a inner join on a newly created dataframe.
@@ -7517,7 +7517,7 @@ class Dataframe{
 //@E :11: id15  6      id15  2      3
 //@X
 
-//@T merge_excluding
+//@T Dataframe.merge_excluding
 //@U void merge_excluding(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
 //@X
 //@D Performs a left excluding join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one.
@@ -7549,7 +7549,7 @@ class Dataframe{
 //@E :2: id13  6      NA    NA     NA
 //@X
 
-//@T merge_excluding_both
+//@T Dataframe.merge_excluding_both
 //@U void merge_excluding_both(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
 //@X
 //@D Performs a full excluding join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one.
@@ -7582,7 +7582,7 @@ class Dataframe{
 //@E :3: NA    NA     id119 7      8
 //@X
 
-//@T merge_all
+//@T Dataframe.merge_all
 //@U void merge_all(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
 //@X
 //@D Performs a full join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one.

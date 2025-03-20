@@ -387,11 +387,13 @@
 <br>
 <a href="#Dataframe.transform_excluding" style="margin-left:40px;">Dataframe.transform_excluding</a>
 <br>
-<a href="#merge_excluding" style="margin-left:40px;">merge_excluding</a>
+<a href="#Dataframe.merge_inner" style="margin-left:40px;">Dataframe.merge_inner</a>
 <br>
-<a href="#merge_excluding_both" style="margin-left:40px;">merge_excluding_both</a>
+<a href="#Dataframe.merge_excluding" style="margin-left:40px;">Dataframe.merge_excluding</a>
 <br>
-<a href="#merge_all" style="margin-left:40px;">merge_all</a>
+<a href="#Dataframe.merge_excluding_both" style="margin-left:40px;">Dataframe.merge_excluding_both</a>
+<br>
+<a href="#Dataframe.merge_all" style="margin-left:40px;">Dataframe.merge_all</a>
 <br>
 <b><li style="margin-left:20px; color: #2c4786;">Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;</li></b>
 <b><li style="margin-left:40px; color: #2c4786;">Read matrix from file</li></b>
@@ -4336,10 +4338,10 @@ cur_obj </th><th> is the other dataframe used for the excluding join</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h3>#Description</h3>
-<p>Dataframe.merge_inner</p>
+<h2 id="Dataframe.merge_inner" style="test-align: left;">Dataframe.merge_inner</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>void merge_inner(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)</code></div>
+<h3>#Description</h3>
 <p>Performs a inner join on a newly created dataframe.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
@@ -4384,7 +4386,7 @@ obj1 </th><th> is the first dataframe</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="merge_excluding" style="test-align: left;">merge_excluding</h2>
+<h2 id="Dataframe.merge_excluding" style="test-align: left;">Dataframe.merge_excluding</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>void merge_excluding(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)</code></div>
 <h3>#Description</h3>
@@ -4422,7 +4424,7 @@ obj1 </th><th> is the left dataframe</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="merge_excluding_both" style="test-align: left;">merge_excluding_both</h2>
+<h2 id="Dataframe.merge_excluding_both" style="test-align: left;">Dataframe.merge_excluding_both</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>void merge_excluding_both(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)</code></div>
 <h3>#Description</h3>
@@ -4461,7 +4463,7 @@ obj1 </th><th> is the left dataframe</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="merge_all" style="test-align: left;">merge_all</h2>
+<h2 id="Dataframe.merge_all" style="test-align: left;">Dataframe.merge_all</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>void merge_all(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)</code></div>
 <h3>#Description</h3>
