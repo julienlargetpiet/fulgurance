@@ -6479,6 +6479,70 @@ class Dataframe{
       longest_determine();
     };
 
+    void merge_excluding(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
+      unsigned int ncol1 = obj1.get_ncol();
+      unsigned int ncol2 = obj2.get_ncol();
+      std::vector<std::string> cur_vstr;
+      ncol = ncol1 + ncol2;
+      const unsigned int nrow1 = obj1.get_nrow();
+      const unsigned int nrow2 = obj2.get_nrow();
+      unsigned int i;
+      unsigned int i2;
+      std::vector<std::string> name1 = obj1.get_colname();
+      std::vector<std::string> name2 = obj2.get_colname();
+      if (colname) {
+        name_v.resize(ncol);
+        if (name1.size() > 0) {
+          for (i = 0; i < name1.size(); ++i) {
+            name_v.push_back(name1[i]);
+          };
+        };
+        if (name2.size() > 0) {
+          for (i = 0; i < name2.size(); ++i) {
+            name_v.push_back(name2[i]);
+          };
+        };
+      };
+      tmp_val_refv.resize(ncol);
+      for (i = 0; i < ncol; ++i) {
+        tmp_val_refv.push_back(cur_vstr);
+      };
+      std::vector<const char*> type1 = obj1.get_typecol();
+      std::vector<const char*> type2 = obj2.get_typecol();
+      type_refv.reserve(ncol);
+      for (i = 0; i < ncol1; ++i) {
+        type_refv.push_back(type1[i]);
+      };
+      for (i = 0; i < ncol2; ++i) {
+        type_refv.push_back(type2[i]);
+      };
+      std::vector<std::vector<std::string>> tmp1 = obj1.get_tmp_val_refv();
+      std::vector<std::vector<std::string>> tmp2 = obj2.get_tmp_val_refv();
+      std::vector<std::string> col1 = tmp1[key1];
+      std::vector<std::string> col2 = tmp2[key2];
+      std::string cur_str;
+      for (i = 0; i < nrow1; ++i) {
+        i2 = 0;
+        cur_str = col1[i];
+        while (i2 < nrow2) {
+          if (cur_str == col2[i2]) {
+            break;
+          };
+         i2 += 1;
+        };
+        if (i2 == nrow2) {
+          for (i2 = 0; i2 < ncol1; ++i2) {
+            tmp_val_refv[i2].push_back(tmp1[i2][i]);
+          };
+          for (i2 = 0; i2 < ncol2; ++i2) {
+            tmp_val_refv[i2 + ncol1].push_back("NA");
+          };
+          nrow += 1;
+        };
+      };
+      longest_determine();
+    };
+
     void set_colname(std::vector<std::string> &x) {
       if (x.size() != ncol) {
         std::cout << "the number of columns of the dataframe does not correspond to the size of the input column name vector";
