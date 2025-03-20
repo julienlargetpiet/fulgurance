@@ -7517,6 +7517,116 @@ class Dataframe{
 //@E :11: id15  6      id15  2      3
 //@X
 
+//@T merge_excluding
+//@U void merge_excluding(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
+//@X
+//@D Performs a left excluding join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one.
+//@A obj1 : is the left dataframe
+//@A obj2 : is the right dataframe
+//@A colname : 1 to give the column names to the newly created dataframe
+//@A key1 : is the index of the column of the left dataframe
+//@A key2 : is the index of the column of the right dataframe
+//@X
+//@E Dataframe obj1, obj2, obj3;
+//@E std::string filename = "outb.csv";
+//@E obj1.readf(filename);
+//@E 
+//@E std::vector&lt;unsigned int&gt; colv = {4, 3, 2};
+//@E obj1.rm_col(colv);
+//@E 
+//@E std::string f2 = "outb2.csv";
+//@E obj2.readf(f2);
+//@E 
+//@E unsigned int col1 = 0;
+//@E unsigned int col2 = 0;
+//@E 
+//@E obj3.merge_excluding(obj1, obj2, 1, col1, col2);
+//@E obj3.display();
+//@E    &lt;str&gt; &lt;uint&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
+//@E 
+//@E :0: id3   1      NA    NA     NA
+//@E :1: id10  1      NA    NA     NA
+//@E :2: id13  6      NA    NA     NA
+//@X
+
+//@T merge_excluding_both
+//@U void merge_excluding_both(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
+//@X
+//@D Performs a full excluding join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one.
+//@A obj1 : is the left dataframe
+//@A obj2 : is the right dataframe
+//@A colname : 1 to give the column names to the newly created dataframe
+//@A key1 : is the index of the column of the left dataframe
+//@A key2 : is the index of the column of the right dataframe
+//@X
+//@E Dataframe obj1, obj2, obj3;
+//@E std::string filename = "outb.csv";
+//@E obj1.readf(filename);
+//@E 
+//@E std::vector&lt;unsigned int&gt; colv = {4, 3, 2};
+//@E obj1.rm_col(colv);
+//@E 
+//@E std::string f2 = "outb2.csv";
+//@E obj2.readf(f2);
+//@E 
+//@E unsigned int col1 = 0;
+//@E unsigned int col2 = 0;
+//@E 
+//@E obj3.merge_excluding_both(obj1, obj2, 1, col1, col2);
+//@E obj3.display();
+//@E    &lt;str&gt; &lt;uint&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
+//@E 
+//@E :0: id3   1      NA    NA     NA
+//@E :1: id10  1      NA    NA     NA
+//@E :2: id13  6      NA    NA     NA
+//@E :3: NA    NA     id119 7      8
+//@X
+
+//@T merge_all
+//@U void merge_all(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
+//@X
+//@D Performs a full join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one.
+//@A obj1 : is the left dataframe
+//@A obj2 : is the right dataframe
+//@A colname : 1 to give the column names to the newly created dataframe
+//@A key1 : is the index of the column of the left dataframe
+//@A key2 : is the index of the column of the right dataframe
+//@X
+//@E Dataframe obj1, obj2, obj3;
+//@E std::string filename = "outb.csv";
+//@E obj1.readf(filename);
+//@E 
+//@E std::vector&lt;unsigned int&gt; colv = {4, 3, 2};
+//@E obj1.rm_col(colv);
+//@E 
+//@E std::string f2 = "outb2.csv";
+//@E obj2.readf(f2);
+//@E 
+//@E unsigned int col1 = 0;
+//@E unsigned int col2 = 0;
+//@E 
+//@E obj3.merge_all(obj1, obj2, 1, col1, col2);
+//@E obj3.display();
+//@E     &lt;str&gt; &lt;uint&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
+//@E 
+//@E :0:  id3   1      NA    NA     NA
+//@E :1:  id10  1      NA    NA     NA
+//@E :2:  id13  6      NA    NA     NA
+//@E :3:  NA    NA     id119 7      8
+//@E :4:  id1   1      id1   2      3
+//@E :5:  id2   6      id2   7      8
+//@E :6:  id4   6      id4   7      8
+//@E :7:  id5   1      id5   2      3
+//@E :8:  id6   6      id6   7      8
+//@E :9:  id7   1      id7   2      3
+//@E :10: id8   6      id8   2      3
+//@E :11: id9   6      id9   7      8
+//@E :12: id11  6      id11  7      8
+//@E :13: id12  6      id12  7      8
+//@E :14: id14  1      id14  7      8
+//@E :15: id15  6      id15  2      3
+//@X
+
 //@L1 Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;
 
 //@L2 Read matrix from file
