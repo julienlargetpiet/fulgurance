@@ -4274,13 +4274,22 @@ cur_obj </th><th> is the other dataframe used for inner join</th></tr>
 <br><code>unsigned int col1 = 0;</code>
 <br><code>unsigned int col2 = 0;</code>
 <br><code></code>
-<br><code>obj1.transform_excluding(obj2, col1, col2);</code>
+<br><code>obj1.transform_inner(obj2, col1, col2);</code>
 <br><code>obj1.display();</code>
-<br><code>   &lt;str&gt; &lt;uint&gt;</code>
-<br><code>   col1  col2</code>
-<br><code>:0: id3   1</code>
-<br><code>:1: id10  1</code>
-<br><code>:2: id13  6</code>
+<br><code> &lt;str&gt; &lt;uint&gt;</code>
+<br><code>    col1  col2</code>
+<br><code>:0:  id1   1</code>
+<br><code>:1:  id2   6</code>
+<br><code>:2:  id4   6</code>
+<br><code>:3:  id5   1</code>
+<br><code>:4:  id6   6</code>
+<br><code>:5:  id7   1</code>
+<br><code>:6:  id8   6</code>
+<br><code>:7:  id9   6</code>
+<br><code>:8:  id11  6</code>
+<br><code>:9:  id12  6</code>
+<br><code>:10: id14  1</code>
+<br><code>:11: id15  6</code>
 </div>
 <br>
 <hr class="hr">
@@ -4311,22 +4320,13 @@ cur_obj </th><th> is the other dataframe used for the excluding join</th></tr>
 <br><code>unsigned int col1 = 0;</code>
 <br><code>unsigned int col2 = 0;</code>
 <br><code></code>
-<br><code>obj1.transform_inner(obj2, col1, col2);</code>
+<br><code>obj1.transform_excluding(obj2, col1, col2);</code>
 <br><code>obj1.display();</code>
-<br><code>    &lt;str&gt; &lt;uint&gt;</code>
-<br><code>    col1  col2</code>
-<br><code>:0:  id1   1</code>
-<br><code>:1:  id2   6</code>
-<br><code>:2:  id4   6</code>
-<br><code>:3:  id5   1</code>
-<br><code>:4:  id6   6</code>
-<br><code>:5:  id7   1</code>
-<br><code>:6:  id8   6</code>
-<br><code>:7:  id9   6</code>
-<br><code>:8:  id11  6</code>
-<br><code>:9:  id12  6</code>
-<br><code>:10: id14  1</code>
-<br><code>:11: id15  6</code>
+<br><code>   &lt;str&gt; &lt;uint&gt;</code>
+<br><code>   col1  col2</code>
+<br><code>:0: id3   1</code>
+<br><code>:1: id10  1</code>
+<br><code>:2: id13  6</code>
 </div>
 <br>
 <hr class="hr">
