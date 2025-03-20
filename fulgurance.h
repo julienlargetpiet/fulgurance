@@ -6418,6 +6418,67 @@ class Dataframe{
       };
     };
 
+    void merge_inner(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
+      unsigned int ncol1 = obj1.get_ncol();
+      unsigned int ncol2 = obj2.get_ncol();
+      std::vector<std::string> cur_vstr;
+      ncol = ncol1 + ncol2;
+      const unsigned int nrow1 = obj1.get_nrow();
+      const unsigned int nrow2 = obj2.get_nrow();
+      unsigned int i;
+      unsigned int i2;
+      unsigned int i3;
+      std::vector<std::string> name1 = obj1.get_colname();
+      std::vector<std::string> name2 = obj2.get_colname();
+      if (colname) {
+        name_v.resize(ncol);
+        if (name1.size() > 0) {
+          for (i = 0; i < name1.size(); ++i) {
+            name_v.push_back(name1[i]);
+          };
+        };
+        if (name2.size() > 0) {
+          for (i = 0; i < name2.size(); ++i) {
+            name_v.push_back(name2[i]);
+          };
+        };
+      };
+      tmp_val_refv.resize(ncol);
+      for (i = 0; i < ncol; ++i) {
+        tmp_val_refv.push_back(cur_vstr);
+      };
+      std::vector<const char*> type1 = obj1.get_typecol();
+      std::vector<const char*> type2 = obj2.get_typecol();
+      type_refv.reserve(ncol);
+      for (i = 0; i < ncol1; ++i) {
+        type_refv.push_back(type1[i]);
+      };
+      for (i = 0; i < ncol2; ++i) {
+        type_refv.push_back(type2[i]);
+      };
+      std::vector<std::vector<std::string>> tmp1 = obj1.get_tmp_val_refv();
+      std::vector<std::vector<std::string>> tmp2 = obj2.get_tmp_val_refv();
+      std::vector<std::string> col1 = tmp1[key1];
+      std::vector<std::string> col2 = tmp2[key2];
+      std::string cur_str;
+      for (i = 0; i < nrow1; ++i) {
+        cur_str = col1[i];
+        for (i2 = 0; i2 < nrow2; ++i2) {
+          if (cur_str == col2[i2]) {
+            for (i3 = 0; i3 < ncol1; ++i3) {
+              tmp_val_refv[i3].push_back(tmp1[i3][i]);
+            };
+            for (i3 = 0; i3 < ncol2; ++i3) {
+              tmp_val_refv[ncol1 + i3].push_back(tmp2[i3][i2]);
+            };
+            nrow += 1;
+            break;
+          };
+        };
+      };
+      longest_determine();
+    };
+
     void set_colname(std::vector<std::string> &x) {
       if (x.size() != ncol) {
         std::cout << "the number of columns of the dataframe does not correspond to the size of the input column name vector";
@@ -6442,6 +6503,10 @@ class Dataframe{
 
     std::vector<std::string> get_rowname() {
       return name_v_row;
+    };
+
+    std::vector<const char*> get_typecol() {
+      return type_refv;
     };
 
     Dataframe() {};
@@ -7162,6 +7227,48 @@ class Dataframe{
 //@E :0: id3   1
 //@E :1: id10  1
 //@E :2: id13  6
+//@X
+
+//@D Dataframe.merge_inner
+//@U void merge_inner(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
+//@X
+//@D Performs a inner join on a newly created dataframe.
+//@A obj1 : is the first dataframe
+//@A obj2 : is the second dataframe
+//@A colname : 1 to give the column names to the newly created dataframe
+//@A key1 : is the index of the first dataframe column as primary key
+//@A key1 : is the index of the first dataframe column as foreign key
+//@X
+//@E 
+//@E Dataframe obj1, obj2, obj3;
+//@E std::string filename = "outb.csv";
+//@E obj1.readf(filename);
+//@E 
+//@E std::vector&lt;unsigned int&gt; colv = {4, 3, 2};
+//@E obj1.rm_col(colv);
+//@E 
+//@E std::string f2 = "outb2.csv";
+//@E obj2.readf(f2);
+//@E 
+//@E unsigned int col1 = 0;
+//@E unsigned int col2 = 0;
+//@E 
+//@E obj3.merge_inner(obj1, obj2, 1, col1, col2);
+//@E obj3.display();
+//@E     &lt;str&gt; &lt;uint&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
+//@E 
+//@E :0:  id1   1      id1   2      3
+//@E :1:  id2   6      id2   7      8
+//@E :2:  id4   6      id4   7      8
+//@E :3:  id5   1      id5   2      3
+//@E :4:  id6   6      id6   7      8
+//@E :5:  id7   1      id7   2      3
+//@E :6:  id8   6      id8   2      3
+//@E :7:  id9   6      id9   7      8
+//@E :8:  id11  6      id11  7      8
+//@E :9:  id12  6      id12  7      8
+//@E :10: id14  1      id14  7      8
+//@E :11: id15  6      id15  2      3
 //@X
 
 //@L1 Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;
