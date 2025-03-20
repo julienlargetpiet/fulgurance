@@ -7093,6 +7093,77 @@ class Dataframe{
 //@E :12: 6      7      8      m9    10    i
 //@X
 
+//@T Dataframe.transform_inner
+//@U void transform_inner(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col)
+//@X
+//@D Applies a inner join on the associated dataframe.
+//@A cur_obj : is the other dataframe used for inner join
+//@A in_col : is the index of the column representing the key (primary) of the associated dataframe
+//@A ext_col : is the index of the column representing the key (foreign) of the other dataframe used for the inner join
+//@X
+//@E
+//@E Dataframe obj1, obj2;
+//@E std::string filename = "outb.csv";
+//@E obj1.readf(filename);
+//@E 
+//@E std::vector&lt;unsigned int&gt; colv = {4, 3, 2};
+//@E obj1.rm_col(colv);
+//@E 
+//@E std::string f2 = "outb2.csv";
+//@E obj2.readf(f2);
+//@E 
+//@E unsigned int col1 = 0;
+//@E unsigned int col2 = 0;
+//@E 
+//@E obj1.transform_excluding(obj2, col1, col2);
+//@E obj1.display();
+//@E    &lt;str&gt; &lt;uint&gt;
+//@E    col1  col2
+//@E :0: id3   1
+//@E :1: id10  1
+//@E :2: id13  6
+//@X
+
+//@T Dataframe.transform_excluding
+//@U void transform_excluding(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col)
+//@X
+//@D Applies a excluding join on the associated dataframe.
+//@A cur_obj : is the other dataframe used for the excluding join
+//@A in_col : is the index of the column representing the key (primary) of the associated dataframe
+//@A ext_col : is the index of the column representing the key (foreign) of the other dataframe used for the inner join
+//@X
+//@E
+//@E Dataframe obj1, obj2;
+//@E std::string filename = "outb.csv";
+//@E obj1.readf(filename);
+//@E 
+//@E std::vector&lt;unsigned int&gt; colv = {4, 3, 2};
+//@E obj1.rm_col(colv);
+//@E 
+//@E std::string f2 = "outb2.csv";
+//@E obj2.readf(f2);
+//@E 
+//@E unsigned int col1 = 0;
+//@E unsigned int col2 = 0;
+//@E 
+//@E obj1.transform_inner(obj2, col1, col2);
+//@E obj1.display();
+//@E     &lt;str&gt; &lt;uint&gt;
+//@E     col1  col2
+//@E :0:  id1   1
+//@E :1:  id2   6
+//@E :2:  id4   6
+//@E :3:  id5   1
+//@E :4:  id6   6
+//@E :5:  id7   1
+//@E :6:  id8   6
+//@E :7:  id9   6
+//@E :8:  id11  6
+//@E :9:  id12  6
+//@E :10: id14  1
+//@E :11: id15  6
+//@X
+
 //@L1 Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;
 
 //@L2 Read matrix from file
