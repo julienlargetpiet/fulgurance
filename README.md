@@ -387,6 +387,12 @@
 <br>
 <a href="#Dataframe.transform_excluding" style="margin-left:40px;">Dataframe.transform_excluding</a>
 <br>
+<a href="#merge_excluding" style="margin-left:40px;">merge_excluding</a>
+<br>
+<a href="#merge_excluding_both" style="margin-left:40px;">merge_excluding_both</a>
+<br>
+<a href="#merge_all" style="margin-left:40px;">merge_all</a>
+<br>
 <b><li style="margin-left:20px; color: #2c4786;">Operations on matrices like 2d vectors std::vector&lt;std::vector&lt;Type&gt;&gt;</li></b>
 <b><li style="margin-left:40px; color: #2c4786;">Read matrix from file</li></b>
 <a href="#read_matr" style="margin-left:60px;">read_matr</a>
@@ -4327,6 +4333,182 @@ cur_obj </th><th> is the other dataframe used for the excluding join</th></tr>
 <br><code>:0: id3   1</code>
 <br><code>:1: id10  1</code>
 <br><code>:2: id13  6</code>
+</div>
+<br>
+<hr class="hr">
+<h3>#Description</h3>
+<p>Dataframe.merge_inner</p>
+<h3>#Usage</h3>
+<div class="Div"><code>void merge_inner(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)</code></div>
+<p>Performs a inner join on a newly created dataframe.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+obj1 </th><th> is the first dataframe</th></tr>
+<tr><th>obj2 </th><th> is the second dataframe</th></tr>
+<tr><th>colname </th><th> 1 to give the column names to the newly created dataframe</th></tr>
+<tr><th>key1 </th><th> is the index of the first dataframe column as primary key</th></tr>
+<tr><th>key1 </th><th> is the index of the first dataframe column as foreign key</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code>Dataframe obj1, obj2, obj3;</code>
+<br><code>std::string filename = "outb.csv";</code>
+<br><code>obj1.readf(filename);</code>
+<br><code></code>
+<br><code>std::vector&lt;unsigned int&gt; colv = {4, 3, 2};</code>
+<br><code>obj1.rm_col(colv);</code>
+<br><code></code>
+<br><code>std::string f2 = "outb2.csv";</code>
+<br><code>obj2.readf(f2);</code>
+<br><code></code>
+<br><code>unsigned int col1 = 0;</code>
+<br><code>unsigned int col2 = 0;</code>
+<br><code></code>
+<br><code>obj3.merge_inner(obj1, obj2, 1, col1, col2);</code>
+<br><code>obj3.display();</code>
+<br><code>    &lt;str&gt; &lt;uint&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;</code>
+<br><code></code>
+<br><code>:0:  id1   1      id1   2      3</code>
+<br><code>:1:  id2   6      id2   7      8</code>
+<br><code>:2:  id4   6      id4   7      8</code>
+<br><code>:3:  id5   1      id5   2      3</code>
+<br><code>:4:  id6   6      id6   7      8</code>
+<br><code>:5:  id7   1      id7   2      3</code>
+<br><code>:6:  id8   6      id8   2      3</code>
+<br><code>:7:  id9   6      id9   7      8</code>
+<br><code>:8:  id11  6      id11  7      8</code>
+<br><code>:9:  id12  6      id12  7      8</code>
+<br><code>:10: id14  1      id14  7      8</code>
+<br><code>:11: id15  6      id15  2      3</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="merge_excluding" style="test-align: left;">merge_excluding</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void merge_excluding(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)</code></div>
+<h3>#Description</h3>
+<p>Performs a left excluding join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+obj1 </th><th> is the left dataframe</th></tr>
+<tr><th>obj2 </th><th> is the right dataframe</th></tr>
+<tr><th>colname </th><th> 1 to give the column names to the newly created dataframe</th></tr>
+<tr><th>key1 </th><th> is the index of the column of the left dataframe</th></tr>
+<tr><th>key2 </th><th> is the index of the column of the right dataframe</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>Dataframe obj1, obj2, obj3;</code>
+<br><code>std::string filename = "outb.csv";</code>
+<br><code>obj1.readf(filename);</code>
+<br><code></code>
+<br><code>std::vector&lt;unsigned int&gt; colv = {4, 3, 2};</code>
+<br><code>obj1.rm_col(colv);</code>
+<br><code></code>
+<br><code>std::string f2 = "outb2.csv";</code>
+<br><code>obj2.readf(f2);</code>
+<br><code></code>
+<br><code>unsigned int col1 = 0;</code>
+<br><code>unsigned int col2 = 0;</code>
+<br><code></code>
+<br><code>obj3.merge_excluding(obj1, obj2, 1, col1, col2);</code>
+<br><code>obj3.display();</code>
+<br><code>   &lt;str&gt; &lt;uint&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;</code>
+<br><code></code>
+<br><code>:0: id3   1      NA    NA     NA</code>
+<br><code>:1: id10  1      NA    NA     NA</code>
+<br><code>:2: id13  6      NA    NA     NA</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="merge_excluding_both" style="test-align: left;">merge_excluding_both</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void merge_excluding_both(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)</code></div>
+<h3>#Description</h3>
+<p>Performs a full excluding join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+obj1 </th><th> is the left dataframe</th></tr>
+<tr><th>obj2 </th><th> is the right dataframe</th></tr>
+<tr><th>colname </th><th> 1 to give the column names to the newly created dataframe</th></tr>
+<tr><th>key1 </th><th> is the index of the column of the left dataframe</th></tr>
+<tr><th>key2 </th><th> is the index of the column of the right dataframe</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>Dataframe obj1, obj2, obj3;</code>
+<br><code>std::string filename = "outb.csv";</code>
+<br><code>obj1.readf(filename);</code>
+<br><code></code>
+<br><code>std::vector&lt;unsigned int&gt; colv = {4, 3, 2};</code>
+<br><code>obj1.rm_col(colv);</code>
+<br><code></code>
+<br><code>std::string f2 = "outb2.csv";</code>
+<br><code>obj2.readf(f2);</code>
+<br><code></code>
+<br><code>unsigned int col1 = 0;</code>
+<br><code>unsigned int col2 = 0;</code>
+<br><code></code>
+<br><code>obj3.merge_excluding_both(obj1, obj2, 1, col1, col2);</code>
+<br><code>obj3.display();</code>
+<br><code>   &lt;str&gt; &lt;uint&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;</code>
+<br><code></code>
+<br><code>:0: id3   1      NA    NA     NA</code>
+<br><code>:1: id10  1      NA    NA     NA</code>
+<br><code>:2: id13  6      NA    NA     NA</code>
+<br><code>:3: NA    NA     id119 7      8</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="merge_all" style="test-align: left;">merge_all</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void merge_all(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)</code></div>
+<h3>#Description</h3>
+<p>Performs a full join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+obj1 </th><th> is the left dataframe</th></tr>
+<tr><th>obj2 </th><th> is the right dataframe</th></tr>
+<tr><th>colname </th><th> 1 to give the column names to the newly created dataframe</th></tr>
+<tr><th>key1 </th><th> is the index of the column of the left dataframe</th></tr>
+<tr><th>key2 </th><th> is the index of the column of the right dataframe</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>Dataframe obj1, obj2, obj3;</code>
+<br><code>std::string filename = "outb.csv";</code>
+<br><code>obj1.readf(filename);</code>
+<br><code></code>
+<br><code>std::vector&lt;unsigned int&gt; colv = {4, 3, 2};</code>
+<br><code>obj1.rm_col(colv);</code>
+<br><code></code>
+<br><code>std::string f2 = "outb2.csv";</code>
+<br><code>obj2.readf(f2);</code>
+<br><code></code>
+<br><code>unsigned int col1 = 0;</code>
+<br><code>unsigned int col2 = 0;</code>
+<br><code></code>
+<br><code>obj3.merge_all(obj1, obj2, 1, col1, col2);</code>
+<br><code>obj3.display();</code>
+<br><code>    &lt;str&gt; &lt;uint&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;</code>
+<br><code></code>
+<br><code>:0:  id3   1      NA    NA     NA</code>
+<br><code>:1:  id10  1      NA    NA     NA</code>
+<br><code>:2:  id13  6      NA    NA     NA</code>
+<br><code>:3:  NA    NA     id119 7      8</code>
+<br><code>:4:  id1   1      id1   2      3</code>
+<br><code>:5:  id2   6      id2   7      8</code>
+<br><code>:6:  id4   6      id4   7      8</code>
+<br><code>:7:  id5   1      id5   2      3</code>
+<br><code>:8:  id6   6      id6   7      8</code>
+<br><code>:9:  id7   1      id7   2      3</code>
+<br><code>:10: id8   6      id8   2      3</code>
+<br><code>:11: id9   6      id9   7      8</code>
+<br><code>:12: id11  6      id11  7      8</code>
+<br><code>:13: id12  6      id12  7      8</code>
+<br><code>:14: id14  1      id14  7      8</code>
+<br><code>:15: id15  6      id15  2      3</code>
 </div>
 <br>
 <hr class="hr">
