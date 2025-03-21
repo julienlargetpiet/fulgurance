@@ -5075,6 +5075,181 @@ std::vector<std::string> split(const std::string &x, const char &sep) {
   return rtn;
 };
 
+//@L3 Merge strings of 2 vectors
+
+//@T merge_strv
+//@U std::vector&lt;std::string&gt; merge_strv(std::vector&lt;std::string&gt; &x1, std::vector&lt;std::string&gt; &x2, std::string sep = "-")
+//@X
+//@D Returns a vector of merged strings of the input vectors
+//@A x1 : is the first vector
+//@A x2 : is the second vector
+//@X
+//@E 
+//@E std::vector&lt;std::string&gt; vec = {"lm", "lm", "mm", "lm", "po", "rr", "rr", "po"};
+//@E 
+//@E std::vector&lt;std::string&gt; vec2 = {"lm", "lm", "O"};
+//@E 
+//@E std::vector&lt;std::string&gt; outv = merge_strv(vec, vec2);
+//@E print_svec(outv);
+//@E
+//@E :0: lm-lm lm-lm mm-O  lm-lm po-lm rr-O  rr-lm po-lm
+//@X
+
+std::vector<std::string> merge_strv(std::vector<std::string> &x1, std::vector<std::string> &x2, std::string sep = "-") {
+  std::vector<std::string> rtn_v;
+  const unsigned int n = x1.size();
+  const unsigned int n2 = x2.size();
+  rtn_v.reserve(n);
+  std::string cur_str;
+  for (unsigned int i = 0; i < n; ++i) {
+    cur_str = x1[i] + sep + x2[i % n2];
+    rtn_v.push_back(cur_str);
+  };
+  return rtn_v;
+};
+
+//@L3 Occurence of elements in vectors
+
+//@T occu
+//@U template &lt;typename T&gt; std::map&lt;std::vector&lt;T&gt;, std::vector&lt;unsigned int&gt;&gt; occu(std::vector&lt;T&gt; &x)
+//@X
+//@D Returns a map containing: the input vector of elements with unique elements, and their associated occurence in another vector (second in map)
+//@A x : is the input vector
+//@X
+//@E std::vector&lt;std::string&gt; vec = {"lm", "lm", "mm", "lm", "po", "rr", "rr", "po"};
+//@E std::map<std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt; rtn_mp = occu(vec);
+//@E std::map<std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt;::iterator rtn_it = rtn_mp.begin();
+//@E int i;
+//@E std::vector<std::string> uvec = rtn_it-&gt;first;
+//@E std::vector<unsigned int> freqv = rtn_it-&gt;second;
+//@E for (i = 0; i &lt; freqv.size(); ++i) {
+//@E   std::cout &lt;&lt; uvec[i] << " " &lt;&lt; freqv[i] &lt;&lt; "\n";
+//@E };
+//@E lm 3
+//@E mm 1
+//@E po 2
+//@E rr 2
+//@X
+
+template <typename T> std::map<std::vector<T>, std::vector<unsigned int>> occu(std::vector<T> &x) {
+  std::vector<T> uvec = unique(x);
+  std::vector<unsigned int> freq_v;
+  const unsigned int n2 = uvec.size();
+  freq_v.reserve(n2);
+  unsigned int n = x.size();
+  unsigned int i2;
+  unsigned int val_freq;
+  for (T i : uvec) {
+    val_freq = 0;
+    for (i2 = 0; i2 < n; ++i2) {
+      if (i == x[i2]) {
+        val_freq += 1;
+      };
+    };
+    freq_v.push_back(val_freq);
+  };
+  return {{uvec, freq_v}};
+};
+
+//@T desc_occu
+//@U template &lt;typename T&gt; std::map&lt;std::vector&lt;T&gt;, std::vector&lt;unsigned int&gt;&gt; desc_occu(std::vector&lt;T&gt; vec, std::vector&lt;unsigned int&gt; freqv)
+//@X
+//@D Returns a descendly sorted <code>occu()</code> output.
+//@A vec : is the vector of unique elements
+//@A freqv : is the associated occurence of the elements
+//@X
+//@E std::vector&lt;std::string&gt; vec = {"lm", "lm", "mm", "lm", "po", "rr", "rr", "po"};
+//@E std::map&lt;std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt; rtn_mp = occu(vec);
+//@E std::map&lt;std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt;::iterator rtn_it = rtn_mp.begin();
+//@E int i;
+//@E std::vector&lt;std::string&gt; uvec = rtn_it-&gt;first;
+//@E std::vector&lt;unsigned int&gt; freqv = rtn_it-&gt;second;
+//@E 
+//@E std::cout &lt;&lt; "######\n";
+//@E 
+//@E rtn_mp = desc_occu(uvec, freqv);
+//@E rtn_it = rtn_mp.begin();
+//@E uvec = rtn_it-&gt;first;
+//@E freqv = rtn_it-&gt;second;
+//@E 
+//@E for (i = 0; i &lt; freqv.size(); ++i) {
+//@E   std::cout &lt;&lt; uvec[i] &lt;&lt; " " &lt;&lt; freqv[i] &lt;&lt; "\n";
+//@E };
+//@E lm 3
+//@E po 2
+//@E rr 2
+//@E mm 1
+//@X
+
+template <typename T> std::map<std::vector<T>, std::vector<unsigned int>> desc_occu(std::vector<T> vec, std::vector<unsigned int> freqv) {
+  int cur_max;
+  unsigned int cur_idx;
+  std::vector<unsigned int> rtn_freqv = {};
+  std::vector<std::string> rtn_vec = {};
+  const unsigned int n = vec.size();
+  rtn_freqv.reserve(n);
+  rtn_vec.reserve(n);
+  for (unsigned int i = 0; i < n; ++i) {
+    cur_max = max(freqv);
+    cur_idx = match(freqv, cur_max);
+    rtn_vec.push_back(vec[cur_idx]);
+    rtn_freqv.push_back(freqv[cur_idx]);
+    freqv[cur_idx] = 0;
+  };
+  return {{rtn_vec, rtn_freqv}};
+};
+
+//@T asc_occu
+//@U template &lt;typename T&gt; std::map&lt;std::vector&lt;T&gt;, std::vector&lt;unsigned int&gt;&gt; asc_occu(std::vector&lt;T&gt; vec, std::vector&lt;unsigned int&gt; freqv)
+//@X
+//@D Returns a ascendly sorted out put of the <code>occu()</code> output.
+//@A vec : is the vector of unique elements
+//@A freqv : is the associated occurence of the elements
+//@X
+//@E 
+//@E std::vector&lt;std::string&gt; vec = {"lm", "lm", "mm", "lm", "po", "rr", "rr", "po"};
+//@E std::map&lt;std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt; rtn_mp = occu(vec);
+//@E std::map&lt;std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt;::iterator rtn_it = rtn_mp.begin();
+//@E int i;
+//@E std::vector&lt;std::string&gt; uvec = rtn_it-&gt;first;
+//@E std::vector&lt;unsigned int&gt; freqv = rtn_it-&gt;second;
+//@E for (i = 0; i &lt; freqv.size(); ++i) {
+//@E   std::cout &lt;&lt; uvec[i] &lt;&lt; " " &lt;&lt; freqv[i] &lt;&lt; "\n";
+//@E };
+//@E 
+//@E rtn_mp = asc_occu(uvec, freqv);
+//@E rtn_it = rtn_mp.begin();
+//@E uvec = rtn_it-&gt;first;
+//@E freqv = rtn_it-&gt;second;
+//@E 
+//@E for (i = 0; i &lt; freqv.size(); ++i) {
+//@E   std::cout &lt;&lt; uvec[i] &lt;&lt; " " &lt;&lt; freqv[i] &lt;&lt; "\n";
+//@E };
+//@E mm 1
+//@E po 2
+//@E rr 2
+//@E lm 3
+//@X
+
+template <typename T> std::map<std::vector<T>, std::vector<unsigned int>> asc_occu(std::vector<T> vec, std::vector<unsigned int> freqv) {
+  int cur_min;
+  int ref_max = max(freqv) + 1;
+  unsigned int cur_idx;
+  std::vector<unsigned int> rtn_freqv = {};
+  std::vector<std::string> rtn_vec = {};
+  const unsigned int n = vec.size();
+  rtn_freqv.reserve(n);
+  rtn_vec.reserve(n);
+  for (unsigned int i = 0; i < n; ++i) {
+    cur_min = min(freqv);
+    cur_idx = match(freqv, cur_min);
+    rtn_vec.push_back(vec[cur_idx]);
+    rtn_freqv.push_back(freqv[cur_idx]);
+    freqv[cur_idx] = ref_max + 1;
+  };
+  return {{rtn_vec, rtn_freqv}};
+};
+
 //@L2 Others
 
 //@T pct_to_idx
