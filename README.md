@@ -433,6 +433,9 @@
 <br>
 <a href="#det_small" style="margin-left:60px;">det_small</a>
 <br>
+<b><li style="margin-left:20px; color: #2c4786;">Geographical coordinates manipulation</li></b>
+<a href="#geo_min" style="margin-left:40px;">geo_min</a>
+<br>
 <b><li style="margin-left:20px; color: #2c4786;">Fulgurance Tools</li></b>
 <a href="#Parser_tokenizer_full" style="margin-left:40px;">Parser_tokenizer_full</a>
 <br>
@@ -5006,6 +5009,45 @@ impt_matr </th><th> is the input matrix</th></tr>
 <br><code>std::cout &lt;&lt; out_val &lt;&lt; "\n";</code>
 <br><code>1473982232</code>
 <br><code></code>
+</div>
+<br>
+<hr class="hr">
+<h1 style="color:#2c4786;">Geographical coordinates manipulation</h1>
+<h2 id="geo_min" style="test-align: left;">geo_min</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>double geo_min(double &lat1, double &longit1, double &lat2, double &longit2, const double sphere_ray = 6378)</code></div>
+<h3>#Description</h3>
+<p>Returns the shortest distance between 2 geographical points.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+lat1 </th><th> is the lattitude of the first point</th></tr>
+<tr><th>longit1 </th><th> is the longitude of the second point</th></tr>
+<tr><th>lat2 </th><th> is the lattitude of the second point</th></tr>
+<tr><th>longit2 </th><th> is the longitude of the second point</th></tr>
+<tr><th>sphere_ray </th><th> is the rayon of the sphere in km (defaults to Earth)</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double lat1 = 23;</code>
+<br><code>double longit1 = -45;</code>
+<br><code></code>
+<br><code>double lat2 = -23;</code>
+<br><code>double longit2 = 45;</code>
+<br><code></code>
+<br><code>double delta = geo_min(lat1, longit1, lat2, longit2);</code>
+<br><code></code>
+<br><code>std::cout &lt;&lt; delta &lt;&lt; "\n";</code>
+<br><code></code>
+<br><code>lat1 = 60;</code>
+<br><code>longit1 = 30;</code>
+<br><code></code>
+<br><code>lat2 = 60;</code>
+<br><code>longit2 = -150;</code>
+<br><code></code>
+<br><code>delta = geo_min(lat1, longit1, lat2, longit2);</code>
+<br><code></code>
+<br><code>std::cout &lt;&lt; delta &lt;&lt; "\n";</code>
+<br><code>6679.1</code>
 </div>
 <br>
 <hr class="hr">
