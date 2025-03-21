@@ -5117,13 +5117,13 @@ std::vector<std::string> merge_strv(std::vector<std::string> &x1, std::vector<st
 //@A x : is the input vector
 //@X
 //@E std::vector&lt;std::string&gt; vec = {"lm", "lm", "mm", "lm", "po", "rr", "rr", "po"};
-//@E std::map<std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt; rtn_mp = occu(vec);
-//@E std::map<std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt;::iterator rtn_it = rtn_mp.begin();
+//@E std::map&lt;std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt; rtn_mp = occu(vec);
+//@E std::map&lt;std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt;::iterator rtn_it = rtn_mp.begin();
 //@E int i;
-//@E std::vector<std::string> uvec = rtn_it-&gt;first;
-//@E std::vector<unsigned int> freqv = rtn_it-&gt;second;
+//@E std::vector&lt;std::string&gt; uvec = rtn_it-&gt;first;
+//@E std::vector&lt;unsigned int&gt; freqv = rtn_it-&gt;second;
 //@E for (i = 0; i &lt; freqv.size(); ++i) {
-//@E   std::cout &lt;&lt; uvec[i] << " " &lt;&lt; freqv[i] &lt;&lt; "\n";
+//@E   std::cout &lt;&lt; uvec[i] &lt;&lt; " " &lt;&lt; freqv[i] &lt;&lt; "\n";
 //@E };
 //@E lm 3
 //@E mm 1
