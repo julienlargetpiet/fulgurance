@@ -8710,6 +8710,70 @@ template <typename T> double det_small(std::vector<std::vector<T>> &inpt_matr){
   };
 };
 
+//@L1 Geographical coordinates manipulation
+
+//@T geo_min
+//@U double geo_min(double &lat1, double &longit1, double &lat2, double &longit2, const double sphere_ray = 6378)
+//@X
+//@D Returns the shortest distance between 2 geographical points.
+//@A lat1 : is the lattitude of the first point
+//@A longit1 : is the longitude of the second point
+//@A lat2 : is the lattitude of the second point
+//@A longit2 : is the longitude of the second point
+//@A sphere_ray : is the rayon of the sphere in km (defaults to Earth)
+//@X
+//@E double lat1 = 23;
+//@E double longit1 = -45;
+//@E 
+//@E double lat2 = -23;
+//@E double longit2 = 45;
+//@E 
+//@E double delta = geo_min(lat1, longit1, lat2, longit2);
+//@E 
+//@E std::cout &lt;&lt; delta &lt;&lt; "\n";
+//@E 
+//@E lat1 = 60;
+//@E longit1 = 30;
+//@E 
+//@E lat2 = 60;
+//@E longit2 = -150;
+//@E 
+//@E delta = geo_min(lat1, longit1, lat2, longit2);
+//@E 
+//@E std::cout &lt;&lt; delta &lt;&lt; "\n";
+//@E 6679.1
+//@X
+
+double geo_min(double &lat1, double &longit1, double &lat2, double &longit2, const double sphere_ray = 6378) {
+  double g_rad;
+  double a_rad;
+  double b_rad;
+  double c_rad;
+  double delta;
+  const double pi = 3.141593;
+  if (lat1 >= 0) {
+    a_rad = 90 - lat1;
+  } else {
+    a_rad = 90 + lat1;
+  };
+  a_rad = pi * a_rad / 180;
+  if (lat2 >= 0) {
+    b_rad = 90 - lat2;
+  } else {
+    b_rad = 90 - lat2;
+  };
+  b_rad = pi * b_rad / 180;
+  if (longit1 >= longit2) {
+    g_rad = longit1 - longit2;
+  } else {
+    g_rad = longit2 - longit1;
+  };
+  g_rad = pi * g_rad / 180;
+  c_rad = cos(a_rad) * cos(b_rad) + sin(a_rad) * sin(b_rad) * cos(g_rad);
+  delta = acos(c_rad) * sphere_ray;
+  return delta;
+};
+
 //@L1 Fulgurance Tools
 
 //@T Parser_tokenizer_full
