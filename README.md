@@ -313,6 +313,16 @@
 <b><li style="margin-left:60px; color: #2c4786;">Split (string to vector)</li></b>
 <a href="#split" style="margin-left:80px;">split</a>
 <br>
+<b><li style="margin-left:60px; color: #2c4786;">Merge strings of 2 vectors</li></b>
+<a href="#merge_strv" style="margin-left:80px;">merge_strv</a>
+<br>
+<b><li style="margin-left:60px; color: #2c4786;">Occurence of elements in vectors</li></b>
+<a href="#occu" style="margin-left:80px;">occu</a>
+<br>
+<a href="#desc_occu" style="margin-left:80px;">desc_occu</a>
+<br>
+<a href="#asc_occu" style="margin-left:80px;">asc_occu</a>
+<br>
 <b><li style="margin-left:40px; color: #2c4786;">Others</li></b>
 <a href="#pct_to_idx" style="margin-left:60px;">pct_to_idx</a>
 <br>
@@ -3393,6 +3403,133 @@ x </th><th> is a stl string</th></tr>
 <br><code>char sep = '-';</code>
 <br><code>std::vector&lt;std::string&gt; out = split(test, sep);</code>
 <br><code>{"y", "e", "ss"}</code>
+</div>
+<br>
+<hr class="hr">
+<h3 style="color:#2c4786;">Merge strings of 2 vectors</h3>
+<h2 id="merge_strv" style="test-align: left;">merge_strv</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;std::string&gt; merge_strv(std::vector&lt;std::string&gt; &x1, std::vector&lt;std::string&gt; &x2, std::string sep = "-")</code></div>
+<h3>#Description</h3>
+<p>Returns a vector of merged strings of the input vectors</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x1 </th><th> is the first vector</th></tr>
+<tr><th>x2 </th><th> is the second vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code>std::vector&lt;std::string&gt; vec = {"lm", "lm", "mm", "lm", "po", "rr", "rr", "po"};</code>
+<br><code></code>
+<br><code>std::vector&lt;std::string&gt; vec2 = {"lm", "lm", "O"};</code>
+<br><code></code>
+<br><code>std::vector&lt;std::string&gt; outv = merge_strv(vec, vec2);</code>
+<br><code>print_svec(outv);</code>
+<br><code></code>
+<br><code>:0: lm-lm lm-lm mm-O  lm-lm po-lm rr-O  rr-lm po-lm</code>
+</div>
+<br>
+<hr class="hr">
+<h3 style="color:#2c4786;">Occurence of elements in vectors</h3>
+<h2 id="occu" style="test-align: left;">occu</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::map&lt;std::vector&lt;T&gt;, std::vector&lt;unsigned int&gt;&gt; occu(std::vector&lt;T&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Returns a map containing: the input vector of elements with unique elements, and their associated occurence in another vector (second in map)</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;std::string&gt; vec = {"lm", "lm", "mm", "lm", "po", "rr", "rr", "po"};</code>
+<br><code>std::map&lt;std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt; rtn_mp = occu(vec);</code>
+<br><code>std::map&lt;std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt;::iterator rtn_it = rtn_mp.begin();</code>
+<br><code>int i;</code>
+<br><code>std::vector&lt;std::string&gt; uvec = rtn_it-&gt;first;</code>
+<br><code>std::vector&lt;unsigned int&gt; freqv = rtn_it-&gt;second;</code>
+<br><code>for (i = 0; i &lt; freqv.size(); ++i) {</code>
+<br><code>  std::cout &lt;&lt; uvec[i] &lt;&lt; " " &lt;&lt; freqv[i] &lt;&lt; "\n";</code>
+<br><code>};</code>
+<br><code>lm 3</code>
+<br><code>mm 1</code>
+<br><code>po 2</code>
+<br><code>rr 2</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="desc_occu" style="test-align: left;">desc_occu</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::map&lt;std::vector&lt;T&gt;, std::vector&lt;unsigned int&gt;&gt; desc_occu(std::vector&lt;T&gt; vec, std::vector&lt;unsigned int&gt; freqv)</code></div>
+<h3>#Description</h3>
+<p>Returns a descendly sorted <code>occu()</code> output.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+vec </th><th> is the vector of unique elements</th></tr>
+<tr><th>freqv </th><th> is the associated occurence of the elements</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;std::string&gt; vec = {"lm", "lm", "mm", "lm", "po", "rr", "rr", "po"};</code>
+<br><code>std::map&lt;std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt; rtn_mp = occu(vec);</code>
+<br><code>std::map&lt;std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt;::iterator rtn_it = rtn_mp.begin();</code>
+<br><code>int i;</code>
+<br><code>std::vector&lt;std::string&gt; uvec = rtn_it-&gt;first;</code>
+<br><code>std::vector&lt;unsigned int&gt; freqv = rtn_it-&gt;second;</code>
+<br><code></code>
+<br><code>std::cout &lt;&lt; "######\n";</code>
+<br><code></code>
+<br><code>rtn_mp = desc_occu(uvec, freqv);</code>
+<br><code>rtn_it = rtn_mp.begin();</code>
+<br><code>uvec = rtn_it-&gt;first;</code>
+<br><code>freqv = rtn_it-&gt;second;</code>
+<br><code></code>
+<br><code>for (i = 0; i &lt; freqv.size(); ++i) {</code>
+<br><code>  std::cout &lt;&lt; uvec[i] &lt;&lt; " " &lt;&lt; freqv[i] &lt;&lt; "\n";</code>
+<br><code>};</code>
+<br><code>lm 3</code>
+<br><code>po 2</code>
+<br><code>rr 2</code>
+<br><code>mm 1</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="asc_occu" style="test-align: left;">asc_occu</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::map&lt;std::vector&lt;T&gt;, std::vector&lt;unsigned int&gt;&gt; asc_occu(std::vector&lt;T&gt; vec, std::vector&lt;unsigned int&gt; freqv)</code></div>
+<h3>#Description</h3>
+<p>Returns a ascendly sorted out put of the <code>occu()</code> output.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+vec </th><th> is the vector of unique elements</th></tr>
+<tr><th>freqv </th><th> is the associated occurence of the elements</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code>std::vector&lt;std::string&gt; vec = {"lm", "lm", "mm", "lm", "po", "rr", "rr", "po"};</code>
+<br><code>std::map&lt;std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt; rtn_mp = occu(vec);</code>
+<br><code>std::map&lt;std::vector&lt;std::string&gt;, std::vector&lt;unsigned int&gt;&gt;::iterator rtn_it = rtn_mp.begin();</code>
+<br><code>int i;</code>
+<br><code>std::vector&lt;std::string&gt; uvec = rtn_it-&gt;first;</code>
+<br><code>std::vector&lt;unsigned int&gt; freqv = rtn_it-&gt;second;</code>
+<br><code>for (i = 0; i &lt; freqv.size(); ++i) {</code>
+<br><code>  std::cout &lt;&lt; uvec[i] &lt;&lt; " " &lt;&lt; freqv[i] &lt;&lt; "\n";</code>
+<br><code>};</code>
+<br><code></code>
+<br><code>rtn_mp = asc_occu(uvec, freqv);</code>
+<br><code>rtn_it = rtn_mp.begin();</code>
+<br><code>uvec = rtn_it-&gt;first;</code>
+<br><code>freqv = rtn_it-&gt;second;</code>
+<br><code></code>
+<br><code>for (i = 0; i &lt; freqv.size(); ++i) {</code>
+<br><code>  std::cout &lt;&lt; uvec[i] &lt;&lt; " " &lt;&lt; freqv[i] &lt;&lt; "\n";</code>
+<br><code>};</code>
+<br><code>mm 1</code>
+<br><code>po 2</code>
+<br><code>rr 2</code>
+<br><code>lm 3</code>
 </div>
 <br>
 <hr class="hr">
