@@ -8542,6 +8542,8 @@ template <typename T> std::vector<std::vector<T>> abs_matrout(const std::vector<
   return rtn;
 };
 
+//@L2 Determinant
+
 //@T det_small
 //@U template &lt;typename T&gt; double det_small(std::vector&lt;std::vector&lt;T&gt;&gt; &inpt_matr)
 //@X
@@ -8708,6 +8710,105 @@ template <typename T> double det_small(std::vector<std::vector<T>> &inpt_matr){
       cnt += 1;
     };
   };
+};
+
+//@L2 Apply any function on indefinite numbers of same type vectors
+
+//@T Fapply2d object
+//@U Fapply(std::vector&lt;TB&gt; &x)
+//@X
+//@D Apllies any function onto a variadic numbers of vectors of any type
+//@A x : is an empty vector of the type choosen for the operations between vectors
+//@X
+//@E std::vector&lt;int&gt; xint = {0, 1, 2};
+//@E std::vector&lt;int&gt; xint2 = {0, 1, 2};
+//@E 
+//@E std::vector&lt;int&gt; iinv = {};
+//@E 
+//@E Fapply2d obj1(iinv);
+//@X
+
+//@T Fapply2d.set_args
+//@U template &lt;typename T, typename ...T2&gt; void set_args(std::vector&lt;T&gt; &x, std::vector&lt;T2&gt;&... x2)
+//@X
+//@D Is a variadic function allowing to put in the class an indefinite number of vectors of the same type that will be used by your custom function later, see <code>Fapply2d.fapply2d()</code>
+//@A ... : is some same types vectors
+//@X
+//@E 
+//@E std::vector&lt;int&gt; xint = {0, 1, 2};
+//@E std::vector&lt;int&gt; xint2 = {0, 1, 2};
+//@E 
+//@E obj1.set_args(xint, xint, xint2);
+//@X
+
+//@T Fapply2d.fapply2d
+//@U template &lt;typename T&gt; std::vector&lt;T&gt; fapply2d(std::vector&lt;T&gt; (&f)(std::vector&lt;std::vector&lt;T&gt;&gt;))
+//@X
+//@D Performs your custom function on the <code>std::vector<std::vector<T>></code> created by <code>Fapply2d.set_args()</code>.
+//@A f : is the reference to the custom function
+//@X
+//@E 
+//@E std::vector&lt;int&gt; addv(std::vector&lt;std::vector&lt;int&gt;&gt; x) {
+//@E   std::vector&lt;int&gt; rtn_v = {};
+//@E   int cur_val;
+//@E   unsigned int i2;
+//@E   const unsigned int n  = x[0].size();
+//@E   const unsigned int n2  = x.size();
+//@E   for (int i = 0; i &lt; n; ++i) {
+//@E     cur_val = 0;
+//@E     for (i2 = 0; i2 &lt; n2; ++i2) {
+//@E       cur_val += x[i2][i];
+//@E     };
+//@E     rtn_v.push_back(cur_val);
+//@E   };
+//@E   return rtn_v;
+//@E };
+//@E
+//@E std::vector&lt;int&gt; xint = {0, 1, 2};
+//@E std::vector&lt;int&gt; xint2 = {0, 1, 2};
+//@E 
+//@E std::vector&lt;int&gt; iinv = {};
+//@E 
+//@E Fapply2d obj1(iinv);
+//@E obj1.set_args(xint, xint, xint2);
+//@E iinv = obj1.fapply2d(addv);
+//@E print_nvec(outv);
+//@E :0: 0 3 6
+//@X
+
+template <typename TB> class Fapply2d {
+
+  private:
+
+    std::vector<std::vector<TB>> matr_val = {};
+    std::vector<TB> rtn_v;
+
+  public:
+
+    template <typename T> std::vector<T> fapply2d(std::vector<T> (&f)(std::vector<std::vector<T>>)) {
+      return f(matr_val);
+    };
+
+    void set_args() { };
+    
+    template <typename T, typename ...T2> void set_args(std::vector<T> &x, std::vector<T2>&... x2) {
+      matr_val.push_back(x);
+      set_args(x2...);
+    };
+
+    void reinitiate() {
+      rtn_v = {};
+      matr_val = {};
+    };
+
+    Fapply2d(std::vector<TB> &x) {
+      rtn_v = x;
+      matr_val = {x};
+      matr_val.pop_back();
+    };
+
+    ~Fapply2d() {};
+
 };
 
 //@L1 Geographical coordinates manipulation
