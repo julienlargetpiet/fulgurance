@@ -441,6 +441,8 @@
 <br>
 <a href="#Fapply2d.fapply2d" style="margin-left:60px;">Fapply2d.fapply2d</a>
 <br>
+<a href="#Fapply2d.reinitiate" style="margin-left:60px;">Fapply2d.reinitiate</a>
+<br>
 <b><li style="margin-left:20px; color: #2c4786;">Geographical coordinates manipulation</li></b>
 <a href="#geo_min" style="margin-left:40px;">geo_min</a>
 <br>
@@ -5099,6 +5101,21 @@ f </th><th> is the reference to the custom function</th></tr>
 <br><code>iinv = obj1.fapply2d(addv);</code>
 <br><code>print_nvec(outv);</code>
 <br><code>:0: 0 3 6</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Fapply2d.reinitiate" style="test-align: left;">Fapply2d.reinitiate</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void reinitiate();</code></div>
+<h3>#Description</h3>
+<p>Empties the 2d T internal vector. Necessary to reset args (vectors input of the internal 2d vector) of same type before applying the function (or another) to new vectors.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+no </th><th> no</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>Fapply2d.reinitiate();</code>
 </div>
 <br>
 <hr class="hr">
