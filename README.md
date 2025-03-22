@@ -431,7 +431,15 @@
 <br>
 <a href="#abs_matrout" style="margin-left:60px;">abs_matrout</a>
 <br>
+<b><li style="margin-left:40px; color: #2c4786;">Determinant</li></b>
 <a href="#det_small" style="margin-left:60px;">det_small</a>
+<br>
+<b><li style="margin-left:40px; color: #2c4786;">Apply any function on indefinite numbers of same type vectors</li></b>
+<a href="#Fapply2d object" style="margin-left:60px;">Fapply2d object</a>
+<br>
+<a href="#Fapply2d.set_args" style="margin-left:60px;">Fapply2d.set_args</a>
+<br>
+<a href="#Fapply2d.fapply2d" style="margin-left:60px;">Fapply2d.fapply2d</a>
 <br>
 <b><li style="margin-left:20px; color: #2c4786;">Geographical coordinates manipulation</li></b>
 <a href="#geo_min" style="margin-left:40px;">geo_min</a>
@@ -4986,6 +4994,7 @@ x </th><th> is a matrix as 2D stl vector (int, float, double, bool)</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h2 style="color:#2c4786;">Determinant</h2>
 <h2 id="det_small" style="test-align: left;">det_small</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename T&gt; double det_small(std::vector&lt;std::vector&lt;T&gt;&gt; &inpt_matr)</code></div>
@@ -5009,6 +5018,87 @@ impt_matr </th><th> is the input matrix</th></tr>
 <br><code>std::cout &lt;&lt; out_val &lt;&lt; "\n";</code>
 <br><code>1473982232</code>
 <br><code></code>
+</div>
+<br>
+<hr class="hr">
+<h2 style="color:#2c4786;">Apply any function on indefinite numbers of same type vectors</h2>
+<h2 id="Fapply2d object" style="test-align: left;">Fapply2d object</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>Fapply(std::vector&lt;TB&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Apllies any function onto a variadic numbers of vectors of any type</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is an empty vector of the type choosen for the operations between vectors</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; xint = {0, 1, 2};</code>
+<br><code>std::vector&lt;int&gt; xint2 = {0, 1, 2};</code>
+<br><code></code>
+<br><code>std::vector&lt;int&gt; iinv = {};</code>
+<br><code></code>
+<br><code>Fapply2d obj1(iinv);</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Fapply2d.set_args" style="test-align: left;">Fapply2d.set_args</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename ...T2&gt; void set_args(std::vector&lt;T&gt; &x, std::vector&lt;T2&gt;&... x2)</code></div>
+<h3>#Description</h3>
+<p>Is a variadic function allowing to put in the class an indefinite number of vectors of the same type that will be used by your custom function later, see <code>Fapply2d.fapply2d()</code></p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+... </th><th> is some same types vectors</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code>std::vector&lt;int&gt; xint = {0, 1, 2};</code>
+<br><code>std::vector&lt;int&gt; xint2 = {0, 1, 2};</code>
+<br><code></code>
+<br><code>obj1.set_args(xint, xint, xint2);</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Fapply2d.fapply2d" style="test-align: left;">Fapply2d.fapply2d</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; fapply2d(std::vector&lt;T&gt; (&f)(std::vector&lt;std::vector&lt;T&gt;&gt;))</code></div>
+<h3>#Description</h3>
+<p>Performs your custom function on the <code>std::vector<std::vector<T>></code> created by <code>Fapply2d.set_args()</code>.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+f </th><th> is the reference to the custom function</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code>std::vector&lt;int&gt; addv(std::vector&lt;std::vector&lt;int&gt;&gt; x) {</code>
+<br><code>  std::vector&lt;int&gt; rtn_v = {};</code>
+<br><code>  int cur_val;</code>
+<br><code>  unsigned int i2;</code>
+<br><code>  const unsigned int n  = x[0].size();</code>
+<br><code>  const unsigned int n2  = x.size();</code>
+<br><code>  for (int i = 0; i &lt; n; ++i) {</code>
+<br><code>    cur_val = 0;</code>
+<br><code>    for (i2 = 0; i2 &lt; n2; ++i2) {</code>
+<br><code>      cur_val += x[i2][i];</code>
+<br><code>    };</code>
+<br><code>    rtn_v.push_back(cur_val);</code>
+<br><code>  };</code>
+<br><code>  return rtn_v;</code>
+<br><code>};</code>
+<br><code></code>
+<br><code>std::vector&lt;int&gt; xint = {0, 1, 2};</code>
+<br><code>std::vector&lt;int&gt; xint2 = {0, 1, 2};</code>
+<br><code></code>
+<br><code>std::vector&lt;int&gt; iinv = {};</code>
+<br><code></code>
+<br><code>Fapply2d obj1(iinv);</code>
+<br><code>obj1.set_args(xint, xint, xint2);</code>
+<br><code>iinv = obj1.fapply2d(addv);</code>
+<br><code>print_nvec(outv);</code>
+<br><code>:0: 0 3 6</code>
 </div>
 <br>
 <hr class="hr">
