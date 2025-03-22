@@ -8776,6 +8776,15 @@ template <typename T> double det_small(std::vector<std::vector<T>> &inpt_matr){
 //@E :0: 0 3 6
 //@X
 
+//@T Fapply2d.reinitiate
+//@U void reinitiate();
+//@X
+//@D Empties the 2d T internal vector. Necessary to reset args (vectors input of the internal 2d vector) of same type before applying the function (or another) to new vectors.
+//@A no : no
+//@X
+//@E Fapply2d.reinitiate();
+//@X
+
 template <typename TB> class Fapply2d {
 
   private:
