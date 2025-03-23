@@ -8714,6 +8714,56 @@ template <typename T> double det_small(std::vector<std::vector<T>> &inpt_matr){
 
 //@L2 Apply any function on indefinite numbers of same type vectors
 
+//@T Fapply object
+//@
+
+template <typename TB> class Fapply {
+
+  private:
+
+    std::vector<std::vector<TB>> args_matr = {};
+    std::vector<TB> rtn_v = {};
+    TB cur_val;
+    unsigned int args_nb;
+
+  public:
+
+    void set_args() { };
+
+    template <typename T, typename ...T2> 
+    void set_args(std::vector<T> &x, std::vector<T2>&... x2) {
+
+      for (unsigned int i = 0; i < args_nb; ++i) {
+        args_matr[i].push_back(x[i]);
+      };
+
+      set_args(x2...);
+
+    };
+
+    std::vector<TB> fapply(TB (&f)(std::vector<TB>)) {
+      for (unsigned int i = 0; i < args_nb; ++i) {
+        cur_val = f(args_matr[i]);
+        rtn_v.push_back(cur_val);
+      };
+      return rtn_v;
+    };
+
+    Fapply(std::vector<TB> &x) {
+      cur_val = x[0];
+      rtn_v.push_back(x[0]);
+      rtn_v.pop_back();
+      args_nb = x.size();
+      rtn_v.reserve(args_nb);
+      args_matr = {x};
+      args_matr.pop_back();
+      args_matr.resize(args_nb, {});
+    };
+
+    ~Fapply() {};
+
+};
+
 //@T Fapply2d object
 //@U Fapply(std::vector&lt;TB&gt; &x)
 //@X
