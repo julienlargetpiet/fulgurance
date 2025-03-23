@@ -3083,6 +3083,248 @@ std::vector<unsigned int> qhyper(std::vector<double> &x, unsigned int &n_ones, u
 //@E :0: 129 133 136 139 143 149 124 129 133 136 139 143
 //@X
 
+//@L3 Operations between vectors
+
+//@T add_vout
+//@U template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; add_vout(std::vector&lt;T&gt; x, T2 &to_add)
+//@X
+//@D Adds a value to all elements of the input vector, returns the vector.
+//@A x : is the input vector
+//@A to_add : is the value to add
+//@X
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E double val = 4.3;
+//@E std::vector&lt;double&gt; outv = add_vout(inv, val);
+//@E print_nvec(outv);
+//@E :0: 6.3 9.3 5.3 8.3
+//@X
+
+template <typename T, typename T2> std::vector<T> add_vout(std::vector<T> x, T2 &to_add) {
+  for (unsigned int i = 0; i < x.size(); ++i) {
+    x[i] += to_add;
+  };
+  return x;
+};
+
+//@T subs_vout
+//@U template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; subs_vout(std::vector&lt;T&gt; x, T2 &to_subs)
+//@X
+//@D Substracts a value to all elements of the input vector, returns the vector.
+//@A x : is the input vector
+//@A to_substract : is the value to substract
+//@X
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E double val = 4.3;
+//@E std::vector&lt;double&gt; outv = subs_vout(inv, val);
+//@E print_nvec(outv);
+//@E :0: -2.3 0.7  -3.3 -0.3
+//@X
+
+template <typename T, typename T2> std::vector<T> subs_vout(std::vector<T> x, T2 &to_subs) {
+  for (unsigned int i = 0; i < x.size(); ++i) {
+    x[i] -= to_subs;
+  };
+  return x;
+};
+
+//@T mult_vout
+//@U template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; mult_vout(std::vector&lt;T&gt; x, T2 &to_mult)
+//@X
+//@D Multiplicates a value to all elements of the input vector, returns the vector.
+//@A x : is the input vector
+//@A to_multiplicate : is the value to multiplicate
+//@X
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E double val = 4.3;
+//@E std::vector&lt;double&gt; outv = mult_vout(inv, val);
+//@E print_nvec(outv);
+//@E :0: 8.6  21.5 4.3  17.2
+//@X
+
+template <typename T, typename T2> std::vector<T> mult_vout(std::vector<T> x, T2 &to_mult) {
+  for (unsigned int i = 0; i < x.size(); ++i) {
+    x[i] *= to_mult;
+  };
+  return x;
+};
+
+//@T divide_vout
+//@U template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; divide_vout(std::vector&lt;T&gt; x, T2 &to_divide)
+//@X
+//@D Divides a value to all elements of the input vector, returns the vector.
+//@A x : is the input vector
+//@A to_divide : is the value to divide
+//@X
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E double val = 4.3;
+//@E std::vector&lt;double&gt; outv = divide_vout(inv, val);
+//@E print_nvec(outv);
+//@E :0: 0.465116 1.16279 0.232558 0.930233
+//@X
+
+template <typename T, typename T2> std::vector<T> divide_vout(std::vector<T> x, T2 &to_divide) {
+  for (unsigned int i = 0; i < x.size(); ++i) {
+    x[i] /= to_divide;
+  };
+  return x;
+};
+
+//@T add_vin
+//@U template &lt;typename T, typename T2&gt; void add_vin(std::vector&lt;T&gt; &x, T2 &to_add)
+//@X
+//@D Adds a value to all elements of the input vector.
+//@A x : is the input vector
+//@A to_add : is the value to add
+//@X
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E double val = 4.3;
+//@E add_vin(inv, val);
+//@E print_nvec(inv);
+//@E :0: 6.3 9.3 5.3 8.3
+//@X
+
+template <typename T, typename T2> void add_vin(std::vector<T> &x, T2 &to_add) {
+  for (unsigned int i = 0; i < x.size(); ++i) {
+    x[i] += to_add;
+  };
+};
+
+//@T subs_vin
+//@U template &lt;typename T, typename T2&gt; void subs_vin(std::vector&lt;T&gt; &x, T2 &to_subs)
+//@X
+//@D Substracts a value to all elements of the input vector.
+//@A x : is the input vector
+//@A to_subs : is the value to substract
+//@X
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E double val = 4.3;
+//@E subs_vin(inv, val);
+//@E print_nvec(inv);
+//@E :0: -2.3 0.7  -3.3 -0.3
+//@X
+
+template <typename T, typename T2> void subs_vin(std::vector<T> &x, T2 &to_subs) {
+  for (unsigned int i = 0; i < x.size(); ++i) {
+    x[i] -= to_subs;
+  };
+};
+
+//@T mult_vin
+//@U template &lt;typename T, typename T2&gt; void mult_vin(std::vector&lt;T&gt; &x, T2 &to_mult)
+//@X
+//@D Multiplicates a value to all elements of the input vector.
+//@A x : is the input vector
+//@A to_mult : is the value to multiplicate
+//@X
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E double val = 4.3;
+//@E mult_vin(inv, val);
+//@E print_nvec(inv);
+//@E :0: 8.6  21.5 4.3  17.2
+//@X
+
+template <typename T, typename T2> void mult_vin(std::vector<T> &x, T2 &to_mult) {
+  for (unsigned int i = 0; i < x.size(); ++i) {
+    x[i] *= to_mult;
+  };
+};
+
+//@T divide_vin
+//@U template &lt;typename T, typename T2&gt; void divide_vin(std::vector&lt;T&gt; &x, T2 &to_divide)
+//@X
+//@D Divides a value to all elements of the input vector.
+//@A x : is the input vector
+//@A to_divide : is the value to divide
+//@X
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E double val = 4.3;
+//@E divide_vin(inv, val);
+//@E print_nvec(inv);
+//@E :0: 0.465116 1.16279 0.232558 0.930233
+//@X
+
+template <typename T, typename T2> void divide_vin(std::vector<T> &x, T2 &to_divide) {
+  for (unsigned int i = 0; i < x.size(); ++i) {
+    x[i] /= to_divide;
+  };
+};
+
+template <typename T, typename T2> std::vector<T> add_v2out(std::vector<T> x, 
+                std::vector<T2> &x2) {
+  const unsigned int n = x.size();
+  const unsigned int n2 = x2.size();
+  for (unsigned int i = 0; i < n; ++i) {
+    x[i] += x2[i % n2];
+  };
+  return x;
+};
+
+template <typename T, typename T2> std::vector<T> subs_v2out(std::vector<T> x, 
+                std::vector<T2> &x2) {
+  const unsigned int n = x.size();
+  const unsigned int n2 = x2.size();
+  for (unsigned int i = 0; i < n; ++i) {
+    x[i] -= x2[i % n2];
+  };
+  return x;
+};
+
+template <typename T, typename T2> std::vector<T> mult_v2out(std::vector<T> x, 
+                std::vector<T2> &x2) {
+  const unsigned int n = x.size();
+  const unsigned int n2 = x2.size();
+  for (unsigned int i = 0; i < n; ++i) {
+    x[i] *= x2[i % n2];
+  };
+  return x;
+};
+
+template <typename T, typename T2> std::vector<T> divide_v2out(std::vector<T> x, 
+                std::vector<T2> &x2) {
+  const unsigned int n = x.size();
+  const unsigned int n2 = x2.size();
+  for (unsigned int i = 0; i < n; ++i) {
+    x[i] /= x2[i % n2];
+  };
+  return x;
+};
+
+template <typename T, typename T2> void add_v2in(std::vector<T> &x, 
+                std::vector<T2> &x2) {
+  const unsigned int n = x.size();
+  const unsigned int n2 = x2.size();
+  for (unsigned int i = 0; i < n; ++i) {
+    x[i] += x2[i % n2];
+  };
+};
+
+template <typename T, typename T2> void subs_v2in(std::vector<T> &x, 
+                std::vector<T2> &x2) {
+  const unsigned int n = x.size();
+  const unsigned int n2 = x2.size();
+  for (unsigned int i = 0; i < n; ++i) {
+    x[i] -= x2[i % n2];
+  };
+};
+
+template <typename T, typename T2> void mult_v2in(std::vector<T> &x, 
+                std::vector<T2> &x2) {
+  const unsigned int n = x.size();
+  const unsigned int n2 = x2.size();
+  for (unsigned int i = 0; i < n; ++i) {
+    x[i] *= x2[i % n2];
+  };
+};
+
+template <typename T, typename T2> void divide_v2in(std::vector<T> &x, 
+                T2 &x2) {
+  const unsigned int n = x.size();
+  const unsigned int n2 = x2.size();
+  for (unsigned int i = 0; i < n; ++i) {
+    x[i] /= x2[i % n2];
+  };
+};
+
 //@L3 Min - Max
 
 //@T min
