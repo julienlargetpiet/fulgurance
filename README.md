@@ -176,6 +176,39 @@
 <br>
 <a href="#rhyper" style="margin-left:100px;">rhyper</a>
 <br>
+<b><li style="margin-left:60px; color: #2c4786;">Operations between vectors</li></b>
+<a href="#add_vout" style="margin-left:80px;">add_vout</a>
+<br>
+<a href="#subs_vout" style="margin-left:80px;">subs_vout</a>
+<br>
+<a href="#mult_vout" style="margin-left:80px;">mult_vout</a>
+<br>
+<a href="#divide_vout" style="margin-left:80px;">divide_vout</a>
+<br>
+<a href="#add_vin" style="margin-left:80px;">add_vin</a>
+<br>
+<a href="#subs_vin" style="margin-left:80px;">subs_vin</a>
+<br>
+<a href="#mult_vin" style="margin-left:80px;">mult_vin</a>
+<br>
+<a href="#divide_vin" style="margin-left:80px;">divide_vin</a>
+<br>
+<a href="#add_v2out" style="margin-left:80px;">add_v2out</a>
+<br>
+<a href="#subs_v2out" style="margin-left:80px;">subs_v2out</a>
+<br>
+<a href="#mult_v2out" style="margin-left:80px;">mult_v2out</a>
+<br>
+<a href="#divide_v2out" style="margin-left:80px;">divide_v2out</a>
+<br>
+<a href="#add_v2in" style="margin-left:80px;">add_v2in</a>
+<br>
+<a href="#subs_v2in" style="margin-left:80px;">subs_v2in</a>
+<br>
+<a href="#mult_v2in" style="margin-left:80px;">mult_v2in</a>
+<br>
+<a href="#divide_v2in" style="margin-left:80px;">divide_v2in</a>
+<br>
 <b><li style="margin-left:60px; color: #2c4786;">Min - Max</li></b>
 <a href="#min" style="margin-left:80px;">min</a>
 <br>
@@ -2292,6 +2325,365 @@ n_obs </th><th> is the number of observations</th></tr>
 <br><code>print_nvec(out_v);</code>
 <br><code></code>
 <br><code>:0: 129 133 136 139 143 149 124 129 133 136 139 143</code>
+</div>
+<br>
+<hr class="hr">
+<h3 style="color:#2c4786;">Operations between vectors</h3>
+<h2 id="add_vout" style="test-align: left;">add_vout</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; add_vout(std::vector&lt;T&gt; x, T2 &to_add)</code></div>
+<h3>#Description</h3>
+<p>Adds a value to all elements of the input vector, returns the vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector</th></tr>
+<tr><th>to_add </th><th> is the value to add</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>double val = 4.3;</code>
+<br><code>std::vector&lt;double&gt; outv = add_vout(inv, val);</code>
+<br><code>print_nvec(outv);</code>
+<br><code>:0: 6.3 9.3 5.3 8.3</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="subs_vout" style="test-align: left;">subs_vout</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; subs_vout(std::vector&lt;T&gt; x, T2 &to_subs)</code></div>
+<h3>#Description</h3>
+<p>Substracts a value to all elements of the input vector, returns the vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector</th></tr>
+<tr><th>to_substract </th><th> is the value to substract</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>double val = 4.3;</code>
+<br><code>std::vector&lt;double&gt; outv = subs_vout(inv, val);</code>
+<br><code>print_nvec(outv);</code>
+<br><code>:0: -2.3 0.7  -3.3 -0.3</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="mult_vout" style="test-align: left;">mult_vout</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; mult_vout(std::vector&lt;T&gt; x, T2 &to_mult)</code></div>
+<h3>#Description</h3>
+<p>Multiplicates a value to all elements of the input vector, returns the vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector</th></tr>
+<tr><th>to_multiplicate </th><th> is the value to multiplicate</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>double val = 4.3;</code>
+<br><code>std::vector&lt;double&gt; outv = mult_vout(inv, val);</code>
+<br><code>print_nvec(outv);</code>
+<br><code>:0: 8.6  21.5 4.3  17.2</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="divide_vout" style="test-align: left;">divide_vout</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; divide_vout(std::vector&lt;T&gt; x, T2 &to_divide)</code></div>
+<h3>#Description</h3>
+<p>Divides a value to all elements of the input vector, returns the vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector</th></tr>
+<tr><th>to_divide </th><th> is the value to divide</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>double val = 4.3;</code>
+<br><code>std::vector&lt;double&gt; outv = divide_vout(inv, val);</code>
+<br><code>print_nvec(outv);</code>
+<br><code>:0: 0.465116 1.16279 0.232558 0.930233</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="add_vin" style="test-align: left;">add_vin</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; void add_vin(std::vector&lt;T&gt; &x, T2 &to_add)</code></div>
+<h3>#Description</h3>
+<p>Adds a value to all elements of the input vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector</th></tr>
+<tr><th>to_add </th><th> is the value to add</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>double val = 4.3;</code>
+<br><code>add_vin(inv, val);</code>
+<br><code>print_nvec(inv);</code>
+<br><code>:0: 6.3 9.3 5.3 8.3</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="subs_vin" style="test-align: left;">subs_vin</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; void subs_vin(std::vector&lt;T&gt; &x, T2 &to_subs)</code></div>
+<h3>#Description</h3>
+<p>Substracts a value to all elements of the input vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector</th></tr>
+<tr><th>to_subs </th><th> is the value to substract</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>double val = 4.3;</code>
+<br><code>subs_vin(inv, val);</code>
+<br><code>print_nvec(inv);</code>
+<br><code>:0: -2.3 0.7  -3.3 -0.3</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="mult_vin" style="test-align: left;">mult_vin</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; void mult_vin(std::vector&lt;T&gt; &x, T2 &to_mult)</code></div>
+<h3>#Description</h3>
+<p>Multiplicates a value to all elements of the input vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector</th></tr>
+<tr><th>to_mult </th><th> is the value to multiplicate</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>double val = 4.3;</code>
+<br><code>mult_vin(inv, val);</code>
+<br><code>print_nvec(inv);</code>
+<br><code>:0: 8.6  21.5 4.3  17.2</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="divide_vin" style="test-align: left;">divide_vin</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; void divide_vin(std::vector&lt;T&gt; &x, T2 &to_divide)</code></div>
+<h3>#Description</h3>
+<p>Divides a value to all elements of the input vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector</th></tr>
+<tr><th>to_divide </th><th> is the value to divide</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>double val = 4.3;</code>
+<br><code>divide_vin(inv, val);</code>
+<br><code>print_nvec(inv);</code>
+<br><code>:0: 0.465116 1.16279 0.232558 0.930233</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="add_v2out" style="test-align: left;">add_v2out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; <br>                add_v2out(std::vector&lt;T&gt; x, <br>                std::vector&lt;T2&gt; &x2)</code></div>
+<h3>#Description</h3>
+<p>Add corresponding elements of 2 vectors, returns vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the first vector</th></tr>
+<tr><th>x2 </th><th> is the second vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>std::vector&lt;double&gt; inv2 = {2, 5};</code>
+<br><code></code>
+<br><code>double val = 4.3;</code>
+<br><code></code>
+<br><code>std::vector&lt;double&gt; outv = add_v2out(inv, inv2);</code>
+<br><code></code>
+<br><code>print_nvec(outv);</code>
+<br><code>:0: 4 10 3 9</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="subs_v2out" style="test-align: left;">subs_v2out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; <br>                subs_v2out(std::vector&lt;T&gt; x, <br>                std::vector&lt;T2&gt; &x2)</code></div>
+<h3>#Description</h3>
+<p>Substracts corresponding elements of 2 vectors, returns vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the first vector</th></tr>
+<tr><th>x2 </th><th> is the second vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>std::vector&lt;double&gt; inv2 = {2, 5};</code>
+<br><code></code>
+<br><code>double val = 4.3;</code>
+<br><code></code>
+<br><code>std::vector&lt;double&gt; outv = subs_v2out(inv, inv2);</code>
+<br><code></code>
+<br><code>print_nvec(outv);</code>
+<br><code>:0: 0  0  -1 -1</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="mult_v2out" style="test-align: left;">mult_v2out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; <br>                mult_v2out(std::vector&lt;T&gt; x, <br>                std::vector&lt;T2&gt; &x2)</code></div>
+<h3>#Description</h3>
+<p>Multiplies corresponding elements of 2 vectors, returns vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the first vector</th></tr>
+<tr><th>x2 </th><th> is the second vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>std::vector&lt;double&gt; inv2 = {2, 5};</code>
+<br><code></code>
+<br><code>double val = 4.3;</code>
+<br><code></code>
+<br><code>std::vector&lt;double&gt; outv = mult_v2out(inv, inv2);</code>
+<br><code></code>
+<br><code>print_nvec(outv);</code>
+<br><code>:0: 4  25 2  20</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="divide_v2out" style="test-align: left;">divide_v2out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; <br>                divide_v2out(std::vector&lt;T&gt; x, <br>                std::vector&lt;T2&gt; &x2)</code></div>
+<h3>#Description</h3>
+<p>Divides corresponding elements of 2 vectors, returns vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the first vector</th></tr>
+<tr><th>x2 </th><th> is the second vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>std::vector&lt;double&gt; inv2 = {2, 5};</code>
+<br><code></code>
+<br><code>double val = 4.3;</code>
+<br><code></code>
+<br><code>std::vector&lt;double&gt; outv = divide_v2out(inv, inv2);</code>
+<br><code></code>
+<br><code>print_nvec(outv);</code>
+<br><code>:0: 1 1 0.5 0.8</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="add_v2in" style="test-align: left;">add_v2in</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; void add_v2in(std::vector&lt;T&gt; &x, <br>                std::vector&lt;T2&gt; &x2)</code></div>
+<h3>#Description</h3>
+<p>Adds corresponding elements of 2 vectors. </p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the first vector</th></tr>
+<tr><th>x2 </th><th> is the second vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>std::vector&lt;double&gt; inv2 = {2, 5};</code>
+<br><code></code>
+<br><code>double val = 4.3;</code>
+<br><code></code>
+<br><code>add_v2in(inv, inv2);</code>
+<br><code></code>
+<br><code>print_nvec(inv);</code>
+<br><code>:0: 4  10 3  9</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="subs_v2in" style="test-align: left;">subs_v2in</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; void subs_v2in(std::vector&lt;T&gt; &x, <br>                std::vector&lt;T2&gt; &x2)</code></div>
+<h3>#Description</h3>
+<p>Substract corresponding elements of 2 vectors. </p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the first vector</th></tr>
+<tr><th>x2 </th><th> is the second vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>std::vector&lt;double&gt; inv2 = {2, 5};</code>
+<br><code></code>
+<br><code>double val = 4.3;</code>
+<br><code></code>
+<br><code>subs_v2in(inv, inv2);</code>
+<br><code></code>
+<br><code>print_nvec(inv);</code>
+<br><code>:0: 0  0  -1 -1</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="mult_v2in" style="test-align: left;">mult_v2in</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; void mult_v2in(std::vector&lt;T&gt; &x, <br>                std::vector&lt;T2&gt; &x2)</code></div>
+<h3>#Description</h3>
+<p>Multiplies corresponding elements of 2 vectors. </p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the first vector</th></tr>
+<tr><th>x2 </th><th> is the second vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>std::vector&lt;double&gt; inv2 = {2, 5};</code>
+<br><code></code>
+<br><code>double val = 4.3;</code>
+<br><code></code>
+<br><code>mult_v2in(inv, inv2);</code>
+<br><code></code>
+<br><code>print_nvec(inv);</code>
+<br><code>:0: 4  25 2  20</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="divide_v2in" style="test-align: left;">divide_v2in</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename T2&gt; void divide_v2in(std::vector&lt;T&gt; &x, <br>                std::vector&lt;T2&gt; &x2)</code></div>
+<h3>#Description</h3>
+<p>Adds corresponding elements of 2 vectors. </p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the first vector</th></tr>
+<tr><th>x2 </th><th> is the second vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code></code>
+<br><code>std::vector&lt;double&gt; inv = {2, 5, 1, 4};</code>
+<br><code>std::vector&lt;double&gt; inv2 = {2, 5};</code>
+<br><code></code>
+<br><code>double val = 4.3;</code>
+<br><code></code>
+<br><code>divide_v2in(inv, inv2);</code>
+<br><code></code>
+<br><code>print_nvec(inv);</code>
+<br><code></code>
+<br><code>:0: 1 1 0.5 0.8</code>
+<br><code></code>
 </div>
 <br>
 <hr class="hr">
