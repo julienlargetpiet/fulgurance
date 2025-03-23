@@ -8715,7 +8715,35 @@ template <typename T> double det_small(std::vector<std::vector<T>> &inpt_matr){
 //@L2 Apply any function on indefinite numbers of same type vectors
 
 //@T Fapply object
-//@
+//@U Fapply
+//@X 
+//@D Allows to perform any function on a set of same type vectors, simplified
+//@A ... : all the vectors
+//@X
+//@E // declare a custom function
+//@E 
+//@E int add(std::vector&lt;int&gt; x) {
+//@E   int rtn_v = x[0];
+//@E   for (int i = 1; i &lt; x.size(); ++i) {
+//@E     rtn_v += x[i];
+//@E   };
+//@E   return rtn_v;
+//@E };
+//@E
+//@E std::vector&lt;int&gt; inpt_v1 = {1, 2, 3, 4, 5, 6, 7};
+//@E std::vector&lt;int&gt; inpt_v2 = {7, 6, 5, 4, 3, 2, 1};
+//@E 
+//@E Fapply obj1(inpt_v1); //initialise object with a vector argument
+//@E obj1.set_args(inpt_v1, inpt_v2, inpt_v2); //ingest args
+//@E 
+//@E //performs the chosen function
+//@E std::vector&lt;int&gt; outv = obj1.fapply(merge_str); 
+//@E 
+//@E print_nvec(outv);
+//@E
+//@E :0: 15 14 13 12 11 10 9
+//@E
+//@X
 
 template <typename TB> class Fapply {
 
