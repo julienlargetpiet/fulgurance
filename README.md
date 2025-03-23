@@ -435,6 +435,8 @@
 <a href="#det_small" style="margin-left:60px;">det_small</a>
 <br>
 <b><li style="margin-left:40px; color: #2c4786;">Apply any function on indefinite numbers of same type vectors</li></b>
+<a href="#Fapply object" style="margin-left:60px;">Fapply object</a>
+<br>
 <a href="#Fapply2d object" style="margin-left:60px;">Fapply2d object</a>
 <br>
 <a href="#Fapply2d.set_args" style="margin-left:60px;">Fapply2d.set_args</a>
@@ -5024,6 +5026,43 @@ impt_matr </th><th> is the input matrix</th></tr>
 <br>
 <hr class="hr">
 <h2 style="color:#2c4786;">Apply any function on indefinite numbers of same type vectors</h2>
+<h2 id="Fapply object" style="test-align: left;">Fapply object</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>Fapply</code></div>
+<h3>#Description</h3>
+<p>Allows to perform any function on a set of same type vectors, simplified</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+... </th><th> all the vectors</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>// declare a custom function</code>
+<br><code></code>
+<br><code>int add(std::vector&lt;int&gt; x) {</code>
+<br><code>  int rtn_v = x[0];</code>
+<br><code>  for (int i = 1; i &lt; x.size(); ++i) {</code>
+<br><code>    rtn_v += x[i];</code>
+<br><code>  };</code>
+<br><code>  return rtn_v;</code>
+<br><code>};</code>
+<br><code></code>
+<br><code>std::vector&lt;int&gt; inpt_v1 = {1, 2, 3, 4, 5, 6, 7};</code>
+<br><code>std::vector&lt;int&gt; inpt_v2 = {7, 6, 5, 4, 3, 2, 1};</code>
+<br><code></code>
+<br><code>Fapply obj1(inpt_v1); //initialise object with a vector argument</code>
+<br><code>obj1.set_args(inpt_v1, inpt_v2, inpt_v2); //ingest args</code>
+<br><code></code>
+<br><code>//performs the chosen function</code>
+<br><code>std::vector&lt;int&gt; outv = obj1.fapply(merge_str); </code>
+<br><code></code>
+<br><code>print_nvec(outv);</code>
+<br><code></code>
+<br><code>:0: 15 14 13 12 11 10 9</code>
+<br><code></code>
+</div>
+<br>
+<hr class="hr">
 <h2 id="Fapply2d object" style="test-align: left;">Fapply2d object</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>Fapply(std::vector&lt;TB&gt; &x)</code></div>
