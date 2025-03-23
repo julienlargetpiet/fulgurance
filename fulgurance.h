@@ -3249,6 +3249,26 @@ template <typename T, typename T2> void divide_vin(std::vector<T> &x, T2 &to_div
   };
 };
 
+//@T add_v2out
+//@U template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; 
+//@U                 add_v2out(std::vector&lt;T&gt; x, 
+//@U                 std::vector&lt;T2&gt; &x2)
+//@X
+//@D Add corresponding elements of 2 vectors, returns vector.
+//@A x : is the first vector
+//@A x2 : is the second vector
+//@X
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E std::vector&lt;double&gt; inv2 = {2, 5};
+//@E 
+//@E double val = 4.3;
+//@E 
+//@E std::vector&lt;double&gt; outv = add_v2out(inv, inv2);
+//@E 
+//@E print_nvec(outv);
+//@E :0: 4 10 3 9
+//@X
+
 template <typename T, typename T2> std::vector<T> add_v2out(std::vector<T> x, 
                 std::vector<T2> &x2) {
   const unsigned int n = x.size();
@@ -3258,6 +3278,26 @@ template <typename T, typename T2> std::vector<T> add_v2out(std::vector<T> x,
   };
   return x;
 };
+
+//@T subs_v2out
+//@U template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; 
+//@U                 subs_v2out(std::vector&lt;T&gt; x, 
+//@U                 std::vector&lt;T2&gt; &x2)
+//@X
+//@D Substracts corresponding elements of 2 vectors, returns vector.
+//@A x : is the first vector
+//@A x2 : is the second vector
+//@X
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E std::vector&lt;double&gt; inv2 = {2, 5};
+//@E 
+//@E double val = 4.3;
+//@E 
+//@E std::vector&lt;double&gt; outv = subs_v2out(inv, inv2);
+//@E 
+//@E print_nvec(outv);
+//@E :0: 0  0  -1 -1
+//@X
 
 template <typename T, typename T2> std::vector<T> subs_v2out(std::vector<T> x, 
                 std::vector<T2> &x2) {
@@ -3269,6 +3309,26 @@ template <typename T, typename T2> std::vector<T> subs_v2out(std::vector<T> x,
   return x;
 };
 
+//@T mult_v2out
+//@U template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; 
+//@U                 mult_v2out(std::vector&lt;T&gt; x, 
+//@U                 std::vector&lt;T2&gt; &x2)
+//@X
+//@D Multiplies corresponding elements of 2 vectors, returns vector.
+//@A x : is the first vector
+//@A x2 : is the second vector
+//@X
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E std::vector&lt;double&gt; inv2 = {2, 5};
+//@E 
+//@E double val = 4.3;
+//@E 
+//@E std::vector&lt;double&gt; outv = mult_v2out(inv, inv2);
+//@E 
+//@E print_nvec(outv);
+//@E :0: 4  25 2  20
+//@X
+
 template <typename T, typename T2> std::vector<T> mult_v2out(std::vector<T> x, 
                 std::vector<T2> &x2) {
   const unsigned int n = x.size();
@@ -3278,6 +3338,26 @@ template <typename T, typename T2> std::vector<T> mult_v2out(std::vector<T> x,
   };
   return x;
 };
+
+//@T divide_v2out
+//@U template &lt;typename T, typename T2&gt; std::vector&lt;T&gt; 
+//@U                 divide_v2out(std::vector&lt;T&gt; x, 
+//@U                 std::vector&lt;T2&gt; &x2)
+//@X
+//@D Divides corresponding elements of 2 vectors, returns vector.
+//@A x : is the first vector
+//@A x2 : is the second vector
+//@X
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E std::vector&lt;double&gt; inv2 = {2, 5};
+//@E 
+//@E double val = 4.3;
+//@E 
+//@E std::vector&lt;double&gt; outv = divide_v2out(inv, inv2);
+//@E 
+//@E print_nvec(outv);
+//@E :0: 1 1 0.5 0.8
+//@X
 
 template <typename T, typename T2> std::vector<T> divide_v2out(std::vector<T> x, 
                 std::vector<T2> &x2) {
@@ -3289,6 +3369,26 @@ template <typename T, typename T2> std::vector<T> divide_v2out(std::vector<T> x,
   return x;
 };
 
+//@T add_v2in
+//@U template &lt;typename T, typename T2&gt; void add_v2in(std::vector&lt;T&gt; &x, 
+//@U                 std::vector&lt;T2&gt; &x2)
+//@X
+//@D Adds corresponding elements of 2 vectors. 
+//@A x : is the first vector
+//@A x2 : is the second vector
+//@X
+//@E 
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E std::vector&lt;double&gt; inv2 = {2, 5};
+//@E 
+//@E double val = 4.3;
+//@E 
+//@E add_v2in(inv, inv2);
+//@E 
+//@E print_nvec(inv);
+//@E :0: 4  10 3  9
+//@X
+
 template <typename T, typename T2> void add_v2in(std::vector<T> &x, 
                 std::vector<T2> &x2) {
   const unsigned int n = x.size();
@@ -3297,6 +3397,26 @@ template <typename T, typename T2> void add_v2in(std::vector<T> &x,
     x[i] += x2[i % n2];
   };
 };
+
+//@T subs_v2in
+//@U template &lt;typename T, typename T2&gt; void subs_v2in(std::vector&lt;T&gt; &x, 
+//@U                 std::vector&lt;T2&gt; &x2)
+//@X
+//@D Substract corresponding elements of 2 vectors. 
+//@A x : is the first vector
+//@A x2 : is the second vector
+//@X
+//@E 
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E std::vector&lt;double&gt; inv2 = {2, 5};
+//@E 
+//@E double val = 4.3;
+//@E 
+//@E subs_v2in(inv, inv2);
+//@E 
+//@E print_nvec(inv);
+//@E :0: 0  0  -1 -1
+//@X
 
 template <typename T, typename T2> void subs_v2in(std::vector<T> &x, 
                 std::vector<T2> &x2) {
@@ -3307,6 +3427,26 @@ template <typename T, typename T2> void subs_v2in(std::vector<T> &x,
   };
 };
 
+//@T mult_v2in
+//@U template &lt;typename T, typename T2&gt; void mult_v2in(std::vector&lt;T&gt; &x, 
+//@U                 std::vector&lt;T2&gt; &x2)
+//@X
+//@D Multiplies corresponding elements of 2 vectors. 
+//@A x : is the first vector
+//@A x2 : is the second vector
+//@X
+//@E 
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E std::vector&lt;double&gt; inv2 = {2, 5};
+//@E 
+//@E double val = 4.3;
+//@E 
+//@E mult_v2in(inv, inv2);
+//@E 
+//@E print_nvec(inv);
+//@E :0: 4  25 2  20
+//@X
+
 template <typename T, typename T2> void mult_v2in(std::vector<T> &x, 
                 std::vector<T2> &x2) {
   const unsigned int n = x.size();
@@ -3315,6 +3455,28 @@ template <typename T, typename T2> void mult_v2in(std::vector<T> &x,
     x[i] *= x2[i % n2];
   };
 };
+
+//@T divide_v2in
+//@U template &lt;typename T, typename T2&gt; void divide_v2in(std::vector&lt;T&gt; &x, 
+//@U                 std::vector&lt;T2&gt; &x2)
+//@X
+//@D Adds corresponding elements of 2 vectors. 
+//@A x : is the first vector
+//@A x2 : is the second vector
+//@X
+//@E 
+//@E std::vector&lt;double&gt; inv = {2, 5, 1, 4};
+//@E std::vector&lt;double&gt; inv2 = {2, 5};
+//@E 
+//@E double val = 4.3;
+//@E 
+//@E divide_v2in(inv, inv2);
+//@E 
+//@E print_nvec(inv);
+//@E
+//@E :0: 1 1 0.5 0.8
+//@E
+//@X
 
 template <typename T, typename T2> void divide_v2in(std::vector<T> &x, 
                 T2 &x2) {
