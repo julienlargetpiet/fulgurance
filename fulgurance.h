@@ -9457,6 +9457,152 @@ std::string fmt_converter_date(std::string &x, std::string &in_fmt, std::string 
   return rtn_val;
 };
 
+//@L1 Sort dates
+
+//@T ascend_sort_date
+//@U std::vector&lt;std::string&gt; ascend_sort_date(std::vector&lt;std::string&gt; &x, 
+//@U                 std::string &fmt, char delim = '-')
+//@X
+//@D Returns a vector of date ascendly sorted. The format meaning is 'y' for year, 'm' for month, 'd' for day, 'h' for hour, 'n' for minute and 's' for second.
+//@A x : is the input vector of dates
+//@A fmt : is the date format
+//@A delim : is the date delimiter
+//@X
+//@E std::vector&lt;std::string&gt; vec = {
+//@E         "02-04-2026",
+//@E         "02-11-2023",
+//@E         "07-02-2026",
+//@E         "22-04-2016",
+//@E         "02-12-2006",
+//@E         "17-9-2015",
+//@E         "03-04-2017",
+//@E         "02-05-2017",
+//@E         "15-01-2026"
+//@E }; 
+//@E 
+//@E std::string fmt = "dmy";
+//@E 
+//@E std::vector&lt;std::string&gt; outv = ascend_sort_date(vec, fmt);
+//@E print_svec(outv);
+//@E :0: 02-12-2006 17-9-2015  22-04-2016 03-04-2017 02-05-2017 02-11-2023 15-01-2026 07-02-2026
+//@E :8: 02-04-2026
+//@X
+
+std::vector<std::string> ascend_sort_date(std::vector<std::string> &x, 
+                std::string &fmt, char delim = '-') {
+  const unsigned int n = x.size();
+  std::vector<unsigned int> idx_fmt = {};
+  idx_fmt.reserve(n);
+  std::vector<std::string> rtn_v = {};
+  rtn_v.reserve(n); 
+  std::vector<char> unit_time_fmt = {'y', 'm', 'd', 'h', 'n', 's'};
+  const unsigned int n_fmt = fmt.length();
+  unsigned int cnt;
+  unsigned int cnt2;
+  char cur_time_unit;
+  std::vector<int> val_fmt = {};
+  val_fmt.resize(n, 0);
+  std::vector<std::string> date_v;
+  for (cnt = 0; cnt < 6; ++cnt) {
+    cur_time_unit = unit_time_fmt[cnt];
+    for (cnt2 = 0; cnt2 < n_fmt; ++cnt2) {
+      if (cur_time_unit == fmt[cnt2]) {  
+        idx_fmt.push_back(cnt2);
+        break;
+      };
+    };
+  };
+  for (cnt = 0; cnt < n; ++cnt) {
+    cnt2 = 0;
+    date_v = split(x[cnt], delim);
+    while (cnt2 + 1 < n_fmt) {
+      val_fmt[cnt] += std::stoi(date_v[idx_fmt[cnt2]]);
+      val_fmt[cnt] *= 100;
+      cnt2 += 1;
+    };
+    val_fmt[cnt] += std::stoi(date_v[idx_fmt[cnt2]]);
+  };
+  std::vector<int> val_fmt2 = sort_ascout(val_fmt);
+  unsigned int cur_idx;
+  for (cnt = 0; cnt < n; ++cnt) {
+    cur_idx = match(val_fmt, val_fmt2[cnt]);
+    rtn_v.push_back(x[cur_idx]);
+  };
+  return rtn_v;
+};
+
+//@T descend_sort_date
+//@U std::vector&lt;std::string&gt; descend_sort_date(std::vector&lt;std::string&gt; &x, 
+//@U                 std::string &fmt, char delim = '-')
+//@X
+//@D Returns a vector of date descendly sorted. The format meaning is 'y' for year, 'm' for month, 'd' for day, 'h' for hour, 'n' for minute and 's' for second.
+//@A x : is the input vector of dates
+//@A fmt : is the date format
+//@A delim : is the date delimiter
+//@X
+//@E std::vector&lt;std::string&gt; vec = {
+//@E         "02-04-2026",
+//@E         "02-11-2023",
+//@E         "07-02-2026",
+//@E         "22-04-2016",
+//@E         "02-12-2006",
+//@E         "17-9-2015",
+//@E         "03-04-2017",
+//@E         "02-05-2017",
+//@E         "15-01-2026"
+//@E }; 
+//@E 
+//@E std::string fmt = "dmy";
+//@E 
+//@E std::vector&lt;std::string&gt; outv = descend_sort_date(vec, fmt);
+//@E print_svec(outv);
+//@E :0: 02-04-2026 07-02-2026 15-01-2026 02-11-2023 02-05-2017 03-04-2017 22-04-2016 17-9-2015
+//@E :8: 02-12-2006
+//@X
+
+std::vector<std::string> descend_sort_date(std::vector<std::string> &x, 
+                std::string &fmt, char delim = '-') {
+  const unsigned int n = x.size();
+  std::vector<unsigned int> idx_fmt = {};
+  idx_fmt.reserve(n);
+  std::vector<std::string> rtn_v = {};
+  rtn_v.reserve(n); 
+  std::vector<char> unit_time_fmt = {'y', 'm', 'd', 'h', 'n', 's'};
+  const unsigned int n_fmt = fmt.length();
+  unsigned int cnt;
+  unsigned int cnt2;
+  char cur_time_unit;
+  std::vector<int> val_fmt = {};
+  val_fmt.resize(n, 0);
+  std::vector<std::string> date_v;
+  for (cnt = 0; cnt < 6; ++cnt) {
+    cur_time_unit = unit_time_fmt[cnt];
+    for (cnt2 = 0; cnt2 < n_fmt; ++cnt2) {
+      if (cur_time_unit == fmt[cnt2]) {  
+        idx_fmt.push_back(cnt2);
+        break;
+      };
+    };
+  };
+  for (cnt = 0; cnt < n; ++cnt) {
+    cnt2 = 0;
+    date_v = split(x[cnt], delim);
+    while (cnt2 + 1 < n_fmt) {
+      val_fmt[cnt] += std::stoi(date_v[idx_fmt[cnt2]]);
+      val_fmt[cnt] *= 100;
+      cnt2 += 1;
+    };
+    val_fmt[cnt] += std::stoi(date_v[idx_fmt[cnt2]]);
+  };
+  std::vector<int> val_fmt2 = sort_descout(val_fmt);
+  unsigned int cur_idx;
+  for (cnt = 0; cnt < n; ++cnt) {
+    cur_idx = match(val_fmt, val_fmt2[cnt]);
+    rtn_v.push_back(x[cur_idx]);
+  };
+  return rtn_v;
+};
+
 //@J1
 
 //@T is_leap
