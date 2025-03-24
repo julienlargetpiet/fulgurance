@@ -9544,6 +9544,46 @@ double delta_second(std::string &bgn_date, std::string &end_date, int ref_year =
   return rtn_val;
 };
 
+//@T is_greater_date
+//@U bool is_greater_date(std::string &x, std::string &x2, char delim = '-')
+//@X
+//@D Returns if the first date is greater than the second one. The dates must have the same format, which is the highest time unit at the beginning and so on.
+//@A x : is the first date
+//@A x2 : is the second date
+//@A delim : is the date delimiter
+//@X
+//@E std::string bgn_date = "2003-07-02-2-23-46";
+//@E std::string end_date = "2025-04-01-12-13-26";
+//@E bool outbool = is_greater_date(end_date, bgn_date);
+//@E std::cout &lt;&lt; outbool &lt;&lt; "\n";
+//@E 1
+//@X
+
+bool is_greater_date(std::string &x, std::string &x2, char delim = '-') {
+  std::vector<std::string> xv = split(x, delim);
+  std::vector<std::string> x2v = split(x2, delim);
+  int cur_valx = std::stoi(xv[0]);
+  int cur_valx2 = std::stoi(x2v[0]);
+  cur_valx *= 100;
+  cur_valx2 *= 100;
+  const unsigned int n = xv.size();
+  if (x2v.size() != n) {
+    std::cout << "the 2 dates does not have the same format\n";
+    return 1;
+  };
+  for (unsigned int i = 0; i < n; ++i) {
+    cur_valx = std::stoi(xv[0]);
+    cur_valx2 = std::stoi(x2v[0]);
+    cur_valx *= 100;
+    cur_valx2 *= 100;
+  };
+  if (cur_valx > cur_valx2) {
+    return 1;
+  } else {
+    return 0;
+  };
+};
+
 //@L1 Fulgurance Tools
 
 //@T Parser_tokenizer_full
