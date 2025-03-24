@@ -481,6 +481,25 @@
 <b><li style="margin-left:20px; color: #2c4786;">Geographical coordinates manipulation</li></b>
 <a href="#geo_min" style="margin-left:40px;">geo_min</a>
 <br>
+<b><li style="margin-left:20px; color: #2c4786;">Date manipulation (Gregorian)</li></b>
+<b><li style="margin-left:40px; color: #2c4786;">Format convertions</li></b>
+<a href="#fr_to_eng_datefmt" style="margin-left:60px;">fr_to_eng_datefmt</a>
+<br>
+<a href="#eng_to_fr_datefmt" style="margin-left:60px;">eng_to_fr_datefmt</a>
+<br>
+<a href="#fmt_converter_date" style="margin-left:60px;">fmt_converter_date</a>
+<br>
+<b><li style="margin-left:40px; color: #2c4786;">Sort dates</li></b>
+<a href="#ascend_sort_date" style="margin-left:60px;">ascend_sort_date</a>
+<br>
+<a href="#descend_sort_date" style="margin-left:60px;">descend_sort_date</a>
+<br>
+<a href="#is_leap" style="margin-left:40px;">is_leap</a>
+<br>
+<a href="#delta_second" style="margin-left:40px;">delta_second</a>
+<br>
+<a href="#is_greater_date" style="margin-left:40px;">is_greater_date</a>
+<br>
 <b><li style="margin-left:20px; color: #2c4786;">Fulgurance Tools</li></b>
 <a href="#Parser_tokenizer_full" style="margin-left:40px;">Parser_tokenizer_full</a>
 <br>
@@ -5586,6 +5605,198 @@ lat1 </th><th> is the lattitude of the first point</th></tr>
 <br><code></code>
 <br><code>std::cout &lt;&lt; delta &lt;&lt; "\n";</code>
 <br><code>6679.1</code>
+</div>
+<br>
+<hr class="hr">
+<h1 style="color:#2c4786;">Date manipulation (Gregorian)</h1>
+<h2 style="color:#2c4786;">Format convertions</h2>
+<h2 id="fr_to_eng_datefmt" style="test-align: left;">fr_to_eng_datefmt</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::string fr_to_eng_datefmt(std::string &x, char sep = '-')</code></div>
+<h3>#Description</h3>
+<p>Converts a french date format to an english one.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input date</th></tr>
+<tr><th>sep </th><th> is the date separator</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string fr_date = "02-07-2022";</code>
+<br><code>std::string eng_date = fr_to_eng_datefmt(fr_date);</code>
+<br><code>std::cout &lt;&lt; eng_date&lt;&lt; "\n";</code>
+<br><code>07-02-2022</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="eng_to_fr_datefmt" style="test-align: left;">eng_to_fr_datefmt</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::string eng_to_fr_datefmt(std::string &x, char sep = '-')</code></div>
+<h3>#Description</h3>
+<p>Converts a english date format to an french one.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input date</th></tr>
+<tr><th>sep </th><th> is the date separator</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string eng_date = "07-02-2022";</code>
+<br><code>std::string fr_date = eng_to_fr_datefmt(eng_date);</code>
+<br><code>std::cout << fr_date << "\n";</code>
+<br><code>02-07-2022</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="fmt_converter_date" style="test-align: left;">fmt_converter_date</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::string fmt_converter_date(std::string &x, std::string &in_fmt, std::string &out_fmt, char delim = '-')</code></div>
+<h3>#Description</h3>
+<p>Cpnverts a date to another date format.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input date</th></tr>
+<tr><th>in_fmt </th><th> is the input date format</th></tr>
+<tr><th>out_fmt </th><th> is the output date format</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string in_fmt = "dmy";</code>
+<br><code>std::string out_fmt = "mdy";</code>
+<br><code>std::string inpt_date = "02-07-2003";</code>
+<br><code>std::string outfmtdate = fmt_converter_date(inpt_date, in_fmt, out_fmt);</code>
+<br><code>std::cout << outfmtdate << "\n";</code>
+<br><code>07-02-2003</code>
+</div>
+<br>
+<hr class="hr">
+<h2 style="color:#2c4786;">Sort dates</h2>
+<h2 id="ascend_sort_date" style="test-align: left;">ascend_sort_date</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;std::string&gt; ascend_sort_date(std::vector&lt;std::string&gt; &x, <br>                std::string &fmt, char delim = '-')</code></div>
+<h3>#Description</h3>
+<p>Returns a vector of date ascendly sorted. The format meaning is 'y' for year, 'm' for month, 'd' for day, 'h' for hour, 'n' for minute and 's' for second.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector of dates</th></tr>
+<tr><th>fmt </th><th> is the date format</th></tr>
+<tr><th>delim </th><th> is the date delimiter</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;std::string&gt; vec = {</code>
+<br><code>        "02-04-2026",</code>
+<br><code>        "02-11-2023",</code>
+<br><code>        "07-02-2026",</code>
+<br><code>        "22-04-2016",</code>
+<br><code>        "02-12-2006",</code>
+<br><code>        "17-9-2015",</code>
+<br><code>        "03-04-2017",</code>
+<br><code>        "02-05-2017",</code>
+<br><code>        "15-01-2026"</code>
+<br><code>}; </code>
+<br><code></code>
+<br><code>std::string fmt = "dmy";</code>
+<br><code></code>
+<br><code>std::vector&lt;std::string&gt; outv = ascend_sort_date(vec, fmt);</code>
+<br><code>print_svec(outv);</code>
+<br><code>:0: 02-12-2006 17-9-2015  22-04-2016 03-04-2017 02-05-2017 02-11-2023 15-01-2026 07-02-2026</code>
+<br><code>:8: 02-04-2026</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="descend_sort_date" style="test-align: left;">descend_sort_date</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;std::string&gt; descend_sort_date(std::vector&lt;std::string&gt; &x, <br>                std::string &fmt, char delim = '-')</code></div>
+<h3>#Description</h3>
+<p>Returns a vector of date descendly sorted. The format meaning is 'y' for year, 'm' for month, 'd' for day, 'h' for hour, 'n' for minute and 's' for second.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector of dates</th></tr>
+<tr><th>fmt </th><th> is the date format</th></tr>
+<tr><th>delim </th><th> is the date delimiter</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;std::string&gt; vec = {</code>
+<br><code>        "02-04-2026",</code>
+<br><code>        "02-11-2023",</code>
+<br><code>        "07-02-2026",</code>
+<br><code>        "22-04-2016",</code>
+<br><code>        "02-12-2006",</code>
+<br><code>        "17-9-2015",</code>
+<br><code>        "03-04-2017",</code>
+<br><code>        "02-05-2017",</code>
+<br><code>        "15-01-2026"</code>
+<br><code>}; </code>
+<br><code></code>
+<br><code>std::string fmt = "dmy";</code>
+<br><code></code>
+<br><code>std::vector&lt;std::string&gt; outv = descend_sort_date(vec, fmt);</code>
+<br><code>print_svec(outv);</code>
+<br><code>:0: 02-04-2026 07-02-2026 15-01-2026 02-11-2023 02-05-2017 03-04-2017 22-04-2016 17-9-2015</code>
+<br><code>:8: 02-12-2006</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="is_leap" style="test-align: left;">is_leap</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; bool is_leap(unsigned T &x)</code></div>
+<h3>#Description</h3>
+<p>Returns if the input year is leap.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input year</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int year = 2024;</code>
+<br><code>bool bsx = is_leap(year);</code>
+<br><code>std::cout &lt;&lt; bsx &lt;&lt; "\n";</code>
+<br><code>1</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="delta_second" style="test-align: left;">delta_second</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>double delta_second(std::string &bgn_date, std::string &end_date, int ref_year = 0, char delim = '-') </code></div>
+<h3>#Description</h3>
+<p>Returns the number of second elapsed between 2 dates.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+bgn_date </th><th> is the first date, must be lower than the second date</th></tr>
+<tr><th>end_date </th><th> is the second date</th></tr>
+<tr><th>ref_year </th><th> is a reference year from which the time elapsed wil be calculated. This value must be lower than the year of the first date</th></tr>
+<tr><th>delim </th><th> is the date delimiter</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string bgn_date = "2003-07-02-2-23-46";</code>
+<br><code>std::string end_date = "2025-04-01-12-13-26";</code>
+<br><code>double delta = delta_second(bgn_date, end_date);</code>
+<br><code>std::cout &lt;&lt; delta &lt;&lt; "\n";</code>
+<br><code>6.86311e+08</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="is_greater_date" style="test-align: left;">is_greater_date</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>bool is_greater_date(std::string &x, std::string &x2, char delim = '-')</code></div>
+<h3>#Description</h3>
+<p>Returns if the first date is greater than the second one. The dates must have the same format, which is the highest time unit at the beginning and so on.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the first date</th></tr>
+<tr><th>x2 </th><th> is the second date</th></tr>
+<tr><th>delim </th><th> is the date delimiter</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string bgn_date = "2003-07-02-2-23-46";</code>
+<br><code>std::string end_date = "2025-04-01-12-13-26";</code>
+<br><code>bool outbool = is_greater_date(end_date, bgn_date);</code>
+<br><code>std::cout &lt;&lt; outbool &lt;&lt; "\n";</code>
+<br><code>1</code>
 </div>
 <br>
 <hr class="hr">
