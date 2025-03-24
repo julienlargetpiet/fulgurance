@@ -9418,6 +9418,37 @@ std::string eng_to_fr_datefmt(std::string &x, char sep = '-') {
   return rtn_val;
 };
 
+//@T is_yeap
+//@U bool is_yeap(unsigned int &x)
+//@X
+//@D Returns if the input year is yeap.
+//@A x : is the input year
+//@X
+//@E int year = 2024;
+//@E bool bsx = is_yeap(year);
+//@E std::cout &lt;&lt; bsx &lt;&lt; "\n";
+//@E 1
+//@X
+
+bool is_yeap(int &x) {
+  if (x == 0) {
+    return 0;
+  };
+  if (x % 4 == 0) {
+    if (x % 100 == 0) {
+      if (x % 400 == 0) {
+        return 1;
+      } else {
+        return 0;
+      };
+    } else {
+      return 1;
+    };
+  } else {
+    return 0;
+  };
+};
+
 //@L1 Fulgurance Tools
 
 //@T Parser_tokenizer_full
