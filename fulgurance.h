@@ -9418,6 +9418,45 @@ std::string eng_to_fr_datefmt(std::string &x, char sep = '-') {
   return rtn_val;
 };
 
+//@T fmt_converter_date
+//@U std::string fmt_converter_date(std::string &x, std::string &in_fmt, std::string &out_fmt, char delim = '-')
+//@X
+//@D Cpnverts a date to another date format.
+//@A x : is the input date
+//@A in_fmt : is the input date format
+//@A out_fmt : is the output date format
+//@X
+//@E std::string in_fmt = "dmy";
+//@E std::string out_fmt = "mdy";
+//@E std::string inpt_date = "02-07-2003";
+//@E std::string outfmtdate = fmt_converter_date(inpt_date, in_fmt, out_fmt);
+//@E std::cout << outfmtdate << "\n";
+//@E 07-02-2003
+//@X
+
+std::string fmt_converter_date(std::string &x, std::string &in_fmt, std::string &out_fmt, char delim = '-') {
+  unsigned int i2;
+  unsigned int i;
+  std::string rtn_val = "";
+  std::vector<std::string> date_v = split(x, delim);
+  const unsigned int n = in_fmt.length();
+  if (n != out_fmt.length()) {
+    throw std::invalid_argument("the 2 dates format are not the same length\n");
+  };
+  for (i = 0; i < n; ++i) {
+    for (i2 = 0; i2 < n; ++i2) {
+      if (in_fmt[i2] == out_fmt[i]) {
+        rtn_val += date_v[i2];
+        if (i + 1 < n) {
+          rtn_val.push_back(delim);
+        };
+        break;
+      };
+    };
+  };
+  return rtn_val;
+};
+
 //@J1
 
 //@T is_leap
@@ -9582,45 +9621,6 @@ bool is_greater_date(std::string &x, std::string &x2, char delim = '-') {
   } else {
     return 0;
   };
-};
-
-//@T fmt_converter_date
-//@U std::string fmt_converter_date(std::string &x, std::string &in_fmt, std::string &out_fmt, char delim = '-')
-//@X
-//@D Cpnverts a date to another date format.
-//@A x : is the input date
-//@A in_fmt : is the input date format
-//@A out_fmt : is the output date format
-//@X
-//@E std::string in_fmt = "dmy";
-//@E std::string out_fmt = "mdy";
-//@E std::string inpt_date = "02-07-2003";
-//@E std::string outfmtdate = fmt_converter_date(inpt_date, in_fmt, out_fmt);
-//@E std::cout << outfmtdate << "\n";
-//@E 07-02-2003
-//@X
-
-std::string fmt_converter_date(std::string &x, std::string &in_fmt, std::string &out_fmt, char delim = '-') {
-  unsigned int i2;
-  unsigned int i;
-  std::string rtn_val = "";
-  std::vector<std::string> date_v = split(x, delim);
-  const unsigned int n = in_fmt.length();
-  if (n != out_fmt.length()) {
-    throw std::invalid_argument("the 2 dates format are not the same length\n");
-  };
-  for (i = 0; i < n; ++i) {
-    for (i2 = 0; i2 < n; ++i2) {
-      if (in_fmt[i2] == out_fmt[i]) {
-        rtn_val += date_v[i2];
-        if (i + 1 < n) {
-          rtn_val.push_back(delim);
-        };
-        break;
-      };
-    };
-  };
-  return rtn_val;
 };
 
 //@L1 Fulgurance Tools
