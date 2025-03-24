@@ -9366,7 +9366,7 @@ double geo_min(double &lat1, double &longit1, double &lat2, double &longit2, con
   return delta;
 };
 
-//@L1 Date manipulation
+//@L1 Date manipulation (Gregorian)
 
 //@L2 Format convertions
 
@@ -9418,19 +9418,19 @@ std::string eng_to_fr_datefmt(std::string &x, char sep = '-') {
   return rtn_val;
 };
 
-//@T is_yeap
-//@U bool is_yeap(unsigned int &x)
+//@T is_leap
+//@U bool is_leap(unsigned int &x)
 //@X
-//@D Returns if the input year is yeap.
+//@D Returns if the input year is leap.
 //@A x : is the input year
 //@X
 //@E int year = 2024;
-//@E bool bsx = is_yeap(year);
+//@E bool bsx = is_leap(year);
 //@E std::cout &lt;&lt; bsx &lt;&lt; "\n";
 //@E 1
 //@X
 
-bool is_yeap(int &x) {
+bool is_leap(int &x) {
   if (x == 0) {
     return 0;
   };
