@@ -9419,7 +9419,7 @@ std::string eng_to_fr_datefmt(std::string &x, char sep = '-') {
 };
 
 //@T is_leap
-//@U bool is_leap(unsigned int &x)
+//@U template &lt;typename T&gt; bool is_leap(unsigned T &x)
 //@X
 //@D Returns if the input year is leap.
 //@A x : is the input year
@@ -9430,7 +9430,7 @@ std::string eng_to_fr_datefmt(std::string &x, char sep = '-') {
 //@E 1
 //@X
 
-bool is_leap(int &x) {
+template <typename T> bool is_leap(T &x) {
   if (x == 0) {
     return 0;
   };
