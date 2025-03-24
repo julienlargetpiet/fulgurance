@@ -9366,6 +9366,58 @@ double geo_min(double &lat1, double &longit1, double &lat2, double &longit2, con
   return delta;
 };
 
+//@L1 Date manipulation
+
+//@L2 Format convertions
+
+//@T fr_to_eng_datefmt
+//@U std::string fr_to_eng_datefmt(std::string &x, char sep = '-')
+//@X
+//@D Converts a french date format to an english one.
+//@A x : is the input date
+//@A sep : is the date separator
+//@X
+//@E std::string fr_date = "02-07-2022";
+//@E std::string eng_date = fr_to_eng_datefmt(fr_date);
+//@E std::cout &lt;&lt; eng_date&lt;&lt; "\n";
+//@E 07-02-2022
+//@X
+
+std::string fr_to_eng_datefmt(std::string &x, char sep = '-') {
+  std::vector<std::string> vec = split(x, sep);
+  std::string rtn_val = "";
+  rtn_val += vec[1];
+  rtn_val.push_back(sep);
+  rtn_val += vec[0];
+  rtn_val.push_back(sep);
+  rtn_val += vec[2];
+  return rtn_val;
+};
+
+//@T eng_to_fr_datefmt
+//@U std::string eng_to_fr_datefmt(std::string &x, char sep = '-')
+//@X
+//@D Converts a english date format to an french one.
+//@A x : is the input date
+//@A sep : is the date separator
+//@X
+//@E std::string eng_date = "07-02-2022";
+//@E std::string fr_date = eng_to_fr_datefmt(eng_date);
+//@E std::cout << fr_date << "\n";
+//@E 02-07-2022
+//@X
+
+std::string eng_to_fr_datefmt(std::string &x, char sep = '-') {
+  std::vector<std::string> vec = split(x, sep);
+  std::string rtn_val = "";
+  rtn_val += vec[1];
+  rtn_val.push_back(sep);
+  rtn_val += vec[0];
+  rtn_val.push_back(sep);
+  rtn_val += vec[2];
+  return rtn_val;
+};
+
 //@L1 Fulgurance Tools
 
 //@T Parser_tokenizer_full
