@@ -9418,6 +9418,8 @@ std::string eng_to_fr_datefmt(std::string &x, char sep = '-') {
   return rtn_val;
 };
 
+//@J1
+
 //@T is_leap
 //@U template &lt;typename T&gt; bool is_leap(unsigned T &x)
 //@X
@@ -9447,6 +9449,99 @@ template <typename T> bool is_leap(T &x) {
   } else {
     return 0;
   };
+};
+
+//@T delta_second
+//@U double delta_second(std::string &bgn_date, std::string &end_date, int ref_year = 0, char delim = '-') 
+//@X
+//@D Returns the number of second elapsed between 2 dates.
+//@A bgn_date : is the first date, must be lower than the second date
+//@A end_date : is the second date
+//@A ref_year : is a reference year from which the time elapsed wil be calculated. This value must be lower than the year of the first date
+//@A delim : is the date delimiter
+//@X
+//@E std::string bgn_date = "2003-07-02-2-23-46";
+//@E std::string end_date = "2025-04-01-12-13-26";
+//@E double delta = delta_second(bgn_date, end_date);
+//@E std::cout &lt;&lt; delta &lt;&lt; "\n";
+//@E 6.86311e+08
+//@X
+
+double delta_second(std::string &bgn_date, std::string &end_date, int ref_year = 0, char delim = '-') {
+  unsigned int i;
+  std::vector<unsigned int> bgn_vec = {};
+  bgn_vec.resize(6, 0);
+  std::vector<std::string> date_v = split(bgn_date, delim);
+  for (i = 0; i < 6; ++i) {
+    bgn_vec[i] = std::stoi(date_v[i]);
+  };
+  std::vector<unsigned int> end_vec = {};
+  end_vec.resize(6, 0);
+  date_v = split(end_date, delim);
+  for (i = 0; i < 6; ++i) {
+    end_vec[i] = std::stoi(date_v[i]);
+  };
+  double rtn_val = 0;
+  bool cur_leap;
+  std::vector<unsigned int> leap_month_nbdays = {31, 29, 
+                                                31, 30, 
+                                                31, 30, 
+                                                31, 31, 
+                                                30, 31, 
+                                                30, 31};
+
+  std::vector<unsigned int> month_nbdays = {31, 28, 
+                                            31, 30, 
+                                            31, 30, 
+                                            31, 31, 
+                                            30, 31, 
+                                            30, 31};
+  double bgn_val = 0;
+  double end_val = 0;
+  for (i = ref_year; i <= bgn_vec[0]; ++i) {
+    cur_leap = is_leap(i);
+    if (!cur_leap) {
+      bgn_val += (365 * 24 * 3600);
+    } else {
+      bgn_val += (366 * 24 * 3600);
+    };
+  };
+  if (!cur_leap) {
+    for (i = 0; i < bgn_vec[1]; ++i) {
+      bgn_val += (month_nbdays[i] * 24 * 3600); 
+    };
+  } else {
+    for (i = 0; i < bgn_vec[1]; ++i) {
+      bgn_val += (leap_month_nbdays[i] * 24 * 3600); 
+    };
+  };
+  bgn_val += (bgn_vec[2] * 24 * 3600);
+  bgn_val += (bgn_vec[3] * 3600);
+  bgn_val += (bgn_vec[4] * 60);
+  bgn_val += bgn_vec[5];
+  for (i = ref_year; i <= end_vec[0]; ++i) {
+    cur_leap = is_leap(i);
+    if (!cur_leap) {
+      end_val += (365 * 24 * 3600);
+    } else {
+      end_val += (366 * 24 * 3600);
+    };
+  };
+  if (!cur_leap) {
+    for (i = 0; i < end_vec[1]; ++i) {
+      end_val += (month_nbdays[i] * 24 * 3600); 
+    };
+  } else {
+    for (i = 0; i < end_vec[1]; ++i) {
+      end_val += (leap_month_nbdays[i] * 24 * 3600); 
+    };
+  };
+  end_val += (end_vec[2] * 24 * 3600);
+  end_val += (end_vec[3] * 3600);
+  end_val += (end_vec[4] * 60);
+  end_val += end_vec[5];
+  rtn_val = end_val - bgn_val;
+  return rtn_val;
 };
 
 //@L1 Fulgurance Tools
