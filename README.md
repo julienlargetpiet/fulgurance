@@ -306,6 +306,10 @@
 <br>
 <a href="#sort_ascout" style="margin-left:80px;">sort_ascout</a>
 <br>
+<a href="#str_sort_descend" style="margin-left:80px;">str_sort_descend</a>
+<br>
+<a href="#str_sort_ascend" style="margin-left:80px;">str_sort_ascend</a>
+<br>
 <b><li style="margin-left:60px; color: #2c4786;">Remove range of elements</li></b>
 <a href="#rm_ordered" style="margin-left:80px;">rm_ordered</a>
 <br>
@@ -3480,6 +3484,42 @@ x </th><th> stl vector (int, float, double, bool) </th></tr>
 <div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 5, 2, 1, 5, 22};</code>
 <br><code>std::&lt;int&gt; out = sort_ascout(vec);</code>
 <br><code>{1, 1, 2, 5, 5, 22}</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="str_sort_descend" style="test-align: left;">str_sort_descend</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;std::string&gt; str_sort_descend(std::vector&lt;std::string&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Returns a descendly sorted vector of std::string.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;std::string&gt; inv = {"b", "c", "a", "b", "a", "aa", "ab"};</code>
+<br><code>std::vector&lt;std::string&gt; outv = str_sort_descend(inv);</code>
+<br><code>print_svec(outv);</code>
+<br><code>:0: c  b  b  ab aa a  a</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="str_sort_ascend" style="test-align: left;">str_sort_ascend</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;std::string&gt; str_sort_ascend(std::vector&lt;std::string&gt; &x)</code></div>
+<h3>#Description</h3>
+<p>Returns a ascendly sorted vector of std::string.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the input vector</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;std::string&gt; inv = {"b", "c", "a", "b", "a", "aa", "ab"};</code>
+<br><code>std::vector&lt;std::string&gt; outv = str_sort_ascend(inv);</code>
+<br><code>print_svec(outv);</code>
+<br><code>:0: a  a  aa ab b  b  c</code>
 </div>
 <br>
 <hr class="hr">
