@@ -4807,6 +4807,121 @@ template <typename T> std::vector<T> sort_ascout(const std::vector<T> &x) {
   return rtn;
 };
 
+//@T str_sort_descend
+//@U std::vector&lt;std::string&gt; str_sort_descend(std::vector&lt;std::string&gt; &x)
+//@X
+//@D Returns a descendly sorted vector of std::string.
+//@A x : is the input vector
+//@X
+//@E std::vector&lt;std::string&gt; inv = {"b", "c", "a", "b", "a", "aa", "ab"};
+//@E std::vector&lt;std::string&gt; outv = str_sort_descend(inv);
+//@E print_svec(outv);
+//@E :0: c  b  b  ab aa a  a
+//@X
+
+std::vector<std::string> str_sort_descend(std::vector<std::string> &x) {
+  unsigned int i;
+  unsigned int i2;
+  const unsigned int n = x.size();
+  std::vector<std::string> rtn_v = {};
+  rtn_v.reserve(n);
+  std::string cur_str;
+  std::vector<std::string> x_ref = x;
+  std::string min_str = " ";
+  unsigned int max_len = 1;
+  unsigned int cur_len;
+  unsigned int idx_max;
+  bool is_sup;
+  for (i = 0; i < n; ++i) {
+    cur_str = x[i];
+    cur_len = cur_str.length();
+    if (max_len < cur_len) {
+      max_len = cur_len;
+    };
+  };
+  for (i = 0; i < n; ++i) {
+    cur_str = x[i];
+    cur_len = cur_str.length();
+    for (i2 = cur_len; i2 < max_len; ++i2) {
+      cur_str.push_back(' ');
+    };
+    x[i] = cur_str;
+  };
+  for (i = 0; i < n; ++i) {
+    cur_str = x[i];
+    idx_max = i;
+    for (i2 = 0; i2 < n; ++i2) {
+      is_sup = is_greater_str(x[i2], cur_str);
+      if (is_sup) {
+        cur_str = x[i2];
+        idx_max = i2;
+      };
+    };
+    x[idx_max] = min_str;
+    rtn_v.push_back(x_ref[idx_max]);
+  };
+  return rtn_v;
+};
+
+//@T str_sort_ascend
+//@U std::vector&lt;std::string&gt; str_sort_ascend(std::vector&lt;std::string&gt; &x)
+//@X
+//@D Returns a ascendly sorted vector of std::string.
+//@A x : is the input vector
+//@X
+//@E std::vector&lt;std::string&gt; inv = {"b", "c", "a", "b", "a", "aa", "ab"};
+//@E std::vector&lt;std::string&gt; outv = str_sort_ascend(inv);
+//@E print_svec(outv);
+//@E :0: a  a  aa ab b  b  c
+//@X
+
+std::vector<std::string> str_sort_ascend(std::vector<std::string> x) {
+  unsigned int i;
+  unsigned int i2;
+  const unsigned int n = x.size();
+  std::vector<std::string> rtn_v = {};
+  rtn_v.reserve(n);
+  std::string cur_str;
+  std::vector<std::string> x_ref = x;
+  std::string max_str = "~";
+  unsigned int max_len = 1;
+  unsigned int cur_len;
+  unsigned int idx_min;
+  bool is_sup;
+  for (i = 0; i < n; ++i) {
+    cur_str = x[i];
+    cur_len = cur_str.length();
+    if (max_len < cur_len) {
+      max_len = cur_len;
+    };
+  };
+  for (i = 1; i < max_len; ++i) {
+    max_str.push_back('~');
+  };
+  for (i = 0; i < n; ++i) {
+    cur_str = x[i];
+    cur_len = cur_str.length();
+    for (i2 = cur_len; i2 < max_len; ++i2) {
+      cur_str.push_back(' ');
+    };
+    x[i] = cur_str;
+  };
+  for (i = 0; i < n; ++i) {
+    cur_str = x[i];
+    idx_min = i;
+    for (i2 = 0; i2 < n; ++i2) {
+      is_sup = is_greater_str(x[i2], cur_str);
+      if (!is_sup) {
+        cur_str = x[i2];
+        idx_min = i2;
+      };
+    };
+    x[idx_min] = max_str;
+    rtn_v.push_back(x_ref[idx_min]);
+  };
+  return rtn_v;
+};
+
 //@L3 Remove range of elements
 
 //@T rm_ordered
@@ -11232,4 +11347,29 @@ int regex_findr_first_condition_idx(std::string searched) {
   } else {
     return cnt;
   };
+};
+
+bool is_greater_str(std::string &x, std::string &x2) {
+  const unsigned int n = x.length();
+  const unsigned int n2 = x2.length();
+  unsigned int val1;
+  unsigned int val2;
+  if (n == n2) {
+    for (unsigned int i = 0; i < n; ++i) {
+      val1 = int(x[i]);
+      val2 = int(x2[i]);
+      if (val1 != val2) {
+        if (val1 > val2) {
+          return 1;
+        } else {
+          return 0;
+        };
+      };
+    };
+  } else if (n > n2) {
+    return 1;
+  } else {
+    return 0;
+  };
+  return 1;
 };
