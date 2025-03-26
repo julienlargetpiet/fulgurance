@@ -4832,6 +4832,7 @@ bool is_greater_str(std::string &x, std::string &x2,
   };
   return 1;
 };
+
 //@T str_sort_descend
 //@U std::vector&lt;std::string&gt; str_sort_descend(std::vector&lt;std::string&gt; &x, 
 //@U std::vector<char> order_v = {
@@ -4848,7 +4849,7 @@ bool is_greater_str(std::string &x, std::string &x2,
 //@U  'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
 //@U  'v', 'w', 'x', 'y', 'z', '{', '|', '}',
 //@U  '~'
-//@U})
+//@U })
 //@X
 //@D Returns a descendly sorted vector of std::string (according to ascii table order by default)
 //@A x : is the input vector
