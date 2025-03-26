@@ -3489,12 +3489,13 @@ x </th><th> stl vector (int, float, double, bool) </th></tr>
 <hr class="hr">
 <h2 id="str_sort_descend" style="test-align: left;">str_sort_descend</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::vector&lt;std::string&gt; str_sort_descend(std::vector&lt;std::string&gt; &x)</code></div>
+<div class="Div"><code>std::vector&lt;std::string&gt; str_sort_descend(std::vector&lt;std::string&gt; &x, <br>std::vector<char> order_v = {<br> ' ', '!', '"', '#', '$', '%', '&', <br> '\'', '(', ')', '*', '+', ',', '-', <br> '.', '/', '0', '1', '2', '3', '4', '5',<br> '6', '7', '8', '9', ':', ';', '<', '=',<br> '>', '?', '@', 'A', 'B', 'C', 'D', 'E',<br> 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',<br> 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',<br> 'V', 'W', 'X', 'Y', 'Z', '[', '\\', <br> ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e',<br> 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',<br> 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',<br> 'v', 'w', 'x', 'y', 'z', '{', '|', '}',<br> '~'<br>})</code></div>
 <h3>#Description</h3>
-<p>Returns a descendly sorted vector of std::string.</p>
+<p>Returns a descendly sorted vector of std::string (according to ascii table order by default)</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> is the input vector</th></tr>
+<tr><th>order_v </th><th> is the order of each character (ascii table by default)</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
@@ -3507,12 +3508,13 @@ x </th><th> is the input vector</th></tr>
 <hr class="hr">
 <h2 id="str_sort_ascend" style="test-align: left;">str_sort_ascend</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::vector&lt;std::string&gt; str_sort_ascend(std::vector&lt;std::string&gt; &x)</code></div>
+<div class="Div"><code>std::vector&lt;std::string&gt; str_sort_ascend(std::vector&lt;std::string&gt; &x, std::vector<char> order_v = {<br>                        ' ', '!', '"', '#', '$', '%', '&', <br>                        '\'', '(', ')', '*', '+', ',', '-', <br>                        '.', '/', '0', '1', '2', '3', '4', '5',<br>                        '6', '7', '8', '9', ':', ';', '<', '=',<br>                        '>', '?', '@', 'A', 'B', 'C', 'D', 'E',<br>                        'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',<br>                        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',<br>                        'V', 'W', 'X', 'Y', 'Z', '[', '\\', <br>                        ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e',<br>                        'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',<br>                        'n', 'o', 'p', 'q', 'r', 's', 't', 'u',<br>                        'v', 'w', 'x', 'y', 'z', '{', '|', '}',<br>                        '~'           <br><br>})</code></div>
 <h3>#Description</h3>
-<p>Returns a ascendly sorted vector of std::string.</p>
+<p>Returns a ascendly sorted vector of std::string. (according to ascii table order by default)</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 x </th><th> is the input vector</th></tr>
+<tr><th>order_v </th><th> is the order of each character (ascii table by default)</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
