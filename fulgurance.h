@@ -4834,7 +4834,7 @@ bool is_greater_str(std::string &x, std::string &x2,
 };
 
 //@T str_sort_descend
-//@U std::vector&lt;std::string&gt; str_sort_descend(std::vector&lt;std::string&gt; &x, 
+//@U std::vector&lt;std::string&gt; str_sort_descend(std::vector&lt;std::string&gt; x, 
 //@U std::vector<char> order_v = {
 //@U  ' ', '!', '"', '#', '$', '%', '&', 
 //@U  '\'', '(', ')', '*', '+', ',', '-', 
@@ -4861,7 +4861,7 @@ bool is_greater_str(std::string &x, std::string &x2,
 //@E :0: c  b  b  ab aa a  a
 //@X
 
-std::vector<std::string> str_sort_descend(std::vector<std::string> &x, 
+std::vector<std::string> str_sort_descend(std::vector<std::string> x, 
                 std::vector<char> order_v = {
                          ' ', '!', '"', '#', '$', '%', '&', 
                         '\'', '(', ')', '*', '+', ',', '-', 
@@ -4921,7 +4921,7 @@ std::vector<std::string> str_sort_descend(std::vector<std::string> &x,
 };
 
 //@T str_sort_ascend
-//@U std::vector&lt;std::string&gt; str_sort_ascend(std::vector&lt;std::string&gt; &x, std::vector<char> order_v = {
+//@U std::vector&lt;std::string&gt; str_sort_ascend(std::vector&lt;std::string&gt; x, std::vector<char> order_v = {
 //@U                         ' ', '!', '"', '#', '$', '%', '&', 
 //@U                         '\'', '(', ')', '*', '+', ',', '-', 
 //@U                         '.', '/', '0', '1', '2', '3', '4', '5',
