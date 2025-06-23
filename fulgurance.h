@@ -11455,11 +11455,6 @@ std::vector<std::vector<int>> Pre_Validate_Pairs(std::string &x, char frst_chr =
       cur_val.push_back(1);
     } else if (x[i] == scd_chr) {
 
-        for (int t = 0; t < cur_val.size(); t++) {
-          std::cout << cur_val[t] << " ";
-        };
-        std::cout << "\n";
-
         idx_vec.push_back(i);
         i2 = cur_val.size() - 1;
         num_par.push_back(0);
