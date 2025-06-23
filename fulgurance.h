@@ -11471,7 +11471,6 @@ std::vector<std::vector<int>> Pre_Validate_Pairs(std::string &x, char frst_chr =
             return {{0}, {0}};
           };
           if (cur_val[i2] == 0 & !alrd) {
-            std::cout << cur_num << " ok\n";
             num_par[i2] = cur_num;
             num_par[num_par.size() - 1] = cur_num;
             cur_val[cur_val.size() - 1] = 0;
