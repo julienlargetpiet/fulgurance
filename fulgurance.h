@@ -11437,3 +11437,81 @@ int regex_findr_first_condition_idx(std::string searched) {
   };
 };
 
+std::vector<std::vector<int>> Pre_Validate_Pairs(std::string &x, char frst_chr = '{', char scd_chr = '}') {
+  std::vector<int> num_par;
+  std::vector<int> cur_val;
+  std::vector<int> idx_vec;
+  int i2;
+  unsigned int cur_num = 0;
+  const unsigned int n = x.length();
+  bool alrd;
+  for (int i = 0; i < n; ++i) {
+    if (x[i] == frst_chr) {
+      idx_vec.push_back(i);
+      num_par.push_back(0);
+      for (i2 = 0; i2 < cur_val.size(); ++i2) {
+        cur_val[i2] += 1;
+      };
+      cur_val.push_back(1);
+    } else if (x[i] == scd_chr) {
+
+        for (int t = 0; t < cur_val.size(); t++) {
+          std::cout << cur_val[t] << " ";
+        };
+        std::cout << "\n";
+
+        idx_vec.push_back(i);
+        i2 = cur_val.size() - 1;
+        num_par.push_back(0);
+        cur_val.push_back(1);
+        alrd = 0;
+        while (i2 > -1) {
+          cur_val[i2] -= 1;
+          if (cur_val[i2] < -2) {
+            return {{0}, {0}};
+          };
+          if (cur_val[i2] == 0 & !alrd) {
+            std::cout << cur_num << " ok\n";
+            num_par[i2] = cur_num;
+            num_par[num_par.size() - 1] = cur_num;
+            cur_val[cur_val.size() - 1] = 0;
+            cur_num += 1;
+            alrd = 1;
+          };
+          i2 -= 1;
+        };
+        if (!alrd) {
+          return {{0}, {0}};
+        };
+    };
+  };
+  return {num_par, idx_vec};
+};
+
+bool ValidatePairs(std::string &x, char frst_chr = '(', char scd_chr = ')') {
+  std::vector<std::vector<int>> rtn_vec = Pre_Validate_Pairs(x, frst_chr, scd_chr);
+  int n = rtn_vec[0].size();
+  if (n <= 1) {
+    return 0;
+  };
+  if (n % 2 != 0) {
+    return 0;
+  };
+  int i2;
+  int cnt = 0;
+  std::vector<int> pairs_vec = rtn_vec[0];
+  for (int i = 0; i < n / 2; i++) {
+    cnt = 0;
+    for (i2 = 0; i2 < n; i2++) {
+      if (pairs_vec[i2] == i) {
+        cnt += 1;
+        if (cnt > 2) {
+          return 0;
+        };
+      };
+    };
+  };
+  return 1;
+};
+
+
