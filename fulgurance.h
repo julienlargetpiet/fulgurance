@@ -11508,4 +11508,427 @@ bool ValidatePairs(std::string &x, char frst_chr = '(', char scd_chr = ')') {
   return 1;
 };
 
+//@T ValidateJSON
+//@U bool ValidateJSON(std::string &x)
+//@X
+//@D Returns 1 if the JSon is valid, 0 if not.
+//@A x : is the std::string representing the JSon 
+//@X
+//@E std::string x = "{\"name\" : \"JohnY Doe\",\"age\": 30,\"isStudent\": false,\"courses\": [\"Math\", {\"prefered1\"    :   \"Science\", \"prefered2\"  : \"Mathsss\", \"intricated_list\" : [1, \"2\", 2, {\"AAA\" : 22}, 34]}, \"History\"],\"address\": {\"street\": \"123 Main St\",\"city\": \"Poissy\",\"postalCode\": 78300},\"graduationYear\": null}";
+//@E bool is_ok = ValidateJSON(x);
+//@E std::cout &lt;&lt; "is_ok: " &lt;&lt; is_ok &lt;&lt; "\n";
+//@E 1
+//@E x = "{\"name\" : \"JohnY Doe\",\"age\": 30,\"isStudent\": false,\"courses\": [\"Math\", {\"prefered1\"    :   \"Science\", \"prefered2\"  : \"Mathsss\", \"intricated_list : [1, \"2\", 2, {\"AAA\" : 22}, 34]}, \"History\"],\"address\": {\"street\": \"123 Main St\",\"city\": \"Poissy\",\"postalCode\": 78300},\"graduationYear\": null}";
+//@E is_ok = ValidateJSON(x);
+//@E std::cout &lt;&lt; "is_ok: " &lt;&lt; is_ok &lt;&lt; "\n";
+//@E 0
+//@X
+
+bool ValidateJSON(std::string &x) {
+  const int n = x.size();
+  bool is_nb = ValidatePairs(x);
+  bool is_boolean;
+  int untl;
+  bool new_object;
+  std::string cur_str = "";
+  if (!is_nb) {
+    return 0;
+  };
+  int i3;
+  int i2 = 1;
+  int depth_lists = 0;
+  int depth_objs = 0;
+  bool search_for_key = 1;
+  std::vector<char> ref_nb = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+  while (i2 < n) {
+    if (search_for_key) {
+      while (x[i2] != '"') {
+        if (x[i2] != ' ') {
+          return 0;
+        };
+        i2 += 1;
+        if (i2 == n) {
+          return 0;
+        };
+      };
+      i2 += 1;
+      if (i2 == n) {
+        return 0;
+      };
+      while (x[i2] != '"') {
+        i2 += 1;
+        if (i2 == n) {
+          return 0;
+        };
+      };
+      i2 += 1;
+      if (i2 == n) {
+        return 0;
+      };
+      while (x[i2] != ':') {
+        if (i2 == n) {
+          return 0;
+        };
+        if (x[i2] != ' ') {
+          return 0;
+        };
+        i2 += 1;
+      };
+      i2 += 1;
+      if (i2 == n) {
+        return 0;
+      };
+    };
+    is_nb = 0;
+    is_boolean = 0;
+    new_object = 0;
+    cur_str = "";
+    while (x[i2] != '"' && x[i2] != '[') {
+      if (x[i2] == '{') {
+        depth_objs += 1;
+        i2 += 1;
+        new_object = 1;
+        break;
+      };
+      if (x[i2] != ' ') {
+        cur_str.push_back(x[i2]);
+        if (cur_str == "t" || cur_str == "f" || cur_str == "n") {
+          is_boolean = 1;
+          i2 += 1;
+          break;
+        };
+        for (i3 = 0; i3 < 10; i3++) {
+          if (ref_nb[i3] == x[i2]) {
+            is_nb = 1;
+            break;
+          };
+        };
+        if (!is_nb) {
+          return 0;
+        };
+        break;
+      };
+      i2 += 1;
+      if (i2 == n) {
+        return 0;
+      };
+    };
+    if (!new_object) {
+      if (x[i2] == '[') {
+        depth_lists += 1;
+        i2 += 1;
+        if (i2 == n) {
+          return 0;
+        };
+        while (x[i2] == ' ') {
+          i2 += 1;
+          if (i2 == n) {
+            return 0;
+          };
+        };
+        if (x[i2] == '{') {
+          depth_objs += 1;
+          i2 += 1;
+          break;
+        };
+        is_nb = 0;
+        for (i3 = 0; i3 < 10; i3++) {
+          if (ref_nb[i3] == x[i2]) {
+            is_nb = 1;
+            break;
+          };
+        };
+      };
+      if (x[i2] == '"') {
+        i2 += 1;
+        while (x[i2] != '"') {
+          i2 += 1;
+          if (i2 == n) {
+            return 0;
+          };
+        };
+        i2 += 1;
+        if (i2 == n) {
+          return 0;
+        };
+        if (x[i2] != ',') {
+          if (x[i2] != ']') {
+            if (x[i2] != '}') {
+              return 0;
+            } else {
+              depth_objs -= 1;
+              i2 += 1;
+              if (i2 == n) {
+                return 1;
+              };
+              while (x[i2] != ',') {
+                while (x[i2] == '}') {
+                  depth_objs -= 1;
+                  i2 += 1;
+                  if (i2 == n) {
+                    return 1;
+                  };
+                };
+                if (x[i2] == ',') {
+                  break;
+                } else if (x[i2] == ']') {
+                  while (x[i2] == ']') {
+                    depth_lists -= 1;
+                    i2 += 1;
+                    if (i2 == n) {
+                      return 0;
+                    };
+                  };
+                } else {
+                  break;
+                };
+                if (x[i2] != ',' && x[i2] != ']') {
+                  return 0;
+                };
+              };
+            };
+          } else if (depth_lists > 0) {
+            depth_lists -= 1;
+            i2 += 1;
+            while (x[i2] != ',') {
+              while (x[i2] == ']') {
+                depth_lists -= 1;
+                i2 += 1;
+                if (i2 == n) {
+                  return 0;
+                };
+              };
+              if (x[i2] == ',') {
+                break;
+              } else if (x[i2] == '}') {
+                while (x[i2] == '}') {
+                  depth_objs -= 1;
+                  i2 += 1;
+                  if (i2 == n) {
+                    return 1;
+                  };
+                };
+              } else {
+                break;
+              };
+              if (x[i2] != ',' && x[i2] != ']') {
+                return 0;
+              };
+            };
+          } else {
+            return 0;
+          };
+        };
+        i2 += 1;
+        if (i2 == n) {
+          return 0;
+        };
+      } else if (is_nb) {
+        while (x[i2] != ',') {
+          is_nb = 0;
+          for (i3 = 0; i3 < 10; i3++) {
+            if (ref_nb[i3] == x[i2]) {
+              is_nb = 1;
+              break;
+            };
+          };
+          if (!is_nb) {
+            if (x[i2] != ']') {
+              if (x[i2] != '}') {
+                return 0;
+              } else {
+                depth_objs -= 1;
+                i2 += 1;
+                if (i2 == n) {
+                  return 1;
+                };
+                while (x[i2] != ',') {
+                  while (x[i2] == '}') {
+                    depth_objs -= 1;
+                    i2 += 1;
+                    if (i2 == n) {
+                      return 1;
+                    };
+                  };
+                  if (x[i2] == ',') {
+                    break;
+                  } else if (x[i2] == ']') {
+                    while (x[i2] == ']') {
+                      depth_lists -= 1;
+                      i2 += 1;
+                      if (i2 == n) {
+                        return 0;
+                      };
+                    };
+                  } else {
+                    break;
+                  };
+                  if (x[i2] != ',' && x[i2] != ']') {
+                    return 0;
+                  };
+                };
+                break;
+              };
+            } else if (depth_lists > 0) {
+              depth_lists -= 1;
+              i2 += 1;
+              while (x[i2] != ',') {
+                while (x[i2] == ']') {
+                  depth_lists -= 1;
+                  i2 += 1;
+                  if (i2 == n) {
+                    return 0;
+                  };
+                };
+                if (x[i2] == ',') {
+                  break;
+                } else if (x[i2] == '}') {
+                  while (x[i2] == '}') {
+                    depth_objs -= 1;
+                    i2 += 1;
+                    if (i2 == n) {
+                      return 1;
+                    };
+                  };
+                } else {
+                  break;
+                };
+                if (x[i2] != ',' && x[i2] != ']') {
+                  return 0;
+                };
+              };
+              break;
+            } else {
+              return 0;
+            };
+          };
+          i2 += 1;
+        };
+        i2 += 1;
+        if (i2 == n) {
+          return 0;
+        };
+      } else if (is_boolean) {
+        if (cur_str == "f") {
+          untl = i2 + 4;
+          while (i2 < untl) {
+            cur_str.push_back(x[i2]);
+            i2 += 1;
+            if (i2 == n) {
+              return 0;
+            };
+          };
+          if (cur_str != "false") {
+            return 0;
+          };
+        } else if (cur_str == "t") {
+          untl = i2 + 3;
+          while (i2 < untl) {
+            cur_str.push_back(x[i2]);
+            i2 += 1;
+            if (i2 == n) {
+              return 0;
+            };
+          };
+          if (cur_str != "true") {
+            return 0;
+          };
+        } else {
+          untl = i2 + 3;
+          while (i2 < untl) {
+            cur_str.push_back(x[i2]);
+            i2 += 1;
+            if (i2 == n) {
+              return 0;
+            };
+          };
+          if (cur_str != "null") {
+            return 0;
+          };
+        };
+        if (x[i2] != ',') {
+          if (x[i2] != ']') {
+            if (x[i2] != '}') {
+              return 0;
+            } else {
+              depth_objs -= 1;
+              i2 += 1;
+              if (i2 == n) {
+                return 1;
+              };
+              while (x[i2] != ',') {
+                while (x[i2] == '}') {
+                  depth_objs -= 1;
+                  i2 += 1;
+                  if (i2 == n) {
+                    return 1;
+                  };
+                };
+                if (x[i2] == ',') {
+                  break;
+                } else if (x[i2] == ']') {
+                  while (x[i2] == ']') {
+                    depth_lists -= 1;
+                    i2 += 1;
+                    if (i2 == n) {
+                      return 0;
+                    };
+                  };
+                } else {
+                  break;
+                };
+                if (x[i2] != ',' && x[i2] != ']') {
+                  return 0;
+                };
+              };
+            };
+          } else if (depth_lists > 0) {
+            depth_lists -= 1;
+            i2 += 1;
+            while (x[i2] != ',') {
+              while (x[i2] == ']') {
+                depth_lists -= 1;
+                i2 += 1;
+                if (i2 == n) {
+                  return 0;
+                };
+              };
+              if (x[i2] == ',') {
+                break;
+              } else if (x[i2] == '}') {
+                while (x[i2] == '}') {
+                  depth_objs -= 1;
+                  i2 += 1;
+                  if (i2 == n) {
+                    return 1;
+                  };
+                };
+              } else {
+                break;
+              };
+              if (x[i2] != ',' && x[i2] != ']') {
+                return 0;
+              };
+            };
+          } else {
+            return 0;
+          };
+        };
+        i2 += 1;
+        if (i2 == n) {
+          return 0;
+        };
+      } else {
+        return 0;
+      };
+    };
+    if (depth_lists > depth_objs) {
+      search_for_key = 0;
+    } else {
+      search_for_key = 1;
+    };
+  };
+  return 1;
+};
+
 
