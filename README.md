@@ -1,5 +1,3 @@
-
-<body>
 <div class="Div2"><i><b>README</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
 <div class="container">
 <div class="Divb">
@@ -528,6 +526,8 @@
 <a href="#letter_to_nb" style="margin-left:60px;">letter_to_nb</a>
 <br>
 <a href="#nb_to_letter" style="margin-left:60px;">nb_to_letter</a>
+<br>
+<a href="#ValidateJSON" style="margin-left:60px;">ValidateJSON</a>
 <br>
 </ul><br>
 </div>
@@ -3489,7 +3489,7 @@ x </th><th> stl vector (int, float, double, bool) </th></tr>
 <hr class="hr">
 <h2 id="str_sort_descend" style="test-align: left;">str_sort_descend</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::vector&lt;std::string&gt; str_sort_descend(std::vector&lt;std::string&gt; &x, <br>std::vector<char> order_v = {<br> ' ', '!', '"', '#', '$', '%', '&', <br> '\'', '(', ')', '*', '+', ',', '-', <br> '.', '/', '0', '1', '2', '3', '4', '5',<br> '6', '7', '8', '9', ':', ';', '<', '=',<br> '>', '?', '@', 'A', 'B', 'C', 'D', 'E',<br> 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',<br> 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',<br> 'V', 'W', 'X', 'Y', 'Z', '[', '\\', <br> ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e',<br> 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',<br> 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',<br> 'v', 'w', 'x', 'y', 'z', '{', '|', '}',<br> '~'<br>})</code></div>
+<div class="Div"><code>std::vector&lt;std::string&gt; str_sort_descend(std::vector&lt;std::string&gt; x, <br>std::vector<char> order_v = {<br> ' ', '!', '"', '#', '$', '%', '&', <br> '\'', '(', ')', '*', '+', ',', '-', <br> '.', '/', '0', '1', '2', '3', '4', '5',<br> '6', '7', '8', '9', ':', ';', '<', '=',<br> '>', '?', '@', 'A', 'B', 'C', 'D', 'E',<br> 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',<br> 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',<br> 'V', 'W', 'X', 'Y', 'Z', '[', '\\', <br> ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e',<br> 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',<br> 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',<br> 'v', 'w', 'x', 'y', 'z', '{', '|', '}',<br> '~'<br>})</code></div>
 <h3>#Description</h3>
 <p>Returns a descendly sorted vector of std::string (according to ascii table order by default)</p>
 <h3>#Arguments</h3>
@@ -3508,7 +3508,7 @@ x </th><th> is the input vector</th></tr>
 <hr class="hr">
 <h2 id="str_sort_ascend" style="test-align: left;">str_sort_ascend</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::vector&lt;std::string&gt; str_sort_ascend(std::vector&lt;std::string&gt; &x, std::vector<char> order_v = {<br>                        ' ', '!', '"', '#', '$', '%', '&', <br>                        '\'', '(', ')', '*', '+', ',', '-', <br>                        '.', '/', '0', '1', '2', '3', '4', '5',<br>                        '6', '7', '8', '9', ':', ';', '<', '=',<br>                        '>', '?', '@', 'A', 'B', 'C', 'D', 'E',<br>                        'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',<br>                        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',<br>                        'V', 'W', 'X', 'Y', 'Z', '[', '\\', <br>                        ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e',<br>                        'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',<br>                        'n', 'o', 'p', 'q', 'r', 's', 't', 'u',<br>                        'v', 'w', 'x', 'y', 'z', '{', '|', '}',<br>                        '~'           <br><br>})</code></div>
+<div class="Div"><code>std::vector&lt;std::string&gt; str_sort_ascend(std::vector&lt;std::string&gt; x, std::vector<char> order_v = {<br>                        ' ', '!', '"', '#', '$', '%', '&', <br>                        '\'', '(', ')', '*', '+', ',', '-', <br>                        '.', '/', '0', '1', '2', '3', '4', '5',<br>                        '6', '7', '8', '9', ':', ';', '<', '=',<br>                        '>', '?', '@', 'A', 'B', 'C', 'D', 'E',<br>                        'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',<br>                        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',<br>                        'V', 'W', 'X', 'Y', 'Z', '[', '\\', <br>                        ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e',<br>                        'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',<br>                        'n', 'o', 'p', 'q', 'r', 's', 't', 'u',<br>                        'v', 'w', 'x', 'y', 'z', '{', '|', '}',<br>                        '~'           <br><br>})</code></div>
 <h3>#Description</h3>
 <p>Returns a ascendly sorted vector of std::string. (according to ascii table order by default)</p>
 <h3>#Arguments</h3>
@@ -6224,6 +6224,27 @@ x </th><th> is the input number</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h2 id="ValidateJSON" style="test-align: left;">ValidateJSON</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>bool ValidateJSON(std::string &x)</code></div>
+<h3>#Description</h3>
+<p>Returns 1 if the JSon is valid, 0 if not.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the std</th><th></th><th>string representing the JSon </th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string x = "{\"name\" : \"JohnY Doe\",\"age\": 30,\"isStudent\": false,\"courses\": [\"Math\", {\"prefered1\"    :   \"Science\", \"prefered2\"  : \"Mathsss\", \"intricated_list\" : [1, \"2\", 2, {\"AAA\" : 22}, 34]}, \"History\"],\"address\": {\"street\": \"123 Main St\",\"city\": \"Poissy\",\"postalCode\": 78300},\"graduationYear\": null}";</code>
+<br><code>bool is_ok = ValidateJSON(x);</code>
+<br><code>std::cout &lt;&lt; "is_ok: " &lt;&lt; is_ok &lt;&lt; "\n";</code>
+<br><code>1</code>
+<br><code>x = "{\"name\" : \"JohnY Doe\",\"age\": 30,\"isStudent\": false,\"courses\": [\"Math\", {\"prefered1\"    :   \"Science\", \"prefered2\"  : \"Mathsss\", \"intricated_list : [1, \"2\", 2, {\"AAA\" : 22}, 34]}, \"History\"],\"address\": {\"street\": \"123 Main St\",\"city\": \"Poissy\",\"postalCode\": 78300},\"graduationYear\": null}";</code>
+<br><code>is_ok = ValidateJSON(x);</code>
+<br><code>std::cout &lt;&lt; "is_ok: " &lt;&lt; is_ok &lt;&lt; "\n";</code>
+<br><code>0</code>
+</div>
+<br>
+<hr class="hr">
 </div>
 </div>
-</body>
