@@ -11534,6 +11534,7 @@ bool ValidateJSON(std::string &x) {
   if (!is_nb) {
     return 0;
   };
+  bool alrd_dot;
   int i3;
   int i2 = 1;
   int depth_lists = 0;
@@ -11724,6 +11725,7 @@ bool ValidateJSON(std::string &x) {
           return 0;
         };
       } else if (is_nb) {
+        alrd_dot = 0;
         while (x[i2] != ',') {
           is_nb = 0;
           for (i3 = 0; i3 < 10; i3++) {
@@ -11733,7 +11735,12 @@ bool ValidateJSON(std::string &x) {
             };
           };
           if (!is_nb) {
-            if (x[i2] != ']') {
+            if (x[i2] == '.') {
+              if (alrd_dot) {
+                return 0;
+              };
+              alrd_dot = 1;
+            } else if (x[i2] != ']') {
               if (x[i2] != '}') {
                 return 0;
               } else {
