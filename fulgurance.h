@@ -11530,6 +11530,7 @@ bool ValidateJSON(std::string &x) {
   bool is_boolean;
   int untl;
   bool new_object;
+  bool alrd_space = 0;
   std::string cur_str = "";
   if (!is_nb) {
     return 0;
@@ -11539,6 +11540,8 @@ bool ValidateJSON(std::string &x) {
   int i2 = 1;
   int depth_lists = 0;
   int depth_objs = 0;
+  std::vector<int> depth_lists_vec = {0};
+  std::vector<int> depth_objs_vec = {0};
   bool search_for_key = 1;
   std::vector<char> ref_nb = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
   while (i2 < n) {
@@ -11586,7 +11589,8 @@ bool ValidateJSON(std::string &x) {
     cur_str = "";
     while (x[i2] != '"' && x[i2] != '[') {
       if (x[i2] == '{') {
-        depth_objs += 1;
+        depth_objs = depth_lists + 1;
+        depth_objs_vec.push_back(depth_objs);
         i2 += 1;
         new_object = 1;
         break;
@@ -11616,7 +11620,8 @@ bool ValidateJSON(std::string &x) {
     };
     if (!new_object) {
       if (x[i2] == '[') {
-        depth_lists += 1;
+        depth_lists = depth_objs + 1;
+        depth_lists_vec.push_back(depth_lists);
         i2 += 1;
         if (i2 == n) {
           return 0;
@@ -11628,19 +11633,38 @@ bool ValidateJSON(std::string &x) {
           };
         };
         if (x[i2] == '{') {
-          depth_objs += 1;
           i2 += 1;
-          break;
+          new_object = 1;
         };
-        is_nb = 0;
+        while (x[i2] == '[') {
+          depth_lists += 1;
+          depth_lists_vec.push_back(depth_lists);
+          i2 += 1;
+          if (i2 == n) {
+            return 0;
+          };
+          while (x[i2] == ' ') {
+            i2 += 1;
+            if (i2 == n) {
+              return 0;
+            };
+          };
+          if (x[i2] == '{') {
+            new_object = 1;
+            break;
+          };
+          if (x[i2] != ' ') {
+            return 0;
+          };
+        };
         for (i3 = 0; i3 < 10; i3++) {
-          if (ref_nb[i3] == x[i2]) {
+          if (x[i2] == ref_nb[i3]) {
             is_nb = 1;
             break;
           };
         };
       };
-      if (x[i2] == '"') {
+      if (x[i2] == '"' && !new_object) {
         i2 += 1;
         while (x[i2] != '"') {
           i2 += 1;
@@ -11653,31 +11677,68 @@ bool ValidateJSON(std::string &x) {
           return 0;
         };
         if (x[i2] != ',') {
+          if (x[i2] == ' ') {
+            while (x[i2] == ' ') {
+              i2 += 1;
+              if (i2 == n) {
+                return 0;
+              };
+            };
+          };
           if (x[i2] != ']') {
             if (x[i2] != '}') {
               return 0;
             } else {
               depth_objs -= 1;
+              depth_objs_vec.pop_back();
               i2 += 1;
               if (i2 == n) {
                 return 1;
               };
+              alrd_space = 0;
               while (x[i2] != ',') {
+                alrd_space = 0;
+                while (x[i2] == ' ') {
+                  i2 += 1;
+                  alrd_space = 1;
+                  if (i2 == n) {
+                    return 0;
+                  };
+                };
                 while (x[i2] == '}') {
                   depth_objs -= 1;
                   i2 += 1;
                   if (i2 == n) {
                     return 1;
                   };
-                };
-                if (x[i2] == ',') {
-                  break;
-                } else if (x[i2] == ']') {
-                  while (x[i2] == ']') {
-                    depth_lists -= 1;
+                  depth_objs_vec.pop_back();
+                  alrd_space = 0;
+                  while (x[i2] == ' ') {
+                    alrd_space = 1;
                     i2 += 1;
                     if (i2 == n) {
                       return 0;
+                    };
+                  };
+                };
+                if (x[i2] == ',') {
+                  break;
+                };
+                if (x[i2] == ']') {
+                  while (x[i2] == ']') {
+                    depth_lists -= 1;
+                    depth_lists_vec.pop_back();
+                    i2 += 1;
+                    if (i2 == n) {
+                      return 0;
+                    };
+                    alrd_space = 0;
+                    while (x[i2] == ' ') {
+                      alrd_space = 1;
+                      i2 += 1;
+                      if (i2 == n) {
+                        return 0;
+                      };
                     };
                   };
                 } else {
@@ -11687,26 +11748,58 @@ bool ValidateJSON(std::string &x) {
                   return 0;
                 };
               };
+              if (alrd_space) {
+                return 0;
+              };
             };
           } else if (depth_lists > 0) {
             depth_lists -= 1;
+            depth_lists_vec.pop_back();
             i2 += 1;
+            alrd_space = 0;
             while (x[i2] != ',') {
-              while (x[i2] == ']') {
-                depth_lists -= 1;
+              alrd_space = 0;
+              while (x[i2] == ' ') {
+                alrd_space = 1;
                 i2 += 1;
                 if (i2 == n) {
                   return 0;
                 };
               };
+              while (x[i2] == ']') {
+                depth_lists -= 1;
+                depth_lists_vec.pop_back();
+                i2 += 1;
+                if (i2 == n) {
+                  return 0;
+                };
+                alrd_space = 0;
+                while (x[i2] == ' ') {
+                  alrd_space = 1;
+                  i2 += 1;
+                  if (i2 == n) {
+                    return 0;
+                  };
+                };
+              };
               if (x[i2] == ',') {
                 break;
-              } else if (x[i2] == '}') {
+              };
+              if (x[i2] == '}') {
                 while (x[i2] == '}') {
                   depth_objs -= 1;
                   i2 += 1;
                   if (i2 == n) {
                     return 1;
+                  };
+                  depth_objs_vec.pop_back();
+                  alrd_space = 0;
+                  while (x[i2] == ' ') {
+                    alrd_space = 1;
+                    i2 += 1;
+                    if (i2 == n) {
+                      return 0;
+                    };
                   };
                 };
               } else {
@@ -11716,6 +11809,9 @@ bool ValidateJSON(std::string &x) {
                 return 0;
               };
             };
+            if (alrd_space) {
+              return 0;
+            };
           } else {
             return 0;
           };
@@ -11724,7 +11820,7 @@ bool ValidateJSON(std::string &x) {
         if (i2 == n) {
           return 0;
         };
-      } else if (is_nb) {
+      } else if (is_nb && !new_object) {
         alrd_dot = 0;
         while (x[i2] != ',') {
           is_nb = 0;
@@ -11735,8 +11831,21 @@ bool ValidateJSON(std::string &x) {
             };
           };
           if (!is_nb) {
+            alrd_space = 0;
+            if (x[i2] == ' ') {
+              alrd_space = 1;
+              while (x[i2] == ' ') {
+                i2 += 1;
+                if (i2 == n) {
+                  return 0;
+                };
+              };
+            };
             if (x[i2] == '.') {
               if (alrd_dot) {
+                return 0;
+              };
+              if (alrd_space) {
                 return 0;
               };
               alrd_dot = 1;
@@ -11744,27 +11853,57 @@ bool ValidateJSON(std::string &x) {
               if (x[i2] != '}') {
                 return 0;
               } else {
+                alrd_space = 0;
+                std::cout << i2 << " ici\n";
                 depth_objs -= 1;
                 i2 += 1;
                 if (i2 == n) {
                   return 1;
                 };
+                depth_objs_vec.pop_back();
                 while (x[i2] != ',') {
+                  alrd_space = 0;
+                  while (x[i2] == ' ') {
+                    alrd_space = 1;
+                    i2 += 1;
+                    if (i2 == n) {
+                      return 0;
+                    }
+                  };
                   while (x[i2] == '}') {
                     depth_objs -= 1;
                     i2 += 1;
                     if (i2 == n) {
                       return 1;
                     };
+                    depth_objs_vec.pop_back();
+                    alrd_space = 0;
+                    while (x[i2] == ' ') {
+                      alrd_space = 1;
+                      i2 += 1;
+                      if (i2 == n) {
+                        return  0;
+                      };
+                    };
                   };
                   if (x[i2] == ',') {
                     break;
-                  } else if (x[i2] == ']') {
+                  };
+                  if (x[i2] == ']') {
                     while (x[i2] == ']') {
                       depth_lists -= 1;
+                      depth_lists_vec.pop_back();
                       i2 += 1;
                       if (i2 == n) {
                         return 0;
+                      };
+                      alrd_space = 0;
+                      while (x[i2] == ' ') {
+                        alrd_space = 1;
+                        i2 += 1;
+                        if (i2 == n) {
+                          return 0;
+                        };
                       };
                     };
                   } else {
@@ -11774,27 +11913,60 @@ bool ValidateJSON(std::string &x) {
                     return 0;
                   };
                 };
+                if (alrd_space) {
+                  std::cout << "wtf\n";
+                  return 0;
+                };
                 break;
               };
             } else if (depth_lists > 0) {
+              alrd_space = 0;
               depth_lists -= 1;
+              depth_lists_vec.pop_back();
               i2 += 1;
               while (x[i2] != ',') {
-                while (x[i2] == ']') {
-                  depth_lists -= 1;
+                alrd_space = 0;
+                while (x[i2] == ' ') {
                   i2 += 1;
+                  alrd_space = 1;
                   if (i2 == n) {
                     return 0;
                   };
                 };
+                while (x[i2] == ']') {
+                  depth_lists -= 1;
+                  depth_lists_vec.pop_back();
+                  i2 += 1;
+                  if (i2 == n) {
+                    return 0;
+                  };
+                  alrd_space = 0;
+                  while (x[i2] == ' ') {
+                    i2 += 1;
+                    alrd_space = 1;
+                    if (i2 == n) {
+                      return 0;
+                    };
+                  };
+                };
                 if (x[i2] == ',') {
                   break;
-                } else if (x[i2] == '}') {
+                };
+                if (x[i2] == '}') {
                   while (x[i2] == '}') {
                     depth_objs -= 1;
                     i2 += 1;
                     if (i2 == n) {
                       return 1;
+                    };
+                    depth_objs_vec.pop_back();
+                    alrd_space = 0;
+                    while (x[i2] == ' ') {
+                      alrd_space = 1;
+                      i2 += 1;
+                      if (i2 == n) {
+                        return 0;
+                      };
                     };
                   };
                 } else {
@@ -11803,6 +11975,9 @@ bool ValidateJSON(std::string &x) {
                 if (x[i2] != ',' && x[i2] != ']') {
                   return 0;
                 };
+              };
+              if (alrd_space) {
+                return 0;
               };
               break;
             } else {
@@ -11815,7 +11990,7 @@ bool ValidateJSON(std::string &x) {
         if (i2 == n) {
           return 0;
         };
-      } else if (is_boolean) {
+      } else if (is_boolean && !new_object) {
         if (cur_str == "f") {
           untl = i2 + 4;
           while (i2 < untl) {
@@ -11854,6 +12029,12 @@ bool ValidateJSON(std::string &x) {
           };
         };
         if (x[i2] != ',') {
+          while (x[i2] == ' ') {
+            i2 += 1;
+            if (i2 == n) {
+              return 0;
+            };
+          };
           if (x[i2] != ']') {
             if (x[i2] != '}') {
               return 0;
@@ -11863,22 +12044,51 @@ bool ValidateJSON(std::string &x) {
               if (i2 == n) {
                 return 1;
               };
+              alrd_space = 0;
+              depth_objs_vec.pop_back();
               while (x[i2] != ',') {
+                alrd_space = 1;
+                while (x[i2] == ' ') {
+                  alrd_space = 1;
+                  i2 += 1;
+                  if (i2 == n) {
+                    return 0;
+                  };
+                };
                 while (x[i2] == '}') {
                   depth_objs -= 1;
                   i2 += 1;
                   if (i2 == n) {
                     return 1;
                   };
-                };
-                if (x[i2] == ',') {
-                  break;
-                } else if (x[i2] == ']') {
-                  while (x[i2] == ']') {
-                    depth_lists -= 1;
+                  depth_objs_vec.pop_back();
+                  alrd_space = 0;
+                  while (x[i2] == ' ') {
+                    alrd_space = 1;
                     i2 += 1;
                     if (i2 == n) {
                       return 0;
+                    };
+                  };
+                };
+                if (x[i2] == ',') {
+                  break;
+                };
+                if (x[i2] == ']') {
+                  while (x[i2] == ']') {
+                    depth_lists -= 1;
+                    depth_lists_vec.pop_back();
+                    i2 += 1;
+                    if (i2 == n) {
+                      return 0;
+                    };
+                    alrd_space = 0;
+                    while (x[i2] == ' ') {
+                      alrd_space = 1;
+                      i2 += 1;
+                      if (i2 == n) {
+                        return 0;
+                      };
                     };
                   };
                 } else {
@@ -11888,26 +12098,58 @@ bool ValidateJSON(std::string &x) {
                   return 0;
                 };
               };
+              if (alrd_space) {
+                return 0;
+              };
             };
           } else if (depth_lists > 0) {
             depth_lists -= 1;
+            depth_lists_vec.pop_back();
             i2 += 1;
+            alrd_space = 0;
             while (x[i2] != ',') {
-              while (x[i2] == ']') {
-                depth_lists -= 1;
+              alrd_space = 0;
+              while (x[i2] = ' ') {
+                alrd_space = 1;
                 i2 += 1;
                 if (i2 == n) {
                   return 0;
                 };
               };
+              while (x[i2] == ']') {
+                depth_lists -= 1;
+                depth_lists_vec.pop_back();
+                i2 += 1;
+                if (i2 == n) {
+                  return 0;
+                };
+                alrd_space = 0;
+                while (x[i2] = ' ') {
+                  alrd_space = 1;
+                  i2 += 1;
+                  if (i2 == n) {
+                    return 0;
+                  };
+                };
+              };
               if (x[i2] == ',') {
                 break;
-              } else if (x[i2] == '}') {
+              };
+              if (x[i2] == '}') {
                 while (x[i2] == '}') {
                   depth_objs -= 1;
                   i2 += 1;
                   if (i2 == n) {
                     return 1;
+                  };
+                  depth_objs_vec.pop_back();
+                  alrd_space = 0;
+                  while (x[i2] = ' ') {
+                    alrd_space = 1;
+                    i2 += 1;
+                    if (i2 == n) {
+                      return 0;
+                    };
                   };
                 };
               } else {
@@ -11917,6 +12159,9 @@ bool ValidateJSON(std::string &x) {
                 return 0;
               };
             };
+            if (alrd_space) {
+              return 0;
+            };
           } else {
             return 0;
           };
@@ -11925,11 +12170,11 @@ bool ValidateJSON(std::string &x) {
         if (i2 == n) {
           return 0;
         };
-      } else {
+      } else if (!new_object) {
         return 0;
       };
     };
-    if (depth_lists > depth_objs) {
+    if (depth_lists_vec[depth_lists_vec.size() - 1] > depth_objs_vec[depth_objs_vec.size() - 1]) {
       search_for_key = 0;
     } else {
       search_for_key = 1;
