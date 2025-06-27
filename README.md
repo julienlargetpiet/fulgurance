@@ -529,6 +529,8 @@
 <br>
 <a href="#ValidateJSON" style="margin-left:60px;">ValidateJSON</a>
 <br>
+<a href="#GetStringJSON" style="margin-left:60px;">GetStringJSON</a>
+<br>
 </ul><br>
 </div>
 </div>
@@ -6243,6 +6245,34 @@ x </th><th> is the std</th><th></th><th>string representing the JSon </th></tr>
 <br><code>is_ok = ValidateJSON(x);</code>
 <br><code>std::cout &lt;&lt; "is_ok: " &lt;&lt; is_ok &lt;&lt; "\n";</code>
 <br><code>0</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="GetStringJSON" style="test-align: left;">GetStringJSON</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::string GetStringJSON(std::string &x, std::vector&lt;std::string&gt; keys_vec)</code></div>
+<h3>#Description</h3>
+<p>Allows to get the string value from a JSON key.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the string representing the JSON data</th></tr>
+<tr><th>keys_vec </th><th> is a string vector containing all the keys in order</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::string x = "{\"name\" : \"JohnY Doe\",\"age\": 30,\"isStudent\": false,\"courses\": [\"Math\",   {\"prefered1\"    :   \"Science\", \"prefered2\"  : \"Mathsss\",    \"intricated_list\" : [ \"oui\",  {\"AAA\" : \"22\", \"AA\" : [{\"BB\" : \"okok\"}, 1, 2.23] }, 34 ]} , \"History\"],\"address\": {\"street\": \"123 Main St\",\"city\": \"Poissy\",\"postalCode\": 78300}, \"graduationYear\": \"2021\", \"price\" : \"22\"}";</code>
+<br><code>std::vector&lt;std::string&gt; keys_vec = {"courses", "intricated_list", "AA", "BB"};</code>
+<br><code>std::string rslt = GetStringJSON(x, keys_vec);</code>
+<br><code>std::cout &lt;&lt; rslt &lt;&lt; "\n";</code>
+<br><code>okok</code>
+<br><code>keys_vec = {"address", "city"};</code>
+<br><code>rslt = GetStringJSON(x, keys_vec);</code>
+<br><code>std::cout &lt;&lt; rslt &lt;&lt; "\n";</code>
+<br><code>Poissy</code>
+<br><code>keys_vec = {"price"};</code>
+<br><code>rslt = GetStringJSON(x, keys_vec);</code>
+<br><code>std::cout &lt;&lt; rslt &lt;&lt; "\n";</code>
+<br><code>22 </code>
 </div>
 <br>
 <hr class="hr">
