@@ -12120,6 +12120,28 @@ bool ValidateJSON(std::string &x) {
   return 1;
 };
 
+//@T GetStringJSON
+//@U std::string GetStringJSON(std::string &x, std::vector&lt;std::string&gt; keys_vec)
+//@X
+//@D Allows to get the string value from a JSON key.
+//@A x : is the string representing the JSON data
+//@A keys_vec : is a string vector containing all the keys in order
+//@X
+//@E std::string x = "{\"name\" : \"JohnY Doe\",\"age\": 30,\"isStudent\": false,\"courses\": [\"Math\",   {\"prefered1\"    :   \"Science\", \"prefered2\"  : \"Mathsss\",    \"intricated_list\" : [ \"oui\",  {\"AAA\" : \"22\", \"AA\" : [{\"BB\" : \"okok\"}, 1, 2.23] }, 34 ]} , \"History\"],\"address\": {\"street\": \"123 Main St\",\"city\": \"Poissy\",\"postalCode\": 78300}, \"graduationYear\": \"2021\", \"price\" : \"22\"}";
+//@E std::vector&lt;std::string&gt; keys_vec = {"courses", "intricated_list", "AA", "BB"};
+//@E std::string rslt = GetStringJSON(x, keys_vec);
+//@E std::cout &lt;&lt; rslt &lt;&lt; "\n";
+//@E okok
+//@E keys_vec = {"address", "city"};
+//@E rslt = GetStringJSON(x, keys_vec);
+//@E std::cout &lt;&lt; rslt &lt;&lt; "\n";
+//@E Poissy
+//@E keys_vec = {"price"};
+//@E rslt = GetStringJSON(x, keys_vec);
+//@E std::cout &lt;&lt; rslt &lt;&lt; "\n";
+//@E 22 
+//@X
+
 std::string GetStringJSON(std::string &x, std::vector<std::string> keys_vec) {
   int i = 0;
   int cur_i;
