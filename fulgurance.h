@@ -12146,7 +12146,9 @@ std::string GetStringJSON(std::string &x, std::vector<std::string> keys_vec) {
   int i = 0;
   int cur_i;
   const int n = keys_vec.size();
-  std::vector<std::vector<unsigned int>> rtn_vec = Parser_tokenizer_full(x);
+  char bgn_chr = '{';
+  char end_chr = '}';
+  std::vector<std::vector<unsigned int>> rtn_vec = Parser_tokenizer_full(x, bgn_chr, end_chr);
   std::vector<unsigned int> par_vec = rtn_vec[0];
   unsigned int cur_id;
   std::vector<unsigned int> idx_vec = rtn_vec[1];
@@ -12194,7 +12196,7 @@ std::string GetStringJSON(std::string &x, std::vector<std::string> keys_vec) {
             rtn_val.push_back(x[cur_i]);
             cur_i += 1;
           };
-          break;
+          return rtn_val;
         };
         while (idx_vec[i] < cur_i) {
           i += 1;
