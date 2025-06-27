@@ -531,6 +531,8 @@
 <br>
 <a href="#GetStringJSON" style="margin-left:60px;">GetStringJSON</a>
 <br>
+<a href="#GetIntJSON" style="margin-left:60px;">GetIntJSON</a>
+<br>
 </ul><br>
 </div>
 </div>
@@ -6273,6 +6275,26 @@ x </th><th> is the string representing the JSON data</th></tr>
 <br><code>rslt = GetStringJSON(x, keys_vec);</code>
 <br><code>std::cout &lt;&lt; rslt &lt;&lt; "\n";</code>
 <br><code>22 </code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="GetIntJSON" style="test-align: left;">GetIntJSON</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>int GetIntJSON(std::string &x, std::vector&lt;std::string&gt; keys_vec)</code></div>
+<h3>#Description</h3>
+<p>Allow to get an int value from a JSON key.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+x </th><th> is the string representing the JSON data</th></tr>
+<tr><th>keys_vec </th><th> is the vector containing the keys in order</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code> std::string x = "{\"name\" : \"JohnY Doe\",\"age\": 30,\"isStudent\": false,\"courses\": [\"Math\",   {\"prefered1\"    :   \"Science\", \"prefered2\"  : \"Mathsss\",    \"intricated_list\" : [ \"oui\",  {\"AAA\" : \"22\", \"AA\" : [{\"BB\" : \"okok\"}, 1, 2.23] }, 34 ]} , \"History\"],\"address\": {\"street\": \"123 Main St\",\"city\": \"Poissy\",\"postalCode\": 78300}, \"graduationYear\": \"2021\", \"price\" : 22}";</code>
+<br><code> std::vector&lt;std::string&gt; keys_vec = {"price"};</code>
+<br><code> int rslt = GetIntJSON(x, keys_vec);</code>
+<br><code> std::cout &lt;&lt; rslt &lt;&lt; "\n";</code>
+<br><code>22</code>
 </div>
 <br>
 <hr class="hr">
