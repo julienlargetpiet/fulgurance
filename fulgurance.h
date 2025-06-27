@@ -12120,5 +12120,99 @@ bool ValidateJSON(std::string &x) {
   return 1;
 };
 
+std::string GetStringJSON(std::string &x, std::vector<std::string> keys_vec) {
+  int i = 0;
+  int cur_i;
+  const int n = keys_vec.size();
+  std::vector<std::vector<unsigned int>> rtn_vec = Parser_tokenizer_full(x);
+  std::vector<unsigned int> par_vec = rtn_vec[0];
+  unsigned int cur_id;
+  std::vector<unsigned int> idx_vec = rtn_vec[1];
+  int val_crochet;
+  std::string cur_key = "";
+  std::string cmp_key = "";
+  std::string rtn_val = "";
+  for (int i2 = 0; i2 < n; i2++) {
+    cur_key = keys_vec[i2];
+    cur_i = idx_vec[i] + 1;
+    while (cur_i < idx_vec[i + 1]) {
+      while (x[cur_i] != '"') {
+        if (x[cur_i] == '[') {
+          val_crochet = 1;
+          cur_i += 1;
+          while (val_crochet > 0) {
+            if (x[cur_i] == '{') {
+              i += 1;
+            } else if (x[cur_i] == '}') {
+              i += 1;
+            } else if (x[cur_i] == '[') {
+              val_crochet += 1;
+            } else if (x[cur_i] == ']') {
+              val_crochet -= 1;
+            };
+            cur_i += 1;
+          };
+        };
+        cur_i += 1;
+      };
+      cur_i += 1;
+      cmp_key = "";
+      while (x[cur_i] != '"') {
+        cmp_key.push_back(x[cur_i]);
+        cur_i += 1;
+      };
+      cur_i += 1;
+      if (cmp_key == cur_key) {
+        if (i2 + 1 == n) {
+          while (x[cur_i] != '"') {
+            cur_i += 1;
+          };
+          cur_i += 1;
+          while (x[cur_i] != '"') {
+            rtn_val.push_back(x[cur_i]);
+            cur_i += 1;
+          };
+          break;
+        };
+        while (idx_vec[i] < cur_i) {
+          i += 1;
+        };
+        break;
+      } else {
+        while (x[cur_i] != ',' && x[cur_i] != '[') {
+          if (x[cur_i] == '{') {
+            val_crochet = 1;
+            cur_i += 1;
+            i += 1;
+            while (val_crochet > 0) {
+              if (x[cur_i] == '{') {
+                i += 1;
+                val_crochet += 1;
+              } else if (x[cur_i] == '}') {
+                i += 1;
+                val_crochet -= 1;
+              };
+              cur_i += 1;
+            };
+            cur_i -= 1;
+          };
+          cur_i += 1;
+        };
+      };
+      if (x[cur_i] != '[') {
+        cur_i += 1;
+      };
+    };
+    if (cur_i == idx_vec[i + 1]) {
+      cur_id = par_vec[i - 1];
+      i += 1;
+      while (par_vec[i] != cur_id) {
+        i += 1;
+      };
+      i += 1;
+    };
+  };
+  return rtn_val;
+};
 
 
