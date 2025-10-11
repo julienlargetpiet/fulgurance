@@ -12482,7 +12482,7 @@ int permutation_parity(const std::vector<int>& vec, const std::vector<int>& pos_
 //@X
 
 //@T transpose
-//@U Matrix<T> transpose
+//@U Matrix&lt;T&gt; transpose
 //@X
 //@D Returns the transpose of the matrix
 //@A X : NO ARGS
@@ -12632,7 +12632,7 @@ template <typename TB> class Matrix{
       for (i = 0; i < vec.size(); i += 1) {
         vec[i] = i;
       };
-      while (mooves_vec[0] < 6) {
+      while (mooves_vec[0] < nrow) {
         
         detval2 = 1.0;
         for (i = 0; i < (int)vec.size(); ++i) {
