@@ -1,3 +1,4 @@
+#include <iomanip>
 #include <iostream>
 #include <vector>
 #include <deque>
@@ -4359,6 +4360,50 @@ template <typename T> std::vector<T> rep(const std::vector<T> &x, const std::vec
   return rtn;
 };
 
+
+//@T rep
+//@U template &lt;typename T&gt; std::vector&lt;T&gt; rep(T val, int n) 
+//@X
+//@D Returns a vector of the input element repeated n times
+//@A val : is your input value 
+//@A n : is the n
+//@X
+//@E int val = 14;
+//@E int n = 4;
+//@E std::vector&lt;int&gt; = rep(val, n);
+//@E {14, 14, 14, 14}
+//@X
+
+template <typename T> std::vector<T> rep(T val, int n) {
+  std::vector<T> vec = {};
+  for (int i = 0; i < n; i++) {
+    vec.push_back(val);
+  };
+  return vec;
+}
+
+//@T repeat_untl
+//@U template &lt;typename T&gt; void repeat_untl(std::vector&lt;T&gt; &vec, int n)
+//@X
+//@D Repeat the sequence of the input vector elements until it matches the target length
+//@A vec : is your input vector
+//@A n : is the target len
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3};
+//@E int n = 8;
+//@E repeat_untl(vec, n);
+//@E {1, 2, 3, 1, 2, 3, 1, 2}
+//@X
+
+template <typename T> void repeat_untl(std::vector<T> &vec, int n) {
+  int ns = vec.size();
+  if (n > ns) {
+    for (int i = 0; i < (n - ns); i++) {
+      vec.push_back(vec[i % ns]);
+    };
+  };
+}
+
 //@L3 Sequence/Range of elements
 
 //@T seq 
@@ -5545,6 +5590,23 @@ template <typename TB> class Rm_sharedv {
 
     ~Rm_sharedv() {}; 
 };
+
+//@T sub
+//@U template &lt;typename Iter&gt; std::vector&lt;typename std::iterator_traits&lt;Iter&gt;::value_type&gt; sub(Iter first, Iter last)
+//@X
+//@D Extract a contiguous subset from a vector.
+//@A X : No args
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5};
+//@E sub(vec.begin() + 1, vec.begin() + 3);
+//@E {2, 3}
+//@X
+
+template <typename Iter> 
+std::vector<typename std::iterator_traits<Iter>::value_type>
+sub(Iter first, Iter last) {
+    return std::vector<typename std::iterator_traits<Iter>::value_type>(first, last);
+}
 
 //@L2 Finding closest elements in stl vector
 
@@ -12355,5 +12417,191 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
   };
   return rtn_int_val;
 };
+
+//@L1 The Matrix Object
+
+int permutation_parity(const std::vector<int>& vec, const std::vector<int>& pos_vec) {
+    std::vector<int> perm = vec;
+    perm.insert(perm.end(), pos_vec.begin(), pos_vec.end());
+    int inversions = 0;
+    for (size_t i = 0; i < perm.size(); ++i) {
+        for (size_t j = i + 1; j < perm.size(); ++j) {
+            if (perm[i] > perm[j]) inversions++;
+        }
+    }
+    return inversions % 2; 
+}
+
+//@T Matrix
+//
+
+template <typename TB> class Matrix{
+  private:
+    std::vector<std::vector<TB>> rtn_matr;
+    int nrow = 0;
+    int ncol = 0;
+    bool alrd = 0;
+
+  public:
+  
+    Matrix() = default;
+
+    Matrix(std::vector<std::vector<TB>>& x)
+        : rtn_matr(x), ncol(x.size()), nrow(x.empty() ? 0 : x[0].size()) {}
+    
+    void create_matr() {};
+
+    template <typename T, typename... T2> void create_matr(std::vector<T> &var1, std::vector<T2>&... var2) {
+      if (!alrd) {
+        nrow = var1.size();
+        alrd = 1;
+      } else if (nrow < var1.size()) {
+        var1.erase(var1.end() - (var1.size() - nrow), var1.end());
+      } else if (nrow > var1.size()) {
+        repeat_untl(var1, nrow);
+      };
+      ncol += 1;
+      rtn_matr.push_back(var1);
+      create_matr(var2...);
+    };
+
+    std::vector<TB> get_matr() {
+      return rtn_matr;
+    };
+
+    template <typename T> void reinitiate(std::vector<T> &x) {
+      alrd = 0;
+      ncol = 0;
+      nrow = 0;
+      rtn_matr = {};  
+    };
+
+    void show() {
+
+      std::ios old_state(nullptr);
+      old_state.copyfmt(std::cout);
+
+      std::setprecision(6);
+
+      int j;
+      int j2;
+      for (int i = 0; i < nrow; i +=1) {
+        for (j = 0; j < ncol; j += 1) {
+          std::cout << std::setw(13) << rtn_matr[j][i];
+        };
+        std::cout << "\n";
+      }
+      std::cout.copyfmt(old_state);
+    };
+
+    Matrix<TB> transpose() {
+      int i;
+      std::vector<TB> cur_col = {};
+      std::vector<std::vector<TB>> pre_matr = {};
+      for (int j = 0; j < nrow; j += 1) {
+        for (i = 0; i < ncol; i += 1) {
+          cur_col.push_back(rtn_matr[i][j]);
+        };
+        pre_matr.push_back(cur_col);
+        cur_col = {};
+      };
+      return Matrix<TB>(pre_matr);
+    };
+
+    double det() {
+      if (nrow != ncol) {
+        std::cout << "No det can be calculated for a non square Matrix\n";
+      };
+      std::vector<int> vec = {};
+      std::vector<int> mooves_vec = {};
+      mooves_vec.resize(nrow - 2, 0);
+      std::vector<int> pos_vec = {};
+      vec.resize(nrow - 2, 0);
+      int i;
+      int cur_pos;
+      std::vector<int> sub_pos = {};
+      double detval = 0;
+      double detval2;
+      int parity;
+      double sign;
+      std::vector<int> set_pos = {};
+      for (i = 0; i < nrow; i += 1) {
+        set_pos.push_back(i);
+      };
+      for (i = 0; i < vec.size(); i += 1) {
+        vec[i] = i;
+      };
+      while (mooves_vec[0] < 6) {
+        
+        detval2 = 1.0;
+        for (i = 0; i < (int)vec.size(); ++i) {
+          detval2 *= rtn_matr[vec[i]][i];   
+        }
+
+        pos_vec = sort_ascout(diff2(set_pos, vec));
+        
+        detval2 *= ((rtn_matr[pos_vec[1]][nrow - 1] * rtn_matr[pos_vec[0]][nrow - 2] - rtn_matr[pos_vec[0]][nrow - 1] * rtn_matr[pos_vec[1]][nrow - 2])); 
+        
+        int sign_parity = permutation_parity(vec, pos_vec);
+        sign = (sign_parity ? -1.0 : 1.0);
+        detval2 *= sign;
+        detval += detval2;
+        i = vec.size() - 1;
+        if (i > 0) {
+          while (mooves_vec[i] == nrow - i - 1) {
+            i -= 1;
+            if (i == 0) {
+              if (mooves_vec[0] == nrow - i - 1) {
+                return detval;
+              } else {
+                break;
+              };
+            };
+          };
+        };
+        sub_pos = sub(vec.begin(), vec.begin() + i + 1);
+        pos_vec = diff2(set_pos, sub_pos);
+        pos_vec = sort_descout(pos_vec);
+        cur_pos = pos_vec[pos_vec.size() - 1];
+
+        int min_pos = cur_pos;
+
+        while (cur_pos < vec[i]) {
+          pos_vec.pop_back();
+          if (pos_vec.size() == 0) { break; };
+          cur_pos = pos_vec[pos_vec.size() - 1];
+        };
+        if (pos_vec.size() > 0) {
+          vec[i] = cur_pos;
+        } else {
+          vec[i] = min_pos;
+        };
+        mooves_vec[i] += 1;
+        i += 1;
+        while (i < vec.size()) {
+          sub_pos = sub(vec.begin(), vec.begin() + i + 1);
+          pos_vec = diff2(set_pos, sub_pos);
+          cur_pos = min(pos_vec);
+          vec[i] = cur_pos;
+          mooves_vec[i] = 0;
+          i += 1;
+        };
+      };
+      return detval;
+    };
+
+    ~Matrix() {};
+};
+
+
+
+
+
+
+
+
+
+
+
 
 
