@@ -1,4 +1,4 @@
-<div class="Div2"><i><b>README</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
+<div class="Div2"><i><b>Fulgurance</b></i></div><br><center><img src ="logo.jpg" width=250 height=100></center>
 <div class="container">
 <div class="Divb">
 <div class="box1"><a><i>Table Of Contents</i></a><br><br><ul>
@@ -270,6 +270,10 @@
 <b><li style="margin-left:60px; color: #2c4786;">Repetition of elements</li></b>
 <a href="#rep" style="margin-left:80px;">rep</a>
 <br>
+<a href="#rep" style="margin-left:80px;">rep</a>
+<br>
+<a href="#repeat_untl" style="margin-left:80px;">repeat_untl</a>
+<br>
 <b><li style="margin-left:60px; color: #2c4786;">Sequence/Range of elements</li></b>
 <a href="#seq " style="margin-left:80px;">seq </a>
 <br>
@@ -335,6 +339,8 @@
 <br>
 <b><li style="margin-left:80px; color: #2c4786;">Variadic / Indefinite number of arguments - Rm_sharedv Class</li></b>
 <a href="#Rm_sharedv.to_rm()" style="margin-left:100px;">Rm_sharedv.to_rm()</a>
+<br>
+<a href="#sub" style="margin-left:100px;">sub</a>
 <br>
 <b><li style="margin-left:40px; color: #2c4786;">Finding closest elements in stl vector</li></b>
 <a href="#closest_idx" style="margin-left:60px;">closest_idx</a>
@@ -532,6 +538,17 @@
 <a href="#GetStringJSON" style="margin-left:60px;">GetStringJSON</a>
 <br>
 <a href="#GetIntJSON" style="margin-left:60px;">GetIntJSON</a>
+<br>
+<b><li style="margin-left:20px; color: #2c4786;">The Matrix Object</li></b>
+<a href="#Matrix" style="margin-left:40px;">Matrix</a>
+<br>
+<a href="#create_matr" style="margin-left:40px;">create_matr</a>
+<br>
+<a href="#show" style="margin-left:40px;">show</a>
+<br>
+<a href="#transpose" style="margin-left:40px;">transpose</a>
+<br>
+<a href="#det" style="margin-left:40px;">det</a>
 <br>
 </ul><br>
 </div>
@@ -3225,6 +3242,44 @@ x </th><th> is a stl vector containing all the elements that will be repeated</t
 </div>
 <br>
 <hr class="hr">
+<h2 id="rep" style="test-align: left;">rep</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; std::vector&lt;T&gt; rep(T val, int n) </code></div>
+<h3>#Description</h3>
+<p>Returns a vector of the input element repeated n times</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+val </th><th> is your input value </th></tr>
+<tr><th>n </th><th> is the n</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int val = 14;</code>
+<br><code>int n = 4;</code>
+<br><code>std::vector&lt;int&gt; = rep(val, n);</code>
+<br><code>{14, 14, 14, 14}</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="repeat_untl" style="test-align: left;">repeat_untl</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void repeat_untl(std::vector&lt;T&gt; &vec, int n)</code></div>
+<h3>#Description</h3>
+<p>Repeat the sequence of the input vector elements until it matches the target length</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+vec </th><th> is your input vector</th></tr>
+<tr><th>n </th><th> is the target len</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3};</code>
+<br><code>int n = 8;</code>
+<br><code>repeat_untl(vec, n);</code>
+<br><code>{1, 2, 3, 1, 2, 3, 1, 2}</code>
+</div>
+<br>
+<hr class="hr">
 <h3 style="color:#2c4786;">Sequence/Range of elements</h3>
 <h2 id="seq " style="test-align: left;">seq </h2>
 <h3>#Usage</h3>
@@ -3778,6 +3833,23 @@ x </th><th> is an stl vector</th></tr>
 <br><code>out = obj1.result();</code>
 <br><code>print_nvec(out);</code>
 <br><code>:0: 3 4 4 5 7 8 2 4 </code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="sub" style="test-align: left;">sub</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename Iter&gt; std::vector&lt;typename std::iterator_traits&lt;Iter&gt;::value_type&gt; sub(Iter first, Iter last)</code></div>
+<h3>#Description</h3>
+<p>Extract a contiguous subset from a vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+X </th><th> No args</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5};</code>
+<br><code>sub(vec.begin() + 1, vec.begin() + 3);</code>
+<br><code>{2, 3}</code>
 </div>
 <br>
 <hr class="hr">
@@ -6295,6 +6367,141 @@ x </th><th> is the string representing the JSON data</th></tr>
 <br><code> int rslt = GetIntJSON(x, keys_vec);</code>
 <br><code> std::cout &lt;&lt; rslt &lt;&lt; "\n";</code>
 <br><code>22</code>
+</div>
+<br>
+<hr class="hr">
+<h1 style="color:#2c4786;">The Matrix Object</h1>
+<h2 id="Matrix" style="test-align: left;">Matrix</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>Matrix matr(2d vector)</code></div>
+<h3>#Description</h3>
+<p>Create a Matrix with variadic number of vectors, each vector represents a column. Supports, transposition, determinant computation, display...</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+See_below </th><th> See below</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>See below</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="create_matr" style="test-align: left;">create_matr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T, typename... T2&gt; void create_matr(std::vector&lt;T&gt; &var1, std::vector&lt;T2&gt;&... var2)</code></div>
+<h3>#Description</h3>
+<p>After initializing a matrix with Matrix<int> matr(matr1), you can create it giving it a variadic number of colums, if a column missmatch the expected rownumber, a rep_untl function is applied to it to fit the matrix requirements, see example.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+... </th><th> variadic number of columns</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};</code>
+<br><code>Matrix&lt;int&gt; matr(matr1);</code>
+<br><code></code>
+<br><code>std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1};</code>
+<br><code>std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1};</code>
+<br><code>std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55};</code>
+<br><code>std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1};</code>
+<br><code>std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1};</code>
+<br><code>std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1};</code>
+<br><code></code>
+<br><code>matr.create_matr(col1, col2, col3, col4, col5);</code>
+<br><code>            1           55            1            1            1</code>
+<br><code>            2            2           12            2            2</code>
+<br><code>            1           11            1            1           16</code>
+<br><code>            2            2            2           22           22</code>
+<br><code>            2            1           55            6           33</code>
+<br><code>            1            1           55            1            1</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="show" style="test-align: left;">show</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>void show()</code></div>
+<h3>#Description</h3>
+<p>Display your matrix.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+X </th><th> NO ARGS</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>matr.show();</code>
+<br><code>           1           55            1            1            1</code>
+<br><code>           2            2           12            2            2</code>
+<br><code>           1           11            1            1           16</code>
+<br><code>           2            2            2           22           22</code>
+<br><code>           2            1           55            6           33</code>
+<br><code>           1            1           55            1            1</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="transpose" style="test-align: left;">transpose</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>Matrix&lt;T&gt; transpose</code></div>
+<h3>#Description</h3>
+<p>Returns the transpose of the matrix</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+X </th><th> NO ARGS</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code> std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};</code>
+<br><code> Matrix&lt;int&gt; matr(matr1);</code>
+<br><code></code>
+<br><code> std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1};</code>
+<br><code> std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1};</code>
+<br><code> std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55};</code>
+<br><code> std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1};</code>
+<br><code> std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1};</code>
+<br><code> std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1};</code>
+<br><code></code>
+<br><code> matr.create_matr(col1, col2, col3, col4, col5);</code>
+<br><code> Matrix&lt;int&gt; matr2 = matr.transpose();</code>
+<br><code></code>
+<br><code> matr.show();</code>
+<br><code> std::cout &lt;&lt; "\n";</code>
+<br><code> matr2.show();</code>
+<br><code>           1           55            1            1            1</code>
+<br><code>           2            2           12            2            2</code>
+<br><code>           1           11            1            1           16</code>
+<br><code>           2            2            2           22           22</code>
+<br><code>           2            1           55            6           33</code>
+<br><code>           1            1           55            1            1</code>
+<br><code></code>
+<br><code>           1            2            1            2            2            1</code>
+<br><code>          55            2           11            2            1            1</code>
+<br><code>           1           12            1            2           55           55</code>
+<br><code>           1            2            1           22            6            1</code>
+<br><code>           1            2           16           22           33            1</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="det" style="test-align: left;">det</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>double det()</code></div>
+<h3>#Description</h3>
+<p>Returns the determinant of the matrix.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+X </th><th> NO ARGS</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code> std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};</code>
+<br><code> std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1};</code>
+<br><code> std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1};</code>
+<br><code> std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55};</code>
+<br><code> std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1};</code>
+<br><code> std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1};</code>
+<br><code> std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1};</code>
+<br><code> Matrix&lt;int&gt; matr3(matr1);</code>
+<br><code> matr3.create_matr(col1, col2, col3, col4, col5, col6);</code>
+<br><code> double detval = matr3.det();</code>
+<br><code> -1.05546e+08</code>
 </div>
 <br>
 <hr class="hr">
