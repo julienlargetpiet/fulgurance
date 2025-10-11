@@ -12433,7 +12433,108 @@ int permutation_parity(const std::vector<int>& vec, const std::vector<int>& pos_
 }
 
 //@T Matrix
-//
+//@U Matrix matr(2d vector)
+//@X
+//@D Create a Matrix with variadic number of vectors, each vector represents a column. Supports, transposition, determinant computation, display...
+//@A See_below : See below
+//@X
+//@E See below
+//@X
+
+//@T create_matr
+//@U template &lt;typename T, typename... T2&gt; void create_matr(std::vector&lt;T&gt; &var1, std::vector&lt;T2&gt;&... var2)
+//@X
+//@D After initializing a matrix with Matrix<int> matr(matr1), you can create it giving it a variadic number of colums, if a column missmatch the expected rownumber, a rep_untl function is applied to it to fit the matrix requirements, see example.
+//@A ... : variadic number of columns
+//@X
+//@E std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};
+//@E Matrix&lt;int&gt; matr(matr1);
+//@E 
+//@E std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1};
+//@E std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1};
+//@E std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55};
+//@E std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1};
+//@E std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1};
+//@E std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1};
+//@E 
+//@E matr.create_matr(col1, col2, col3, col4, col5);
+//@E             1           55            1            1            1
+//@E             2            2           12            2            2
+//@E             1           11            1            1           16
+//@E             2            2            2           22           22
+//@E             2            1           55            6           33
+//@E             1            1           55            1            1
+//@X
+
+//@T show
+//@U void show()
+//@X
+//@D Display your matrix.
+//@A X : NO ARGS
+//@X
+//@E matr.show();
+//@E            1           55            1            1            1
+//@E            2            2           12            2            2
+//@E            1           11            1            1           16
+//@E            2            2            2           22           22
+//@E            2            1           55            6           33
+//@E            1            1           55            1            1
+//@X
+
+//@T transpose
+//@U Matrix<T> transpose
+//@X
+//@D Returns the transpose of the matrix
+//@A X : NO ARGS
+//@X
+//@E  std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};
+//@E  Matrix&lt;int&gt; matr(matr1);
+//@E
+//@E  std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1};
+//@E  std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1};
+//@E  std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55};
+//@E  std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1};
+//@E  std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1};
+//@E  std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1};
+//@E
+//@E  matr.create_matr(col1, col2, col3, col4, col5);
+//@E  Matrix&lt;int&gt; matr2 = matr.transpose();
+//@E
+//@E  matr.show();
+//@E  std::cout &lt;&lt; "\n";
+//@E  matr2.show();
+//@E            1           55            1            1            1
+//@E            2            2           12            2            2
+//@E            1           11            1            1           16
+//@E            2            2            2           22           22
+//@E            2            1           55            6           33
+//@E            1            1           55            1            1
+//@E
+//@E            1            2            1            2            2            1
+//@E           55            2           11            2            1            1
+//@E            1           12            1            2           55           55
+//@E            1            2            1           22            6            1
+//@E            1            2           16           22           33            1
+//@X
+
+//@T det
+//@U double det()
+//@X
+//@D Returns the determinant of the matrix.
+//@A X : NO ARGS
+//@X
+//@E  std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};
+//@E  std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1};
+//@E  std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1};
+//@E  std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55};
+//@E  std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1};
+//@E  std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1};
+//@E  std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1};
+//@E  Matrix&lt;int&gt; matr3(matr1);
+//@E  matr3.create_matr(col1, col2, col3, col4, col5, col6);
+//@E  double detval = matr3.det();
+//@E  -1.05546e+08
+//@X
 
 template <typename TB> class Matrix{
   private:
