@@ -12602,6 +12602,10 @@ template <typename TB> class Matrix{
       return Matrix<TB>(rtn_matr, nrow, ncol);
     };
 
+    std::vector<TB> get_matr_raw() {
+      return rtn_matr;
+    };
+
     template <typename T> void reinitiate() {
       alrd = 0;
       ncol = 0;
@@ -12641,9 +12645,11 @@ template <typename TB> class Matrix{
       ncol = i;
     };
 
-    double det() {
+    double det1() {
       if (nrow != ncol) {
         std::cout << "No det can be calculated for a non square Matrix\n";
+      } else if (nrow == 2) {
+        return rtn_matr[0] * rtn_matr[3] - rtn_matr[2] * rtn_matr[1];
       };
       const int N = nrow;
       std::vector<int> vec = {};
@@ -12724,6 +12730,33 @@ template <typename TB> class Matrix{
       };
       return detval;
     };
+
+
+  double det2(const std::vector<TB>& M, int n) const {
+    if (n == 1) return M[0];
+    if (n == 2) return M[0] * M[3] - M[1] * M[2]; 
+
+    double det = 0.0;
+    int j;
+    int i;
+
+    for (int col = 0; col < n; ++col) {
+        std::vector<TB> subM;
+        subM.reserve((n - 1) * (n - 1));
+
+        for (j = 0; j < n; ++j) {
+            if (j == col) continue;
+            for (i = 1; i < n; ++i) {
+                subM.push_back(M[i + j * n]);
+            };
+        };
+
+        double sign = ((col % 2) ? -1.0 : 1.0);
+        det += sign * M[0 + col * n] * det2(subM, n - 1);
+    };
+
+    return det;
+  }
 
     ~Matrix() {};
 };
