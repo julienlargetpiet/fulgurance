@@ -12447,8 +12447,10 @@ int permutation_parity(const std::vector<int>& vec, const std::vector<int>& pos_
 //@D After initializing a matrix with Matrix<int> matr(matr1), you can create it giving it a variadic number of colums, if a column missmatch the expected rownumber, a rep_untl function is applied to it to fit the matrix requirements, see example.
 //@A ... : variadic number of columns
 //@X
-//@E std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};
-//@E Matrix&lt;int&gt; matr(matr1);
+//@E std::vector&lt;int&gt; matr1 = {};
+//@E int ncol = 0;
+//@E int nrow = 0;
+//@E Matrix&lt;int&gt; matr(matr1, nrow, ncol);
 //@E 
 //@E std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1};
 //@E std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1};
@@ -12464,6 +12466,37 @@ int permutation_parity(const std::vector<int>& vec, const std::vector<int>& pos_
 //@E             2            2            2           22           22
 //@E             2            1           55            6           33
 //@E             1            1           55            1            1
+//@X
+
+//@T get_matr
+//@U Matrix&lt;TB&gt; get_matr()
+//@X
+//@D Returns the Matrix of the Matrix objects.
+//@A X : NO ARGS
+//@X
+//@E std::vector&lt;int&gt; matr1 = {};
+//@E int ncol = 0;
+//@E int nrow = 0;
+//@E
+//@E Matrix&lt;int&gt; matr(matr1, nrow, ncol);
+//@E
+//@E std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1, 42};
+//@E std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1, 22};
+//@E std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55, 21};
+//@E std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1, 77};
+//@E std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1, 7};
+//@E std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1, 8};
+//@E std::vector&lt;int&gt; col7 = {45, 2, 11, 42, 71, 1, 8};
+//@E
+//@E matr.create_matr(col1, col2, col3, col4, col5);
+//@E matr.show();
+//@E            1           55            1            1            1
+//@E            2            2           12            2            2
+//@E            1           11            1            1           16
+//@E            2            2            2           22           22
+//@E            2            1           55            6           33
+//@E            1            1           55            1            1
+//@E           42           22           21           77            7
 //@X
 
 //@T show
@@ -12538,23 +12571,22 @@ int permutation_parity(const std::vector<int>& vec, const std::vector<int>& pos_
 
 template <typename TB> class Matrix{
   private:
-    std::vector<std::vector<TB>> rtn_matr;
+    std::vector<TB> rtn_matr;
     int nrow = 0;
     int ncol = 0;
     bool alrd = 0;
 
   public:
   
-    Matrix() = default;
-
-    Matrix(std::vector<std::vector<TB>>& x)
-        : rtn_matr(x), ncol(x.size()), nrow(x.empty() ? 0 : x[0].size()) {}
+    Matrix(std::vector<TB> &x, int nrowv, int ncolv)
+        : rtn_matr(x), nrow(nrowv), ncol(ncolv) {}
     
     void create_matr() {};
 
     template <typename T, typename... T2> void create_matr(std::vector<T> &var1, std::vector<T2>&... var2) {
       if (!alrd) {
         nrow = var1.size();
+        ncol = 0;
         alrd = 1;
       } else if (nrow < var1.size()) {
         var1.erase(var1.end() - (var1.size() - nrow), var1.end());
@@ -12562,12 +12594,12 @@ template <typename TB> class Matrix{
         repeat_untl(var1, nrow);
       };
       ncol += 1;
-      rtn_matr.push_back(var1);
+      rtn_matr.insert(rtn_matr.end(), var1.begin(), var1.end());
       create_matr(var2...);
     };
 
-    std::vector<std::vector<TB>> get_matr() {
-      return rtn_matr;
+    Matrix<TB> get_matr() {
+      return Matrix<TB>(rtn_matr, nrow, ncol);
     };
 
     template <typename T> void reinitiate() {
@@ -12588,36 +12620,37 @@ template <typename TB> class Matrix{
       int j2;
       for (int i = 0; i < nrow; i +=1) {
         for (j = 0; j < ncol; j += 1) {
-          std::cout << std::setw(13) << rtn_matr[j][i];
+          std::cout << std::setw(13) << rtn_matr[i + nrow * j];
         };
         std::cout << "\n";
       }
       std::cout.copyfmt(old_state);
     };
 
-    Matrix<TB> transpose() {
+    void transpose() {
       int i;
-      std::vector<TB> cur_col = {};
-      std::vector<std::vector<TB>> pre_matr = {};
+      std::vector<TB> pre_matr = {};
       for (int j = 0; j < nrow; j += 1) {
         for (i = 0; i < ncol; i += 1) {
-          cur_col.push_back(rtn_matr[i][j]);
+          pre_matr.push_back(rtn_matr[j + i * nrow]);
         };
-        pre_matr.push_back(cur_col);
-        cur_col = {};
       };
-      return Matrix<TB>(pre_matr);
+      rtn_matr = pre_matr;
+      i = nrow;
+      nrow = ncol;
+      ncol = i;
     };
 
     double det() {
       if (nrow != ncol) {
         std::cout << "No det can be calculated for a non square Matrix\n";
       };
+      const int N = nrow;
       std::vector<int> vec = {};
       std::vector<int> mooves_vec = {};
-      mooves_vec.resize(nrow - 2, 0);
+      mooves_vec.resize(N - 2, 0);
       std::vector<int> pos_vec = {};
-      vec.resize(nrow - 2, 0);
+      vec.resize(N - 2, 0);
       int i;
       int cur_pos;
       std::vector<int> sub_pos = {};
@@ -12626,33 +12659,34 @@ template <typename TB> class Matrix{
       int parity;
       double sign;
       std::vector<int> set_pos = {};
-      for (i = 0; i < nrow; i += 1) {
+      for (i = 0; i < N; i += 1) {
         set_pos.push_back(i);
       };
       for (i = 0; i < vec.size(); i += 1) {
         vec[i] = i;
       };
-      while (mooves_vec[0] < nrow) {
+      while (mooves_vec[0] < N) {
         
         detval2 = 1.0;
         for (i = 0; i < (int)vec.size(); ++i) {
-          detval2 *= rtn_matr[vec[i]][i];   
+          detval2 *= rtn_matr[vec[i] * N + i];
         }
 
         pos_vec = sort_ascout(diff2(set_pos, vec));
         
-        detval2 *= ((rtn_matr[pos_vec[1]][nrow - 1] * rtn_matr[pos_vec[0]][nrow - 2] - rtn_matr[pos_vec[0]][nrow - 1] * rtn_matr[pos_vec[1]][nrow - 2])); 
-        
+       detval2 *= ((rtn_matr[pos_vec[1] * N + N - 1] * rtn_matr[pos_vec[0] * N + N - 2] - rtn_matr[pos_vec[0] * N + N - 1] * rtn_matr[pos_vec[1] * N + N - 2])); 
+
+
         int sign_parity = permutation_parity(vec, pos_vec);
         sign = (sign_parity ? -1.0 : 1.0);
         detval2 *= sign;
         detval += detval2;
         i = vec.size() - 1;
         if (i > 0) {
-          while (mooves_vec[i] == nrow - i - 1) {
+          while (mooves_vec[i] == N - i - 1) {
             i -= 1;
             if (i == 0) {
-              if (mooves_vec[0] == nrow - i - 1) {
+              if (mooves_vec[0] == N - i - 1) {
                 return detval;
               } else {
                 break;
@@ -12693,165 +12727,6 @@ template <typename TB> class Matrix{
 
     ~Matrix() {};
 };
-
-//template <typename TB> class MatrixFast{
-//  private:
-//    std::vector<TB> rtn_matr;
-//    int nrow = 0;
-//    int ncol = 0;
-//    bool alrd = 0;
-//
-//  public:
-//  
-//    Matrix() = default;
-//
-//    Matrix(std::vector<TB>& x)
-//        : rtn_matr(x), ncol(x.size()), nrow(x.empty() ? 0 : x[0].size()) {}
-//    
-//    void create_matr() {};
-//
-//    template <typename T, typename... T2> void create_matr(std::vector<T> &var1, std::vector<T2>&... var2) {
-//      if (!alrd) {
-//        nrow = var1.size();
-//        alrd = 1;
-//      } else if (nrow < var1.size()) {
-//        var1.erase(var1.end() - (var1.size() - nrow), var1.end());
-//      } else if (nrow > var1.size()) {
-//        repeat_untl(var1, nrow);
-//      };
-//      ncol += 1;
-//      rtn_matr.push_back(var1);
-//      rtn_matr.insert(rtn_matr.end(), var1.begin(), var1.end());
-//      create_matr(var2...);
-//    };
-//
-//    std::vector<TB> get_matr() {
-//      return rtn_matr;
-//    };
-//
-//    template <typename T> void reinitiate(std::vector<T> &x) {
-//      alrd = 0;
-//      ncol = 0;
-//      nrow = 0;
-//      rtn_matr = {};  
-//    };
-//
-//    void show() {
-//
-//      std::ios old_state(nullptr);
-//      old_state.copyfmt(std::cout);
-//
-//      std::setprecision(6);
-//
-//      int j;
-//      int j2;
-//      for (int i = 0; i < nrow; i +=1) {
-//        for (j = 0; j < ncol; j += 1) {
-//          std::cout << std::setw(13) << rtn_matr[j][i];
-//        };
-//        std::cout << "\n";
-//      }
-//      std::cout.copyfmt(old_state);
-//    };
-//
-//    Matrix<TB> transpose() {
-//      int i;
-//      std::vector<TB> cur_col = {};
-//      std::vector<std::vector<TB>> pre_matr = {};
-//      for (int j = 0; j < nrow; j += 1) {
-//        for (i = 0; i < ncol; i += 1) {
-//          cur_col.push_back(rtn_matr[i][j]);
-//        };
-//        pre_matr.push_back(cur_col);
-//        cur_col = {};
-//      };
-//      return Matrix<TB>(pre_matr);
-//    };
-//
-//    double det() {
-//      if (nrow != ncol) {
-//        std::cout << "No det can be calculated for a non square Matrix\n";
-//      };
-//      std::vector<int> vec = {};
-//      std::vector<int> mooves_vec = {};
-//      mooves_vec.resize(nrow - 2, 0);
-//      std::vector<int> pos_vec = {};
-//      vec.resize(nrow - 2, 0);
-//      int i;
-//      int cur_pos;
-//      std::vector<int> sub_pos = {};
-//      double detval = 0;
-//      double detval2;
-//      int parity;
-//      double sign;
-//      std::vector<int> set_pos = {};
-//      for (i = 0; i < nrow; i += 1) {
-//        set_pos.push_back(i);
-//      };
-//      for (i = 0; i < vec.size(); i += 1) {
-//        vec[i] = i;
-//      };
-//      while (mooves_vec[0] < nrow) {
-//        
-//        detval2 = 1.0;
-//        for (i = 0; i < (int)vec.size(); ++i) {
-//          detval2 *= rtn_matr[vec[i]][i];   
-//        }
-//
-//        pos_vec = sort_ascout(diff2(set_pos, vec));
-//        
-//        detval2 *= ((rtn_matr[pos_vec[1]][nrow - 1] * rtn_matr[pos_vec[0]][nrow - 2] - rtn_matr[pos_vec[0]][nrow - 1] * rtn_matr[pos_vec[1]][nrow - 2])); 
-//        
-//        int sign_parity = permutation_parity(vec, pos_vec);
-//        sign = (sign_parity ? -1.0 : 1.0);
-//        detval2 *= sign;
-//        detval += detval2;
-//        i = vec.size() - 1;
-//        if (i > 0) {
-//          while (mooves_vec[i] == nrow - i - 1) {
-//            i -= 1;
-//            if (i == 0) {
-//              if (mooves_vec[0] == nrow - i - 1) {
-//                return detval;
-//              } else {
-//                break;
-//              };
-//            };
-//          };
-//        };
-//        sub_pos = sub(vec.begin(), vec.begin() + i + 1);
-//        pos_vec = diff2(set_pos, sub_pos);
-//        pos_vec = sort_descout(pos_vec);
-//        cur_pos = pos_vec[pos_vec.size() - 1];
-//
-//        int min_pos = cur_pos;
-//
-//        while (cur_pos < vec[i]) {
-//          pos_vec.pop_back();
-//          if (pos_vec.size() == 0) { break; };
-//          cur_pos = pos_vec[pos_vec.size() - 1];
-//        };
-//        if (pos_vec.size() > 0) {
-//          vec[i] = cur_pos;
-//        } else {
-//          vec[i] = min_pos;
-//        };
-//        mooves_vec[i] += 1;
-//        i += 1;
-//        while (i < vec.size()) {
-//          sub_pos = sub(vec.begin(), vec.begin() + i + 1);
-//          pos_vec = diff2(set_pos, sub_pos);
-//          cur_pos = min(pos_vec);
-//          vec[i] = cur_pos;
-//          mooves_vec[i] = 0;
-//          i += 1;
-//        };
-//      };
-//      return detval;
-//    };
-//
-//    ~Matrix() {};
-//};
 
 
 

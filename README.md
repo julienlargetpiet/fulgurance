@@ -544,6 +544,8 @@
 <br>
 <a href="#create_matr" style="margin-left:40px;">create_matr</a>
 <br>
+<a href="#get_matr" style="margin-left:40px;">get_matr</a>
+<br>
 <a href="#show" style="margin-left:40px;">show</a>
 <br>
 <a href="#transpose" style="margin-left:40px;">transpose</a>
@@ -6397,8 +6399,10 @@ See_below </th><th> See below</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
-<div class = "Div"><code>std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};</code>
-<br><code>Matrix&lt;int&gt; matr(matr1);</code>
+<div class = "Div"><code>std::vector&lt;int&gt; matr1 = {};</code>
+<br><code>int ncol = 0;</code>
+<br><code>int nrow = 0;</code>
+<br><code>Matrix&lt;int&gt; matr(matr1, nrow, ncol);</code>
 <br><code></code>
 <br><code>std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1};</code>
 <br><code>std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1};</code>
@@ -6414,6 +6418,43 @@ See_below </th><th> See below</th></tr>
 <br><code>            2            2            2           22           22</code>
 <br><code>            2            1           55            6           33</code>
 <br><code>            1            1           55            1            1</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="get_matr" style="test-align: left;">get_matr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>Matrix&lt;TB&gt; get_matr()</code></div>
+<h3>#Description</h3>
+<p>Returns the Matrix of the Matrix objects.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+X </th><th> NO ARGS</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; matr1 = {};</code>
+<br><code>int ncol = 0;</code>
+<br><code>int nrow = 0;</code>
+<br><code></code>
+<br><code>Matrix&lt;int&gt; matr(matr1, nrow, ncol);</code>
+<br><code></code>
+<br><code>std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1, 42};</code>
+<br><code>std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1, 22};</code>
+<br><code>std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55, 21};</code>
+<br><code>std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1, 77};</code>
+<br><code>std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1, 7};</code>
+<br><code>std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1, 8};</code>
+<br><code>std::vector&lt;int&gt; col7 = {45, 2, 11, 42, 71, 1, 8};</code>
+<br><code></code>
+<br><code>matr.create_matr(col1, col2, col3, col4, col5);</code>
+<br><code>matr.show();</code>
+<br><code>           1           55            1            1            1</code>
+<br><code>           2            2           12            2            2</code>
+<br><code>           1           11            1            1           16</code>
+<br><code>           2            2            2           22           22</code>
+<br><code>           2            1           55            6           33</code>
+<br><code>           1            1           55            1            1</code>
+<br><code>          42           22           21           77            7</code>
 </div>
 <br>
 <hr class="hr">
