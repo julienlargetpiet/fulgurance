@@ -9211,176 +9211,6 @@ template <typename T> std::vector<std::vector<T>> abs_matrout(const std::vector<
   return rtn;
 };
 
-//@L2 Determinant
-
-//@T det_small
-//@U template &lt;typename T&gt; double det_small(std::vector&lt;std::vector&lt;T&gt;&gt; &inpt_matr)
-//@X
-//@D Calculates matrix determinant up to 5x5.
-//@A impt_matr : is the input matrix
-//@X
-//@E 
-//@E std::vector&lt;std::vector&lt;int&gt;&gt; inpt_matr = {
-//@E                                               {81, 55, 1, 81, 40},
-//@E                                               {42, 48, 41, 37, 5},
-//@E                                               {84, 1, 61, 612, 6},
-//@E                                               {52, 59, 23, 50, 22},
-//@E                                               {39, 6, 95, 69, 23},
-//@E                                             };
-//@E int out_val = det_small(inpt_matr);
-//@E std::cout &lt;&lt; out_val &lt;&lt; "\n";
-//@E 1473982232
-//@E
-//@X
-
-template <typename T> double det_small(std::vector<std::vector<T>> &inpt_matr){
-  if (inpt_matr.size() == 2) {
-    return inpt_matr[0][0] * inpt_matr[1][1] - inpt_matr[0][1] * inpt_matr[1][0];
-  };
-  double rtn_val = 0;
-  const unsigned int n = inpt_matr.size();
-  const unsigned int n2 = n - 2;
-  std::vector<unsigned int> moov_v = {};
-  moov_v.resize(n2, 1);
-  std::vector<unsigned int> pos_v = {};
-  pos_v.reserve(n2);
-  unsigned int cnt;
-  unsigned int cnt2;
-  unsigned int cur_col1 = n2;
-  unsigned int cur_col2 = n2 + 1;
-  unsigned int cur_n;
-  unsigned int bf_idx;
-  double cur_val;
-  double cur_prod_val;
-  bool alrd_in;
-  for (cnt = 0; cnt < n2; ++cnt) {
-    pos_v.push_back(cnt);
-  };
-  while (1) {
-    cur_prod_val = 1;
-    for (cnt = 0; cnt < n2; ++cnt) {
-      cur_prod_val *= inpt_matr[pos_v[cnt]][cnt];
-      if (moov_v[cnt] % 2 == 0) {
-        cur_prod_val *= -1;
-      };
-    };
-    cur_val = inpt_matr[cur_col1][n2] * inpt_matr[cur_col2][n2 + 1] - inpt_matr[cur_col1][n2 + 1] * inpt_matr[cur_col2][n2];
-    rtn_val += (cur_val * cur_prod_val);
-    cnt = 3;
-    cur_n = n2 - 1;
-    if (moov_v[cur_n] == n - (n - cnt)) {
-      while (moov_v[cur_n] == n - (n - cnt)) {
-        if (cur_n == 0) {
-          return rtn_val;
-        };
-        moov_v[cur_n] = 1;
-        cur_n -= 1;
-        cnt += 1;
-      };
-      moov_v[cur_n] += 1;
-      if (cur_n == 0) {
-        pos_v[0] += 1;
-      } else {
-        cnt = pos_v[cur_n] + 1;
-        while (1) {
-          alrd_in = 0;
-          cnt2 = 0;
-          while (cnt2 < cur_n) {
-            if (cnt == pos_v[cnt2]) {
-              alrd_in = 1;
-              break;
-            };
-            cnt2 += 1;
-          };
-          if (!alrd_in) {
-            pos_v[cur_n] = cnt;
-            break;
-          };
-          cnt += 1;
-        };
-      };
-      cur_n += 1;
-      while (cur_n < n2) {
-        cnt = 0;
-        while (1) {
-          alrd_in = 0;
-          cnt2 = 0;
-          while (cnt2 < cur_n) {
-            if (cnt == pos_v[cnt2]) {
-              alrd_in = 1;
-              break;
-            };
-            cnt2 += 1;
-          };
-          if (!alrd_in) {
-            pos_v[cur_n] = cnt;
-            break;
-          };
-          cnt += 1;
-        };
-        cur_n += 1;
-      };
-    } else {
-      moov_v[cur_n] += 1;
-      if (cur_n > 0) {
-        cnt = pos_v[cur_n] + 1;
-        while (1) {
-          alrd_in = 0;
-          cnt2 = 0;
-          while (cnt2 < cur_n) {
-            if (cnt == pos_v[cnt2]) {
-              alrd_in = 1;
-              break;
-            };
-            cnt2 += 1;
-          };
-          if (!alrd_in) {
-            pos_v[cur_n] = cnt;
-            break;
-          };
-          cnt += 1;
-        };
-      } else {
-        pos_v[0] += 1;
-      };
-    };
-    cnt = 0;
-    while (1) {
-      alrd_in = 0;
-      cnt2 = 0;
-      while (cnt2 < n2) {
-        if (cnt == pos_v[cnt2]) {
-          alrd_in = 1;
-          break;
-        };
-        cnt2 += 1;
-      };
-      if (!alrd_in) {
-        cur_col1 = cnt;
-        break;
-      };
-      cnt += 1;
-    };
-    cnt = cur_col1 + 1;
-    while (1) {
-      alrd_in = 0;
-      cnt2 = 0;
-      while (cnt2 < n2) {
-        if (cnt == pos_v[cnt2]) {
-          alrd_in = 1;
-          break;
-        };
-        cnt2 += 1;
-      };
-      if (!alrd_in) {
-        cur_col2 = cnt;
-        break;
-      };
-      cnt += 1;
-    };
-  };
-};
-
 //@L2 Apply any function on indefinite numbers of same type vectors
 
 //@T Fapply object
@@ -9406,7 +9236,7 @@ template <typename T> double det_small(std::vector<std::vector<T>> &inpt_matr){
 //@E obj1.set_args(inpt_v1, inpt_v2, inpt_v2); //ingest args
 //@E 
 //@E //performs the chosen function
-//@E std::vector&lt;int&gt; outv = obj1.fapply(merge_str); 
+//@E std::vector&lt;int&gt; outv = obj1.fapply(add); 
 //@E 
 //@E print_nvec(outv);
 //@E
@@ -12605,6 +12435,25 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E  int nrow = 6;
 //@E  matr1 = matr3.get_matr_raw();
 //@E  double detval = matr3.det2(matr1, nrow);
+//@E  -1.05546e+08
+//@X
+
+//@T det3
+//@U double det3()
+//@X
+//@D Returns the determinant of the matrix with EigenLU method. It is the most efficient method.
+//@A X : NO ARGS
+//@X
+//@E  std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};
+//@E  std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1};
+//@E  std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1};
+//@E  std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55};
+//@E  std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1};
+//@E  std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1};
+//@E  std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1};
+//@E  Matrix&lt;int&gt; matr3(matr1);
+//@E  matr3.create_matr(col1, col2, col3, col4, col5, col6);
+//@E  double detval = matr3.det3();
 //@E  -1.05546e+08
 //@X
 
