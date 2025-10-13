@@ -12420,18 +12420,6 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 
 //@L1 The Matrix Object
 
-int permutation_parity(const std::vector<int>& vec, const std::vector<int>& pos_vec) {
-    std::vector<int> perm = vec;
-    perm.insert(perm.end(), pos_vec.begin(), pos_vec.end());
-    int inversions = 0;
-    for (size_t i = 0; i < perm.size(); ++i) {
-        for (size_t j = i + 1; j < perm.size(); ++j) {
-            if (perm[i] > perm[j]) inversions++;
-        }
-    }
-    return inversions % 2; 
-}
-
 //@T Matrix
 //@U Matrix matr(2d vector)
 //@X
@@ -12575,6 +12563,18 @@ template <typename TB> class Matrix{
     int nrow = 0;
     int ncol = 0;
     bool alrd = 0;
+
+    int permutation_parity(const std::vector<int>& vec, const std::vector<int>& pos_vec) {
+        std::vector<int> perm = vec;
+        perm.insert(perm.end(), pos_vec.begin(), pos_vec.end());
+        int inversions = 0;
+        for (size_t i = 0; i < perm.size(); ++i) {
+            for (size_t j = i + 1; j < perm.size(); ++j) {
+                if (perm[i] > perm[j]) inversions++;
+            }
+        }
+        return inversions % 2; 
+    }
 
   public:
   
