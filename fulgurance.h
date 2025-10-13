@@ -13,10 +13,9 @@
 //@I In current development.
 //@I This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_tools part.
 //@I The framework is developped with C++ 14 but should work properly with 11 and 17 and furthers.
-//@I The main branch provides algorithms developped on the top of stl vector, but a deque version is coming.
 //@G2 Philosophy
 //@I Dataframes implementation is a class. All functions that will transform 'voidly' (internaly) the relative data are built in the class. All functions that copy and transform the relative data are extern to classes.
-//@I Matrices are stl 2D vectors.
+//@I Matrices are built with the Matrix class.
 //@X
 
 //@L1 Commun functions  
@@ -12287,7 +12286,36 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@X
 
 //@T get_matr_raw
-//@U std::vector&lt;TB&gt; get_matr_raw()
+//@U const std::vector&lt;TB&gt;& get_matr_raw()
+//@X
+//@D Returns the matrix as a 1D stl vector const reference.
+//@A X : NO ARGS
+//@X
+//@E std::vector&lt;int&gt; matr1 = {};
+//@E int ncol = 0;
+//@E int nrow = 0;
+//@E
+//@E Matrix&lt;int&gt; matr(matr1, nrow, ncol);
+//@E
+//@E std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1, 42};
+//@E std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1, 22};
+//@E std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55, 21};
+//@E std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1, 77};
+//@E std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1, 7};
+//@E std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1, 8};
+//@E std::vector&lt;int&gt; col7 = {45, 2, 11, 42, 71, 1, 8};
+//@E matr.create_matr(col1, col2, col3, col4, col5, col6, col7);
+//@E matr1 = matr.get_matr_raw();
+//@E print_nvec(matr1);
+//@E  :0: 1  2  1  2  2  1  42 55 2  11
+//@E :10: 2  1  1  22 1  12 1  2  55 55
+//@E :20: 21 1  2  1  22 6  1  77 1  2
+//@E :30: 16 22 33 1  7  45 2  11 2  71
+//@E :40: 1  8  45 2  11 42 71 1  8
+//@X
+
+//@T get_matr_raw2
+//@U std::vector&lt;TB&gt; get_matr_raw2()
 //@X
 //@D Returns the matrix as a 1D stl vector.
 //@A X : NO ARGS
@@ -12306,7 +12334,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1, 8};
 //@E std::vector&lt;int&gt; col7 = {45, 2, 11, 42, 71, 1, 8};
 //@E matr.create_matr(col1, col2, col3, col4, col5, col6, col7);
-//@E matr1 = matr.get_matr_raw();
+//@E matr1 = matr.get_matr_raw2();
 //@E print_nvec(matr1);
 //@E  :0: 1  2  1  2  2  1  42 55 2  11
 //@E :10: 2  1  1  22 1  12 1  2  55 55
@@ -12346,7 +12374,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E           42           22           21           77            7
 //@X
 
-//@T show
+//@T Matrix.show
 //@U void show()
 //@X
 //@D Display your matrix.
@@ -12361,7 +12389,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E            1            1           55            1            1
 //@X
 
-//@T transpose
+//@T Matrix.transpose
 //@U Matrix&lt;T&gt; transpose
 //@X
 //@D Returns the transpose of the matrix
@@ -12397,7 +12425,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E            1            2           16           22           33            1
 //@X
 
-//@T det1
+//@T Matrix.det1
 //@U double det1()
 //@X
 //@D Returns the determinant of the matrix. Important, it uses a custom algorithm for finding the determinant, a Laplace extension without recursivity. See det2 and det3 for standard Laplace expansion and det3 for the other method.
@@ -12416,7 +12444,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E  -1.05546e+08
 //@X
 
-//@T det2
+//@T Matrix.det2
 //@U double det2(const std::vector&lt;TB&gt;& M, int n) const
 //@X
 //@D Returns the determinant of the matrix with standard Laplace expansion method.
@@ -12438,7 +12466,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E  -1.05546e+08
 //@X
 
-//@T det3
+//@T Matrix.det3
 //@U double det3()
 //@X
 //@D Returns the determinant of the matrix with EigenLU method. It is the most efficient method.
@@ -12457,6 +12485,24 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E  -1.05546e+08
 //@X
 
+//@T get_dim
+//@U std::vector&lt:int&gt; get_dim()
+//@X
+//@D Returns the dimension of the matrix (nrow, ncol)
+//@A X : NO ARGS
+//@X
+//@E  std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};
+//@E  std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1};
+//@E  std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1};
+//@E  std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55};
+//@E  std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1};
+//@E  std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1};
+//@E  std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1};
+//@E  Matrix&lt;int&gt; matr3(matr1);
+//@E  matr3.create_matr(col1, col2, col3, col4, col5, col6);
+//@E  std::vector&lt;int&gt; dim_vec = matr3.get_dim();
+//@E  {6, 6}
+//@X
 
 template <typename TB> class Matrix{
   private:
@@ -12503,7 +12549,11 @@ template <typename TB> class Matrix{
       return Matrix<TB>(rtn_matr, nrow, ncol);
     };
 
-    std::vector<TB> get_matr_raw() {
+    const std::vector<TB>& get_matr_raw() const {
+      return rtn_matr;
+    };
+
+    std::vector<TB> get_matr_raw2() {
       return rtn_matr;
     };
 
@@ -12544,6 +12594,10 @@ template <typename TB> class Matrix{
       i = nrow;
       nrow = ncol;
       ncol = i;
+    };
+
+    std::vector<int> get_dim() const {
+      return {nrow, ncol};
     };
 
     double det1() {
@@ -12704,8 +12758,228 @@ template <typename TB> class Matrix{
       return det;
     }
 
+    std::vector<TB> get_col(unsigned int n) {
+      if (n > ncol) {
+        std::cout << "Exceeds the maximum column number\n";
+        return {};
+      };
+      return sub(rtn_matr.begin() + nrow * (n), 
+                      rtn_matr.begin() + nrow * (n + 1));
+    };
+
+    std::vector<TB> get_row(unsigned int n) {
+      if (n > nrow) {
+        std::cout << "Exceeds the maximum row number\n";
+        return {};
+      };
+      std::vector<TB> rtn_vec = {};
+      rtn_vec.reserve(ncol);
+      for (int i = 0; i < ncol; i++) {
+        rtn_vec.push_back(rtn_matr[nrow * i + n]);
+      };
+      return rtn_vec;
+    };
+
+    TB get_cell(int n1, int n2) {
+      if (n1 > nrow) {
+        std::cout << "Exceeds the maximum row number\n";
+        return 0;
+      } else if (n2 > ncol) {
+        std::cout << "Exceeds the maximum column number\n";
+        return 0;
+      };
+      return rtn_matr[nrow * n2 + n1];
+    };
+
+    Matrix<TB> get_sub(int n1, int n1b, int n2, int n2b) {
+      std::vector<TB> empty=  {};
+      if (n1 > nrow) {
+        std::cout << "Exceeds the maximum row number\n";
+        return Matrix<TB>(empty, 0, 0);
+      } else if (n2 > ncol) {
+        std::cout << "Exceeds the maximum column number\n";
+        return Matrix<TB>(empty, 0, 0);
+      } else if (n1b > nrow) {
+        std::cout << "Exceeds the maximum row number\n";
+        return Matrix<TB>(empty, 0, 0);
+      } else if (n2b > ncol) {
+        std::cout << "Exceeds the maximum column number\n";
+        return Matrix<TB>(empty, 0, 0);
+      };
+
+      if (n2 >= n2b) {
+        std::cout << "First column must be lower than second\n";
+        return Matrix<TB>(empty, 0, 0);
+      } else if (n1 >= n1b) {
+        std::cout << "First row must be lower than second\n";
+        return Matrix<TB>(empty, 0, 0);
+      };
+
+      std::vector<TB> rtn_vec = {};
+      rtn_vec.reserve((n2b - n2) * (n1b - n1));
+      int i;
+      for (int j = n2; j <= n2b; j += 1) {
+        for (i = n1; i <= n1b; i += 1) {
+          rtn_vec.push_back(rtn_matr[nrow * j + i]);
+        };
+      };
+      return Matrix<TB>(rtn_vec, (n1b - n1 + 1), (n2b - n2 + 1));
+    };
+
+    template <typename T> void mult_scalar(const T &val) {
+      for (size_t i = 0; i < nrow * ncol; i += 1) {
+        rtn_matr[i] *= val;
+      };
+    };
+
+    template <typename T> void div_scalar(T &val) {
+      for (size_t i = 0; i < nrow * ncol; i += 1) {
+        rtn_matr[i] /= val;
+      };
+    };
+
+    template <typename T> void add_scalar_as_matr(T &val) {
+      for (size_t i = 0; i < nrow * ncol; i += 1) {
+        rtn_matr[i] += val;
+      };
+    };
+
+    template <typename T> void subs_scalar_as_matr(T &val) {
+      for (size_t i = 0; i < nrow * ncol; i += 1) {
+        rtn_matr[i] -= val;
+      };
+    };
+
+    template <typename TB2> void add_matr(const Matrix<TB2> &matr) {
+
+      if (matr.get_dim() != std::vector<int>{nrow, ncol}) {
+          std::cerr << "❌ Matrix size mismatch in add_matr\n";
+          return;
+      }
+
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+      for (size_t i = 0; i < nrow * ncol; i += 1) {
+        rtn_matr[i] += rtn_matr2[i];
+      };
+    };
+
+    template <typename TB2> void sub_matr(const Matrix<TB2> &matr) {
+
+      if (matr.get_dim() != std::vector<int>{nrow, ncol}) {
+          std::cerr << "❌ Matrix size mismatch in sub_matr\n";
+          return;
+      }
+
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+      for (size_t i = 0; i < nrow * ncol; i += 1) {
+        rtn_matr[i] -= rtn_matr2[i];
+      };
+    };
+
+    template <typename TB2> void mult_matr(const Matrix<TB2> &matr) {
+
+      if (matr.get_dim() != std::vector<int>{nrow, ncol}) {
+          std::cerr << "❌ Matrix size mismatch in mult_matr\n";
+          return;
+      }
+
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+      for (size_t i = 0; i < nrow * ncol; i += 1) {
+        rtn_matr[i] *= rtn_matr2[i];
+      };
+    };
+
+    template <typename TB2> void div_matr(const Matrix<TB2> &matr) {
+
+      if (matr.get_dim() != std::vector<int>{nrow, ncol}) {
+          std::cerr << "❌ Matrix size mismatch in div_matr\n";
+          return;
+      }
+
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+      for (size_t i = 0; i < nrow * ncol; i += 1) {
+        rtn_matr[i] /= rtn_matr2[i];
+      };
+    };
+
+    template <typename TB2, typename Func> 
+    void lambda_matr(const Matrix<TB2> &matr, 
+                     Func f) {
+
+      if (matr.get_dim() != std::vector<int>{nrow, ncol}) {
+          std::cerr << "❌ Matrix size mismatch in lambda_matr\n";
+          return;
+      }
+
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+      for (size_t i = 0; i < nrow * ncol; i += 1) {
+        rtn_matr[i] = f(rtn_matr[i], rtn_matr2[i]);
+      };
+    };
+
+    template <typename TB2> Matrix<TB> mult1(const Matrix<TB2> &matr) {
+      const std::vector<int>& dim_vec = matr.get_dim();
+      std::vector<TB> empty = {};
+
+      if (ncol != dim_vec[0]) {
+          std::cerr << "❌ Matrix size mismatch in mult1\n";
+          return Matrix<TB>(empty, 0, 0);
+      };
+
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+
+      std::vector<TB> rtn_matr3(nrow * dim_vec[1]);
+
+      int j;
+      int j2;
+      TB val;
+      for (int i = 0; i < nrow; i += 1) {
+        for (j2 = 0; j2 < dim_vec[1]; j2 += 1) {
+          val = 0;
+          for (j = 0; j < ncol; j += 1) {
+            val += rtn_matr[j * nrow + i] * rtn_matr2[j2 * dim_vec[0] + j];
+          };
+          rtn_matr3[j2 * nrow + i] = val; 
+        };
+      };
+
+      return Matrix<TB>(rtn_matr3, nrow, dim_vec[1]);
+    };
+
+   template <typename TB2> Matrix<TB> mult2(const Matrix<TB2> &matr) {
+      const std::vector<int>& dim_vec = matr.get_dim();
+      std::vector<TB> empty = {};
+
+      if (nrow != dim_vec[1]) {
+          std::cerr << "❌ Matrix size mismatch in mult2\n";
+          return Matrix<TB>(empty, 0, 0);
+      };
+
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+
+      std::vector<TB> rtn_matr3(ncol * dim_vec[0]);
+
+      int j;
+      int j2;
+      TB val;
+      for (int i = 0; i < dim_vec[0]; i += 1) {
+        for (j2 = 0; j2 < ncol; j2 += 1) {
+          val = 0;
+          for (j = 0; j < dim_vec[1]; j += 1) {
+            val += rtn_matr[j2 * nrow + j] * rtn_matr2[j * dim_vec[0] + i];
+          };
+          rtn_matr3[j2 * nrow + i] = val; 
+        };
+      };
+
+      return Matrix<TB>(rtn_matr3, nrow, dim_vec[1]);
+    };
+
+
     ~Matrix() {};
 };
+
+
 
 
 
