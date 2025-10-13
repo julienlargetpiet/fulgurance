@@ -10444,12 +10444,12 @@ unsigned int binarydq_to_int(std::deque<bool> &x) {
 //@X
 //@E std::string inpt_str = "ecfy";
 //@E unsigned int rtn_val = letter_to_nb(inpt_str);
-//@E std::cout << rtn_val << "\n";
+//@E std::cout &lt;&lt; rtn_val &lt;&lt; "\n";
 //@E 90089
 //@E 
 //@E inpt_str = "ajf";
 //@E rtn_val = letter_to_nb(inpt_str);
-//@E std::cout << rtn_val << "\n";
+//@E std::cout &lt;&lt; rtn_val &lt;&lt; "\n";
 //@E 
 //@E 942
 //@X

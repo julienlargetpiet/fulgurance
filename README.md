@@ -472,9 +472,6 @@
 <br>
 <a href="#abs_matrout" style="margin-left:60px;">abs_matrout</a>
 <br>
-<b><li style="margin-left:40px; color: #2c4786;">Determinant</li></b>
-<a href="#det_small" style="margin-left:60px;">det_small</a>
-<br>
 <b><li style="margin-left:40px; color: #2c4786;">Apply any function on indefinite numbers of same type vectors</li></b>
 <a href="#Fapply object" style="margin-left:60px;">Fapply object</a>
 <br>
@@ -544,13 +541,19 @@
 <br>
 <a href="#create_matr" style="margin-left:40px;">create_matr</a>
 <br>
+<a href="#get_matr_raw" style="margin-left:40px;">get_matr_raw</a>
+<br>
 <a href="#get_matr" style="margin-left:40px;">get_matr</a>
 <br>
 <a href="#show" style="margin-left:40px;">show</a>
 <br>
 <a href="#transpose" style="margin-left:40px;">transpose</a>
 <br>
-<a href="#det" style="margin-left:40px;">det</a>
+<a href="#det1" style="margin-left:40px;">det1</a>
+<br>
+<a href="#det2" style="margin-left:40px;">det2</a>
+<br>
+<a href="#det3" style="margin-left:40px;">det3</a>
 <br>
 </ul><br>
 </div>
@@ -5529,33 +5532,6 @@ x </th><th> is a matrix as 2D stl vector (int, float, double, bool)</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 style="color:#2c4786;">Determinant</h2>
-<h2 id="det_small" style="test-align: left;">det_small</h2>
-<h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename T&gt; double det_small(std::vector&lt;std::vector&lt;T&gt;&gt; &inpt_matr)</code></div>
-<h3>#Description</h3>
-<p>Calculates matrix determinant up to 5x5.</p>
-<h3>#Arguments</h3>
-<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
-impt_matr </th><th> is the input matrix</th></tr>
-</table>
-<br>
-<h3>#Example(s)</h3>
-<div class = "Div"><code></code>
-<br><code>std::vector&lt;std::vector&lt;int&gt;&gt; inpt_matr = {</code>
-<br><code>                                              {81, 55, 1, 81, 40},</code>
-<br><code>                                              {42, 48, 41, 37, 5},</code>
-<br><code>                                              {84, 1, 61, 612, 6},</code>
-<br><code>                                              {52, 59, 23, 50, 22},</code>
-<br><code>                                              {39, 6, 95, 69, 23},</code>
-<br><code>                                            };</code>
-<br><code>int out_val = det_small(inpt_matr);</code>
-<br><code>std::cout &lt;&lt; out_val &lt;&lt; "\n";</code>
-<br><code>1473982232</code>
-<br><code></code>
-</div>
-<br>
-<hr class="hr">
 <h2 style="color:#2c4786;">Apply any function on indefinite numbers of same type vectors</h2>
 <h2 id="Fapply object" style="test-align: left;">Fapply object</h2>
 <h3>#Usage</h3>
@@ -5585,7 +5561,7 @@ impt_matr </th><th> is the input matrix</th></tr>
 <br><code>obj1.set_args(inpt_v1, inpt_v2, inpt_v2); //ingest args</code>
 <br><code></code>
 <br><code>//performs the chosen function</code>
-<br><code>std::vector&lt;int&gt; outv = obj1.fapply(merge_str); </code>
+<br><code>std::vector&lt;int&gt; outv = obj1.fapply(add); </code>
 <br><code></code>
 <br><code>print_nvec(outv);</code>
 <br><code></code>
@@ -6265,12 +6241,12 @@ x </th><th> is the input string</th></tr>
 <h3>#Example(s)</h3>
 <div class = "Div"><code>std::string inpt_str = "ecfy";</code>
 <br><code>unsigned int rtn_val = letter_to_nb(inpt_str);</code>
-<br><code>std::cout << rtn_val << "\n";</code>
+<br><code>std::cout &lt;&lt; rtn_val &lt;&lt; "\n";</code>
 <br><code>90089</code>
 <br><code></code>
 <br><code>inpt_str = "ajf";</code>
 <br><code>rtn_val = letter_to_nb(inpt_str);</code>
-<br><code>std::cout << rtn_val << "\n";</code>
+<br><code>std::cout &lt;&lt; rtn_val &lt;&lt; "\n";</code>
 <br><code></code>
 <br><code>942</code>
 </div>
@@ -6421,6 +6397,41 @@ See_below </th><th> See below</th></tr>
 </div>
 <br>
 <hr class="hr">
+<h2 id="get_matr_raw" style="test-align: left;">get_matr_raw</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;TB&gt; get_matr_raw()</code></div>
+<h3>#Description</h3>
+<p>Returns the matrix as a 1D stl vector.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+X </th><th> NO ARGS</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; matr1 = {};</code>
+<br><code>int ncol = 0;</code>
+<br><code>int nrow = 0;</code>
+<br><code></code>
+<br><code>Matrix&lt;int&gt; matr(matr1, nrow, ncol);</code>
+<br><code></code>
+<br><code>std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1, 42};</code>
+<br><code>std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1, 22};</code>
+<br><code>std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55, 21};</code>
+<br><code>std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1, 77};</code>
+<br><code>std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1, 7};</code>
+<br><code>std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1, 8};</code>
+<br><code>std::vector&lt;int&gt; col7 = {45, 2, 11, 42, 71, 1, 8};</code>
+<br><code>matr.create_matr(col1, col2, col3, col4, col5, col6, col7);</code>
+<br><code>matr1 = matr.get_matr_raw();</code>
+<br><code>print_nvec(matr1);</code>
+<br><code> :0: 1  2  1  2  2  1  42 55 2  11</code>
+<br><code>:10: 2  1  1  22 1  12 1  2  55 55</code>
+<br><code>:20: 21 1  2  1  22 6  1  77 1  2</code>
+<br><code>:30: 16 22 33 1  7  45 2  11 2  71</code>
+<br><code>:40: 1  8  45 2  11 42 71 1  8</code>
+</div>
+<br>
+<hr class="hr">
 <h2 id="get_matr" style="test-align: left;">get_matr</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>Matrix&lt;TB&gt; get_matr()</code></div>
@@ -6521,11 +6532,11 @@ X </th><th> NO ARGS</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="det" style="test-align: left;">det</h2>
+<h2 id="det1" style="test-align: left;">det1</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>double det()</code></div>
+<div class="Div"><code>double det1()</code></div>
 <h3>#Description</h3>
-<p>Returns the determinant of the matrix.</p>
+<p>Returns the determinant of the matrix. Important, it uses a custom algorithm for finding the determinant, a Laplace extension without recursivity. See det2 and det3 for standard Laplace expansion and det3 for the other method.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 X </th><th> NO ARGS</th></tr>
@@ -6542,6 +6553,59 @@ X </th><th> NO ARGS</th></tr>
 <br><code> Matrix&lt;int&gt; matr3(matr1);</code>
 <br><code> matr3.create_matr(col1, col2, col3, col4, col5, col6);</code>
 <br><code> double detval = matr3.det();</code>
+<br><code> -1.05546e+08</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="det2" style="test-align: left;">det2</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>double det2(const std::vector&lt;TB&gt;& M, int n) const</code></div>
+<h3>#Description</h3>
+<p>Returns the determinant of the matrix with standard Laplace expansion method.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+M </th><th> is the matrix as a 1d stl vector</th></tr>
+<tr><th>n </th><th> is the number of rows or columns</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code> std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};</code>
+<br><code> std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1};</code>
+<br><code> std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1};</code>
+<br><code> std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55};</code>
+<br><code> std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1};</code>
+<br><code> std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1};</code>
+<br><code> std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1};</code>
+<br><code> Matrix&lt;int&gt; matr3(matr1);</code>
+<br><code> matr3.create_matr(col1, col2, col3, col4, col5, col6);</code>
+<br><code> int nrow = 6;</code>
+<br><code> matr1 = matr3.get_matr_raw();</code>
+<br><code> double detval = matr3.det2(matr1, nrow);</code>
+<br><code> -1.05546e+08</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="det3" style="test-align: left;">det3</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>double det3()</code></div>
+<h3>#Description</h3>
+<p>Returns the determinant of the matrix with EigenLU method. It is the most efficient method.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+X </th><th> NO ARGS</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code> std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};</code>
+<br><code> std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1};</code>
+<br><code> std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1};</code>
+<br><code> std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55};</code>
+<br><code> std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1};</code>
+<br><code> std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1};</code>
+<br><code> std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1};</code>
+<br><code> Matrix&lt;int&gt; matr3(matr1);</code>
+<br><code> matr3.create_matr(col1, col2, col3, col4, col5, col6);</code>
+<br><code> double detval = matr3.det3();</code>
 <br><code> -1.05546e+08</code>
 </div>
 <br>
