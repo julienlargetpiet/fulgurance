@@ -12784,31 +12784,76 @@ template <typename TB> class Matrix{
     };
 
 
-  double det2(const std::vector<TB>& M, int n) const {
-    if (n == 1) return M[0];
-    if (n == 2) return M[0] * M[3] - M[1] * M[2]; 
+    double det2(const std::vector<TB>& M, int n) const {
+      if (n == 1) return M[0];
+      if (n == 2) return M[0] * M[3] - M[1] * M[2]; 
 
-    double det = 0.0;
-    int j;
-    int i;
+      double det = 0.0;
+      int j;
+      int i;
 
-    for (int col = 0; col < n; ++col) {
-        std::vector<TB> subM;
-        subM.reserve((n - 1) * (n - 1));
+      for (int col = 0; col < n; ++col) {
+          std::vector<TB> subM;
+          subM.reserve((n - 1) * (n - 1));
 
-        for (j = 0; j < n; ++j) {
-            if (j == col) continue;
-            for (i = 1; i < n; ++i) {
-                subM.push_back(M[i + j * n]);
-            };
-        };
+          for (j = 0; j < n; ++j) {
+              if (j == col) continue;
+              for (i = 1; i < n; ++i) {
+                  subM.push_back(M[i + j * n]);
+              };
+          };
 
-        double sign = ((col % 2) ? -1.0 : 1.0);
-        det += sign * M[0 + col * n] * det2(subM, n - 1);
-    };
+          double sign = ((col % 2) ? -1.0 : 1.0);
+          det += sign * M[0 + col * n] * det2(subM, n - 1);
+      };
 
-    return det;
-  }
+      return det;
+    }
+
+    double det3() {
+      double det_sign = 1.0;
+
+      for (int k = 0; k < nrow; ++k) {
+          // Pivot selection
+          int pivot = k;
+          double max_val = std::abs(rtn_matr[k * nrow + k]);
+          for (int i = k + 1; i < nrow; ++i) {
+              double val = std::abs(rtn_matr[i * nrow + k]);
+              if (val > max_val) {
+                  max_val = val;
+                  pivot = i;
+              };
+          };
+
+          // Singular matrix, check to avoid dividing 
+          // by zero (at index k * n + k)
+          if (max_val < 1e-15)
+              return 0.0;
+
+          // Row swap if needed (if the current 
+          // row max at k nth col not the max of the entire k nth column)
+          if (pivot != k) {
+              for (int j = 0; j < nrow; ++j)
+                  std::swap(rtn_matr[pivot * nrow + j], rtn_matr[k * nrow + j]);
+              det_sign *= -1.0;
+          };
+
+          // Eliminate below pivot, to fast forward 
+          // create a upper triangular matrix
+          for (int i = k + 1; i < nrow; ++i) {
+              double factor = rtn_matr[i * nrow + k] / rtn_matr[k * nrow + k];
+              for (int j = k; j < nrow; ++j)
+                  rtn_matr[i * nrow + j] -= factor * rtn_matr[k * nrow + j];
+          };
+      }
+
+      // Product of diagonal entries
+      double det = det_sign;
+      for (int i = 0; i < nrow; ++i)
+          det *= rtn_matr[i * nrow + i];
+
+      return det;
+    }
 
     ~Matrix() {};
 };
