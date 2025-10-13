@@ -12456,6 +12456,35 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E             1            1           55            1            1
 //@X
 
+//@T get_matr_raw
+//@U std::vector&lt;TB&gt; get_matr_raw()
+//@X
+//@D Returns the matrix as a 1D stl vector.
+//@A X : NO ARGS
+//@X
+//@E std::vector&lt;int&gt; matr1 = {};
+//@E int ncol = 0;
+//@E int nrow = 0;
+//@E
+//@E Matrix&lt;int&gt; matr(matr1, nrow, ncol);
+//@E
+//@E std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1, 42};
+//@E std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1, 22};
+//@E std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55, 21};
+//@E std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1, 77};
+//@E std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1, 7};
+//@E std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1, 8};
+//@E std::vector&lt;int&gt; col7 = {45, 2, 11, 42, 71, 1, 8};
+//@E matr.create_matr(col1, col2, col3, col4, col5, col6, col7);
+//@E matr1 = matr.get_matr_raw();
+//@E print_nvec(matr1);
+//@E  :0: 1  2  1  2  2  1  42 55 2  11
+//@E :10: 2  1  1  22 1  12 1  2  55 55
+//@E :20: 21 1  2  1  22 6  1  77 1  2
+//@E :30: 16 22 33 1  7  45 2  11 2  71
+//@E :40: 1  8  45 2  11 42 71 1  8
+//@X
+
 //@T get_matr
 //@U Matrix&lt;TB&gt; get_matr()
 //@X
@@ -12538,10 +12567,10 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E            1            2           16           22           33            1
 //@X
 
-//@T det
-//@U double det()
+//@T det1
+//@U double det1()
 //@X
-//@D Returns the determinant of the matrix.
+//@D Returns the determinant of the matrix. Important, it uses a custom algorithm for finding the determinant, a Laplace extension without recursivity. See det2 and det3 for standard Laplace expansion and det3 for the other method.
 //@A X : NO ARGS
 //@X
 //@E  std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};
@@ -12556,6 +12585,29 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E  double detval = matr3.det();
 //@E  -1.05546e+08
 //@X
+
+//@T det2
+//@U double det2(const std::vector&lt;TB&gt;& M, int n) const
+//@X
+//@D Returns the determinant of the matrix with standard Laplace expansion method.
+//@A M : is the matrix as a 1d stl vector
+//@A n : is the number of rows or columns
+//@X
+//@E  std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};
+//@E  std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1};
+//@E  std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1};
+//@E  std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55};
+//@E  std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1};
+//@E  std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1};
+//@E  std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1};
+//@E  Matrix&lt;int&gt; matr3(matr1);
+//@E  matr3.create_matr(col1, col2, col3, col4, col5, col6);
+//@E  int nrow = 6;
+//@E  matr1 = matr3.get_matr_raw();
+//@E  double detval = matr3.det2(matr1, nrow);
+//@E  -1.05546e+08
+//@X
+
 
 template <typename TB> class Matrix{
   private:
