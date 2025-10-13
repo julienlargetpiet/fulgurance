@@ -545,15 +545,15 @@
 <br>
 <a href="#get_matr" style="margin-left:40px;">get_matr</a>
 <br>
-<a href="#show" style="margin-left:40px;">show</a>
+<a href="#Matrix.show" style="margin-left:40px;">Matrix.show</a>
 <br>
-<a href="#transpose" style="margin-left:40px;">transpose</a>
+<a href="#Matrix.transpose" style="margin-left:40px;">Matrix.transpose</a>
 <br>
-<a href="#det1" style="margin-left:40px;">det1</a>
+<a href="#Matrix.det1" style="margin-left:40px;">Matrix.det1</a>
 <br>
-<a href="#det2" style="margin-left:40px;">det2</a>
+<a href="#Matrix.det2" style="margin-left:40px;">Matrix.det2</a>
 <br>
-<a href="#det3" style="margin-left:40px;">det3</a>
+<a href="#Matrix.det3" style="margin-left:40px;">Matrix.det3</a>
 <br>
 </ul><br>
 </div>
@@ -6469,7 +6469,7 @@ X </th><th> NO ARGS</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="show" style="test-align: left;">show</h2>
+<h2 id="Matrix.show" style="test-align: left;">Matrix.show</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>void show()</code></div>
 <h3>#Description</h3>
@@ -6490,7 +6490,7 @@ X </th><th> NO ARGS</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="transpose" style="test-align: left;">transpose</h2>
+<h2 id="Matrix.transpose" style="test-align: left;">Matrix.transpose</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>Matrix&lt;T&gt; transpose</code></div>
 <h3>#Description</h3>
@@ -6532,7 +6532,7 @@ X </th><th> NO ARGS</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="det1" style="test-align: left;">det1</h2>
+<h2 id="Matrix.det1" style="test-align: left;">Matrix.det1</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>double det1()</code></div>
 <h3>#Description</h3>
@@ -6557,7 +6557,7 @@ X </th><th> NO ARGS</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="det2" style="test-align: left;">det2</h2>
+<h2 id="Matrix.det2" style="test-align: left;">Matrix.det2</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>double det2(const std::vector&lt;TB&gt;& M, int n) const</code></div>
 <h3>#Description</h3>
@@ -6585,7 +6585,7 @@ M </th><th> is the matrix as a 1d stl vector</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="det3" style="test-align: left;">det3</h2>
+<h2 id="Matrix.det3" style="test-align: left;">Matrix.det3</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>double det3()</code></div>
 <h3>#Description</h3>
