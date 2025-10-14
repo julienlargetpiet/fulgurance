@@ -12485,8 +12485,8 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E  -1.05546e+08
 //@X
 
-//@T get_dim
-//@U std::vector&lt:int&gt; get_dim()
+//@T Matrix.get_dim
+//@U std::vector&lt;int&gt; get_dim()
 //@X
 //@D Returns the dimension of the matrix (nrow, ncol)
 //@A X : NO ARGS
@@ -12502,6 +12502,195 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E  matr3.create_matr(col1, col2, col3, col4, col5, col6);
 //@E  std::vector&lt;int&gt; dim_vec = matr3.get_dim();
 //@E  {6, 6}
+//@X
+
+//@T Matrix.mult_scalar
+//@U template &lt;typename T&gt; void mult_scalar(const T &val)
+//@X
+//@D Multiplies each elements of the matrix by a given scalar.
+//@A val : the scalar
+//@X
+//@E int vl = 2;
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E matr.mult_scalar(vl);
+//@E matr.show();
+//@E 2  4
+//@E 6  8
+//@X
+
+//@T Matrix.div_scalar
+//@U template &lt;typename T&gt; void div_scalar(const T &val)
+//@X
+//@D Divides each elements of the matrix by a given scalar.
+//@A val : the scalar
+//@X
+//@E double vl = 2;
+//@E std::vector&lt;double&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E matr.div_scalar(vl);
+//@E matr.show();
+//@E 0.5  1
+//@E 1.5  2
+//@X
+
+//@T Matrix.add_scalar
+//@U template &lt;typename T&gt; void add_scalar(const T &val)
+//@X
+//@D Adds each elements of the matrix by a given scalar. Note, this operation is mathematically incorrect, but it is a substitution to adding the matrix to another matrix where all elements is equal to the scalar to add. (less memory usage)
+//@A val : the scalar
+//@X
+//@E int vl = 2;
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E matr.add_scalar(vl);
+//@E matr.show();
+//@E 3  4
+//@E 5  6
+//@X
+
+//@T Matrix.subs_scalar
+//@U template &lt;typename T&gt; void subs_scalar(const T &val)
+//@X
+//@D Substract each elements of the matrix by a given scalar. Note, this operation is mathematically incorrect, but it is a substitution to substracting the matrix to another matrix where all elements is equal to the scalar to substract. (less memory usage)
+//@A val : the scalar
+//@X
+//@E int vl = 2;
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E matr.subs_scalar(vl);
+//@E matr.show();
+//@E -1  0
+//@E  1  2
+//@X
+
+//@T Matrix.lambda_scalar
+//@U template &lt;typename Func&gt; void lambda_scalar(Func f)
+//@X
+//@D Apply a function to each elements of the matrix.
+//@A f : the function, takes 1 arg, the i-jnth element of the matrix
+//@X
+//@E int myfunc (int &x) {
+//@E   return x * 3 + 5;
+//@E };
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E matr.lambda_scalar(myfunc);
+//@E matr.show();
+//@E  8  11
+//@E 14  17
+//@X
+
+//@T Matrix.add_matr
+//@U template &lt;typename TB2&gt; void add_matr(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a Matrix addition.
+//@A matr : is the B matrix of A + B
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E matr.add_matr(matr2);
+//@E matr.show();
+//@E  2  4
+//@E  6  8
+//@X
+
+//@T Matrix.subs_matr
+//@U template &lt;typename TB2&gt; void subs_matr(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a Matrix substraction.
+//@A matr : is the B matrix of A - B
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E matr.subs_matr(matr2);
+//@E matr.show();
+//@E  0  0
+//@E  0  0
+//@X
+
+//@T Matrix.mult_matr
+//@U template &lt;typename TB2&gt; void mult_matr(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a Matrix multiplication (i-jnth element to i-jnth element).
+//@A matr : is the B matrix of A * B (as i-jnth element to i-jnth element)
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E matr.mult_matr(matr2);
+//@E matr.show();
+//@E  1   4
+//@E  9  16
+//@X
+
+//@T Matrix.div_matr
+//@U template &lt;typename TB2&gt; void div_matr(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a Matrix division (i-jnth element to i-jnth element).
+//@A matr : is the B matrix of A / B (as i-jnth element to i-jnth element)
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E matr.div_matr(matr2);
+//@E matr.show();
+//@E  1   1
+//@E  1   1
+//@X
+
+//@T Matrix.lambda_matr
+//@U template &lt;typename TB2, typename Func&gt; void lambda_matr(const Matrix&lt;TB2&gt; &matr, Func f)
+//@X
+//@D Performs a Matrix division (i-jnth element to i-jnth element).
+//@A matr : is the B matrix of A / B (as i-jnth element to i-jnth element)
+//@A f : is the function, takes 2 args, the first one is the i-jnth element from the Matrix object from which the function is applied, the second is the i-jnth element from the input Matrix
+//@X
+//@E int myfunc (int &vl1, int &vl2) {
+//@E   return vl1 / vl2 + 1;
+//@E }
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E matr.lambda_matr(matr2, myfunc);
+//@E matr.show();
+//@E  2   2
+//@E  2   2
+//@X
+
+//@T Matrix.mult1
+//@U template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult1(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a matrix multiplication as A * B, with A as the Matrix from which the function is called, see example.
+//@A matr : is the B matrix
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6};
+//@E Matrix&lt;int&gt; matr(vec, 3, 2);
+//@E //@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr3 = matr.mult1(matr2);
+//@E matr3.show();
+//@E 29 39
+//@E 40 54
+//@E 51 69
+//@X
+
+//@T Matrix.mult2
+//@U template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult2(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example.
+//@A matr : is the A matrix
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E //@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr3 = matr.mult1(matr2);
+//@E matr3.show();
+//@E 19 43
+//@E 22 50
 //@X
 
 template <typename TB> class Matrix{
@@ -12838,15 +13027,21 @@ template <typename TB> class Matrix{
       };
     };
 
-    template <typename T> void add_scalar_as_matr(T &val) {
+    template <typename T> void add_scalar(T &val) {
       for (size_t i = 0; i < nrow * ncol; i += 1) {
         rtn_matr[i] += val;
       };
     };
 
-    template <typename T> void subs_scalar_as_matr(T &val) {
+    template <typename T> void subs_scalar(T &val) {
       for (size_t i = 0; i < nrow * ncol; i += 1) {
         rtn_matr[i] -= val;
+      };
+    };
+
+    template <typename Func> void lambda_scalar(Func f) {
+      for (size_t i = 0; i < nrow * ncol; i += 1) {
+        rtn_matr[i] = f(rtn_matr[i]);
       };
     };
 
