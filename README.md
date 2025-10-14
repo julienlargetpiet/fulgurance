@@ -6924,7 +6924,7 @@ matr </th><th> is the B matrix of A / B (as i-jnth element to i-jnth element)</t
 <hr class="hr">
 <h2 id="Matrix.mult1" style="test-align: left;">Matrix.mult1</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult1(const Matrix&lt;TB2&gt; &matr)</code></div>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult1(const Matrix&lt;TB2&gt; &matr)</code></div>
 <h3>#Description</h3>
 <p>Performs a matrix multiplication as A * B, with A as the Matrix from which the function is called, see example.</p>
 <h3>#Arguments</h3>
@@ -6947,7 +6947,7 @@ matr </th><th> is the B matrix</th></tr>
 <hr class="hr">
 <h2 id="Matrix.mult2" style="test-align: left;">Matrix.mult2</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult2(const Matrix&lt;TB2&gt; &matr)</code></div>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult2(const Matrix&lt;TB2&gt; &matr)</code></div>
 <h3>#Description</h3>
 <p>Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example.</p>
 <h3>#Arguments</h3>
@@ -6970,7 +6970,7 @@ matr </th><th> is the A matrix</th></tr>
 <hr class="hr">
 <h2 id="Matrix.mult1_opt_raw" style="test-align: left;">Matrix.mult1_opt_raw</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult1_opt_raw(const Matrix&lt;TB2&gt; &matr)</code></div>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult1_opt_raw(const Matrix&lt;TB2&gt; &matr)</code></div>
 <h3>#Description</h3>
 <p>Performs an optimized matrix multiplication as A * B, with A as the Matrix from which the function is called, see example. The result is the transpose of the actual result, it is usefull if you want to chain matrix multiplications in an optimized way. So for the end result, don't forget to transpose the output.</p>
 <h3>#Arguments</h3>
@@ -6992,7 +6992,7 @@ matr </th><th> is the B matrix</th></tr>
 <hr class="hr">
 <h2 id="Matrix.mult2_opt_raw" style="test-align: left;">Matrix.mult2_opt_raw</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult2_opt_raw(const Matrix&lt;TB2&gt; &matr)</code></div>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult2_opt_raw(const Matrix&lt;TB2&gt; &matr)</code></div>
 <h3>#Description</h3>
 <p>Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example.</p>
 <h3>#Arguments</h3>
@@ -7014,7 +7014,7 @@ matr </th><th> is the A matrix</th></tr>
 <hr class="hr">
 <h2 id="Matrix.mult1_opt" style="test-align: left;">Matrix.mult1_opt</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult1_opt(const Matrix&lt;TB2&gt; &matr)</code></div>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult1_opt(const Matrix&lt;TB2&gt; &matr)</code></div>
 <h3>#Description</h3>
 <p>Performs a matrix multiplication as A * B, with A as the Matrix from which the function is called, see example.</p>
 <h3>#Arguments</h3>
@@ -7037,7 +7037,7 @@ matr </th><th> is the B matrix</th></tr>
 <hr class="hr">
 <h2 id="Matrix.mult2_opt" style="test-align: left;">Matrix.mult2_opt</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult2_opt(const Matrix&lt;TB2&gt; &matr)</code></div>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult2_opt(const Matrix&lt;TB2&gt; &matr)</code></div>
 <h3>#Description</h3>
 <p>Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example.</p>
 <h3>#Arguments</h3>
