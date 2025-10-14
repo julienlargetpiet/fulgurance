@@ -579,6 +579,26 @@
 <br>
 <a href="#Matrix.lambda_matr" style="margin-left:40px;">Matrix.lambda_matr</a>
 <br>
+<a href="#Matrix.mult_scalar_out" style="margin-left:40px;">Matrix.mult_scalar_out</a>
+<br>
+<a href="#Matrix.div_scalar_out" style="margin-left:40px;">Matrix.div_scalar_out</a>
+<br>
+<a href="#Matrix.add_scalar_out" style="margin-left:40px;">Matrix.add_scalar_out</a>
+<br>
+<a href="#Matrix.subs_scalar_out" style="margin-left:40px;">Matrix.subs_scalar_out</a>
+<br>
+<a href="#Matrix.lambda_scalar_out" style="margin-left:40px;">Matrix.lambda_scalar_out</a>
+<br>
+<a href="#Matrix.add_matr_out" style="margin-left:40px;">Matrix.add_matr_out</a>
+<br>
+<a href="#Matrix.subs_matr_out" style="margin-left:40px;">Matrix.subs_matr_out</a>
+<br>
+<a href="#Matrix.mult_matr_out" style="margin-left:40px;">Matrix.mult_matr_out</a>
+<br>
+<a href="#Matrix.div_matr_out" style="margin-left:40px;">Matrix.div_matr_out</a>
+<br>
+<a href="#Matrix.lambda_matr_out" style="margin-left:40px;">Matrix.lambda_matr_out</a>
+<br>
 <a href="#Matrix.mult1" style="margin-left:40px;">Matrix.mult1</a>
 <br>
 <a href="#Matrix.mult2" style="margin-left:40px;">Matrix.mult2</a>
@@ -4303,7 +4323,7 @@ rows </th><th> is the vector containing all the rows to copy (<code>{-1}</code>)
 <div class = "Div"><code>// after reading teste_dataframe.csv as obj1</code>
 <br><code>Dataframe obj2;</code>
 <br><code>std::vector&lt;int&gt; idx_rows = {-1};</code>
-<br><code>std::vector&lt;std::string&gt; idx_cols2 = {"col2", "col3", "col3"};</code>
+<br><code>std::vector&lt;std::string&gt; idx_cols2 = {"col2", "col3", "col4"};</code>
 <br><code>obj2.name_dataframe(idx_rows, idx_cols2, obj1);</code>
 <br><code></code>
 <br><code>obj2.display();</code>
@@ -6901,7 +6921,8 @@ matr </th><th> is the B matrix of A / B (as i-jnth element to i-jnth element)</t
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename TB2, typename Func&gt; void lambda_matr(const Matrix&lt;TB2&gt; &matr, Func f)</code></div>
 <h3>#Description</h3>
-<p>Performs a Matrix division (i-jnth element to i-jnth element).</p>
+<p>a generalized elementwise operator.</p>
+<p>It allows you to define arbitrary mathematical operations between two matrices, not just addition or multiplication.</p>
 <h3>#Arguments</h3>
 <table><tr><th>Name</th><th>Definition</th></tr><tr><th>
 matr </th><th> is the B matrix of A / B (as i-jnth element to i-jnth element)</th></tr>
@@ -6917,6 +6938,253 @@ matr </th><th> is the B matrix of A / B (as i-jnth element to i-jnth element)</t
 <br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
 <br><code>matr.lambda_matr(matr2, myfunc);</code>
 <br><code>matr.show();</code>
+<br><code> 2   2</code>
+<br><code> 2   2</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.mult_scalar_out" style="test-align: left;">Matrix.mult_scalar_out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; Matrix&lt;std::common_type_t&lt;TB, T&gt;&gt; mult_scalar_out(const T &val)</code></div>
+<h3>#Description</h3>
+<p>This function performs an element-wise multiplication between a matrix and a</p>
+<p>  scalar. Unlike `mult_scalar()`, which modifies the current</p>
+<p>  matrix in-place and preserves its data type, `mult_scalar_out()` creates a</p>
+<p>  new matrix whose element type is automatically promoted to the most</p>
+<p>  expressive type of the operands (using `std::common_type_t`).</p>
+<p> </p>
+<p>  This allows safe arithmetic between matrices of different numeric types</p>
+<p>  without precision loss.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+val </th><th> the scalar</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int vl = 2.5;</code>
+<br><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>auto matr2 = matr.mult_scalar_out(vl);</code>
+<br><code>matr2.show();</code>
+<br><code>2.5  5.0</code>
+<br><code>7.5  10.0</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.div_scalar_out" style="test-align: left;">Matrix.div_scalar_out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; Matrix&lt;std::common_type_t&lt;TB, T&gt;&gt; div_scalar_out(const T &val)</code></div>
+<h3>#Description</h3>
+<p>This function performs an element-wise division between a matrix and a</p>
+<p>  scalar. Unlike `div_scalar()`, which modifies the current</p>
+<p>  matrix in-place and preserves its data type, `div_scalar_out()` creates a</p>
+<p>  new matrix whose element type is automatically promoted to the most</p>
+<p>  expressive type of the operands (using `std::common_type_t`).</p>
+<p> </p>
+<p>  This allows safe arithmetic between matrices of different numeric types</p>
+<p>  without precision loss.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+val </th><th> the scalar</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double vl = 2;</code>
+<br><code>std::vector&lt;double&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>auto matr2 = matr.div_scalar_out(vl);</code>
+<br><code>matr2.show();</code>
+<br><code>0.5  1</code>
+<br><code>1.5  2</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.add_scalar_out" style="test-align: left;">Matrix.add_scalar_out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; Matrix&lt;std::common_type_t&lt;TB, T&gt;&gt; add_scalar_out(const T &val)</code></div>
+<h3>#Description</h3>
+<p>This function performs an element-wise addition between a matrix and</p>
+<p>  a scalar. Unlike `add_scalar()`, which modifies the current</p>
+<p>  matrix in-place and preserves its data type, `add_scalar_out()` creates a</p>
+<p>  new matrix whose element type is automatically promoted to the most</p>
+<p>  expressive type of the operands (using `std::common_type_t`).</p>
+<p> </p>
+<p>  This allows safe arithmetic between matrices of different numeric types</p>
+<p>  without precision loss. </p>
+<p>  Strictly mathematically speaking, wa can not add a scalar and a matrix, but for memory performance, imagine the scalar as a matrix of nm dimensions filled with the scalar value.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+val </th><th> the scalar</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int vl = 2;</code>
+<br><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>auto matr2 = matr.add_scalar_out(vl);</code>
+<br><code>matr2.show();</code>
+<br><code>3  4</code>
+<br><code>5  6</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.subs_scalar_out" style="test-align: left;">Matrix.subs_scalar_out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; Matrix&lt;std::common_type_t&lt;TB, T&gt;&gt; subs_scalar_out(const T &val)</code></div>
+<h3>#Description</h3>
+<p>This function performs an element-wise substraction between a matrix and</p>
+<p>  a scalar. Unlike `subs_scalar()`, which modifies the current</p>
+<p>  matrix in-place and preserves its data type, `subs_scalar_out()` creates a</p>
+<p>  new matrix whose element type is automatically promoted to the most</p>
+<p>  expressive type of the operands (using `std::common_type_t`).</p>
+<p> </p>
+<p>  This allows safe arithmetic between matrices of different numeric types</p>
+<p>  without precision loss. </p>
+<p>  Strictly mathematically speaking, wa can not substract a scalar and a matrix, but for memory performance, imagine the scalar as a matrix of nm dimensions filled with the scalar value.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+val </th><th> the scalar</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int vl = 2;</code>
+<br><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>auto matr2 = matr.subs_scalar_out(vl);</code>
+<br><code>matr2.show();</code>
+<br><code>-1  0</code>
+<br><code> 1  2</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.lambda_scalar_out" style="test-align: left;">Matrix.lambda_scalar_out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename Func&gt; auto lambda_scalar_out(Func f)</code></div>
+<h3>#Description</h3>
+<p>Apply a function to each elements of the matrix. Returns a new matrix to keep precision of the most expressive type used.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+f </th><th> the function, takes 1 arg, the i-jnth element of the matrix</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int myfunc (int &x) {</code>
+<br><code>  return x * 3 + 5;</code>
+<br><code>};</code>
+<br><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>auto matr2 = matr.lambda_scalar_out(myfunc);</code>
+<br><code>matr2.show();</code>
+<br><code> 8  11</code>
+<br><code>14  17</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.add_matr_out" style="test-align: left;">Matrix.add_matr_out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; add_matr_out(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a Matrix addition. Returns a new matrix to keep precision of the most expressive type used.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the B matrix of A + B</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>auto matr3 = matr.add_matr_out(matr2);</code>
+<br><code>matr3.show();</code>
+<br><code> 2  4</code>
+<br><code> 6  8</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.subs_matr_out" style="test-align: left;">Matrix.subs_matr_out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; subs_matr_out(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a Matrix substraction. Returns a matrix to keep the precision of the most expressive type used.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the B matrix of A - B</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>auto matr3 = matr.subs_matr_out(matr2);</code>
+<br><code>matr3.show();</code>
+<br><code> 0  0</code>
+<br><code> 0  0</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.mult_matr_out" style="test-align: left;">Matrix.mult_matr_out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult_matr_out(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a Matrix multiplication (i-jnth element to i-jnth element). Returns a matrix to keep precision of the most expressive type used.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the B matrix of A * B (as i-jnth element to i-jnth element)</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>auto matr3 = matr.mult_matr_out(matr2);</code>
+<br><code>matr3.show();</code>
+<br><code> 1   4</code>
+<br><code> 9  16</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.div_matr_out" style="test-align: left;">Matrix.div_matr_out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; div_matr_out(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a Matrix division (i-jnth element to i-jnth element). Returns a new matrix to keep precision of the most expressive type used.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the B matrix of A / B (as i-jnth element to i-jnth element)</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>auto matr3 = matr.div_matr_out(matr2);</code>
+<br><code>matr3.show();</code>
+<br><code> 1   1</code>
+<br><code> 1   1</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.lambda_matr_out" style="test-align: left;">Matrix.lambda_matr_out</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2, typename Func&gt; auto lambda_matr_out(const Matrix&lt;TB2&gt; &matr, Func f)</code></div>
+<h3>#Description</h3>
+<p>A generalized elementwise operator.</p>
+<p>It allows you to define arbitrary mathematical operations between two matrices, not just addition or multiplication. Returns a new matrix to keep precision of the most expressive type used.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the B matrix of A / B (as i-jnth element to i-jnth element)</th></tr>
+<tr><th>f </th><th> is the function, takes 2 args, the first one is the i-jnth element from the Matrix object from which the function is applied, the second is the i-jnth element from the input Matrix</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int myfunc (int &vl1, int &vl2) {</code>
+<br><code>  return vl1 / vl2 + 1;</code>
+<br><code>}</code>
+<br><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>auto matr3 = matr.lambda_matr_out(matr2, myfunc);</code>
+<br><code>matr3.show();</code>
 <br><code> 2   2</code>
 <br><code> 2   2</code>
 </div>
