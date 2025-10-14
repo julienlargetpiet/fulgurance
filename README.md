@@ -543,6 +543,8 @@
 <br>
 <a href="#get_matr_raw" style="margin-left:40px;">get_matr_raw</a>
 <br>
+<a href="#get_matr_raw2" style="margin-left:40px;">get_matr_raw2</a>
+<br>
 <a href="#get_matr" style="margin-left:40px;">get_matr</a>
 <br>
 <a href="#Matrix.show" style="margin-left:40px;">Matrix.show</a>
@@ -555,12 +557,38 @@
 <br>
 <a href="#Matrix.det3" style="margin-left:40px;">Matrix.det3</a>
 <br>
+<a href="#Matrix.get_dim" style="margin-left:40px;">Matrix.get_dim</a>
+<br>
+<a href="#Matrix.mult_scalar" style="margin-left:40px;">Matrix.mult_scalar</a>
+<br>
+<a href="#Matrix.div_scalar" style="margin-left:40px;">Matrix.div_scalar</a>
+<br>
+<a href="#Matrix.add_scalar" style="margin-left:40px;">Matrix.add_scalar</a>
+<br>
+<a href="#Matrix.subs_scalar" style="margin-left:40px;">Matrix.subs_scalar</a>
+<br>
+<a href="#Matrix.lambda_scalar" style="margin-left:40px;">Matrix.lambda_scalar</a>
+<br>
+<a href="#Matrix.add_matr" style="margin-left:40px;">Matrix.add_matr</a>
+<br>
+<a href="#Matrix.subs_matr" style="margin-left:40px;">Matrix.subs_matr</a>
+<br>
+<a href="#Matrix.mult_matr" style="margin-left:40px;">Matrix.mult_matr</a>
+<br>
+<a href="#Matrix.div_matr" style="margin-left:40px;">Matrix.div_matr</a>
+<br>
+<a href="#Matrix.lambda_matr" style="margin-left:40px;">Matrix.lambda_matr</a>
+<br>
+<a href="#Matrix.mult1" style="margin-left:40px;">Matrix.mult1</a>
+<br>
+<a href="#Matrix.mult2" style="margin-left:40px;">Matrix.mult2</a>
+<br>
 </ul><br>
 </div>
 </div>
 <div class="box2">
 <br><hr><h1 style="color: #2c4786;"><b id="INTRODUCTION">INTRODUCTION:</b></h1>
-<p>Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a></p><p>In current development.</p><p>This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_tools part.</p><p>The framework is developped with C++ 14 but should work properly with 11 and 17 and furthers.</p><p>The main branch provides algorithms developped on the top of stl vector, but a deque version is coming.</p><h2 style="color: #2c4786;">Philosophy</h2><p>Dataframes implementation is a class. All functions that will transform 'voidly' (internaly) the relative data are built in the class. All functions that copy and transform the relative data are extern to classes.</p><p>Matrices are built with the Matrix class.</p><br>
+<p>Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a></p><p>In current development.</p><p>This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_tools part.</p><p>The framework is developped with C++ 14 but should work properly with 11 and 17 and furthers.</p><h2 style="color: #2c4786;">Philosophy</h2><p>Dataframes implementation is a class. All functions that will transform 'voidly' (internaly) the relative data are built in the class. All functions that copy and transform the relative data are extern to classes.</p><p>Matrices are built with the Matrix class.</p><br>
 <hr>
 <h1 style="color:#2c4786;">Commun functions  </h1>
 <h2 style="color:#2c4786;">On elements</h2>
@@ -6399,7 +6427,42 @@ See_below </th><th> See below</th></tr>
 <hr class="hr">
 <h2 id="get_matr_raw" style="test-align: left;">get_matr_raw</h2>
 <h3>#Usage</h3>
-<div class="Div"><code>std::vector&lt;TB&gt; get_matr_raw()</code></div>
+<div class="Div"><code>const std::vector&lt;TB&gt;& get_matr_raw()</code></div>
+<h3>#Description</h3>
+<p>Returns the matrix as a 1D stl vector const reference.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+X </th><th> NO ARGS</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; matr1 = {};</code>
+<br><code>int ncol = 0;</code>
+<br><code>int nrow = 0;</code>
+<br><code></code>
+<br><code>Matrix&lt;int&gt; matr(matr1, nrow, ncol);</code>
+<br><code></code>
+<br><code>std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1, 42};</code>
+<br><code>std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1, 22};</code>
+<br><code>std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55, 21};</code>
+<br><code>std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1, 77};</code>
+<br><code>std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1, 7};</code>
+<br><code>std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1, 8};</code>
+<br><code>std::vector&lt;int&gt; col7 = {45, 2, 11, 42, 71, 1, 8};</code>
+<br><code>matr.create_matr(col1, col2, col3, col4, col5, col6, col7);</code>
+<br><code>matr1 = matr.get_matr_raw();</code>
+<br><code>print_nvec(matr1);</code>
+<br><code> :0: 1  2  1  2  2  1  42 55 2  11</code>
+<br><code>:10: 2  1  1  22 1  12 1  2  55 55</code>
+<br><code>:20: 21 1  2  1  22 6  1  77 1  2</code>
+<br><code>:30: 16 22 33 1  7  45 2  11 2  71</code>
+<br><code>:40: 1  8  45 2  11 42 71 1  8</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="get_matr_raw2" style="test-align: left;">get_matr_raw2</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;TB&gt; get_matr_raw2()</code></div>
 <h3>#Description</h3>
 <p>Returns the matrix as a 1D stl vector.</p>
 <h3>#Arguments</h3>
@@ -6422,7 +6485,7 @@ X </th><th> NO ARGS</th></tr>
 <br><code>std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1, 8};</code>
 <br><code>std::vector&lt;int&gt; col7 = {45, 2, 11, 42, 71, 1, 8};</code>
 <br><code>matr.create_matr(col1, col2, col3, col4, col5, col6, col7);</code>
-<br><code>matr1 = matr.get_matr_raw();</code>
+<br><code>matr1 = matr.get_matr_raw2();</code>
 <br><code>print_nvec(matr1);</code>
 <br><code> :0: 1  2  1  2  2  1  42 55 2  11</code>
 <br><code>:10: 2  1  1  22 1  12 1  2  55 55</code>
@@ -6607,6 +6670,292 @@ X </th><th> NO ARGS</th></tr>
 <br><code> matr3.create_matr(col1, col2, col3, col4, col5, col6);</code>
 <br><code> double detval = matr3.det3();</code>
 <br><code> -1.05546e+08</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.get_dim" style="test-align: left;">Matrix.get_dim</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>std::vector&lt;int&gt; get_dim()</code></div>
+<h3>#Description</h3>
+<p>Returns the dimension of the matrix (nrow, ncol)</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+X </th><th> NO ARGS</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code> std::vector&lt;std::vector&lt;int&gt;&gt; matr1 = {};</code>
+<br><code> std::vector&lt;int&gt; col1 = {1, 2, 1, 2, 2, 1};</code>
+<br><code> std::vector&lt;int&gt; col2 = {55, 2, 11, 2, 1, 1};</code>
+<br><code> std::vector&lt;int&gt; col3 = {1, 12, 1, 2, 55, 55};</code>
+<br><code> std::vector&lt;int&gt; col4 = {1, 2, 1, 22, 6, 1};</code>
+<br><code> std::vector&lt;int&gt; col5 = {1, 2, 16, 22, 33, 1};</code>
+<br><code> std::vector&lt;int&gt; col6 = {45, 2, 11, 2, 71, 1};</code>
+<br><code> Matrix&lt;int&gt; matr3(matr1);</code>
+<br><code> matr3.create_matr(col1, col2, col3, col4, col5, col6);</code>
+<br><code> std::vector&lt;int&gt; dim_vec = matr3.get_dim();</code>
+<br><code> {6, 6}</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.mult_scalar" style="test-align: left;">Matrix.mult_scalar</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void mult_scalar(const T &val)</code></div>
+<h3>#Description</h3>
+<p>Multiplies each elements of the matrix by a given scalar.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+val </th><th> the scalar</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int vl = 2;</code>
+<br><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>matr.mult_scalar(vl);</code>
+<br><code>matr.show();</code>
+<br><code>2  4</code>
+<br><code>6  8</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.div_scalar" style="test-align: left;">Matrix.div_scalar</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void div_scalar(const T &val)</code></div>
+<h3>#Description</h3>
+<p>Divides each elements of the matrix by a given scalar.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+val </th><th> the scalar</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>double vl = 2;</code>
+<br><code>std::vector&lt;double&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>matr.div_scalar(vl);</code>
+<br><code>matr.show();</code>
+<br><code>0.5  1</code>
+<br><code>1.5  2</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.add_scalar" style="test-align: left;">Matrix.add_scalar</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void add_scalar(const T &val)</code></div>
+<h3>#Description</h3>
+<p>Adds each elements of the matrix by a given scalar. Note, this operation is mathematically incorrect, but it is a substitution to adding the matrix to another matrix where all elements is equal to the scalar to add. (less memory usage)</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+val </th><th> the scalar</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int vl = 2;</code>
+<br><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>matr.add_scalar(vl);</code>
+<br><code>matr.show();</code>
+<br><code>3  4</code>
+<br><code>5  6</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.subs_scalar" style="test-align: left;">Matrix.subs_scalar</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename T&gt; void subs_scalar(const T &val)</code></div>
+<h3>#Description</h3>
+<p>Substract each elements of the matrix by a given scalar. Note, this operation is mathematically incorrect, but it is a substitution to substracting the matrix to another matrix where all elements is equal to the scalar to substract. (less memory usage)</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+val </th><th> the scalar</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int vl = 2;</code>
+<br><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>matr.subs_scalar(vl);</code>
+<br><code>matr.show();</code>
+<br><code>-1  0</code>
+<br><code> 1  2</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.lambda_scalar" style="test-align: left;">Matrix.lambda_scalar</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename Func&gt; void lambda_scalar(Func f)</code></div>
+<h3>#Description</h3>
+<p>Apply a function to each elements of the matrix.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+f </th><th> the function, takes 1 arg, the i-jnth element of the matrix</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int myfunc (int &x) {</code>
+<br><code>  return x * 3 + 5;</code>
+<br><code>};</code>
+<br><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>matr.lambda_scalar(myfunc);</code>
+<br><code>matr.show();</code>
+<br><code> 8  11</code>
+<br><code>14  17</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.add_matr" style="test-align: left;">Matrix.add_matr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; void add_matr(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a Matrix addition.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the B matrix of A + B</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>matr.add_matr(matr2);</code>
+<br><code>matr.show();</code>
+<br><code> 2  4</code>
+<br><code> 6  8</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.subs_matr" style="test-align: left;">Matrix.subs_matr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; void subs_matr(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a Matrix substraction.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the B matrix of A - B</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>matr.subs_matr(matr2);</code>
+<br><code>matr.show();</code>
+<br><code> 0  0</code>
+<br><code> 0  0</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.mult_matr" style="test-align: left;">Matrix.mult_matr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; void mult_matr(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a Matrix multiplication (i-jnth element to i-jnth element).</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the B matrix of A * B (as i-jnth element to i-jnth element)</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>matr.mult_matr(matr2);</code>
+<br><code>matr.show();</code>
+<br><code> 1   4</code>
+<br><code> 9  16</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.div_matr" style="test-align: left;">Matrix.div_matr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; void div_matr(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a Matrix division (i-jnth element to i-jnth element).</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the B matrix of A / B (as i-jnth element to i-jnth element)</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>matr.div_matr(matr2);</code>
+<br><code>matr.show();</code>
+<br><code> 1   1</code>
+<br><code> 1   1</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.lambda_matr" style="test-align: left;">Matrix.lambda_matr</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2, typename Func&gt; void lambda_matr(const Matrix&lt;TB2&gt; &matr, Func f)</code></div>
+<h3>#Description</h3>
+<p>Performs a Matrix division (i-jnth element to i-jnth element).</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the B matrix of A / B (as i-jnth element to i-jnth element)</th></tr>
+<tr><th>f </th><th> is the function, takes 2 args, the first one is the i-jnth element from the Matrix object from which the function is applied, the second is the i-jnth element from the input Matrix</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>int myfunc (int &vl1, int &vl2) {</code>
+<br><code>  return vl1 / vl2 + 1;</code>
+<br><code>}</code>
+<br><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>matr.lambda_matr(matr2, myfunc);</code>
+<br><code>matr.show();</code>
+<br><code> 2   2</code>
+<br><code> 2   2</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.mult1" style="test-align: left;">Matrix.mult1</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult1(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a matrix multiplication as A * B, with A as the Matrix from which the function is called, see example.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the B matrix</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 3, 2);</code>
+<br><code>//@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr3 = matr.mult1(matr2);</code>
+<br><code>matr3.show();</code>
+<br><code>29 39</code>
+<br><code>40 54</code>
+<br><code>51 69</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.mult2" style="test-align: left;">Matrix.mult2</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult2(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the A matrix</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>//@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr3 = matr.mult1(matr2);</code>
+<br><code>matr3.show();</code>
+<br><code>19 43</code>
+<br><code>22 50</code>
 </div>
 <br>
 <hr class="hr">
