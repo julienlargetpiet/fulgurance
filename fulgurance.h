@@ -12683,6 +12683,73 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@D Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example.
 //@A matr : is the A matrix
 //@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E //@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr3 = matr2.mult2(matr);
+//@E matr3.show();
+//@E 29 39
+//@E 40 54
+//@E 51 69
+//@X
+
+//@T Matrix.mult1_opt_raw
+//@U template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult1_opt_raw(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs an optimized matrix multiplication as A * B, with A as the Matrix from which the function is called, see example. The result is the transpose of the actual result, it is usefull if you want to chain matrix multiplications in an optimized way. So for the end result, don't forget to transpose the output.
+//@A matr : is the B matrix
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6};
+//@E Matrix&lt;int&gt; matr(vec, 3, 2);
+//@E //@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr3 = matr.mult1(matr2);
+//@E matr3.show();
+//@E 29 39
+//@E 40 54
+//@E 51 69
+//@X
+
+//@T Matrix.mult2_opt_raw
+//@U template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult2_opt_raw(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example.
+//@A matr : is the A matrix
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E //@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr3 = matr.mult1(matr2);
+//@E matr3.show();
+//@E 19 43
+//@E 22 50
+//@X
+
+//@T Matrix.mult1_opt
+//@U template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult1_opt(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a matrix multiplication as A * B, with A as the Matrix from which the function is called, see example.
+//@A matr : is the B matrix
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6};
+//@E Matrix&lt;int&gt; matr(vec, 3, 2);
+//@E //@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr3 = matr.mult1(matr2);
+//@E matr3.show();
+//@E 29 39
+//@E 40 54
+//@E 51 69
+//@X
+
+//@T Matrix.mult2_opt
+//@U template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult2_opt(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example.
+//@A matr : is the A matrix
+//@X
 //@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
 //@E Matrix&lt;int&gt; matr(vec, 2, 2);
 //@E //@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};
@@ -13163,11 +13230,11 @@ template <typename TB> class Matrix{
           for (j = 0; j < dim_vec[1]; j += 1) {
             val += rtn_matr[j2 * nrow + j] * rtn_matr2[j * dim_vec[0] + i];
           };
-          rtn_matr3[j2 * nrow + i] = val; 
+          rtn_matr3[j2 * dim_vec[0] + i] = val; 
         };
       };
 
-      return Matrix<TB>(rtn_matr3, nrow, dim_vec[1]);
+      return Matrix<TB>(rtn_matr3, dim_vec[0], ncol);
     };
 
     template <typename TB2> Matrix<TB> mult1_opt_raw(const Matrix<TB2> &matr) {
@@ -13197,7 +13264,7 @@ template <typename TB> class Matrix{
         };
       };
 
-      return Matrix<TB>(rtn_matr3, nrow, dim_vec[1]);
+      return Matrix<TB>(rtn_matr3, dim_vec[1], nrow);
     };
 
    template <typename TB2> Matrix<TB> mult2_opt_raw(const Matrix<TB2> &matr) {
@@ -13227,7 +13294,7 @@ template <typename TB> class Matrix{
         };
       };
 
-      return Matrix<TB>(rtn_matr3, nrow, dim_vec[1]);
+      return Matrix<TB>(rtn_matr3, ncol, dim_vec[0]);
     };
 
     template <typename TB2> Matrix<TB> mult1_opt(const Matrix<TB2> &matr) {
@@ -13257,7 +13324,7 @@ template <typename TB> class Matrix{
         };
       };
 
-      Matrix<TB> end_matr(rtn_matr3, nrow, dim_vec[1]);
+      Matrix<TB> end_matr(rtn_matr3, dim_vec[1], nrow);
       end_matr.transpose();
       return end_matr;
     };
@@ -13289,7 +13356,7 @@ template <typename TB> class Matrix{
         };
       };
 
-      Matrix<TB> end_matr(rtn_matr3, nrow, dim_vec[1]);
+      Matrix<TB> end_matr(rtn_matr3, ncol, dim_vec[0]);
       end_matr.transpose();
       return end_matr;
     };
