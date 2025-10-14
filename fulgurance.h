@@ -13181,22 +13181,26 @@ template <typename TB> class Matrix{
       };
     };
 
-    template <typename TB2> Matrix<TB> mult1(const Matrix<TB2> &matr) {
+    template <typename TB2> Matrix<std::common_type_t<TB, TB2>> 
+    mult1(const Matrix<TB2> &matr) {
+
+      using TC = std::common_type_t<TB, TB2>;
+
       const std::vector<int>& dim_vec = matr.get_dim();
-      std::vector<TB> empty = {};
+      std::vector<TC> empty = {};
 
       if (ncol != dim_vec[0]) {
           std::cerr << "❌ Matrix size mismatch in mult1\n";
-          return Matrix<TB>(empty, 0, 0);
+          return Matrix<TC>(empty, 0, 0);
       };
 
       const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
 
-      std::vector<TB> rtn_matr3(nrow * dim_vec[1]);
+      std::vector<TC> rtn_matr3(nrow * dim_vec[1]);
 
       int j;
       int j2;
-      TB val;
+      TC val;
       for (int i = 0; i < nrow; i += 1) {
         for (j2 = 0; j2 < dim_vec[1]; j2 += 1) {
           val = 0;
@@ -13207,25 +13211,29 @@ template <typename TB> class Matrix{
         };
       };
 
-      return Matrix<TB>(rtn_matr3, nrow, dim_vec[1]);
+      return Matrix<TC>(rtn_matr3, nrow, dim_vec[1]);
     };
 
-   template <typename TB2> Matrix<TB> mult2(const Matrix<TB2> &matr) {
+   template <typename TB2> Matrix<std::common_type_t<TB, TB2>> 
+   mult2(const Matrix<TB2> &matr) {
+      
+      using TC = std::common_type_t<TB, TB2>;
+
       const std::vector<int>& dim_vec = matr.get_dim();
-      std::vector<TB> empty = {};
+      std::vector<TC> empty = {};
 
       if (nrow != dim_vec[1]) {
           std::cerr << "❌ Matrix size mismatch in mult2\n";
-          return Matrix<TB>(empty, 0, 0);
+          return Matrix<TC>(empty, 0, 0);
       };
 
       const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
 
-      std::vector<TB> rtn_matr3(ncol * dim_vec[0]);
+      std::vector<TC> rtn_matr3(ncol * dim_vec[0]);
 
       int j;
       int j2;
-      TB val;
+      TC val;
       for (int i = 0; i < dim_vec[0]; i += 1) {
         for (j2 = 0; j2 < ncol; j2 += 1) {
           val = 0;
@@ -13236,26 +13244,30 @@ template <typename TB> class Matrix{
         };
       };
 
-      return Matrix<TB>(rtn_matr3, dim_vec[0], ncol);
+      return Matrix<TC>(rtn_matr3, dim_vec[0], ncol);
     };
 
-    template <typename TB2> Matrix<TB> mult1_opt_raw(const Matrix<TB2> &matr) {
+    template <typename TB2> Matrix<std::common_type_t<TB, TB2>> 
+    mult1_opt_raw(const Matrix<TB2> &matr) {
+      
+      using TC = std::common_type_t<TB, TB2>;
+
       const std::vector<int>& dim_vec = matr.get_dim();
-      std::vector<TB> empty = {};
+      std::vector<TC> empty = {};
 
       if (ncol != dim_vec[0]) {
           std::cerr << "❌ Matrix size mismatch in mult1\n";
-          return Matrix<TB>(empty, 0, 0);
+          return Matrix<TC>(empty, 0, 0);
       };
 
       const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
 
-      std::vector<TB> rtn_matr3 = {};
+      std::vector<TC> rtn_matr3 = {};
       rtn_matr3.reserve(nrow * dim_vec[1]);
 
       int j;
       int j2;
-      TB val;
+      TC val;
       for (int i = 0; i < nrow; i += 1) {
         for (j2 = 0; j2 < dim_vec[1]; j2 += 1) {
           val = 0;
@@ -13266,26 +13278,31 @@ template <typename TB> class Matrix{
         };
       };
 
-      return Matrix<TB>(rtn_matr3, dim_vec[1], nrow);
+      return Matrix<TC>(rtn_matr3, dim_vec[1], nrow);
     };
 
-   template <typename TB2> Matrix<TB> mult2_opt_raw(const Matrix<TB2> &matr) {
+   template <typename TB2> Matrix<std::common_type_t<TB, TB2>> 
+   mult2_opt_raw(const Matrix<TB2> &matr) {
+      
       const std::vector<int>& dim_vec = matr.get_dim();
-      std::vector<TB> empty = {};
+
+      using TC = std::common_type_t<TB, TB2>;
+
+      std::vector<TC> empty = {};
 
       if (nrow != dim_vec[1]) {
           std::cerr << "❌ Matrix size mismatch in mult2\n";
-          return Matrix<TB>(empty, 0, 0);
+          return Matrix<TC>(empty, 0, 0);
       };
 
       const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
 
-      std::vector<TB> rtn_matr3 = {};
+      std::vector<TC> rtn_matr3 = {};
       rtn_matr3.reserve(ncol * dim_vec[0]);
 
       int j;
       int j2;
-      TB val;
+      TC val;
       for (int i = 0; i < dim_vec[0]; i += 1) {
         for (j2 = 0; j2 < ncol; j2 += 1) {
           val = 0;
@@ -13296,26 +13313,30 @@ template <typename TB> class Matrix{
         };
       };
 
-      return Matrix<TB>(rtn_matr3, ncol, dim_vec[0]);
+      return Matrix<TC>(rtn_matr3, ncol, dim_vec[0]);
     };
 
-    template <typename TB2> Matrix<TB> mult1_opt(const Matrix<TB2> &matr) {
+    template <typename TB2> Matrix<std::common_type_t<TB, TB2>> 
+    mult1_opt(const Matrix<TB2> &matr) {
+
+      using TC = std::common_type_t<TB, TB2>;
+
       const std::vector<int>& dim_vec = matr.get_dim();
-      std::vector<TB> empty = {};
+      std::vector<TC> empty = {};
 
       if (ncol != dim_vec[0]) {
           std::cerr << "❌ Matrix size mismatch in mult1\n";
-          return Matrix<TB>(empty, 0, 0);
+          return Matrix<TC>(empty, 0, 0);
       };
 
       const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
 
-      std::vector<TB> rtn_matr3 = {};
+      std::vector<TC> rtn_matr3 = {};
       rtn_matr3.reserve(nrow * dim_vec[1]);
 
       int j;
       int j2;
-      TB val;
+      TC val;
       for (int i = 0; i < nrow; i += 1) {
         for (j2 = 0; j2 < dim_vec[1]; j2 += 1) {
           val = 0;
@@ -13326,28 +13347,32 @@ template <typename TB> class Matrix{
         };
       };
 
-      Matrix<TB> end_matr(rtn_matr3, dim_vec[1], nrow);
+      Matrix<TC> end_matr(rtn_matr3, dim_vec[1], nrow);
       end_matr.transpose();
       return end_matr;
     };
 
-   template <typename TB2> Matrix<TB> mult2_opt(const Matrix<TB2> &matr) {
+   template <typename TB2> Matrix<std::common_type_t<TB, TB2>> 
+   mult2_opt(const Matrix<TB2> &matr) {
+
+      using TC = std::common_type_t<TB, TB2>;  
+      
       const std::vector<int>& dim_vec = matr.get_dim();
-      std::vector<TB> empty = {};
+      std::vector<TC> empty = {};
 
       if (nrow != dim_vec[1]) {
           std::cerr << "❌ Matrix size mismatch in mult2\n";
-          return Matrix<TB>(empty, 0, 0);
+          return Matrix<TC>(empty, 0, 0);
       };
 
       const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
 
-      std::vector<TB> rtn_matr3 = {};
+      std::vector<TC> rtn_matr3 = {};
       rtn_matr3.reserve(ncol * dim_vec[0]);
 
       int j;
       int j2;
-      TB val;
+      TC val;
       for (int i = 0; i < dim_vec[0]; i += 1) {
         for (j2 = 0; j2 < ncol; j2 += 1) {
           val = 0;
@@ -13358,10 +13383,13 @@ template <typename TB> class Matrix{
         };
       };
 
-      Matrix<TB> end_matr(rtn_matr3, ncol, dim_vec[0]);
+      Matrix<TC> end_matr(rtn_matr3, ncol, dim_vec[0]);
       end_matr.transpose();
       return end_matr;
     };
+
+    template <typename TB2>
+    Matrix<std::common_type_t<TB, TB2>> multGPU(const Matrix<TB2>& matr) const;
 
     ~Matrix() {};
 };
