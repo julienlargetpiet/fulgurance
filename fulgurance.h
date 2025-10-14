@@ -12661,7 +12661,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@X
 
 //@T Matrix.mult1
-//@U template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult1(const Matrix&lt;TB2&gt; &matr)
+//@U template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult1(const Matrix&lt;TB2&gt; &matr)
 //@X
 //@D Performs a matrix multiplication as A * B, with A as the Matrix from which the function is called, see example.
 //@A matr : is the B matrix
@@ -12678,7 +12678,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@X
 
 //@T Matrix.mult2
-//@U template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult2(const Matrix&lt;TB2&gt; &matr)
+//@U template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult2(const Matrix&lt;TB2&gt; &matr)
 //@X
 //@D Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example.
 //@A matr : is the A matrix
@@ -12695,7 +12695,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@X
 
 //@T Matrix.mult1_opt_raw
-//@U template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult1_opt_raw(const Matrix&lt;TB2&gt; &matr)
+//@U template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult1_opt_raw(const Matrix&lt;TB2&gt; &matr)
 //@X
 //@D Performs an optimized matrix multiplication as A * B, with A as the Matrix from which the function is called, see example. The result is the transpose of the actual result, it is usefull if you want to chain matrix multiplications in an optimized way. So for the end result, don't forget to transpose the output.
 //@A matr : is the B matrix
@@ -12711,7 +12711,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@X
 
 //@T Matrix.mult2_opt_raw
-//@U template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult2_opt_raw(const Matrix&lt;TB2&gt; &matr)
+//@U template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult2_opt_raw(const Matrix&lt;TB2&gt; &matr)
 //@X
 //@D Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example.
 //@A matr : is the A matrix
@@ -12727,7 +12727,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@X
 
 //@T Matrix.mult1_opt
-//@U template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult1_opt(const Matrix&lt;TB2&gt; &matr)
+//@U template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult1_opt(const Matrix&lt;TB2&gt; &matr)
 //@X
 //@D Performs a matrix multiplication as A * B, with A as the Matrix from which the function is called, see example.
 //@A matr : is the B matrix
@@ -12744,7 +12744,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@X
 
 //@T Matrix.mult2_opt
-//@U template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult2_opt(const Matrix&lt;TB2&gt; &matr)
+//@U template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult2_opt(const Matrix&lt;TB2&gt; &matr)
 //@X
 //@D Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example.
 //@A matr : is the A matrix
