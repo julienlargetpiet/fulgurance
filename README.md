@@ -539,13 +539,13 @@
 <b><li style="margin-left:20px; color: #2c4786;">The Matrix Object</li></b>
 <a href="#Matrix" style="margin-left:40px;">Matrix</a>
 <br>
-<a href="#create_matr" style="margin-left:40px;">create_matr</a>
+<a href="#Matrix.create_matr" style="margin-left:40px;">Matrix.create_matr</a>
 <br>
-<a href="#get_matr_raw" style="margin-left:40px;">get_matr_raw</a>
+<a href="#Matrix.get_matr_raw" style="margin-left:40px;">Matrix.get_matr_raw</a>
 <br>
-<a href="#get_matr_raw2" style="margin-left:40px;">get_matr_raw2</a>
+<a href="#Matrix.get_matr_raw2" style="margin-left:40px;">Matrix.get_matr_raw2</a>
 <br>
-<a href="#get_matr" style="margin-left:40px;">get_matr</a>
+<a href="#Matrix.get_matr" style="margin-left:40px;">Matrix.get_matr</a>
 <br>
 <a href="#Matrix.show" style="margin-left:40px;">Matrix.show</a>
 <br>
@@ -6392,7 +6392,7 @@ See_below </th><th> See below</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="create_matr" style="test-align: left;">create_matr</h2>
+<h2 id="Matrix.create_matr" style="test-align: left;">Matrix.create_matr</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>template &lt;typename T, typename... T2&gt; void create_matr(std::vector&lt;T&gt; &var1, std::vector&lt;T2&gt;&... var2)</code></div>
 <h3>#Description</h3>
@@ -6425,7 +6425,7 @@ See_below </th><th> See below</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="get_matr_raw" style="test-align: left;">get_matr_raw</h2>
+<h2 id="Matrix.get_matr_raw" style="test-align: left;">Matrix.get_matr_raw</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>const std::vector&lt;TB&gt;& get_matr_raw()</code></div>
 <h3>#Description</h3>
@@ -6460,7 +6460,7 @@ X </th><th> NO ARGS</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="get_matr_raw2" style="test-align: left;">get_matr_raw2</h2>
+<h2 id="Matrix.get_matr_raw2" style="test-align: left;">Matrix.get_matr_raw2</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>std::vector&lt;TB&gt; get_matr_raw2()</code></div>
 <h3>#Description</h3>
@@ -6495,7 +6495,7 @@ X </th><th> NO ARGS</th></tr>
 </div>
 <br>
 <hr class="hr">
-<h2 id="get_matr" style="test-align: left;">get_matr</h2>
+<h2 id="Matrix.get_matr" style="test-align: left;">Matrix.get_matr</h2>
 <h3>#Usage</h3>
 <div class="Div"><code>Matrix&lt;TB&gt; get_matr()</code></div>
 <h3>#Description</h3>
