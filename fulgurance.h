@@ -12972,12 +12972,14 @@ template <typename TB> class Matrix{
     double det3() {
       double det_sign = 1.0;
 
+      std::vector<TB> tmp_matr = rtn_matr;
+
       for (int k = 0; k < nrow; ++k) {
           // Pivot selection
           int pivot = k;
-          double max_val = std::abs(rtn_matr[k * nrow + k]);
+          double max_val = std::abs(tmp_matr[k * nrow + k]);
           for (int i = k + 1; i < nrow; ++i) {
-              double val = std::abs(rtn_matr[i * nrow + k]);
+              double val = std::abs(tmp_matr[i * nrow + k]);
               if (val > max_val) {
                   max_val = val;
                   pivot = i;
@@ -12993,23 +12995,23 @@ template <typename TB> class Matrix{
           // row max at k nth col not the max of the entire k nth column)
           if (pivot != k) {
               for (int j = 0; j < nrow; ++j)
-                  std::swap(rtn_matr[pivot * nrow + j], rtn_matr[k * nrow + j]);
+                  std::swap(tmp_matr[pivot * nrow + j], tmp_matr[k * nrow + j]);
               det_sign *= -1.0;
           };
 
           // Eliminate below pivot, to fast forward 
           // create a upper triangular matrix
           for (int i = k + 1; i < nrow; ++i) {
-              double factor = rtn_matr[i * nrow + k] / rtn_matr[k * nrow + k];
+              double factor = tmp_matr[i * nrow + k] / tmp_matr[k * nrow + k];
               for (int j = k; j < nrow; ++j)
-                  rtn_matr[i * nrow + j] -= factor * rtn_matr[k * nrow + j];
+                  tmp_matr[i * nrow + j] -= factor * tmp_matr[k * nrow + j];
           };
       }
 
       // Product of diagonal entries
       double det = det_sign;
       for (int i = 0; i < nrow; ++i)
-          det *= rtn_matr[i * nrow + i];
+          det *= tmp_matr[i * nrow + i];
 
       return det;
     }
