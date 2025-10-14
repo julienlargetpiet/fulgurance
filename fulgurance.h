@@ -7706,7 +7706,7 @@ class Dataframe{
 //@E // after reading teste_dataframe.csv as obj1
 //@E Dataframe obj2;
 //@E std::vector&lt;int&gt; idx_rows = {-1};
-//@E std::vector&lt;std::string&gt; idx_cols2 = {"col2", "col3", "col3"};
+//@E std::vector&lt;std::string&gt; idx_cols2 = {"col2", "col3", "col4"};
 //@E obj2.name_dataframe(idx_rows, idx_cols2, obj1);
 //@E 
 //@E obj2.display();
@@ -12644,7 +12644,8 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@T Matrix.lambda_matr
 //@U template &lt;typename TB2, typename Func&gt; void lambda_matr(const Matrix&lt;TB2&gt; &matr, Func f)
 //@X
-//@D Performs a Matrix division (i-jnth element to i-jnth element).
+//@D a generalized elementwise operator.
+//@D It allows you to define arbitrary mathematical operations between two matrices, not just addition or multiplication.
 //@A matr : is the B matrix of A / B (as i-jnth element to i-jnth element)
 //@A f : is the function, takes 2 args, the first one is the i-jnth element from the Matrix object from which the function is applied, the second is the i-jnth element from the input Matrix
 //@X
@@ -12656,6 +12657,193 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E Matrix&lt;int&gt; matr2(vec, 2, 2);
 //@E matr.lambda_matr(matr2, myfunc);
 //@E matr.show();
+//@E  2   2
+//@E  2   2
+//@X
+
+//@T Matrix.mult_scalar_out
+//@U template &lt;typename T&gt; Matrix&lt;std::common_type_t&lt;TB, T&gt;&gt; mult_scalar_out(const T &val)
+//@X
+//@D This function performs an element-wise multiplication between a matrix and a
+//@D   scalar. Unlike `mult_scalar()`, which modifies the current
+//@D   matrix in-place and preserves its data type, `mult_scalar_out()` creates a
+//@D   new matrix whose element type is automatically promoted to the most
+//@D   expressive type of the operands (using `std::common_type_t`).
+//@D  
+//@D   This allows safe arithmetic between matrices of different numeric types
+//@D   without precision loss.
+//@A val : the scalar
+//@X
+//@E int vl = 2.5;
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E auto matr2 = matr.mult_scalar_out(vl);
+//@E matr2.show();
+//@E 2.5  5.0
+//@E 7.5  10.0
+//@X
+
+//@T Matrix.div_scalar_out
+//@U template &lt;typename T&gt; Matrix&lt;std::common_type_t&lt;TB, T&gt;&gt; div_scalar_out(const T &val)
+//@X
+//@D This function performs an element-wise division between a matrix and a
+//@D   scalar. Unlike `div_scalar()`, which modifies the current
+//@D   matrix in-place and preserves its data type, `div_scalar_out()` creates a
+//@D   new matrix whose element type is automatically promoted to the most
+//@D   expressive type of the operands (using `std::common_type_t`).
+//@D  
+//@D   This allows safe arithmetic between matrices of different numeric types
+//@D   without precision loss.
+//@A val : the scalar
+//@X
+//@E double vl = 2;
+//@E std::vector&lt;double&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E auto matr2 = matr.div_scalar_out(vl);
+//@E matr2.show();
+//@E 0.5  1
+//@E 1.5  2
+//@X
+
+//@T Matrix.add_scalar_out
+//@U template &lt;typename T&gt; Matrix&lt;std::common_type_t&lt;TB, T&gt;&gt; add_scalar_out(const T &val)
+//@X
+//@D This function performs an element-wise addition between a matrix and
+//@D   a scalar. Unlike `add_scalar()`, which modifies the current
+//@D   matrix in-place and preserves its data type, `add_scalar_out()` creates a
+//@D   new matrix whose element type is automatically promoted to the most
+//@D   expressive type of the operands (using `std::common_type_t`).
+//@D  
+//@D   This allows safe arithmetic between matrices of different numeric types
+//@D   without precision loss. 
+//@D   Strictly mathematically speaking, wa can not add a scalar and a matrix, but for memory performance, imagine the scalar as a matrix of nm dimensions filled with the scalar value.
+//@A val : the scalar
+//@X
+//@E int vl = 2;
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E auto matr2 = matr.add_scalar_out(vl);
+//@E matr2.show();
+//@E 3  4
+//@E 5  6
+//@X
+
+//@T Matrix.subs_scalar_out
+//@U template &lt;typename T&gt; Matrix&lt;std::common_type_t&lt;TB, T&gt;&gt; subs_scalar_out(const T &val)
+//@X
+//@D This function performs an element-wise substraction between a matrix and
+//@D   a scalar. Unlike `subs_scalar()`, which modifies the current
+//@D   matrix in-place and preserves its data type, `subs_scalar_out()` creates a
+//@D   new matrix whose element type is automatically promoted to the most
+//@D   expressive type of the operands (using `std::common_type_t`).
+//@D  
+//@D   This allows safe arithmetic between matrices of different numeric types
+//@D   without precision loss. 
+//@D   Strictly mathematically speaking, wa can not substract a scalar and a matrix, but for memory performance, imagine the scalar as a matrix of nm dimensions filled with the scalar value.
+//@A val : the scalar
+//@X
+//@E int vl = 2;
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E auto matr2 = matr.subs_scalar_out(vl);
+//@E matr2.show();
+//@E -1  0
+//@E  1  2
+//@X
+
+//@T Matrix.lambda_scalar_out
+//@U template &lt;typename Func&gt; auto lambda_scalar_out(Func f)
+//@X
+//@D Apply a function to each elements of the matrix. Returns a new matrix to keep precision of the most expressive type used.
+//@A f : the function, takes 1 arg, the i-jnth element of the matrix
+//@X
+//@E int myfunc (int &x) {
+//@E   return x * 3 + 5;
+//@E };
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E auto matr2 = matr.lambda_scalar_out(myfunc);
+//@E matr2.show();
+//@E  8  11
+//@E 14  17
+//@X
+
+//@T Matrix.add_matr_out
+//@U template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; add_matr_out(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a Matrix addition. Returns a new matrix to keep precision of the most expressive type used.
+//@A matr : is the B matrix of A + B
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E auto matr3 = matr.add_matr_out(matr2);
+//@E matr3.show();
+//@E  2  4
+//@E  6  8
+//@X
+
+//@T Matrix.subs_matr_out
+//@U template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; subs_matr_out(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a Matrix substraction. Returns a matrix to keep the precision of the most expressive type used.
+//@A matr : is the B matrix of A - B
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E auto matr3 = matr.subs_matr_out(matr2);
+//@E matr3.show();
+//@E  0  0
+//@E  0  0
+//@X
+
+//@T Matrix.mult_matr_out
+//@U template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult_matr_out(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a Matrix multiplication (i-jnth element to i-jnth element). Returns a matrix to keep precision of the most expressive type used.
+//@A matr : is the B matrix of A * B (as i-jnth element to i-jnth element)
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E auto matr3 = matr.mult_matr_out(matr2);
+//@E matr3.show();
+//@E  1   4
+//@E  9  16
+//@X
+
+//@T Matrix.div_matr_out
+//@U template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; div_matr_out(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a Matrix division (i-jnth element to i-jnth element). Returns a new matrix to keep precision of the most expressive type used.
+//@A matr : is the B matrix of A / B (as i-jnth element to i-jnth element)
+//@X
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E auto matr3 = matr.div_matr_out(matr2);
+//@E matr3.show();
+//@E  1   1
+//@E  1   1
+//@X
+
+//@T Matrix.lambda_matr_out
+//@U template &lt;typename TB2, typename Func&gt; auto lambda_matr_out(const Matrix&lt;TB2&gt; &matr, Func f)
+//@X
+//@D A generalized elementwise operator.
+//@D It allows you to define arbitrary mathematical operations between two matrices, not just addition or multiplication. Returns a new matrix to keep precision of the most expressive type used.
+//@A matr : is the B matrix of A / B (as i-jnth element to i-jnth element)
+//@A f : is the function, takes 2 args, the first one is the i-jnth element from the Matrix object from which the function is applied, the second is the i-jnth element from the input Matrix
+//@X
+//@E int myfunc (int &vl1, int &vl2) {
+//@E   return vl1 / vl2 + 1;
+//@E }
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E Matrix&lt;int&gt; matr(vec, 2, 2);
+//@E Matrix&lt;int&gt; matr2(vec, 2, 2);
+//@E auto matr3 = matr.lambda_matr_out(matr2, myfunc);
+//@E matr3.show();
 //@E  2   2
 //@E  2   2
 //@X
@@ -13179,6 +13367,186 @@ template <typename TB> class Matrix{
       for (size_t i = 0; i < nrow * ncol; i += 1) {
         rtn_matr[i] = f(rtn_matr[i], rtn_matr2[i]);
       };
+    };
+
+    template <typename T> 
+    Matrix<std::common_type_t<TB, T>>
+    mult_scalar_out(const T &val) const {
+      
+      using TC = std::common_type_t<TB, T>;
+      std::vector<TC> rtn_matr2(rtn_matr.size());
+
+      for (size_t i = 0; i < rtn_matr.size(); i += 1) {
+        rtn_matr2[i] = rtn_matr[i] * val;
+      };
+
+      return Matrix<TC>(rtn_matr2, nrow, ncol);
+
+    };
+
+    template <typename T>
+    Matrix<std::common_type_t<TB, T>>
+    div_scalar_out(T &val) const {
+
+      using TC = std::common_type_t<TB, T>;
+      std::vector<TC> rtn_matr2(rtn_matr.size());
+
+      for (size_t i = 0; i < rtn_matr.size(); i += 1) {
+        rtn_matr2[i] = rtn_matr[i] / val;
+      };
+
+      return Matrix<TC>(rtn_matr2, nrow, ncol);
+
+    };
+
+    template <typename T>
+    Matrix<std::common_type_t<TB, T>>
+    add_scalar_out(T &val) const {
+
+      using TC = std::common_type_t<TB, T>;
+      std::vector<TC> rtn_matr2(rtn_matr.size());
+
+      for (size_t i = 0; i < rtn_matr.size(); i += 1) {
+        rtn_matr2[i] = rtn_matr[i] + val;
+      };
+
+      return Matrix<TC>(rtn_matr2, nrow, ncol);
+
+    };
+
+    template <typename T> 
+    Matrix<std::common_type_t<TB, T>> 
+    subs_scalar_out(T &val) const {
+
+      using TC = std::common_type_t<TB, T>;
+      std::vector<TC> rtn_matr2(rtn_matr.size());
+
+      for (size_t i = 0; i < rtn_matr.size(); ++i) {
+        rtn_matr2[i] = rtn_matr[i] - val;
+      };
+
+      return Matrix<TC>(rtn_matr2, nrow, ncol);
+
+    };
+
+    template <typename Func>
+    auto lambda_scalar_out(Func f) const {
+      using TC = decltype(f(std::declval<TB>()));
+    
+      std::vector<TC> rtn_matr2(rtn_matr.size());
+    
+      for (size_t i = 0 ; i < rtn_matr.size(); i += 1) {
+          rtn_matr2[i] = f(rtn_matr[i]);
+      };
+    
+      return Matrix<TC>(rtn_matr2, nrow, ncol);
+    };
+
+    template <typename TB2> 
+    Matrix<std::common_type_t<TB, TB2>>
+    add_matr_out(const Matrix<TB2> &matr) const {
+
+      using TC = std::common_type_t<TB, TB2>;
+      std::vector<TC> empty = {};
+
+      if (matr.get_dim() != std::vector<int>{nrow, ncol}) {
+          std::cerr << "❌ Matrix size mismatch in add_matr_out\n";
+          return Matrix<TC>(empty, 0, 0);
+      }
+
+      std::vector<TC> rtn_matr3(rtn_matr.size());
+
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+      for (size_t i = 0; i < rtn_matr.size(); i += 1) {
+        rtn_matr3[i] = rtn_matr[i] + rtn_matr2[i];
+      };
+
+      return Matrix<TC>(rtn_matr3, nrow, ncol);
+    };
+
+    template <typename TB2> 
+    Matrix<std::common_type_t<TB, TB2>>
+    sub_matr_out(const Matrix<TB2> &matr) {
+
+      using TC = std::common_type_t<TB, TB2>;
+      std::vector<TC> empty = {};
+
+      if (matr.get_dim() != std::vector<int>{nrow, ncol}) {
+          std::cerr << "❌ Matrix size mismatch in sub_matr_out\n";
+          return Matrix<TC>(empty, 0, 0);
+      }
+
+      std::vector<TC> rtn_matr3(rtn_matr.size());
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+      for (size_t i = 0; i < rtn_matr.size(); i += 1) {
+        rtn_matr3[i] = rtn_matr[i] - rtn_matr2[i];
+      };
+
+      return Matrix<TC>(rtn_matr3, nrow, ncol);
+    };
+
+    template <typename TB2>
+    Matrix<std::common_type_t<TB, TB2>>
+    mult_matr_out(const Matrix<TB2> &matr) {
+
+      using TC = std::common_type_t<TB, TB2>;
+      std::vector<TC> empty = {};
+
+      if (matr.get_dim() != std::vector<int>{nrow, ncol}) {
+          std::cerr << "❌ Matrix size mismatch in mult_matr_out\n";
+          return Matrix<TC>(empty, 0, 0);
+      }
+
+      std::vector<TC> rtn_matr3(rtn_matr.size());
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+      for (size_t i = 0; i < rtn_matr.size(); i += 1) {
+        rtn_matr3[i] = rtn_matr[i] * rtn_matr2[i];
+      };
+
+      return Matrix<TC>(rtn_matr3, nrow, ncol);
+    };
+
+    template <typename TB2> 
+    Matrix<std::common_type_t<TB, TB2>>
+    div_matr_out(const Matrix<TB2> &matr) {
+
+      using TC = std::common_type_t<TB, TB2>;
+      std::vector<TC> empty = {};
+
+      if (matr.get_dim() != std::vector<int>{nrow, ncol}) {
+          std::cerr << "❌ Matrix size mismatch in div_matr_out\n";
+          return Matrix<TC>(empty, 0, 0);
+      }
+
+      std::vector<TC> rtn_matr3(rtn_matr.size());
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+      for (size_t i = 0; i < rtn_matr.size(); i += 1) {
+        rtn_matr3[i] = rtn_matr[i] / rtn_matr2[i];
+      };
+
+      return Matrix<TC>(rtn_matr3, nrow, ncol);
+    };
+
+    template <typename TB2, typename Func> 
+    auto
+    lambda_matr_out(const Matrix<TB2> &matr, 
+                     Func f) {
+
+      using TC = decltype(f(std::vector<TB>()));
+      std::vector<TC> empty = {};
+
+      if (matr.get_dim() != std::vector<int>{nrow, ncol}) {
+          std::cerr << "❌ Matrix size mismatch in lambda_matr_out\n";
+          return Matrix<TC>(empty, 0, 0);
+      }
+
+      std::vector<TC> rtn_matr3(rtn_matr.size());
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+      for (size_t i = 0; i < nrow * ncol; i += 1) {
+        rtn_matr3[i] = f(rtn_matr[i], rtn_matr2[i]);
+      };
+
+      return Matrix<TC>(rtn_matr3, nrow, ncol);
     };
 
     template <typename TB2> Matrix<std::common_type_t<TB, TB2>> 
