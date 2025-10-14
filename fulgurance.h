@@ -12704,11 +12704,10 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E Matrix&lt;int&gt; matr(vec, 3, 2);
 //@E //@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};
 //@E Matrix&lt;int&gt; matr2(vec, 2, 2);
-//@E Matrix&lt;int&gt; matr3 = matr.mult1(matr2);
+//@E Matrix&lt;int&gt; matr3 = matr.mult1_opt_raw(matr2);
 //@E matr3.show();
-//@E 29 39
-//@E 40 54
-//@E 51 69
+//@E           29           40           51
+//@E           39           54           69
 //@X
 
 //@T Matrix.mult2_opt_raw
@@ -12717,14 +12716,14 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@D Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example.
 //@A matr : is the A matrix
 //@X
-//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4};
+//@E std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6};
 //@E Matrix&lt;int&gt; matr(vec, 2, 2);
 //@E //@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};
 //@E Matrix&lt;int&gt; matr2(vec, 2, 2);
-//@E Matrix&lt;int&gt; matr3 = matr.mult1(matr2);
+//@E Matrix&lt;int&gt; matr3 = matr2.mult2_opt_raw(matr);
 //@E matr3.show();
-//@E 19 43
-//@E 22 50
+//@E           29           40           51
+//@E           39           54           69
 //@X
 
 //@T Matrix.mult1_opt
@@ -12737,7 +12736,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E Matrix&lt;int&gt; matr(vec, 3, 2);
 //@E //@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};
 //@E Matrix&lt;int&gt; matr2(vec, 2, 2);
-//@E Matrix&lt;int&gt; matr3 = matr.mult1(matr2);
+//@E Matrix&lt;int&gt; matr3 = matr.mult1_opt(matr2);
 //@E matr3.show();
 //@E 29 39
 //@E 40 54
@@ -12754,10 +12753,11 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E Matrix&lt;int&gt; matr(vec, 2, 2);
 //@E //@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};
 //@E Matrix&lt;int&gt; matr2(vec, 2, 2);
-//@E Matrix&lt;int&gt; matr3 = matr.mult1(matr2);
+//@E Matrix&lt;int&gt; matr3 = matr2.mult2_opt(matr);
 //@E matr3.show();
-//@E 19 43
-//@E 22 50
+//@E           29           39
+//@E           40           54
+//@E           51           69
 //@X
 
 template <typename TB> class Matrix{
