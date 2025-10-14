@@ -12258,7 +12258,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E See below
 //@X
 
-//@T create_matr
+//@T Matrix.create_matr
 //@U template &lt;typename T, typename... T2&gt; void create_matr(std::vector&lt;T&gt; &var1, std::vector&lt;T2&gt;&... var2)
 //@X
 //@D After initializing a matrix with Matrix<int> matr(matr1), you can create it giving it a variadic number of colums, if a column missmatch the expected rownumber, a rep_untl function is applied to it to fit the matrix requirements, see example.
@@ -12285,7 +12285,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E             1            1           55            1            1
 //@X
 
-//@T get_matr_raw
+//@T Matrix.get_matr_raw
 //@U const std::vector&lt;TB&gt;& get_matr_raw()
 //@X
 //@D Returns the matrix as a 1D stl vector const reference.
@@ -12314,7 +12314,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E :40: 1  8  45 2  11 42 71 1  8
 //@X
 
-//@T get_matr_raw2
+//@T Matrix.get_matr_raw2
 //@U std::vector&lt;TB&gt; get_matr_raw2()
 //@X
 //@D Returns the matrix as a 1D stl vector.
@@ -12343,7 +12343,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E :40: 1  8  45 2  11 42 71 1  8
 //@X
 
-//@T get_matr
+//@T Matrix.get_matr
 //@U Matrix&lt;TB&gt; get_matr()
 //@X
 //@D Returns the Matrix of the Matrix objects.
@@ -13170,6 +13170,129 @@ template <typename TB> class Matrix{
       return Matrix<TB>(rtn_matr3, nrow, dim_vec[1]);
     };
 
+    template <typename TB2> Matrix<TB> mult1_opt_raw(const Matrix<TB2> &matr) {
+      const std::vector<int>& dim_vec = matr.get_dim();
+      std::vector<TB> empty = {};
+
+      if (ncol != dim_vec[0]) {
+          std::cerr << "❌ Matrix size mismatch in mult1\n";
+          return Matrix<TB>(empty, 0, 0);
+      };
+
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+
+      std::vector<TB> rtn_matr3 = {};
+      rtn_matr3.reserve(nrow * dim_vec[1]);
+
+      int j;
+      int j2;
+      TB val;
+      for (int i = 0; i < nrow; i += 1) {
+        for (j2 = 0; j2 < dim_vec[1]; j2 += 1) {
+          val = 0;
+          for (j = 0; j < ncol; j += 1) {
+            val += rtn_matr[j * nrow + i] * rtn_matr2[j2 * dim_vec[0] + j];
+          };
+          rtn_matr3.push_back(val);
+        };
+      };
+
+      return Matrix<TB>(rtn_matr3, nrow, dim_vec[1]);
+    };
+
+   template <typename TB2> Matrix<TB> mult2_opt_raw(const Matrix<TB2> &matr) {
+      const std::vector<int>& dim_vec = matr.get_dim();
+      std::vector<TB> empty = {};
+
+      if (nrow != dim_vec[1]) {
+          std::cerr << "❌ Matrix size mismatch in mult2\n";
+          return Matrix<TB>(empty, 0, 0);
+      };
+
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+
+      std::vector<TB> rtn_matr3 = {};
+      rtn_matr3.reserve(ncol * dim_vec[0]);
+
+      int j;
+      int j2;
+      TB val;
+      for (int i = 0; i < dim_vec[0]; i += 1) {
+        for (j2 = 0; j2 < ncol; j2 += 1) {
+          val = 0;
+          for (j = 0; j < dim_vec[1]; j += 1) {
+            val += rtn_matr[j2 * nrow + j] * rtn_matr2[j * dim_vec[0] + i];
+          };
+          rtn_matr3.push_back(val);
+        };
+      };
+
+      return Matrix<TB>(rtn_matr3, nrow, dim_vec[1]);
+    };
+
+    template <typename TB2> Matrix<TB> mult1_opt(const Matrix<TB2> &matr) {
+      const std::vector<int>& dim_vec = matr.get_dim();
+      std::vector<TB> empty = {};
+
+      if (ncol != dim_vec[0]) {
+          std::cerr << "❌ Matrix size mismatch in mult1\n";
+          return Matrix<TB>(empty, 0, 0);
+      };
+
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+
+      std::vector<TB> rtn_matr3 = {};
+      rtn_matr3.reserve(nrow * dim_vec[1]);
+
+      int j;
+      int j2;
+      TB val;
+      for (int i = 0; i < nrow; i += 1) {
+        for (j2 = 0; j2 < dim_vec[1]; j2 += 1) {
+          val = 0;
+          for (j = 0; j < ncol; j += 1) {
+            val += rtn_matr[j * nrow + i] * rtn_matr2[j2 * dim_vec[0] + j];
+          };
+          rtn_matr3.push_back(val);
+        };
+      };
+
+      Matrix<TB> end_matr(rtn_matr3, nrow, dim_vec[1]);
+      end_matr.transpose();
+      return end_matr;
+    };
+
+   template <typename TB2> Matrix<TB> mult2_opt(const Matrix<TB2> &matr) {
+      const std::vector<int>& dim_vec = matr.get_dim();
+      std::vector<TB> empty = {};
+
+      if (nrow != dim_vec[1]) {
+          std::cerr << "❌ Matrix size mismatch in mult2\n";
+          return Matrix<TB>(empty, 0, 0);
+      };
+
+      const std::vector<TB2>& rtn_matr2 = matr.get_matr_raw();
+
+      std::vector<TB> rtn_matr3 = {};
+      rtn_matr3.reserve(ncol * dim_vec[0]);
+
+      int j;
+      int j2;
+      TB val;
+      for (int i = 0; i < dim_vec[0]; i += 1) {
+        for (j2 = 0; j2 < ncol; j2 += 1) {
+          val = 0;
+          for (j = 0; j < dim_vec[1]; j += 1) {
+            val += rtn_matr[j2 * nrow + j] * rtn_matr2[j * dim_vec[0] + i];
+          };
+          rtn_matr3.push_back(val);
+        };
+      };
+
+      Matrix<TB> end_matr(rtn_matr3, nrow, dim_vec[1]);
+      end_matr.transpose();
+      return end_matr;
+    };
 
     ~Matrix() {};
 };
