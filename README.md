@@ -583,6 +583,14 @@
 <br>
 <a href="#Matrix.mult2" style="margin-left:40px;">Matrix.mult2</a>
 <br>
+<a href="#Matrix.mult1_opt_raw" style="margin-left:40px;">Matrix.mult1_opt_raw</a>
+<br>
+<a href="#Matrix.mult2_opt_raw" style="margin-left:40px;">Matrix.mult2_opt_raw</a>
+<br>
+<a href="#Matrix.mult1_opt" style="margin-left:40px;">Matrix.mult1_opt</a>
+<br>
+<a href="#Matrix.mult2_opt" style="margin-left:40px;">Matrix.mult2_opt</a>
+<br>
 </ul><br>
 </div>
 </div>
@@ -6948,14 +6956,105 @@ matr </th><th> is the A matrix</th></tr>
 </table>
 <br>
 <h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>//@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr3 = matr2.mult2(matr);</code>
+<br><code>matr3.show();</code>
+<br><code>29 39</code>
+<br><code>40 54</code>
+<br><code>51 69</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.mult1_opt_raw" style="test-align: left;">Matrix.mult1_opt_raw</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult1_opt_raw(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs an optimized matrix multiplication as A * B, with A as the Matrix from which the function is called, see example. The result is the transpose of the actual result, it is usefull if you want to chain matrix multiplications in an optimized way. So for the end result, don't forget to transpose the output.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the B matrix</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 3, 2);</code>
+<br><code>//@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr3 = matr.mult1_opt_raw(matr2);</code>
+<br><code>matr3.show();</code>
+<br><code>          29           40           51</code>
+<br><code>          39           54           69</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.mult2_opt_raw" style="test-align: left;">Matrix.mult2_opt_raw</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult2_opt_raw(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the A matrix</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
+<br><code>//@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr3 = matr2.mult2_opt_raw(matr);</code>
+<br><code>matr3.show();</code>
+<br><code>          29           40           51</code>
+<br><code>          39           54           69</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.mult1_opt" style="test-align: left;">Matrix.mult1_opt</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult1_opt(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a matrix multiplication as A * B, with A as the Matrix from which the function is called, see example.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the B matrix</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6};</code>
+<br><code>Matrix&lt;int&gt; matr(vec, 3, 2);</code>
+<br><code>//@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};</code>
+<br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
+<br><code>Matrix&lt;int&gt; matr3 = matr.mult1_opt(matr2);</code>
+<br><code>matr3.show();</code>
+<br><code>29 39</code>
+<br><code>40 54</code>
+<br><code>51 69</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.mult2_opt" style="test-align: left;">Matrix.mult2_opt</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;TB&gt; mult2_opt(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the A matrix</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
 <div class = "Div"><code>std::vector&lt;int&gt; vec = {1, 2, 3, 4};</code>
 <br><code>Matrix&lt;int&gt; matr(vec, 2, 2);</code>
 <br><code>//@E std::vector&lt;int&gt; vec = {5, 6, 7, 8};</code>
 <br><code>Matrix&lt;int&gt; matr2(vec, 2, 2);</code>
-<br><code>Matrix&lt;int&gt; matr3 = matr.mult1(matr2);</code>
+<br><code>Matrix&lt;int&gt; matr3 = matr2.mult2_opt(matr);</code>
 <br><code>matr3.show();</code>
-<br><code>19 43</code>
-<br><code>22 50</code>
+<br><code>          29           39</code>
+<br><code>          40           54</code>
+<br><code>          51           69</code>
 </div>
 <br>
 <hr class="hr">
