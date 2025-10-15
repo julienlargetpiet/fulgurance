@@ -2849,12 +2849,12 @@ std::vector<unsigned int> qgeom(std::vector<double> &x, double &p) {
 std::vector<double> dhyper(std::vector<int> &x, unsigned int &n_ones, unsigned int &n_others, int &n_trials) {
   std::vector<double> rtn_v;
   unsigned int n_tot;
-  if (n_trials > n_tot) {
-    return {0};
-  };
   double n_ones_left;
   double cur_prob;
   const int ref_n_tot = n_ones + n_others;
+  if (n_trials > ref_n_tot) {
+    return {0};
+  };
   const int ref_n_ones = n_ones;
   int i;
   double divided_trial;
@@ -2921,14 +2921,14 @@ std::vector<double> dhyper(std::vector<int> &x, unsigned int &n_ones, unsigned i
 std::vector<double> phyper(std::vector<int> &x, unsigned int &n_ones, unsigned int &n_others, int &n_trials) {
   std::vector<double> rtn_v;
   unsigned int n_tot;
-  if (n_trials > n_tot) {
-    return {0};
-  };
   double n_ones_left;
   double cur_prob;
   double rtn_prob = 0;
   unsigned int cnt = 0;
   const int ref_n_tot = n_ones + n_others;
+  if (n_trials > ref_n_tot) {
+    return {0};
+  };
   const int ref_n_ones = n_ones;
   const unsigned int n = x.size();
   int i;
@@ -3001,14 +3001,14 @@ std::vector<double> phyper(std::vector<int> &x, unsigned int &n_ones, unsigned i
 std::vector<unsigned int> qhyper(std::vector<double> &x, unsigned int &n_ones, unsigned int &n_others, int &n_trials) {
   std::vector<unsigned int> rtn_v;
   unsigned int n_tot;
-  if (n_trials > n_tot) {
-    return {0};
-  };
   double n_ones_left;
   double cur_prob;
   double rtn_prob = 0;
   double lst_rtn_prob = 0;
   const int ref_n_tot = n_ones + n_others;
+  if (n_trials > ref_n_tot) {
+    return {0};
+  };
   const int ref_n_ones = n_ones;
   const unsigned int n = x.size();
   int i;
@@ -4183,7 +4183,7 @@ template <typename T, typename T2> std::vector<unsigned int> grep(const std::vec
     i += 1;
   };
   if (rtn.size() == 0) {
-    rtn = {-1};
+    rtn = {static_cast<unsigned int>(-1)};
   };
   return rtn;
 };
@@ -7118,7 +7118,6 @@ class Dataframe{
           return;
         };
         i = 0;
-        i2;
         is_found = 0;
         while (!is_found) {
           i2 = 0;
@@ -10886,7 +10885,7 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr1sub
   bool greedy_state1 = 0;
   bool greedy_state2 = 0;
   std::string cur_matched_str = "";
-  unsigned int lst_cnt = -1;
+  int lst_cnt = -1;
   unsigned int pre_cnt;
   unsigned int cur_ref_cnt;
   unsigned int temp_i;
@@ -11275,7 +11274,7 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr1sub
   if (lst_cnt == -1) {
     return {{{0, 0}, {{0, ""}}}};
   };
-  return {{{pre_cnt, lst_cnt}, 
+  return {{{pre_cnt, static_cast<unsigned int>(lst_cnt)}, 
           {{cur_found, cur_matched_str}}}}; 
 };
 
@@ -11939,7 +11938,7 @@ bool ValidateJSON(std::string &x) {
             alrd_space = 0;
             while (x[i2] != ',') {
               alrd_space = 0;
-              while (x[i2] = ' ') {
+              while (x[i2] == ' ') {
                 alrd_space = 1;
                 i2 += 1;
                 if (i2 == n) {
@@ -11953,7 +11952,7 @@ bool ValidateJSON(std::string &x) {
                   return 0;
                 };
                 alrd_space = 0;
-                while (x[i2] = ' ') {
+                while (x[i2] == ' ') {
                   alrd_space = 1;
                   i2 += 1;
                   if (i2 == n) {
@@ -11972,7 +11971,7 @@ bool ValidateJSON(std::string &x) {
                   };
                   depth_objs_vec.pop_back();
                   alrd_space = 0;
-                  while (x[i2] = ' ') {
+                  while (x[i2] == ' ') {
                     alrd_space = 1;
                     i2 += 1;
                     if (i2 == n) {
@@ -13040,7 +13039,7 @@ template <typename TB> class Matrix{
       ncol = i;
     };
 
-    std::vector<int> get_dim() const {
+    const std::vector<int> get_dim() const {
       return {nrow, ncol};
     };
 
@@ -13757,7 +13756,8 @@ template <typename TB> class Matrix{
     };
 
     template <typename TB2>
-    Matrix<std::common_type_t<TB, TB2>> multGPU(const Matrix<TB2>& matr) const;
+    Matrix<std::common_type_t<TB, TB2>> 
+    mult1GPU(const Matrix<TB2>& matr) const;
 
     ~Matrix() {};
 };
