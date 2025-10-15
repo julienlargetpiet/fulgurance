@@ -611,6 +611,10 @@
 <br>
 <a href="#Matrix.mult2_opt" style="margin-left:40px;">Matrix.mult2_opt</a>
 <br>
+<a href="#Matrix.mult1_GPU" style="margin-left:40px;">Matrix.mult1_GPU</a>
+<br>
+<a href="#Matrix.mult2_GPU" style="margin-left:40px;">Matrix.mult2_GPU</a>
+<br>
 </ul><br>
 </div>
 </div>
@@ -7323,6 +7327,58 @@ matr </th><th> is the A matrix</th></tr>
 <br><code>          29           39</code>
 <br><code>          40           54</code>
 <br><code>          51           69</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.mult1_GPU" style="test-align: left;">Matrix.mult1_GPU</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult1(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a matrix multiplication as A * B, with A as the Matrix from which the function is called, see example. This functions uses cuBLAS (nvidia graphics card), see how to set the GPU context for accelerated computing.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the B matrix</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>CUBLASContext::init();</code>
+<br><code>std::vector&lt;float&gt; a = {1,2,3,4, 5, 6};</code>
+<br><code>std::vector&lt;float&gt; b = {5,6,7,8,9,10};</code>
+<br><code>Matrix&lt;float&gt; A(a, 3, 2), B(b, 2, 3);</code>
+<br><code>auto C = A.mult1_GPU(B);</code>
+<br><code>C.show();</code>
+<br><code>CUBLASContext::destroy();</code>
+<br><code>Initialized GPU context</code>
+<br><code>           29           39           49</code>
+<br><code>           40           54           68</code>
+<br><code>           51           69           87</code>
+<br><code>Destroyed GPU context</code>
+</div>
+<br>
+<hr class="hr">
+<h2 id="Matrix.mult2_GPU" style="test-align: left;">Matrix.mult2_GPU</h2>
+<h3>#Usage</h3>
+<div class="Div"><code>template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult2(const Matrix&lt;TB2&gt; &matr)</code></div>
+<h3>#Description</h3>
+<p>Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example. This functions uses cuBLAS (nvidia graphics card), see how to set the GPU context for accelerated computing.</p>
+<h3>#Arguments</h3>
+<table><tr><th>Name</th><th>Definition</th></tr><tr><th>
+matr </th><th> is the A matrix</th></tr>
+</table>
+<br>
+<h3>#Example(s)</h3>
+<div class = "Div"><code>CUBLASContext::init();</code>
+<br><code>std::vector&lt;float&gt; a = {1,2,3,4, 5, 6};</code>
+<br><code>std::vector&lt;float&gt; b = {5,6,7,8,9,10};</code>
+<br><code>Matrix&lt;float&gt; A(a, 3, 2), B(b, 2, 3);</code>
+<br><code>auto C = B.mult2_GPU(A);</code>
+<br><code>C.show();</code>
+<br><code>CUBLASContext::destroy();</code>
+<br><code>Initialized GPU context</code>
+<br><code>           29           39           49</code>
+<br><code>           40           54           68</code>
+<br><code>           51           69           87</code>
+<br><code>Destroyed GPU context</code>
 </div>
 <br>
 <hr class="hr">
