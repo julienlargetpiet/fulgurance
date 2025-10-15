@@ -2,13 +2,14 @@
 #include <iostream>
 #include <vector>
 #include <deque>
-#include <math.h>
+#include <cmath>
 #include <chrono>
 #include <thread>
 #include <map>
 #include <fstream>
 #include <typeinfo>
 
+#if 0
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
 //@I This framework provides functions for statistical analysis, machine learning, parsing and data manipulation with its own implementation of matrices and dataframes. Other tools can be found at fulgurance_tools part.
@@ -17,6 +18,7 @@
 //@I Dataframes implementation is a class. All functions that will transform 'voidly' (internaly) the relative data are built in the class. All functions that copy and transform the relative data are extern to classes.
 //@I Matrices are built with the Matrix class.
 //@X
+#endif
 
 //@L1 Commun functions  
 //@L2 On elements
@@ -242,6 +244,7 @@ int randint(const int &min, const int max, int seed = -1) {
   return (cur_valint % delta) + min;
 };
 
+#if 0
 //@T logn
 //@U template &lt;typename T, typename T2&gt; double logn(T &val, T2 &base) 
 //@X
@@ -256,6 +259,7 @@ int randint(const int &min, const int max, int seed = -1) {
 //@E base = 2;
 //@E 1.39506 
 //@X
+#endif
 
 template <typename T, typename T2> double logn(T &val, T2 &base) {
   return log(val) / log(base);
@@ -341,6 +345,7 @@ int si(const std::string &x) {
   return rtn;
 }
 
+#if 0
 //@T sf
 //@U float sf(const std::string &x)
 //@X
@@ -351,6 +356,7 @@ int si(const std::string &x) {
 //@E float out = sf(a);
 //@E 44.23
 //@X
+#endif
 
 float sf(const std::string &x) { // same results as stof
   float rtn = int(x[0]) - 48;
@@ -371,6 +377,7 @@ float sf(const std::string &x) { // same results as stof
   return rtn;
 };
 
+#if 0
 //@T sf2
 //@U float sf2(const std::string &x)
 //@X
@@ -381,6 +388,7 @@ float sf(const std::string &x) { // same results as stof
 //@E float out = sf2(a);
 //@E 44.23
 //@X
+#endif
 
 float sf2(const std::string &x) {
   float rtn = int(x[0]) - 48;
@@ -589,6 +597,7 @@ std::string itos(unsigned int x) {
 
 //@L2 Can be num ?
 
+#if 0
 //@T can_be_nb
 //@U bool can_be_nb(std::string &x)
 //@X
@@ -620,6 +629,7 @@ std::string itos(unsigned int x) {
 //@E 0
 //@E
 //@X
+#endif
 
 bool can_be_nb(std::string &x) {
   const unsigned int n = x.length();
@@ -764,6 +774,7 @@ template <typename T> T Mean(const std::vector<T> &x) {
   return rtn / x.size();
 };
 
+#if 0
 //@T quantile
 //@U template &lt;typename T, typename T2&gt; double quantile(std::vector&lt;T&gt; &x, T2 &prob, double precision = 0.001)
 //@X
@@ -781,6 +792,7 @@ template <typename T> T Mean(const std::vector<T> &x) {
 //@E quantile(vec, prob);
 //@E 6.84375 
 //@X
+#endif
 
 template <typename T, typename T2> double quantile(std::vector<T> &x, T2 &prob, double precision = 0.001) {
   double n = x.size();
@@ -1192,6 +1204,7 @@ std::vector<double> rnorm(unsigned int &n, double &mean, double &sd, double nois
   return rtn_v;
 };
 
+#if 0
 //@T rnorm2 
 //@U std::vector&lt;double&gt; rnorm2(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1)
 //@X
@@ -1214,6 +1227,7 @@ std::vector<double> rnorm(unsigned int &n, double &mean, double &sd, double nois
 //@E 155.0009
 //@M example2.jpg 
 //@X
+#endif
 
 std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) {
   long double step;
@@ -1361,6 +1375,7 @@ std::vector<double> qnorm2(std::vector<double> &x, double mean, double sd, doubl
   return rtn_v;
 };
 
+#if 0
 //@T dnorm
 //@U template &lt;typename T&gt; std::vector&lt;double&gt; dnorm(std::vector&lt;T&gt; &x, double &mean, double &sd, double step = 1)
 //@X
@@ -1380,6 +1395,7 @@ std::vector<double> qnorm2(std::vector<double> &x, double mean, double sd, doubl
 //@E out = dnorm(vec2, mean, sd, 1);
 //@E :0: 0.0647588 0.120985 0.176033 0.199471 0.176033 0.120985 
 //@X
+#endif
 
 template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean, double &sd, double step = 1) {
   std::vector<double> rtn_v = {};
@@ -3489,6 +3505,7 @@ template <typename T, typename T2> void divide_v2in(std::vector<T> &x,
 
 //@L3 Min - Max
 
+#if 0
 //@T min
 //@U template &lt;typename T&gt; T min(const std::vector&lt;T&gt; &x)
 //@X
@@ -3500,6 +3517,7 @@ template <typename T, typename T2> void divide_v2in(std::vector<T> &x,
 //@E int out  = min(vec);
 //@E -7
 //@X
+#endif
 
 template <typename T> T min(const std::vector<T> &x) {
   T rtn = x[0];
@@ -3511,6 +3529,7 @@ template <typename T> T min(const std::vector<T> &x) {
   return rtn;
 };
 
+#if 0
 //@T max
 //@U template &lt;typename T&gt; T max(const std::vector&lt;T&gt; &x)
 //@X
@@ -3522,6 +3541,7 @@ template <typename T> T min(const std::vector<T> &x) {
 //@E int out  = max(vec);
 //@E 4
 //@X
+#endif
 
 template <typename T> T max(const std::vector<T> &x) {
   T rtn = x[0];
@@ -4037,6 +4057,7 @@ template <typename T> std::vector<T> abs_vout(const std::vector<T> &x) {
   return rtn;
 };
 
+#if 0
 //@T abs_voutb
 //@U template &lt;typename T&gt; std::vector&lt;T&gt; abs_voutb(const std::vector&lt;T&gt; &x) 
 //@X
@@ -4048,6 +4069,7 @@ template <typename T> std::vector<T> abs_vout(const std::vector<T> &x) {
 //@E std::vector&lt;unsigned int&gt; out = abs_voutb(vec);
 //@E {45, 23, 21, 6, 45}
 //@X
+#endif
 
 template <typename T> std::vector<T> abs_voutb(const std::vector<T> &x) { //index approach
   std::vector<T> rtn = x;
@@ -4296,6 +4318,7 @@ template <typename T> void reverse_in(std::vector<T> &x) {
   };
 };
 
+#if 0
 //@T reverse_out_standard
 //@U template &lt;typename T&gt; std::vector&lt;T&gt; reverse_out(const std::vector&lt;T&gt; &x)
 //@X
@@ -4306,6 +4329,7 @@ template <typename T> void reverse_in(std::vector<T> &x) {
 //@E std::vector&lt;std::string&gt; out = reverse_out(vec);
 //@E {"ll", "o", "he"}
 //@X
+#endif
 
 template <typename T> std::vector<T> reverse_out_standard(const std::vector<T> &x) {
   std::vector<T> rtn;
@@ -5056,6 +5080,7 @@ std::vector<std::string> str_sort_ascend(std::vector<std::string> x,
 
 //@L3 Remove range of elements
 
+#if 0
 //@T rm_ordered
 //@U template &lt;typename T&gt; void rm_ordered(std::vector&lt;T&gt; &x, std::vector&lt;int&gt; ids)
 //@X
@@ -5069,6 +5094,7 @@ std::vector<std::string> str_sort_ascend(std::vector<std::string> x,
 //@E print_nvec(vec);
 //@E :0: 0 1 4 6 7 9
 //@X
+#endif
 
 template <typename T> void rm_ordered(std::vector<T> &x, std::vector<int> ids) {
   const unsigned int n = ids.size();
@@ -5077,6 +5103,7 @@ template <typename T> void rm_ordered(std::vector<T> &x, std::vector<int> ids) {
   };
 };
 
+#if 0
 //@T rm_unordered
 //@U template &lt;typename T&gt; void rm_unordered(std::vector&lt;T&gt; &x, std::vector&lt;int&gt; ids) 
 //@X
@@ -5090,6 +5117,7 @@ template <typename T> void rm_ordered(std::vector<T> &x, std::vector<int> ids) {
 //@E print_nvec(vec);
 //@E :0: 0 1 6 7 4 9 
 //@X
+#endif
 
 template <typename T> void rm_unordered(std::vector<T> &x, std::vector<int> ids) {
   const unsigned int n = ids.size();
@@ -5219,6 +5247,7 @@ template <typename T> std::vector<T> intersect2(std::vector<T> &x, std::vector<T
 
 //@L4 Variadic / Indefinite number of arguments - Intersectv Class
 
+#if 0
 //@T Intersectv.to_intersect() 
 //@U Intersectv intersect1(std::vector&lt;Type&gt; vec1);
 //@U intersect1.to_intersect(std::vector&lt;Type&gt; vec2, std::vector&lt;Type&gt; vec3);
@@ -5242,6 +5271,7 @@ template <typename T> std::vector<T> intersect2(std::vector<T> &x, std::vector<T
 //@E print_nvec(out);
 //@E :0: 3  4  4  2  4  11
 //@X
+#endif
 
 template <typename TB> class Intersectv{
   private:
@@ -5355,6 +5385,7 @@ template <typename T> std::vector<T> diff2(std::vector<T> &x, std::vector<T> &x2
 
 //@L4 Variadic / Indefinite number of arguments - Diffv Class
 
+#if 0
 //@T Diffv.to_diff()
 //@U Diffv diff1(std::vector&lt;Type&gt; vec1)
 //@U diff1.to_diff(std::vector&lt;Type&gt; vec2, std::vector&lt;Type&gt; vec2);
@@ -5379,6 +5410,7 @@ template <typename T> std::vector<T> diff2(std::vector<T> &x, std::vector<T> &x2
 //@E print_nvec(out);
 //@E :0: 0 1 4 4 4 9 0 1 5 7 9 8 4 //same elements, different orders because the initializer vector is not the same 
 //@X
+#endif
 
 template <typename TB> class Diffv{
   private:
@@ -5464,6 +5496,7 @@ template <typename TB> class Diffv{
 
 //@J3
 
+#if 0
 //@T rm_shared_in
 //@U template &lt;typename T&gt; void rm_shared_in(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)
 //@X
@@ -5477,6 +5510,7 @@ template <typename TB> class Diffv{
 //@E print_nvec(vec1);
 //@E :0: 5 7 8 
 //@X
+#endif
 
 template <typename T> void rm_shared_in(std::vector<T> &x, std::vector<T> &x2) {
   for (int i = x.size() - 1; i > -1; --i) {
@@ -5490,6 +5524,7 @@ template <typename T> void rm_shared_in(std::vector<T> &x, std::vector<T> &x2) {
   };
 };
 
+#if 0
 //@T rm_shared_out
 //@U template &lt;typename T&gt; std::vector&lt;T&gt; rm_shared_out(std::vector&lt;T&gt; &x, std::vector&lt;T&gt; &x2)
 //@X
@@ -5503,6 +5538,7 @@ template <typename T> void rm_shared_in(std::vector<T> &x, std::vector<T> &x2) {
 //@E print_nvec(out);
 //@E :0: 5 7 8 
 //@X
+#endif
 
 template <typename T> std::vector<T> rm_shared_out(std::vector<T> &x, std::vector<T> &x2) {
   std::vector<T> rtn_v = x;
@@ -5819,6 +5855,7 @@ template <typename T> std::map<std::vector<T>, std::vector<unsigned int>> occu(s
   return {{uvec, freq_v}};
 };
 
+#if 0
 //@T desc_occu
 //@U template &lt;typename T&gt; std::map&lt;std::vector&lt;T&gt;, std::vector&lt;unsigned int&gt;&gt; desc_occu(std::vector&lt;T&gt; vec, std::vector&lt;unsigned int&gt; freqv)
 //@X
@@ -5848,6 +5885,7 @@ template <typename T> std::map<std::vector<T>, std::vector<unsigned int>> occu(s
 //@E rr 2
 //@E mm 1
 //@X
+#endif
 
 template <typename T> std::map<std::vector<T>, std::vector<unsigned int>> desc_occu(std::vector<T> vec, std::vector<unsigned int> freqv) {
   int cur_max;
@@ -5867,6 +5905,8 @@ template <typename T> std::map<std::vector<T>, std::vector<unsigned int>> desc_o
   return {{rtn_vec, rtn_freqv}};
 };
 
+
+#if 0
 //@T asc_occu
 //@U template &lt;typename T&gt; std::map&lt;std::vector&lt;T&gt;, std::vector&lt;unsigned int&gt;&gt; asc_occu(std::vector&lt;T&gt; vec, std::vector&lt;unsigned int&gt; freqv)
 //@X
@@ -5898,6 +5938,7 @@ template <typename T> std::map<std::vector<T>, std::vector<unsigned int>> desc_o
 //@E rr 2
 //@E lm 3
 //@X
+#endif
 
 template <typename T> std::map<std::vector<T>, std::vector<unsigned int>> asc_occu(std::vector<T> vec, std::vector<unsigned int> freqv) {
   int cur_min;
@@ -7661,6 +7702,7 @@ class Dataframe{
 //@M img_dataframe.jpg
 //@X
 
+#if 0
 //@T Dataframe.idx_dataframe
 //@U void idx_dataframe(std::vector&lt;int&gt; &rows, std::vector&lt;int&gt; &cols, Dataframe &cur_obj)
 //@X
@@ -8497,6 +8539,7 @@ class Dataframe{
 //@E  :7:  6  7  8  9 10
 //@E
 //@X
+#endif
 
 template <typename T> void read_matr(std::string &file_name, std::vector<std::vector<T>> &out_matr, char delim = ',') {
   std::fstream read_file(file_name);
@@ -9289,6 +9332,7 @@ template <typename TB> class Fapply {
 
 };
 
+#if 0
 //@T Fapply2d object
 //@U Fapply(std::vector&lt;TB&gt; &x)
 //@X
@@ -9359,6 +9403,7 @@ template <typename TB> class Fapply {
 //@X
 //@E Fapply2d.reinitiate();
 //@X
+#endif
 
 template <typename TB> class Fapply2d {
 
@@ -9914,6 +9959,7 @@ std::vector<std::vector<unsigned int>> Parser_tokenizer_full(std::string &x, cha
   return {num_par, idx_vec};
 };
 
+#if 0
 //@T is_intricated
 //@U bool is_intricated (unsigned int &idx, std::vector&lt;unsigned int&gt; &tkn_v)
 //@X
@@ -9953,6 +9999,7 @@ std::vector<std::vector<unsigned int>> Parser_tokenizer_full(std::string &x, cha
 //@E std::cout &lt;&lt; is_it &lt;&lt; "\n";
 //@E 1
 //@X
+#endif
 
 bool is_intricated (unsigned int &idx, std::vector<unsigned int> &tkn_v) {
   std::vector<int> alrd_tkn = {};
@@ -10433,6 +10480,7 @@ unsigned int binarydq_to_int(std::deque<bool> &x) {
 
 //@L2 Unique string from int
 
+#if 0
 //@T letter_to_nb
 //@U unsigned int letter_to_nb(std::string &x)
 //@X
@@ -10451,6 +10499,7 @@ unsigned int binarydq_to_int(std::deque<bool> &x) {
 //@E 
 //@E 942
 //@X
+#endif
 
 unsigned int letter_to_nb(std::string &x) {
   std::string alphabet_v = "abcdefghijklmnopqrstuvwxyz";
@@ -13742,9 +13791,108 @@ template <typename TB> class Matrix{
       return end_matr;
     };
 
+    #ifdef __CUDACC__
+
+    #include <cublas_v2.h>
+    #include <cuda_runtime.h>
+    #include <stdexcept>
+    #include <type_traits>
+
+    inline void set_best_math_mode(cublasHandle_t handle) {
+       cudaDeviceProp prop{};
+       cudaGetDeviceProperties(&prop, 0);
+   
+       if (prop.major >= 8)
+           cublasSetMathMode(handle, CUBLAS_TF32_TENSOR_OP_MATH);
+       else if (prop.major >= 7)
+           cublasSetMathMode(handle, CUBLAS_TENSOR_OP_MATH);
+       else
+           cublasSetMathMode(handle, CUBLAS_DEFAULT_MATH);
+    }
+   
+    // Error-checking macros
+    #define CUDA_CHECK(x) do { \
+        cudaError_t err = (x); \
+        if (err != cudaSuccess) \
+            throw std::runtime_error(cudaGetErrorString(err)); \
+    } while(0)
+    
+    #define CUBLAS_CHECK(x) do { \
+        cublasStatus_t stat = (x); \
+        if (stat != CUBLAS_STATUS_SUCCESS) \
+            throw std::runtime_error("cuBLAS error"); \
+    } while(0)
+    
+    template <typename TB>
     template <typename TB2>
-    Matrix<std::common_type_t<TB, TB2>> 
-    mult1GPU(const Matrix<TB2>& matr) const;
+    __host__ inline Matrix<std::common_type_t<TB, TB2>>
+    Matrix<TB>::mult1GPU(const Matrix<TB2>& matr) const {
+        using TC = std::common_type_t<TB, TB2>;
+    
+        const std::vector<int>& dim_vec = matr.get_dim();
+        if (ncol != dim_vec[0]) {
+            std::cerr << "❌ Matrix size mismatch in multGPU\n";
+            return Matrix<TC>({}, 0, 0);
+        }
+    
+        int m = nrow, k = ncol, n = dim_vec[1];
+        std::vector<TC> C(m * n);
+    
+        // GPU memory allocation
+        TC *d_A, *d_B, *d_C;
+        CUDA_CHECK(cudaMalloc(&d_A, m * k * sizeof(TC)));
+        CUDA_CHECK(cudaMalloc(&d_B, k * n * sizeof(TC)));
+        CUDA_CHECK(cudaMalloc(&d_C, m * n * sizeof(TC)));
+    
+        // Type conversion and copy
+        std::vector<TC> A_conv(rtn_matr.begin(), rtn_matr.end());
+        std::vector<TC> B_conv(matr.get_matr_raw().begin(), matr.get_matr_raw().end());
+        
+        CUDA_CHECK(cudaMemcpy(d_A, A_conv.data(), m * k * sizeof(TC), cudaMemcpyHostToDevice));
+        CUDA_CHECK(cudaMemcpy(d_B, B_conv.data(), k * n * sizeof(TC), cudaMemcpyHostToDevice));
+    
+        // cuBLAS setup
+        cublasHandle_t handle;
+        CUBLAS_CHECK(cublasCreate(&handle));
+    
+        // Select math mode and perform GEMM
+        if constexpr (std::is_same_v<TC, double>) {
+            cublasSetMathMode(handle, CUBLAS_DEFAULT_MATH);
+            const double alpha = 1.0, beta = 0.0; // standard multiplication
+            CUBLAS_CHECK(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
+                                     n, m, k,
+                                     &alpha, 
+                                     d_B, n, 
+                                     d_A, k, 
+                                     &beta, 
+                                     d_C, n));
+        } else if constexpr (std::is_same_v<TC, float>) {
+            set_best_math_mode(handle);
+            const float alpha = 1.0f, beta = 0.0f; // standard multiplication
+            CUBLAS_CHECK(cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
+                                     n, m, k,
+                                     &alpha,
+                                     d_B, n,
+                                     d_A, k,
+                                     &beta,
+                                     d_C, n));
+        } else {
+            static_assert(std::is_floating_point_v<TC>,
+                          "cuBLAS only supports float or double types");
+        }
+    
+        // Copy result back
+        CUDA_CHECK(cudaMemcpy(C.data(), d_C, 
+                                m * n * sizeof(TC), 
+                                cudaMemcpyDeviceToHost));
+    
+        // Cleanup
+        cublasDestroy(handle);
+        cudaFree(d_A); cudaFree(d_B); cudaFree(d_C);
+    
+        return Matrix<TC>(C, nrow, dim_vec[1]);
+    };
+    #endif
 
     ~Matrix() {};
 };
