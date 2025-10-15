@@ -9,6 +9,15 @@
 #include <fstream>
 #include <typeinfo>
 
+#ifdef __CUDACC__
+
+#include <cublas_v2.h>
+#include <cuda_runtime.h>
+#include <stdexcept>
+#include <type_traits>
+
+#endif
+
 #if 0
 //@I Stylished documentation is available <a href="https://julienlargetpiet.tech/static/files/fulgurance.html">here</a>
 //@I In current development.
@@ -12330,6 +12339,7 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
   return rtn_int_val;
 };
 
+#if 0
 //@L1 The Matrix Object
 
 //@T Matrix
@@ -13030,6 +13040,57 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E           40           54
 //@E           51           69
 //@X
+#endif
+
+#ifdef __CUDACC__
+
+#define CUDA_CHECK(x) do { \
+    cudaError_t err = (x); \
+    if (err != cudaSuccess) \
+        throw std::runtime_error(cudaGetErrorString(err)); \
+} while(0)
+
+#define CUBLAS_CHECK(x) do { \
+    cublasStatus_t stat = (x); \
+    if (stat != CUBLAS_STATUS_SUCCESS) \
+        throw std::runtime_error("cuBLAS error"); \
+} while(0)
+
+struct CUBLASContext {
+    inline static cublasHandle_t handle = nullptr;
+
+    static void init() {
+        if (!handle) {
+            CUBLAS_CHECK(cublasCreate(&handle));
+
+            cudaDeviceProp prop{};
+            cudaGetDeviceProperties(&prop, 0);
+
+            if (prop.major >= 8) {
+                cublasSetMathMode(handle, CUBLAS_TF32_TENSOR_OP_MATH);
+            } else if (prop.major >= 7) {
+                cublasSetMathMode(handle, CUBLAS_TENSOR_OP_MATH);
+            } else {
+                cublasSetMathMode(handle, CUBLAS_DEFAULT_MATH);
+            };
+
+            std::cout << "Initialized GPU context\n";
+        }
+    }
+
+    static void destroy() {
+        if (handle) {
+            cublasDestroy(handle);
+            handle = nullptr;
+            std::cout << "Destroyed GPU context\n";
+        }
+    }
+
+    static cublasHandle_t get() {
+        return handle;
+    }
+};
+#endif
 
 template <typename TB> class Matrix{
   private:
@@ -13037,6 +13098,8 @@ template <typename TB> class Matrix{
     int nrow = 0;
     int ncol = 0;
     bool alrd = 0;
+    static inline cublasHandle_t cublas_handle = nullptr;
+    static inline bool is_initiated = 0;
 
     int permutation_parity(const std::vector<int>& vec, const std::vector<int>& pos_vec) {
         std::vector<int> perm = vec;
@@ -13099,7 +13162,6 @@ template <typename TB> class Matrix{
       std::setprecision(6);
 
       int j;
-      int j2;
       for (int i = 0; i < nrow; i +=1) {
         for (j = 0; j < ncol; j += 1) {
           std::cout << std::setw(13) << rtn_matr[i + nrow * j];
@@ -13840,112 +13902,174 @@ template <typename TB> class Matrix{
     };
 
     #ifdef __CUDACC__
-
-    #include <cublas_v2.h>
-    #include <cuda_runtime.h>
-    #include <stdexcept>
-    #include <type_traits>
-
-    inline void set_best_math_mode(cublasHandle_t handle) {
-       cudaDeviceProp prop{};
-       cudaGetDeviceProperties(&prop, 0);
-   
-       if (prop.major >= 8)
-           cublasSetMathMode(handle, CUBLAS_TF32_TENSOR_OP_MATH);
-       else if (prop.major >= 7)
-           cublasSetMathMode(handle, CUBLAS_TENSOR_OP_MATH);
-       else
-           cublasSetMathMode(handle, CUBLAS_DEFAULT_MATH);
-    }
-   
-    // Error-checking macros
-    #define CUDA_CHECK(x) do { \
-        cudaError_t err = (x); \
-        if (err != cudaSuccess) \
-            throw std::runtime_error(cudaGetErrorString(err)); \
-    } while(0)
     
-    #define CUBLAS_CHECK(x) do { \
-        cublasStatus_t stat = (x); \
-        if (stat != CUBLAS_STATUS_SUCCESS) \
-            throw std::runtime_error("cuBLAS error"); \
-    } while(0)
-    
-    template <typename TB>
     template <typename TB2>
-    __host__ inline Matrix<std::common_type_t<TB, TB2>>
-    Matrix<TB>::mult1GPU(const Matrix<TB2>& matr) const {
-        using TC = std::common_type_t<TB, TB2>;
+    __host__ Matrix<std::common_type_t<TB, TB2>>
+    mult1_GPU(const Matrix<TB2>& matr) const;
     
-        const std::vector<int>& dim_vec = matr.get_dim();
-        if (ncol != dim_vec[0]) {
-            std::cerr << "❌ Matrix size mismatch in multGPU\n";
-            return Matrix<TC>({}, 0, 0);
-        }
-    
-        int m = nrow, k = ncol, n = dim_vec[1];
-        std::vector<TC> C(m * n);
-    
-        // GPU memory allocation
-        TC *d_A, *d_B, *d_C;
-        CUDA_CHECK(cudaMalloc(&d_A, m * k * sizeof(TC)));
-        CUDA_CHECK(cudaMalloc(&d_B, k * n * sizeof(TC)));
-        CUDA_CHECK(cudaMalloc(&d_C, m * n * sizeof(TC)));
-    
-        // Type conversion and copy
-        std::vector<TC> A_conv(rtn_matr.begin(), rtn_matr.end());
-        std::vector<TC> B_conv(matr.get_matr_raw().begin(), matr.get_matr_raw().end());
-        
-        CUDA_CHECK(cudaMemcpy(d_A, A_conv.data(), m * k * sizeof(TC), cudaMemcpyHostToDevice));
-        CUDA_CHECK(cudaMemcpy(d_B, B_conv.data(), k * n * sizeof(TC), cudaMemcpyHostToDevice));
-    
-        // cuBLAS setup
-        cublasHandle_t handle;
-        CUBLAS_CHECK(cublasCreate(&handle));
-    
-        // Select math mode and perform GEMM
-        if constexpr (std::is_same_v<TC, double>) {
-            cublasSetMathMode(handle, CUBLAS_DEFAULT_MATH);
-            const double alpha = 1.0, beta = 0.0; // standard multiplication
-            CUBLAS_CHECK(cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
-                                     n, m, k,
-                                     &alpha, 
-                                     d_B, n, 
-                                     d_A, k, 
-                                     &beta, 
-                                     d_C, n));
-        } else if constexpr (std::is_same_v<TC, float>) {
-            set_best_math_mode(handle);
-            const float alpha = 1.0f, beta = 0.0f; // standard multiplication
-            CUBLAS_CHECK(cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N,
-                                     n, m, k,
-                                     &alpha,
-                                     d_B, n,
-                                     d_A, k,
-                                     &beta,
-                                     d_C, n));
-        } else {
-            static_assert(std::is_floating_point_v<TC>,
-                          "cuBLAS only supports float or double types");
-        }
-    
-        // Copy result back
-        CUDA_CHECK(cudaMemcpy(C.data(), d_C, 
-                                m * n * sizeof(TC), 
-                                cudaMemcpyDeviceToHost));
-    
-        // Cleanup
-        cublasDestroy(handle);
-        cudaFree(d_A); cudaFree(d_B); cudaFree(d_C);
-    
-        return Matrix<TC>(C, nrow, dim_vec[1]);
-    };
+    template <typename TB2>
+    __host__ Matrix<std::common_type_t<TB, TB2>>
+    mult2_GPU(const Matrix<TB2>& matr) const;
+
+
     #endif
 
     ~Matrix() {};
 };
 
+#ifdef __CUDACC__
 
+template <typename TB>
+template <typename TB2>
+__host__ inline Matrix<std::common_type_t<TB, TB2>>
+Matrix<TB>::mult1_GPU(const Matrix<TB2>& matr) const {
+    using TC = std::common_type_t<TB, TB2>;
+
+    const std::vector<int>& dim_vec = matr.get_dim();
+    std::vector<TC> empty = {};
+    if (ncol != dim_vec[0]) {
+        std::cerr << "❌ Matrix size mismatch in multGPU\n";
+        return Matrix<TC>(empty, 0, 0);
+    }
+
+    int m = nrow, k = ncol, n = dim_vec[1];
+    std::vector<TC> C(m * n);
+
+    // GPU memory allocation
+    TC *d_A, *d_B, *d_C;
+    CUDA_CHECK(cudaMalloc(&d_A, m * k * sizeof(TC)));
+    CUDA_CHECK(cudaMalloc(&d_B, k * n * sizeof(TC)));
+    CUDA_CHECK(cudaMalloc(&d_C, m * n * sizeof(TC)));
+
+    // Type conversion and copy
+    std::vector<TC> A_conv(rtn_matr.begin(), 
+                           rtn_matr.end());
+    std::vector<TC> B_conv(matr.get_matr_raw().begin(), 
+                           matr.get_matr_raw().end());
+    
+    CUDA_CHECK(cudaMemcpy(d_A, A_conv.data(), m * k * sizeof(TC), 
+                            cudaMemcpyHostToDevice));
+    CUDA_CHECK(cudaMemcpy(d_B, B_conv.data(), k * n * sizeof(TC), 
+                            cudaMemcpyHostToDevice));
+
+
+    cublasHandle_t handle = CUBLASContext::get();
+    if constexpr (std::is_same_v<TC, float>) {
+        const float alpha = 1.0f, beta = 0.0f;
+        CUBLAS_CHECK(cublasSgemm_v2(
+            handle,
+            CUBLAS_OP_N, CUBLAS_OP_N,
+            n, m, k,
+            &alpha,
+            d_A, n,
+            d_B, k,
+            &beta,
+            d_C, n
+        ));
+    }
+    else if constexpr (std::is_same_v<TC, double>) {
+        const double alpha = 1.0, beta = 0.0;
+        CUBLAS_CHECK(cublasDgemm_v2(
+            handle,
+            CUBLAS_OP_N, CUBLAS_OP_N,
+            n, m, k,
+            &alpha,
+            d_A, n,
+            d_B, k,
+            &beta,
+            d_C, n
+        ));
+    }
+    else {
+        static_assert(std::is_floating_point_v<TC>, "cuBLAS only supports float or double");
+    }
+
+    // Copy result back
+    CUDA_CHECK(cudaMemcpy(C.data(), d_C, 
+                            m * n * sizeof(TC), 
+                            cudaMemcpyDeviceToHost));
+
+    cudaFree(d_A); cudaFree(d_B); cudaFree(d_C);
+
+    return Matrix<TC>(C, m, n);
+};
+
+template <typename TB>
+template <typename TB2>
+__host__ inline Matrix<std::common_type_t<TB, TB2>>
+Matrix<TB>::mult2_GPU(const Matrix<TB2>& matr) const {
+    using TC = std::common_type_t<TB, TB2>;
+
+    const std::vector<int>& dim_vec = matr.get_dim();
+    std::vector<TC> empty = {};
+    if (ncol != dim_vec[0]) {
+        std::cerr << "❌ Matrix size mismatch in multGPU\n";
+        return Matrix<TC>(empty, 0, 0);
+    }
+
+    int m = dim_vec[0], k = nrow, n = ncol;
+    
+    std::vector<TC> C(m * n);
+
+    // GPU memory allocation
+    TC *d_A, *d_B, *d_C;
+    CUDA_CHECK(cudaMalloc(&d_A, m * k * sizeof(TC)));
+    CUDA_CHECK(cudaMalloc(&d_B, k * n * sizeof(TC)));
+    CUDA_CHECK(cudaMalloc(&d_C, m * n * sizeof(TC)));
+
+    // Type conversion and copy
+    std::vector<TC> B_conv(rtn_matr.begin(), 
+                           rtn_matr.end());
+    std::vector<TC> A_conv(matr.get_matr_raw().begin(), 
+                           matr.get_matr_raw().end());
+    
+    CUDA_CHECK(cudaMemcpy(d_A, A_conv.data(), m * k * sizeof(TC), 
+                            cudaMemcpyHostToDevice));
+    CUDA_CHECK(cudaMemcpy(d_B, B_conv.data(), k * n * sizeof(TC), 
+                            cudaMemcpyHostToDevice));
+
+
+    cublasHandle_t handle = CUBLASContext::get();
+    if constexpr (std::is_same_v<TC, float>) {
+        const float alpha = 1.0f, beta = 0.0f;
+        CUBLAS_CHECK(cublasSgemm_v2(
+            handle,
+            CUBLAS_OP_N, CUBLAS_OP_N,
+            n, m, k,
+            &alpha,
+            d_A, n,
+            d_B, k,
+            &beta,
+            d_C, m
+        ));
+    } else if constexpr (std::is_same_v<TC, double>) {
+        const double alpha = 1.0, beta = 0.0;
+        CUBLAS_CHECK(cublasDgemm_v2(
+            handle,
+            CUBLAS_OP_N, CUBLAS_OP_N,
+            n, m, k,
+            &alpha,
+            d_A, n,
+            d_B, k,
+            &beta,
+            d_C, m
+        ));
+    } else {
+        static_assert(std::is_floating_point_v<TC>, "cuBLAS only supports float or double");
+    }
+
+    // Copy result back
+    CUDA_CHECK(cudaMemcpy(C.data(), d_C, 
+                            m * n * sizeof(TC), 
+                            cudaMemcpyDeviceToHost));
+
+    cudaFree(d_A); cudaFree(d_B); cudaFree(d_C);
+
+    return Matrix<TC>(C, m, n);
+};
+
+
+#endif
 
 
 
