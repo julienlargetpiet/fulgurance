@@ -7765,7 +7765,7 @@ class Dataframe{
 //@X
 //@D Allow to copy a dataframe choosing rows and columns (by index) of the copied dataframe. 
 //@A rows : is the vector containing all the rows to copy (<code>{-1}</code>) for all
-//@A cols : is the vector of the index of the columns to copy
+//@A cols : is the vector of the index of the columns to copy (<code>{-1}</code>) for all
 //@A cur_obj : is the dataframe that will contain all the rows and columns of the copied dataframe
 //@X
 //@E // after reading teste_dataframe.csv as obj1
