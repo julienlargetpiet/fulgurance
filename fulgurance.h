@@ -14157,7 +14157,11 @@ Matrix<TB>::power_GPU_out2(const unsigned int &nvl) const {
         std::cerr << "❌ Matrix size mismatch in multGPU\n";
         return Matrix<TB>(empty, 0, 0);
     } else if (nvl == 0) {
-      return Matrix<TB>::identity_out(n);
+      empty.resize(nrow * nrow);
+      for (int i = 0; i < nrow; i += 1) {
+        empty[i * nrow + i] = 1;
+      };
+      return Matrix<TB>(empty, nrow, nrow);
     } else if (nvl == 1) {
       return *this;
     };
@@ -14183,7 +14187,7 @@ Matrix<TB>::power_GPU_out2(const unsigned int &nvl) const {
 
     cublasHandle_t handle = CUBLASContext::get();
     unsigned int i = 0;
-    unsigned int i2 = 1;
+    unsigned int i2 = 2;
 
     if constexpr (std::is_same_v<TB, float>) {
         const float alpha = 1.0f, beta = 0.0f;
@@ -14204,7 +14208,23 @@ Matrix<TB>::power_GPU_out2(const unsigned int &nvl) const {
           i2 *= 2;
         };
 
-        for (i = i2; i < nvl; i += 1) {
+        i = i2 / 2;
+
+        if (i % 2 != 0) {
+          CUBLAS_CHECK(cublasSgemm_v2(
+                handle,
+                CUBLAS_OP_N, CUBLAS_OP_N,
+                n, n, n,
+                &alpha,
+                d_A, n,
+                d_B, n,
+                &beta,
+                d_C, n
+          ));
+          i += 1;
+        };
+
+        while (i < nvl) {
           if (i % 2 == 0) {
             CUBLAS_CHECK(cublasSgemm_v2(
                 handle,
@@ -14222,12 +14242,13 @@ Matrix<TB>::power_GPU_out2(const unsigned int &nvl) const {
                 CUBLAS_OP_N, CUBLAS_OP_N,
                 n, n, n,
                 &alpha,
-                d_A, n,
                 d_C, n,
+                d_B, n,
                 &beta,
                 d_A, n
             ));
           };
+          i += 1;
         };
 
     } else if constexpr (std::is_same_v<TB, double>) {
@@ -14249,7 +14270,24 @@ Matrix<TB>::power_GPU_out2(const unsigned int &nvl) const {
           i2 *= 2;
         };
 
-        for (i = i2; i < nvl; i += 1) {
+        i = i2 / 2;
+
+        if (i % 2 != 0) {
+          CUBLAS_CHECK(cublasDgemm_v2(
+                handle,
+                CUBLAS_OP_N, CUBLAS_OP_N,
+                n, n, n,
+                &alpha,
+                d_A, n,
+                d_B, n,
+                &beta,
+                d_C, n
+          ));
+          i += 1;
+        };
+
+        while (i < nvl) {
+
           if (i % 2 == 0) {
             CUBLAS_CHECK(cublasDgemm_v2(
                 handle,
@@ -14267,19 +14305,20 @@ Matrix<TB>::power_GPU_out2(const unsigned int &nvl) const {
                 CUBLAS_OP_N, CUBLAS_OP_N,
                 n, n, n,
                 &alpha,
-                d_A, n,
                 d_C, n,
+                d_B, n,
                 &beta,
                 d_A, n
             ));
           };
+          i += 1;
         };
 
     } else {
         static_assert(std::is_floating_point_v<TB>, "cuBLAS only supports float or double");
     }
 
-    if (i % 2 == 0) {
+    if (i % 2 == 1) {
         CUDA_CHECK(cudaMemcpy(C.data(), d_C, 
                             n * n * sizeof(TB), 
                             cudaMemcpyDeviceToHost));
@@ -14306,7 +14345,11 @@ Matrix<TB>::power_GPU_out1(const unsigned int &nvl) const {
         std::cerr << "❌ Matrix size mismatch in power_GPU_out\n";
         return Matrix<TB>(empty, 0, 0);
     } else if (nvl == 0) {
-        return Matrix<TB>::identity_out(n);
+        empty.resize(nrow * nrow);
+        for (int i = 0; i < nrow; i += 1) {
+          empty[i * nrow + i] = 1;
+        };
+        return Matrix<TB>(empty, nrow, nrow);
     } else if (nvl == 1) {
         return *this;
     }
