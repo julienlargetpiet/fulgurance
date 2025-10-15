@@ -13040,6 +13040,47 @@ int GetIntJSON(std::string &x, std::vector<std::string> keys_vec) {
 //@E           40           54
 //@E           51           69
 //@X
+
+//@T Matrix.mult1_GPU
+//@U template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult1(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a matrix multiplication as A * B, with A as the Matrix from which the function is called, see example. This functions uses cuBLAS (nvidia graphics card), see how to set the GPU context for accelerated computing.
+//@A matr : is the B matrix
+//@X
+//@E CUBLASContext::init();
+//@E std::vector&lt;float&gt; a = {1,2,3,4, 5, 6};
+//@E std::vector&lt;float&gt; b = {5,6,7,8,9,10};
+//@E Matrix&lt;float&gt; A(a, 3, 2), B(b, 2, 3);
+//@E auto C = A.mult1_GPU(B);
+//@E C.show();
+//@E CUBLASContext::destroy();
+//@E Initialized GPU context
+//@E            29           39           49
+//@E            40           54           68
+//@E            51           69           87
+//@E Destroyed GPU context
+//@X
+
+//@T Matrix.mult2_GPU
+//@U template &lt;typename TB2&gt; Matrix&lt;std::common_type_t&lt;TB, TB2&gt;&gt; mult2(const Matrix&lt;TB2&gt; &matr)
+//@X
+//@D Performs a matrix multiplication as A * B, with B as the Matrix from which the function is called, see example. This functions uses cuBLAS (nvidia graphics card), see how to set the GPU context for accelerated computing.
+//@A matr : is the A matrix
+//@X
+//@E CUBLASContext::init();
+//@E std::vector&lt;float&gt; a = {1,2,3,4, 5, 6};
+//@E std::vector&lt;float&gt; b = {5,6,7,8,9,10};
+//@E Matrix&lt;float&gt; A(a, 3, 2), B(b, 2, 3);
+//@E auto C = B.mult2_GPU(A);
+//@E C.show();
+//@E CUBLASContext::destroy();
+//@E Initialized GPU context
+//@E            29           39           49
+//@E            40           54           68
+//@E            51           69           87
+//@E Destroyed GPU context
+//@X
+
 #endif
 
 #ifdef __CUDACC__
@@ -13901,6 +13942,38 @@ template <typename TB> class Matrix{
       return end_matr;
     };
 
+    void identity_in() {
+      std::vector<TB> empty = {};
+      if (nrow != ncol || nrow == 0 || ncol == 0) {
+        std::cout << "No identity matrix for non square matrix\n";
+        return;
+      };
+
+      std::fill(rtn_matr.begin(), rtn_matr.end(), 0);
+
+      for (int i = 0; i < nrow; i += 1) {
+        rtn_matr[nrow * i + i] = 1;
+      };
+
+    };
+
+    Matrix<TB> identity_out() {
+      std::vector<TB> empty = {};
+      if (nrow != ncol || nrow == 0 || ncol == 0) {
+        std::cout << "No identity matrix for non square matrix\n";
+        return Matrix<TB>(empty, 0, 0);
+      };
+
+
+      std::vector<TB> out_v(nrow * nrow);
+
+      for (int i = 0; i < nrow; i += 1) {
+        out_v[nrow * i + i] = 1;
+      };
+
+      return Matrix<TB>(out_v, nrow, nrow);
+    };
+
     #ifdef __CUDACC__
     
     template <typename TB2>
@@ -13911,6 +13984,11 @@ template <typename TB> class Matrix{
     __host__ Matrix<std::common_type_t<TB, TB2>>
     mult2_GPU(const Matrix<TB2>& matr) const;
 
+    __host__ Matrix<TB>
+    power_GPU_out2(const unsigned int& nvl) const;
+
+    __host__ Matrix<TB>
+    power_GPU_out1(const unsigned int& nvl) const;
 
     #endif
 
@@ -14068,6 +14146,238 @@ Matrix<TB>::mult2_GPU(const Matrix<TB2>& matr) const {
     return Matrix<TC>(C, m, n);
 };
 
+template <typename TB>
+__host__ inline Matrix<TB>
+Matrix<TB>::power_GPU_out2(const unsigned int &nvl) const {
+
+    const int n = nrow;
+
+    std::vector<TB> empty = {};
+    if (ncol != nrow) {
+        std::cerr << "❌ Matrix size mismatch in multGPU\n";
+        return Matrix<TB>(empty, 0, 0);
+    } else if (nvl == 0) {
+      return Matrix<TB>::identity_out(n);
+    } else if (nvl == 1) {
+      return *this;
+    };
+
+    std::vector<TB> C(n * n);
+
+    // GPU memory allocation
+    TB *d_A, *d_B, *d_C;
+    CUDA_CHECK(cudaMalloc(&d_A, n * n * sizeof(TB)));
+    CUDA_CHECK(cudaMalloc(&d_B, n * n * sizeof(TB)));
+    CUDA_CHECK(cudaMalloc(&d_C, n * n * sizeof(TB)));
+
+    // Type conversion and copy
+    std::vector<TB> A_conv(rtn_matr.begin(), 
+                           rtn_matr.end());
+    
+    CUDA_CHECK(cudaMemcpy(d_A, A_conv.data(), n * n * sizeof(TB), 
+                            cudaMemcpyHostToDevice));
+    // better because both lives on the GPU
+    CUDA_CHECK(cudaMemcpy(d_B, d_A, n * n * sizeof(TB), 
+                        cudaMemcpyDeviceToDevice));
+
+
+    cublasHandle_t handle = CUBLASContext::get();
+    unsigned int i = 0;
+    unsigned int i2 = 1;
+
+    if constexpr (std::is_same_v<TB, float>) {
+        const float alpha = 1.0f, beta = 0.0f;
+       
+        while (i2 < nvl) {
+         
+          CUBLAS_CHECK(cublasSgemm_v2(
+                handle,
+                CUBLAS_OP_N, CUBLAS_OP_N,
+                n, n, n,
+                &alpha,
+                d_A, n,
+                d_A, n,
+                &beta,
+                d_A, n
+          ));
+
+          i2 *= 2;
+        };
+
+        for (i = i2; i < nvl; i += 1) {
+          if (i % 2 == 0) {
+            CUBLAS_CHECK(cublasSgemm_v2(
+                handle,
+                CUBLAS_OP_N, CUBLAS_OP_N,
+                n, n, n,
+                &alpha,
+                d_A, n,
+                d_B, n,
+                &beta,
+                d_C, n
+            ));
+          } else {
+            CUBLAS_CHECK(cublasSgemm_v2(
+                handle,
+                CUBLAS_OP_N, CUBLAS_OP_N,
+                n, n, n,
+                &alpha,
+                d_A, n,
+                d_C, n,
+                &beta,
+                d_A, n
+            ));
+          };
+        };
+
+    } else if constexpr (std::is_same_v<TB, double>) {
+        const double alpha = 1.0, beta = 0.0;
+       
+        while (i2 < nvl) {
+         
+          CUBLAS_CHECK(cublasDgemm_v2(
+                handle,
+                CUBLAS_OP_N, CUBLAS_OP_N,
+                n, n, n,
+                &alpha,
+                d_A, n,
+                d_A, n,
+                &beta,
+                d_A, n
+          ));
+
+          i2 *= 2;
+        };
+
+        for (i = i2; i < nvl; i += 1) {
+          if (i % 2 == 0) {
+            CUBLAS_CHECK(cublasDgemm_v2(
+                handle,
+                CUBLAS_OP_N, CUBLAS_OP_N,
+                n, n, n,
+                &alpha,
+                d_A, n,
+                d_B, n,
+                &beta,
+                d_C, n
+            ));
+          } else {
+            CUBLAS_CHECK(cublasDgemm_v2(
+                handle,
+                CUBLAS_OP_N, CUBLAS_OP_N,
+                n, n, n,
+                &alpha,
+                d_A, n,
+                d_C, n,
+                &beta,
+                d_A, n
+            ));
+          };
+        };
+
+    } else {
+        static_assert(std::is_floating_point_v<TB>, "cuBLAS only supports float or double");
+    }
+
+    if (i % 2 == 0) {
+        CUDA_CHECK(cudaMemcpy(C.data(), d_C, 
+                            n * n * sizeof(TB), 
+                            cudaMemcpyDeviceToHost));
+    } else {
+        CUDA_CHECK(cudaMemcpy(C.data(), d_A, 
+                            n * n * sizeof(TB), 
+                            cudaMemcpyDeviceToHost));
+    };
+
+    cudaFree(d_A); cudaFree(d_B); cudaFree(d_C);
+
+    return Matrix<TB>(C, n, n);
+};
+
+template <typename TB>
+__host__ inline Matrix<TB>
+Matrix<TB>::power_GPU_out1(const unsigned int &nvl) const {
+
+    const int n = nrow;
+
+    // Base checks
+    std::vector<TB> empty;
+    if (ncol != nrow) {
+        std::cerr << "❌ Matrix size mismatch in power_GPU_out\n";
+        return Matrix<TB>(empty, 0, 0);
+    } else if (nvl == 0) {
+        return Matrix<TB>::identity_out(n);
+    } else if (nvl == 1) {
+        return *this;
+    }
+
+    std::vector<TB> C(n * n);
+
+    // GPU memory allocation
+    TB *d_A, *d_B, *d_C;
+    CUDA_CHECK(cudaMalloc(&d_A, n * n * sizeof(TB)));
+    CUDA_CHECK(cudaMalloc(&d_B, n * n * sizeof(TB)));
+    CUDA_CHECK(cudaMalloc(&d_C, n * n * sizeof(TB)));
+
+    // Copy A to GPU
+    std::vector<TB> A_conv(rtn_matr.begin(), rtn_matr.end());
+    CUDA_CHECK(cudaMemcpy(d_A, A_conv.data(), n * n * sizeof(TB), cudaMemcpyHostToDevice));
+
+    // Initialize d_B as identity matrix (result accumulator)
+    std::vector<TB> host_identity(n * n, 0);
+    for (int i = 0; i < n; ++i) host_identity[i * n + i] = TB(1);
+    CUDA_CHECK(cudaMemcpy(d_B, host_identity.data(), n * n * sizeof(TB), cudaMemcpyHostToDevice));
+
+    // cuBLAS setup
+    cublasHandle_t handle = CUBLASContext::get();
+    const TB alpha = TB(1);
+    const TB beta  = TB(0);
+
+    int exp = nvl;
+
+    // Lambda for GEMM (auto-selects precision)
+    auto gemm = [&](TB* X, TB* Y, TB* Out) {
+        if constexpr (std::is_same_v<TB, float>) {
+            CUBLAS_CHECK(cublasSgemm_v2(
+                handle, CUBLAS_OP_N, CUBLAS_OP_N,
+                n, n, n, &alpha,
+                X, n, Y, n, &beta, Out, n
+            ));
+        } else if constexpr (std::is_same_v<TB, double>) {
+            CUBLAS_CHECK(cublasDgemm_v2(
+                handle, CUBLAS_OP_N, CUBLAS_OP_N,
+                n, n, n, &alpha,
+                X, n, Y, n, &beta, Out, n
+            ));
+        } else {
+            static_assert(std::is_floating_point_v<TB>,
+                "cuBLAS only supports float or double");
+        }
+    };
+
+    // --- Exponentiation by squaring ---
+    while (exp > 0) {
+        if (exp & 1) {
+            // d_B = d_B * d_A
+            gemm(d_B, d_A, d_C);
+            std::swap(d_B, d_C);
+        }
+        // d_A = d_A * d_A
+        gemm(d_A, d_A, d_C);
+        std::swap(d_A, d_C);
+
+        exp >>= 1; // divide exponent by 2
+    }
+
+    // Copy result back
+    CUDA_CHECK(cudaMemcpy(C.data(), d_B, n * n * sizeof(TB), cudaMemcpyDeviceToHost));
+
+    cudaFree(d_A);
+    cudaFree(d_B);
+    cudaFree(d_C);
+
+    return Matrix<TB>(C, n, n);
+};
 
 #endif
 
