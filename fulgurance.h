@@ -2151,7 +2151,7 @@ std::vector<double> dgamma(std::vector<double> &x, double &shape, double &rate) 
 
 std::vector<double> pgamma(std::vector<double> &x, double &shape, double &rate, double &step) {
   std::vector<double> rtn_v = {};
-  double divided;
+  //double divided;
   const double divider = tgamma(shape);
   const double shape_minus = shape - 1;
   const double ref_mult = pow(rate, shape);
@@ -2203,7 +2203,7 @@ std::vector<double> pgamma(std::vector<double> &x, double &shape, double &rate, 
 
 std::vector<double> qgamma(std::vector<double> &x, double &shape, double &rate, double &step) {
   std::vector<double> rtn_v = {};
-  double divided;
+  //double divided;
   const double divider = tgamma(shape);
   const double shape_minus = shape - 1;
   const double ref_mult = pow(rate, shape);
@@ -2267,7 +2267,7 @@ std::vector<double> qgamma(std::vector<double> &x, double &shape, double &rate, 
 
 std::vector<double> rgamma(unsigned int &n, double &shape, double &rate, double step) {
   std::vector<double> rtn_v = {};
-  double divided;
+  //double divided;
   const double ref_proba_step = (double)1 / n;
   double proba_cnt = ref_proba_step;
   const double divider = tgamma(shape);
@@ -4097,7 +4097,7 @@ template <typename T, typename T2> bool matchl(const std::vector<T> &source, con
 //@E 2
 //@X
 
-template <typename T, typename T2> unsigned int match(const std::vector<T> &source, const T2 &ptrn) {
+template <typename T, typename T2> int match(const std::vector<T> &source, const T2 &ptrn) {
   int cnt = 0;
   for (typename std::vector<T>::const_iterator i = source.begin(); i != source.end(); ++i) {
     if (*i == ptrn) {
@@ -6168,7 +6168,7 @@ class Dataframe{
     void type_classification() {
       unsigned int i;
       unsigned int i2;
-      unsigned int n;
+      //unsigned int n;
       bool is_nb;
       bool is_flt_dbl;
       bool is_unsigned = 1;
@@ -6265,7 +6265,7 @@ class Dataframe{
         std::cout << " ";
       };
       std::string cur_str;
-      bool is_found;
+      //bool is_found;
       for (i2 = 0; i2 < ncol; ++i2) {
         if (type_refv[i2] == typeid(std::string).name()) {
           cur_str = "<str>";
@@ -10515,7 +10515,6 @@ std::string nb_to_letter(unsigned int &x) {
 
 
 std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr2sub(std::string &searched, std::string &x) {
-  char cur_chr;
   unsigned int i = 0;
   unsigned int cnt = 0;
   unsigned int ref_cnt;
@@ -10534,7 +10533,6 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr2sub
   unsigned int jump_i;
   unsigned int jump_i2;
   unsigned int cur_lmt;
-  unsigned int ref_cur_lmt;
   unsigned int bf_rep_val;
   bool greedy_state1 = 0;
   bool greedy_state2 = 0;
@@ -10543,14 +10541,8 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr2sub
   std::string rtn_str;
   unsigned int lst_cnt;
   unsigned int pre_cnt;
-  unsigned int cur_ref_cnt;
-  unsigned int cur_ref_i;
-  unsigned int temp_i;
   bool is_repetition = 0;
-  bool alrd_zero = 0;
   bool or_found_alrd;
-  unsigned int cur_idx;
-  unsigned int bf_cnt_zero = 0;
   unsigned int bgn_i;
   while (i < n & cnt < n2) {
     greedy_state2 = 0;
@@ -10861,10 +10853,8 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr2sub
 };
 
 std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr1sub(std::string searched, std::string x) {
-  char cur_chr;
   unsigned int i = 0;
   unsigned int cnt = 0;
-  unsigned int ref_cnt;
   unsigned int bf_cnt2;
   unsigned int n = searched.length();
   const unsigned int n2 = x.length();
@@ -10877,10 +10867,8 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr1sub
   unsigned int rep_val;
   unsigned int rep_val_cnt;
   unsigned int ref_rep_val = 1;
-  unsigned int jump_i;
   unsigned int idx_cnt = 0;
   unsigned int cur_lmt;
-  unsigned int ref_cur_lmt;
   unsigned int bf_rep_val;
   bool greedy_state1 = 0;
   bool greedy_state2 = 0;
@@ -10890,7 +10878,6 @@ std::map<std::vector<unsigned int>, std::map<bool, std::string>> regex_findr1sub
   unsigned int cur_ref_cnt;
   unsigned int temp_i;
   bool is_repetition = 0;
-  unsigned int cur_idx;
   unsigned int bf_cnt_zero = 0;
   if (searched[0] == '[') {
     cnt = 1;
