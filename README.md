@@ -1,4 +1,4 @@
-<img src="logo.jpg"/>
+<img src="logo/logo.jpg"/>
 
 <h1>Fulgurance</h1>
 
