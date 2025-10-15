@@ -18,7 +18,6 @@
 //@I Dataframes implementation is a class. All functions that will transform 'voidly' (internaly) the relative data are built in the class. All functions that copy and transform the relative data are extern to classes.
 //@I Matrices are built with the Matrix class.
 //@X
-#endif
 
 //@L1 Commun functions  
 //@L2 On elements
@@ -36,12 +35,14 @@
 //@E mod(a, b)
 //@E 0.186401
 //@X
+#endif
 
 template <typename T> double mod(T &dividend, T &divider) {
   int x = dividend / divider;
   return dividend - x * divider;
 };
 
+#if 0
 //@T int_lngth
 //@U int int_lngth(const int &x)
 //@X
@@ -52,6 +53,7 @@ template <typename T> double mod(T &dividend, T &divider) {
 //@E int_lngth(a);
 //@E 3
 //@X
+#endif 
 
 int int_lngth(const int &x) {
   float x2 = x;
@@ -63,6 +65,7 @@ int int_lngth(const int &x) {
   return i;
 }
 
+#if 0
 //@T roundout
 //@U template &lt;typename T&gt; T roundout(T x, int n)
 //@X
@@ -81,6 +84,7 @@ int int_lngth(const int &x) {
 //@E out = roundout(x, n)
 //@E 30
 //@X
+#endif
 
 template <typename T> T roundout(T x, int n) {
   unsigned int mlt = 1;
@@ -109,6 +113,7 @@ template <typename T> T roundout(T x, int n) {
   };
 };
 
+#if 0
 //@T roundin
 //@U template &lt;typename T&gt; void roundin(T &x, int n)
 //@X
@@ -128,6 +133,7 @@ template <typename T> T roundout(T x, int n) {
 //@E roundin(x, n);
 //@E 70
 //@X
+#endif
 
 template <typename T> void roundin(T &x, int n) {
   unsigned int mlt = 1;
@@ -156,6 +162,7 @@ template <typename T> void roundin(T &x, int n) {
   };
 };
 
+#if 0
 //@T randint
 //@U auto randint(const int &min, const int max, int seed = -1)
 //@X
@@ -177,6 +184,7 @@ template <typename T> void roundin(T &x, int n) {
 //@E x += randint(min, max) / 1000;
 //@E -13.257
 //@X
+#endif 
 
 int randint(const int &min, const int max, int seed = -1) {
   unsigned int cnt = 0;
@@ -265,6 +273,7 @@ template <typename T, typename T2> double logn(T &val, T2 &base) {
   return log(val) / log(base);
 };
 
+#if 0
 //@T Facto
 //@U unsigned int Facto(unsigned int x)
 //@X
@@ -276,6 +285,7 @@ template <typename T, typename T2> double logn(T &val, T2 &base) {
 //@E Facto(0);
 //@E 1
 //@X
+#endif 
 
 unsigned int Facto(unsigned int x) {
   if (x == 0) {
@@ -290,6 +300,7 @@ unsigned int Facto(unsigned int x) {
   return rtn;
 };
 
+#if 0
 //@T Comb
 //@U double Comb(double r, double n)
 //@X
@@ -302,6 +313,7 @@ unsigned int Facto(unsigned int x) {
 //@E Comb(5, 12);
 //@E 792
 //@X
+#endif 
 
 double Comb(double r, double n) {
   if ((long unsigned int)n % 2 == 0) {
@@ -322,6 +334,7 @@ double Comb(double r, double n) {
   return rslt;
 };
 
+#if 0
 //@L3 String to int, float, double
 
 //@T si
@@ -334,6 +347,7 @@ double Comb(double r, double n) {
 //@E int out = si(a);
 //@E 341
 //@X
+#endif 
 
 int si(const std::string &x) {
   int rtn = int(x[0]) - 48;
@@ -410,6 +424,7 @@ float sf2(const std::string &x) {
   return rtn / m;
 };
 
+#if 0
 //@T stod
 //@U double stod(const std::string &x)
 //@X
@@ -420,6 +435,7 @@ float sf2(const std::string &x) {
 //@E double out = stod(a);
 //@E 4566.132214
 //@X
+#endif
 
 double stod(const std::string &x) {
   double rtn = int(x[0]) - 48;
@@ -441,6 +457,7 @@ double stod(const std::string &x) {
   return rtn / m;
 };
 
+#if 0
 //@L3 Int, double, to string
 
 //@T itos
@@ -452,6 +469,7 @@ double stod(const std::string &x) {
 //@E itos(45897);
 //@E "45897"
 //@X
+#endif
 
 std::string itos(unsigned int x) {
   unsigned int cnt;
@@ -469,6 +487,7 @@ std::string itos(unsigned int x) {
   return rtn_str;
 };
 
+#if 0
 //@L3 RegEx
 
 //@T regex_match
@@ -597,7 +616,6 @@ std::string itos(unsigned int x) {
 
 //@L2 Can be num ?
 
-#if 0
 //@T can_be_nb
 //@U bool can_be_nb(std::string &x)
 //@X
@@ -664,6 +682,7 @@ bool can_be_nb(std::string &x) {
   return 1;
 };
 
+#if 0
 //@T can_be_flt_dbl
 //@U bool can_be_flt_dbl(std::string &x)
 //@X
@@ -695,6 +714,7 @@ bool can_be_nb(std::string &x) {
 //@E 0
 //@E
 //@X
+#endif
 
 bool can_be_flt_dbl(std::string &x) {
   const unsigned int n = x.length();
@@ -733,6 +753,7 @@ bool can_be_flt_dbl(std::string &x) {
   };
 };
 
+#if 0
 //@L2 On std::vector&lt;Type&gt;
 //@L3 Statistical functions
 
@@ -746,6 +767,7 @@ bool can_be_flt_dbl(std::string &x) {
 //@E double out = sum(vec);
 //@E 32446.8632 
 //@X
+#endif 
 
 template <typename T> double sum(const std::vector<T> &x) {
   double rtn = 0;
@@ -755,6 +777,7 @@ template <typename T> double sum(const std::vector<T> &x) {
   return rtn;
 };
 
+#if 0
 //@T Mean
 //@U template &lt;typename T&gt; T Mean(const std::vector&lt;T&gt; &x) 
 //@X
@@ -765,6 +788,7 @@ template <typename T> double sum(const std::vector<T> &x) {
 //@E double out = Mean(vec);
 //@E 2.333333
 //@X
+#endif
 
 template <typename T> T Mean(const std::vector<T> &x) {
   float rtn = 0;
@@ -831,6 +855,7 @@ template <typename T, typename T2> double quantile(std::vector<T> &x, T2 &prob, 
   return rtn_val;
 };
 
+#if 0
 //@T med
 //@U template &lt;typename T&gt; double med(std::vector&lt;T&gt; &x)
 //@X
@@ -841,6 +866,7 @@ template <typename T, typename T2> double quantile(std::vector<T> &x, T2 &prob, 
 //@E double out = med(vec);
 //@E 2.5
 //@X
+#endif
 
 template <typename T> double med(std::vector<T> &x) {
   const unsigned int n = x.size();
@@ -853,6 +879,7 @@ template <typename T> double med(std::vector<T> &x) {
   };
 };
 
+#if 0
 //@T cor
 //@U template &lt;typename T, typename T2&gt; double cor(const std::vector&lt;T&gt; &x, const std::vector&lt;T2&gt; &x2)
 //@X
@@ -865,6 +892,7 @@ template <typename T> double med(std::vector<T> &x) {
 //@E double out = cor(vec1, vec2);
 //@E 1
 //@X
+#endif
 
 template <typename T, typename T2> double cor(const std::vector<T> &x, const std::vector<T2> &x2) {
   double m1 = x[0];
@@ -893,6 +921,7 @@ template <typename T, typename T2> double cor(const std::vector<T> &x, const std
   return rtn;
 };
 
+#if 0
 //@T Sd
 //@U template &lt;typename T&gt; double Sd(std::vector&lt;T&gt; &x)
 //@X
@@ -903,6 +932,7 @@ template <typename T, typename T2> double cor(const std::vector<T> &x, const std
 //@E double out = Sd(vec);
 //@E 1.224745
 //@X
+#endif
 
 template <typename T> double Sd(std::vector<T> &x) {
   unsigned int i;
@@ -919,6 +949,7 @@ template <typename T> double Sd(std::vector<T> &x) {
   return pow(delta_sq / n, 0.5);
 };
 
+#if 0
 //@L4 Uniform distribution
 
 //@T dunif
@@ -936,6 +967,7 @@ template <typename T> double Sd(std::vector<T> &x) {
 //@E print_nvec(out);
 //@E :0: 0 0.0833333 0.0833333 0.0833333 0 0
 //@X
+#endif 
 
 template <typename T> std::vector<double> dunif(std::vector<T> &x, double &min, double &max) {
   double cur_prob = 1 / (max - min);
@@ -950,6 +982,7 @@ template <typename T> std::vector<double> dunif(std::vector<T> &x, double &min, 
   return rtn_v;
 };
 
+#if 0
 //@T punif
 //@U template &lt;typename T&gt; std::vector&lt;double&gt; punif(std::vector&lt;T&gt; &x, double &min, double &max, double step = 0.01)
 //@X
@@ -966,6 +999,7 @@ template <typename T> std::vector<double> dunif(std::vector<T> &x, double &min, 
 //@E print_nvec(out);
 //@E :0: 0 0.000833333 0.459167 0.834167 1 1
 //@X
+#endif 
 
 template <typename T> std::vector<double> punif(std::vector<T> &x, double &min, double &max, double step = 0.01) {
   double cur_prob = 0;
@@ -997,6 +1031,7 @@ template <typename T> std::vector<double> punif(std::vector<T> &x, double &min, 
   return rtn_v;
 };
 
+#if 0
 //@T qunif
 //@U std::vector&lt;double&gt; qunif(std::vector&lt;double&gt; &x, double &min, double &max)
 //@X
@@ -1013,6 +1048,7 @@ template <typename T> std::vector<double> punif(std::vector<T> &x, double &min, 
 //@E print_nvec(out);
 //@E :0: 3.6 5.2 6 6.8 8
 //@X
+#endif
 
 std::vector<double> qunif(std::vector<double> &x, double &min, double &max) {
   double coeff = 1 / (max - min);
@@ -1023,6 +1059,7 @@ std::vector<double> qunif(std::vector<double> &x, double &min, double &max) {
   return rtn_v;
 };
 
+#if 0
 //@T runif
 //@U std::vector&lt;double&gt; unif(unsigned int &n, double &min, double &max, double noise = 0.1, int seed = -1)
 //@X
@@ -1043,6 +1080,7 @@ std::vector<double> qunif(std::vector<double> &x, double &min, double &max) {
 //@E :1475: 54.1015 54.1396 54.1735 54.2116 54.2455 54.2836 54.3175 54.3556 54.3895 54.4276 54.4615 54.4996 54.5335 54.5716 54.6055 54.6436 54.6775 54.7156 54.7495 54.7876 54.8215 54.8596 54.8935 54.9316 
 //@E :1500: 55
 //@X
+#endif
 
 std::vector<double> runif(unsigned &n, double &min, double &max, double noise = 0.1, int seed = -1) {
   long double step;
@@ -1100,6 +1138,7 @@ std::vector<double> runif(unsigned &n, double &min, double &max, double noise = 
   return rtn_v;
 };
 
+#if 0
 //@L4 Normal distribution
 
 //@T rnorm
@@ -1124,6 +1163,7 @@ std::vector<double> runif(unsigned &n, double &min, double &max, double noise = 
 //@E 154.9945
 //@M example.jpg 
 //@X
+#endif 
 
 std::vector<double> rnorm(unsigned int &n, double &mean, double &sd, double noise = 0.05, int seed = -1) {
   long double step;
@@ -1307,6 +1347,7 @@ std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noi
   return rtn_v;
 };
 
+#if 0
 //@T qnorm1
 //@U template &lt;typename T, typename T2&gt; double qnorm1(T &mean, T2 &sd, double &val, double offset_prob = 0.05)
 //@X
@@ -1323,6 +1364,7 @@ std::vector<double> rnorm2(unsigned int &n, double &mean, double &sd, double noi
 //@E print_nvec(out);
 //@E :0: 10.8688 11.3346 11.6673 12 12.3327 
 //@X
+#endif 
 
 template <typename T, typename T2> std::vector<double> qnorm1(std::vector<double> &val, T &mean, T2 &sd, double offset_prob = 0.05) {
   std::vector<double> rtn_v = {};
@@ -1342,6 +1384,7 @@ template <typename T, typename T2> std::vector<double> qnorm1(std::vector<double
   return rtn_v;
 };
 
+#if 0
 //@T qnorm2
 //@U template &lt;typename T, typename T2&gt; double qnorm1(T &mean, T2 &sd, double &val, double offset_prob = 0.05)
 //@X
@@ -1358,6 +1401,7 @@ template <typename T, typename T2> std::vector<double> qnorm1(std::vector<double
 //@E print_nvec(out);
 //@E :0: 9.92 10.85 11.48 12.11 12.74 
 //@X
+#endif
 
 std::vector<double> qnorm2(std::vector<double> &x, double mean, double sd, double step = 0.01) {
   double cur_prob;
@@ -1406,6 +1450,7 @@ template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean,
   return rtn_v;
 };
 
+#if 0
 //@T pnorm
 //@U template &lt;typename T&gt; std::vector&lt;double&gt; pnorm(std::vector&lt;T&gt; &x, double &mean, double &sd, double step = 0.01)
 //@X
@@ -1422,6 +1467,7 @@ template <typename T> std::vector<double> dnorm(std::vector<T> &x, double &mean,
 //@E print_nvec(out);
 //@E :0: 0.00120985 0.0693298 0.151367 0.24421 0.342947 0.441622 0.534291 0.774818
 //@X
+#endif
 
 template <typename T> std::vector<double> pnorm(std::vector<T> &x, double &mean, double &sd, double step = 0.01) {
   std::vector<double> rtn_v = {};
@@ -1438,6 +1484,7 @@ template <typename T> std::vector<double> pnorm(std::vector<T> &x, double &mean,
   return rtn_v;
 };
 
+#if 0
 //@L4 Binomial
 
 //@T dbinom 
@@ -1455,6 +1502,7 @@ template <typename T> std::vector<double> pnorm(std::vector<T> &x, double &mean,
 //@E print_nvec(out);
 //@E  :0: 0.03875 0.0483929 0.0580423 0.066859 0.0739653 0.0785867 0.0801904 0.0785867 0.0739653 0.066859 0.0580423 0.0483929
 //@X
+#endif
 
 std::vector<double> dbinom(std::vector<unsigned int> &k, unsigned int n, double &p) {
   std::vector<double> rslt = {};
