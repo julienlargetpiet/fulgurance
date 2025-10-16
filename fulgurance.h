@@ -4657,7 +4657,7 @@ template <typename TB> class Compv {
 //@A x : is the input boolean vector
 //@X
 //@E std::vector&lt;bool&gt; xbool = {0, 0, 1, 1, 0, 1, 0};
-//@E std::vector<unsigned int> xidx = bool_to_idx(xbool);
+//@E std::vector&lt;unsigned int&gt; xidx = bool_to_idx(xbool);
 //@E print_nvec(xidx);
 //@E 2 3 5
 //@X
@@ -6625,7 +6625,7 @@ class Dataframe{
         std::span<const double>
     >;
 
-    ColumnView idx_colint2(unsigned int &x) const {
+    ColumnView idx_colint(unsigned int &x) const {
       unsigned int i = 2;
       unsigned int i2 = 0;
       bool is_found = 0;
@@ -6696,7 +6696,7 @@ class Dataframe{
           rtn_v.push_back(dbl_v[i2 + rows[i]]);
         };
       } else {
-        throw std::runtime_error("Dataframe::idx_colint2() -> invalid column type index.");
+        throw std::runtime_error("Dataframe::idx_colint() -> invalid column type index.");
       }
     };
 
@@ -7983,8 +7983,8 @@ class Dataframe{
 //@E :0: 8 3 8
 //@X
 
-//@T Dataframe.name_colint
-//@U template &lt;typename T&gt; void name_colint(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;T&gt; &rtn_v)
+//@T Dataframe.name_colint_like
+//@U template &lt;typename T&gt; void name_colint_like(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;T&gt; &rtn_v)
 //@X
 //@D Allow to copy a int, unsigned int , bool or double column as a vector&lt;T&gt;, by column name.
 //@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
@@ -7994,9 +7994,67 @@ class Dataframe{
 //@E // after reading teste_dataframe.csv as obj1
 //@E std::vector&lt;int&gt; currows = {1, 0, 1};
 //@E std::vector&lt;unsigned int&gt; outv = {};
-//@E obj1.idx_colint(currows, "col2", outv);
+//@E obj1.name_colint_like(currows, "col2", outv);
 //@E print_nvec(outv);
 //@E :0: 8 3 8
+//@X
+
+//@T Dataframe.idx_colint
+//@U using ColumnView = std::variant&lt;
+//@U         std::span&lt;const int&gt;,
+//@U         std::span&lt;const unsigned int&gt;,
+//@U         std::span&lt;const double&gt;
+//@U     &gt;;
+//@U 
+//@U     ColumnView idx_colint(unsigned int &x) const
+//@X
+//@D Allow to get the reference of a int, unsigned int or double column as a span&lt;T&gt;, by column index (>= C++ 20).
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all. Intended to be used for creating boolean vecotr by your own functions, to maybe filter data later with <code>Dataframe.display_tweak(), Dataframe.idx_dataframe_bool(), Dataframe.name_dataframe_bool(), Dataframe.idx_colstr_bool, ...</code>
+//@A x : is the index of the column to get the ref from
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E unsigned int n = 1;
+//@E 
+//@E std::vector&lt;int&gt; cols = {-1};
+//@E 
+//@E auto col = obj1.idx_colint(n);
+//@X
+
+//@T Dataframe.display_tweak
+//@U void display_tweak(std::vector&lt;bool&gt; &x, std::vector&lt;int&gt; &colv)
+//@X
+//@D Print the current dataframe. Works seemlessly with <code>Dataframe.idx_colint()</code> to efficiently create boolean vecotr to filter rows, see example.
+//@A x : is the boolean vecotr filtering the rows to display
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E
+//@E unsigned int n = 1;
+//@E
+//@E std::vector&lt;int&gt; cols = {-1};
+//@E
+//@E auto col = obj1.idx_colint2(n);
+//@E
+//@E std::vector&lt;bool&gt; mask; 
+//@E
+//@E std::visit([&mask](auto&& span) {
+//@E     mask.resize(span.size());
+//@E     for (size_t i = 0; i &lt; span.size(); ++i)
+//@E         mask[i] = span[i] &gt; 3;
+//@E }, col);
+//@E 
+//@E obj1.display_tweak(mask, cols);
+//@E
+//@E     &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;
+//@E     col1   col2   col3   col4  col5  col6
+//@E :1:  6      7      8      bb    10    e
+//@E :3:  6      7      8      uu    10    a
+//@E :5:  6      7      8      s9    10    p
+//@E :7:  6      7      8      m9    10    i
+//@E :8:  6      7      8      s9    10    p
+//@E :10: 6      7      8      m9    10    i
+//@E :11: 6      7      8      m9    10    i
+//@E :12: 6      7      8      s9    10    p
+//@E :14: 6      7      8      m9    10    i
 //@X
 
 //@T Dataframe.idx_colstr
@@ -8015,7 +8073,7 @@ class Dataframe{
 //@X
 
 //@T Dataframe.name_colstr
-//@U template &lt;typename T&gt; void name_colint(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;T&gt; &rtn_v)
+//@U template &lt;typename T&gt; void name_colstr(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;T&gt; &rtn_v)
 //@X
 //@D Allow to copy a int, unsigned int , bool or double column as a vector&lt;std::string&gt;, by column name.
 //@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
