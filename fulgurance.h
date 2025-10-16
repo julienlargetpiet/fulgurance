@@ -8,12 +8,16 @@
 #include <map>
 #include <fstream>
 #include <typeinfo>
+#include <stdexcept>
+
+#if __cplusplus >= 202002L
+#include <span>
+#endif
 
 #ifdef __CUDACC__
 
 #include <cublas_v2.h>
 #include <cuda_runtime.h>
-#include <stdexcept>
 #include <type_traits>
 
 #endif
@@ -6353,7 +6357,93 @@ class Dataframe{
         };
       };
     };
- 
+
+    void display_tweak(std::vector<bool> &x, std::vector<int> &colv) {
+      unsigned int i2b;
+      unsigned int i3;
+      unsigned int i4;
+      unsigned int max_nblngth = std::to_string(nrow).length();
+      for (i2b = 0; i2b < max_nblngth + 2; ++i2b) {
+        std::cout << " ";
+      };
+      std::string cur_str;
+      for (auto& i2 : colv) {
+        if (type_refv[i2] == typeid(std::string).name()) {
+          cur_str = "<str>";
+          if (longest_v[i2] < 5) {
+            longest_v[i2] = 5;
+          };
+        } else if (type_refv[i2] == typeid(char).name()) {
+          cur_str = "<char>";
+          if (longest_v[i2] < 6) {
+            longest_v[i2] = 6;
+          };
+        } else if (type_refv[i2] == typeid(bool).name()) {
+          cur_str = "<bool>";
+          if (longest_v[i2] < 6) {
+            longest_v[i2] = 6;
+          };
+        } else if (type_refv[i2] == typeid(int).name()) {
+          cur_str = "<int>";
+          if (longest_v[i2] < 5) {
+            longest_v[i2] = 5;
+          };
+        } else if (type_refv[i2] == typeid(unsigned int).name()) {
+          cur_str = "<uint>";
+          if (longest_v[i2] < 6) {
+            longest_v[i2] = 6;
+          };
+        } else if (type_refv[i2] == typeid(double).name()) {
+          cur_str = "<double>";
+          if (longest_v[i2] < 8) {
+            longest_v[i2] = 8;
+          };
+        };
+        std::cout << cur_str << " ";  
+        for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
+          std::cout << " ";
+        };
+      };
+      std::cout << "\n";
+      for (i2b = 0; i2b < max_nblngth + 2; ++i2b) {
+        std::cout << " ";
+      };
+      if (name_v.size() > 0) {
+        for (auto& i2 : colv) {
+          cur_str = name_v[i2];
+          std::cout << cur_str << " ";  
+          for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
+            std::cout << " ";
+          };
+        };
+      } else {
+        for (auto& i2 : colv) {
+          cur_str = "[" + std::to_string(i2) + "]";
+          std::cout << cur_str << " ";
+          for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
+            std::cout << " ";
+          };
+        };
+      };
+      std::cout << "\n";
+      for (unsigned int i = 0; i < nrow; ++i) {
+        if (x[i]) {
+          std::cout << ":" << i << ": ";
+          for (i3 = std::to_string(i).length(); i3 < max_nblngth; ++i3) {
+            std::cout << " ";
+          };
+          for (auto& i2 : colv) {
+            cur_str = tmp_val_refv[i2][i];
+            std::cout << cur_str << " ";
+            for (i3 = cur_str.length(); i3 < longest_v[i2]; ++i3) {
+              std::cout << " ";
+            };
+          };
+          std::cout << "\n";
+        };
+      };
+    };
+
     void display() {
       unsigned int i2;
       unsigned int i3;
@@ -6363,7 +6453,6 @@ class Dataframe{
         std::cout << " ";
       };
       std::string cur_str;
-      //bool is_found;
       for (i2 = 0; i2 < ncol; ++i2) {
         if (type_refv[i2] == typeid(std::string).name()) {
           cur_str = "<str>";
@@ -6516,12 +6605,51 @@ class Dataframe{
       };
     };
 
+    #if __cplusplus >= 202002L
+
+    template <typename T> 
+    const std::span<const T> 
+    idx_colint2(unsigned int x) const {
+      unsigned int i = 2;
+      unsigned int i2 = 0;
+      bool is_found = 0;
+      while (!is_found) {
+        while (i2 < matr_idx[i].size()) {
+          if (x == matr_idx[i][i2]) {
+            is_found = 1;
+            break;
+          };
+          i2 += 1;
+        };
+        i += 1;
+      };
+      i -= 1;
+      i2 = nrow * i2;
+      if (i == 2) {
+        throw std::runtime_error(
+            "Dataframe::idx_colint2() -> cannot create std::span from std::vector<bool>; "
+            "please use idx_colint(col) instead."
+        );
+      } else if (i == 3) {
+        return std::span<const int>(int_v.data() + i2, nrow);
+      } else if (i == 4) {
+        return std::span<const unsigned int>(uint_v.data() + i2, nrow);
+      } else if (i == 5) {
+        return std::span<const double>(dbl_v.data() + i2, nrow);
+      } else {
+        throw std::runtime_error("Dataframe::idx_colint2() -> invalid column type index.");
+      }
+    };
+
+    #endif
+
     template <typename T> void idx_colint(std::vector<int> rows, unsigned int x, std::vector<T> &rtn_v) {
       rtn_v.reserve(nrow);
       unsigned int i = 2;
       unsigned int i2;
       if (rows[0] == -1) {
         rows.pop_back();
+        rows.reserve(nrow);
         for (i2 = 0; i2 < nrow; ++i2) {
           rows.push_back(i2);
         };
@@ -6556,7 +6684,9 @@ class Dataframe{
         for (i = 0; i < rows.size(); ++i) {
           rtn_v.push_back(dbl_v[i2 + rows[i]]);
         };
-      };
+      } else {
+        throw std::runtime_error("Dataframe::idx_colint2() -> invalid column type index.");
+      }
     };
 
     void name_colstr(std::vector<int> rows, std::string colname, std::vector<std::string> &rtn_v) {
@@ -13139,8 +13269,11 @@ template <typename TB> class Matrix{
     int nrow = 0;
     int ncol = 0;
     bool alrd = 0;
+
+    #ifdef __CUDACC__
     static inline cublasHandle_t cublas_handle = nullptr;
     static inline bool is_initiated = 0;
+    #endif
 
     int permutation_parity(const std::vector<int>& vec, const std::vector<int>& pos_vec) {
         std::vector<int> perm = vec;
