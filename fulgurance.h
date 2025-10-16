@@ -11,6 +11,7 @@
 #include <stdexcept>
 
 #if __cplusplus >= 202002L
+#include <variant>
 #include <span>
 #endif
 
@@ -6363,6 +6364,14 @@ class Dataframe{
       unsigned int i3;
       unsigned int i4;
       unsigned int max_nblngth = std::to_string(nrow).length();
+
+      if (colv[0] == -1) {
+        colv.resize(ncol);
+        for (i2b = 0; i2b < ncol; i2b += 1) {
+          colv[i2b] = i2b;
+        };
+      };
+
       for (i2b = 0; i2b < max_nblngth + 2; ++i2b) {
         std::cout << " ";
       };
@@ -6404,6 +6413,9 @@ class Dataframe{
           std::cout << " ";
         };
       };
+
+      //std::cout << "ok\n";
+
       std::cout << "\n";
       for (i2b = 0; i2b < max_nblngth + 2; ++i2b) {
         std::cout << " ";
@@ -6607,9 +6619,13 @@ class Dataframe{
 
     #if __cplusplus >= 202002L
 
-    template <typename T> 
-    const std::span<const T> 
-    idx_colint2(unsigned int x) const {
+    using ColumnView = std::variant<
+        std::span<const int>,
+        std::span<const unsigned int>,
+        std::span<const double>
+    >;
+
+    ColumnView idx_colint2(unsigned int &x) const {
       unsigned int i = 2;
       unsigned int i2 = 0;
       bool is_found = 0;
@@ -6625,25 +6641,20 @@ class Dataframe{
       };
       i -= 1;
       i2 = nrow * i2;
-      if (i == 2) {
-        throw std::runtime_error(
-            "Dataframe::idx_colint2() -> cannot create std::span from std::vector<bool>; "
-            "please use idx_colint(col) instead."
-        );
-      } else if (i == 3) {
-        return std::span<const int>(int_v.data() + i2, nrow);
-      } else if (i == 4) {
-        return std::span<const unsigned int>(uint_v.data() + i2, nrow);
-      } else if (i == 5) {
-        return std::span<const double>(dbl_v.data() + i2, nrow);
-      } else {
-        throw std::runtime_error("Dataframe::idx_colint2() -> invalid column type index.");
+      
+      switch (i) {
+          case 3: return std::span<const int>(int_v.data() + i2, nrow);
+          case 4: return std::span<const unsigned int>(uint_v.data() + i2, nrow);
+          case 5: return std::span<const double>(dbl_v.data() + i2, nrow);
+          default:
+              throw std::runtime_error("unsupported type index");
       }
+
     };
 
     #endif
 
-    template <typename T> void idx_colint(std::vector<int> rows, unsigned int x, std::vector<T> &rtn_v) {
+    template <typename T> void idx_colint_like(std::vector<int> rows, unsigned int x, std::vector<T> &rtn_v) {
       rtn_v.reserve(nrow);
       unsigned int i = 2;
       unsigned int i2;
@@ -7956,8 +7967,8 @@ class Dataframe{
 //@E :14: 7    8    m9
 //@X
 
-//@T Dataframe.idx_colint
-//@U template &lt;typename T&gt; void idx_colint(std::vector&lt;int&gt; rows, unsigned int x, std::vector&lt;T&gt; &rtn_v)
+//@T Dataframe.idx_colint_like
+//@U template &lt;typename T&gt; void idx_colint_like(std::vector&lt;int&gt; rows, unsigned int x, std::vector&lt;T&gt; &rtn_v)
 //@X
 //@D Allow to copy a int, unsigned int , bool or double column as a vector&lt;T&gt;, by column index.
 //@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
@@ -7967,7 +7978,7 @@ class Dataframe{
 //@E // after reading teste_dataframe.csv as obj1
 //@E std::vector&lt;int&gt; currows = {1, 0, 1};
 //@E std::vector&lt;unsigned int&gt; outv = {};
-//@E obj1.idx_colint(currows, 2, outv);
+//@E obj1.idx_colint_like(currows, 2, outv);
 //@E print_nvec(outv);
 //@E :0: 8 3 8
 //@X
