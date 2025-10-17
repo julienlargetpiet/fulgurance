@@ -502,6 +502,7 @@ std::string itos(unsigned int x) {
   return rtn_str;
 };
 
+#if 0
 //@L2 Can be num ?
 
 //@T can_be_nb
