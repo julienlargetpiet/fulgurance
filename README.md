@@ -45,7 +45,7 @@ data management, statistics, linear algebra, and machine learning, built entirel
     </tr>
     <tr>
       <td><strong>Combinatorics & Utilities</strong></td>
-      <td>Native tools for permutations, combinations, parsing, binary and date handling, geographical calculations, and a custom lightweight RegEx engine.</td>
+      <td>Native tools for permutations, combinations, parsing, binary and date handling, geographical calculations.</td>
     </tr>
   </tbody>
 </table>
