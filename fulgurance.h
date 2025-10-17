@@ -9,6 +9,7 @@
 #include <fstream>
 #include <typeinfo>
 #include <stdexcept>
+#include <regex>
 
 #if __cplusplus >= 202002L
 #include <variant>
