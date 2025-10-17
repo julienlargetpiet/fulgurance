@@ -10,7 +10,7 @@ data management, statistics, linear algebra, and machine learning, built entirel
 <h2>Why Fulgurance?</h2>
 <ul>
   <li><strong>Header-only</strong>: include it and start using it — no builds, linking, or external tools required.</li>
-  <li><strong>From-scratch engine</strong>: custom implementations for DataFrames, matrices, statistical functions, parsing tools, and even a bespoke RegEx flavor.</li>
+  <li><strong>From-scratch engine</strong>: custom implementations for DataFrames, matrices, statistical functions and even JSon parsing tools.</li>
   <li><strong>Fast and practical</strong>: efficient CPU algorithms with optional CUDA acceleration for matrix operations.</li>
   <li><strong>Always evolving, never breaking</strong>: Fulgurance expands continuously with new features — especially in machine learning and combinatorial mathematics — while keeping all existing functionality stable.</li>
   <li><strong>Pure C++14+</strong>: designed with modern C++ templates, RAII, and STL-based internals for clarity and performance.</li>
