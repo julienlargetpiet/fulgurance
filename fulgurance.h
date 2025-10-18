@@ -6468,10 +6468,237 @@ class Dataframe{
       type_classification();
     };
 
+    void readf_alrd(std::string &file_name, 
+                    std::string& dtype,
+                    char delim = ',', 
+                    bool header_name = 1, 
+                    char str_context_begin = '\'', 
+                    char str_context_end = '\'') {
+      std::string currow;
+      std::string cur_str = "";
+      std::fstream readfile(file_name);
+      getline(readfile, currow);
+      ncol = 1;
+      std::vector<std::string> ex_vec = {};
+      std::vector<unsigned int> matr_unknown_vec = {};
+      unsigned int i;
+      for (i = 0; i < dtype.size(); i += 1) {
+        switch (dtype[i]) {
+          case 's' : { matr_idx[0].push_back(i);
+                       type_refv.push_back(typeid(std::string).name());
+                       break;
+                       };
+          case 'c' : { matr_idx[1].push_back(i);
+                       type_refv.push_back(typeid(char).name());
+                       break;
+                       };
+          case 'b' : { matr_idx[2].push_back(i);
+                       type_refv.push_back(typeid(bool).name());
+                       break;
+                        };
+          case 'i' : { matr_idx[3].push_back(i);
+                       type_refv.push_back(typeid(int).name());
+                       break;
+                       };
+          case 'u' : { matr_idx[4].push_back(i);
+                       type_refv.push_back(typeid(unsigned int).name());
+                       break;
+                        };
+          case 'd' : { matr_idx[5].push_back(i);
+                       type_refv.push_back(typeid(double).name());
+                       break;
+                        };
+        };
+      };
+      i = 0;
+      unsigned int verif_ncol;
+      unsigned int max_lngth;
+      bool str_cxt = 0;
+      if (header_name) {
+        while (i < currow.length()) {
+          if (currow[i] == delim & !str_cxt) {
+            if (i == 0) {
+              max_lngth = 2;
+              name_v.push_back("NA");
+            } else if (currow[i - 1] == delim) {
+              max_lngth = 2;
+              name_v.push_back("NA");
+            } else {
+              max_lngth = cur_str.length();
+              name_v.push_back(cur_str);
+            };
+            tmp_val_refv.push_back(ex_vec);
+            ncol += 1;
+            cur_str = "";
+            longest_v.push_back(max_lngth);
+          } else if (currow[i] == str_context_begin) {
+            str_cxt = 1; 
+          } else if (currow[i] == str_context_end) {
+            str_cxt = 0;
+          } else {
+            cur_str.push_back(currow[i]);
+          };
+          i += 1;
+        };
+        if (currow[i - 1] == delim) {
+          max_lngth = 2;
+          name_v.push_back("NA");
+        } else {
+          max_lngth = cur_str.length();
+          name_v.push_back(cur_str);
+        };
+        tmp_val_refv.push_back(ex_vec);
+        cur_str = "";
+        longest_v.push_back(max_lngth);
+      } else {
+        while (i < currow.length()) {
+          if (currow[i] == delim & !str_cxt) {
+            if (i == 0) {
+              max_lngth = 2;
+            } else if (currow[i - 1] == delim) {
+              max_lngth = 2;
+            } else {
+              max_lngth = cur_str.length();
+              ex_vec.push_back(cur_str);
+              tmp_val_refv.push_back(ex_vec);
+              ex_vec = {};
+            };
+            ncol += 1;
+            cur_str = "";
+            longest_v.push_back(max_lngth);
+          } else if (currow[i] == str_context_begin) {
+            str_cxt = 1;
+          } else if (currow[i] == str_context_end) {
+            str_cxt = 0;
+          } else {
+            cur_str.push_back(currow[i]);
+          };
+          i += 1;
+        };
+        if (currow[i - 1] == delim) {
+          max_lngth = 2;
+        } else {
+          max_lngth = cur_str.length();
+          ex_vec.push_back(cur_str);
+          tmp_val_refv.push_back(ex_vec);
+          ex_vec = {};
+        };
+        cur_str = "";
+        longest_v.push_back(max_lngth);
+        nrow += 1;
+      };
+      type_refv.reserve(ncol);
+      while (getline(readfile, currow)) {
+        verif_ncol = 1;
+        str_cxt = 0;
+        i = 0;
+        while (i < currow.length()) {
+          if (currow[i] == delim & !str_cxt) {
+            if (i == 0) {
+              if (longest_v[verif_ncol - 1] < 2) {
+                longest_v[verif_ncol - 1] = 2;
+              };
+              tmp_val_refv[0].push_back("NA");
+            } else if (currow[i - 1] == delim) {
+              if (longest_v[verif_ncol - 1] < 2) {
+                longest_v[verif_ncol - 1] = 2;
+              };
+              tmp_val_refv[verif_ncol - 1].push_back("NA");
+            } else {
+              
+              if (longest_v[verif_ncol - 1] < cur_str.length()) {
+                longest_v[verif_ncol - 1] = cur_str.length();
+              };
+
+              tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+
+              switch (dtype[verif_ncol - 1]) {
+                case 's' : 
+                        str_v.push_back(cur_str);
+                        break;
+                case 'c' : 
+                        chr_v.push_back(cur_str[0]);
+                        break;
+                case 'b' : 
+                        bool_v.push_back(std::stoi(cur_str));
+                        break;
+                case 'i' : 
+                        int_v.push_back(std::stoi(cur_str));
+                        break;
+                case 'u' : 
+                        uint_v.push_back(std::stoi(cur_str));
+                        break;
+                case 'd' : 
+                        dbl_v.push_back(std::stoi(cur_str));
+                        break;
+                default:
+                      std::cerr << "Unknown dtype: " << dtype[verif_ncol - 1] << "\n";
+                      break;
+              };
+
+            };
+            cur_str = "";
+            verif_ncol += 1;
+          } else if (currow[i] == str_context_begin) {
+            str_cxt = 1;
+          } else if (currow[i] == str_context_end) {
+            str_cxt = 0;
+          } else {
+            cur_str.push_back(currow[i]);
+          };
+          i += 1;
+        };
+        if (currow[i - 1] == delim) {
+          if (longest_v[verif_ncol - 1] < 2) {
+            longest_v[verif_ncol - 1] = 2;
+          };
+          tmp_val_refv[verif_ncol - 1].push_back("NA");
+        } else {
+        
+          if (longest_v[verif_ncol - 1] < cur_str.length()) {
+            longest_v[verif_ncol - 1] = cur_str.length();
+          };
+
+          tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+
+          switch (dtype[verif_ncol - 1]) {
+            case 's' : 
+                    str_v.push_back(cur_str);
+                    break;
+            case 'c' : 
+                    chr_v.push_back(cur_str[0]);
+                    break;
+            case 'b' : 
+                    bool_v.push_back(std::stoi(cur_str));
+                    break;
+            case 'i' : 
+                    int_v.push_back(std::stoi(cur_str));
+                    break;
+            case 'u' : 
+                    uint_v.push_back(std::stoi(cur_str));
+                    break;
+            case 'd' : 
+                    dbl_v.push_back(std::stoi(cur_str));
+                    break;
+            default:
+                std::cerr << "Unknown dtype: " << dtype[verif_ncol - 1] << "\n";
+                break;
+          };
+
+        };
+        cur_str = "";
+        if (verif_ncol != ncol) {
+          std::cout << "column number problem at row: " << nrow << "\n";
+          reinitiate();
+          return;
+        };
+        nrow += 1;
+      };
+    };
+
     void type_classification() {
       unsigned int i;
       unsigned int i2;
-      //unsigned int n;
       bool is_nb;
       bool is_flt_dbl;
       bool is_unsigned = 1;
@@ -6554,6 +6781,11 @@ class Dataframe{
           for (i2 = 0; i2 < nrow; ++i2) {
             cur_str = tmp_val_refv[i][i2];
             uint_v.push_back(std::stoi(cur_str));
+          };
+        } else {
+          for (i2 = 0; i2 < nrow; ++i2) {
+            cur_str = tmp_val_refv[i][i2];
+            dbl_v.push_back(std::stoi(cur_str));
           };
         };
       };
@@ -8055,6 +8287,58 @@ class Dataframe{
 //@E Dataframe obj1;
 //@E std::string file_name = "teste_dataframe.csv";
 //@E obj1.readf(file_name);
+//@X
+
+//@T Dataframe.readf_trim
+//@U void readf_trim(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'')
+//@X
+//@D Import a csv as a Dataframe object. Automatically trim the value (removes extra spaces before and after)
+//@A file_name : is the file_name of the csv to read
+//@A delim : is the column delimiter
+//@A header_name : is if the first row is in fact the column names
+//@A str_context_begin : is the first symbol of a quote, (to not take in count a comma as a new column if it is in a quote for example)
+//@A str_context_end : is the end symbol for a quote context
+//@X
+//@E Dataframe obj1;
+//@E std::string file_name = "teste_dataframe2.csv";
+//@E obj1.readf_trim(file_name);
+//@X
+
+//@T Dataframe.readf_lambda
+//@U void readf_lambda(std::string &file_name, void (&f)(std::string&), char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'')
+//@X
+//@D Import a csv as a Dataframe object. Applies a custom function to all values from the csv before parsing it as appropriate data types.
+//@A file_name : is the file_name of the csv to read
+//@A f : is your custom function (void, must take a std:string as argument)
+//@A delim : is the column delimiter
+//@A header_name : is if the first row is in fact the column names
+//@A str_context_begin : is the first symbol of a quote, (to not take in count a comma as a new column if it is in a quote for example)
+//@A str_context_end : is the end symbol for a quote context
+//@X
+//@E void myfunc (std::string &x) {
+//@E   x.push_back('L');
+//@E };
+//@E Dataframe obj1;
+//@E std::string file_name = "teste_dataframe2.csv";
+//@E obj1.readf_lambda(file_name, myfunc);
+//@X
+
+//@T Dataframe.readf_alrd
+//@U void readf_alrd(std::string &file_name, std::vector&lt;string&gt;& dtype, char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'')
+//@X
+//@D Import a csv as a Dataframe object. This function only makes sense if you know in advance the column data types (faster than semantical analysis). The column data types are contiguously described in <code>dtype</code> argument. The values are 's' (string), 'c' (char), 'b' (bool), 'i' (int), 'u' (unsigned int) and 'd' (double)
+//@A file_name : is the file_name of the csv to read
+//@A dtype : is the string vector containing all column data types
+//@A f : is your custom function (void, must take a std:string as argument)
+//@A delim : is the column delimiter
+//@A header_name : is if the first row is in fact the column names
+//@A str_context_begin : is the first symbol of a quote, (to not take in count a comma as a new column if it is in a quote for example)
+//@A str_context_end : is the end symbol for a quote context
+//@X
+//@E std::string dvec = "dsusic";
+//@E Dataframe obj1;
+//@E std::string file_name = "teste_dataframe2.csv";
+//@E obj1.readf_lambda(file_name, dvec);
 //@X
 
 //@T Dataframe.writef
