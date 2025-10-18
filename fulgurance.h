@@ -7163,10 +7163,6 @@ class Dataframe{
       };
     };
 
-    #endif
-
-    #if __cplusplus >= 202002L
-
     using ColumnView = std::variant<
         std::span<const int>,
         std::span<const unsigned int>,
@@ -7311,48 +7307,56 @@ class Dataframe{
 
     template <typename T> void idx_colnb(std::vector<int> rows, unsigned int x, std::vector<T> &rtn_v) {
       rtn_v.reserve(nrow);
-      unsigned int i = 2;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        rows.reserve(nrow);
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
-        };
-      };
-      bool is_found = 0;
-      while (!is_found) {
-        i2 = 0;
-        while (i2 < matr_idx[i].size()) {
-          if (x == matr_idx[i][i2]) {
-            is_found = 1;
+      unsigned int i, i2;
+
+      if constexpr (std::is_same_v<T, bool>) {
+        while (i2 < matr_idx[2].size()) {
+          if (x == matr_idx[2][i2]) {
             break;
           };
           i2 += 1;
         };
-        i += 1;
-      };
-      i -= 1;
-      i2 = nrow * i2;
-      if (i == 2) {
+        i2 = nrow * i2;
         for (i = 0; i < rows.size(); ++i) {
           rtn_v.push_back(bool_v[i2 + rows[i]]);
         };
-      } else if (i == 3) {
+      } else if constexpr (std::is_same_v<T, int>) {
+        while (i2 < matr_idx[3].size()) {
+          if (x == matr_idx[3][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+        i2 = nrow * i2;
         for (i = 0; i < rows.size(); ++i) {
           rtn_v.push_back(int_v[i2 + rows[i]]);
         };
-      } else if (i == 4) {
+      } else if constexpr (std::is_same_v<T, unsigned int>) {
+        while (i2 < matr_idx[4].size()) {
+          if (x == matr_idx[4][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+        i2 = nrow * i2;
         for (i = 0; i < rows.size(); ++i) {
           rtn_v.push_back(uint_v[i2 + rows[i]]);
         };
-      } else if (i == 5) {
+      } else if constexpr (std::is_same_v<T, double>) {
+        while (i2 < matr_idx[5].size()) {
+          if (x == matr_idx[5][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+        i2 = nrow * i2;
         for (i = 0; i < rows.size(); ++i) {
           rtn_v.push_back(dbl_v[i2 + rows[i]]);
         };
       } else {
         throw std::runtime_error("Dataframe::idx_colnb() -> invalid column type index.");
-      }
+      };
+
     };
 
     void idx_colbl(std::vector<int> rows, unsigned int x, 
