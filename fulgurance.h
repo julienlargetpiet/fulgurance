@@ -7049,6 +7049,13 @@ class Dataframe{
       };
     };
 
+    //template <typename T>
+    //void fapply_int(void (&f)(T&), unsigned int &n) {
+    //  for () {
+
+    //  };
+    //};
+
     #if __cplusplus >= 202002L
 
     using ColumnView = std::variant<
@@ -7059,21 +7066,26 @@ class Dataframe{
 
     ColumnView idx_colint(unsigned int &x) const {
       unsigned int i = 2;
-      unsigned int i2 = 0;
+      unsigned int i2;
       bool is_found = 0;
+
       while (!is_found) {
+
+        i2 = 0;
         while (i2 < matr_idx[i].size()) {
+
           if (x == matr_idx[i][i2]) {
             is_found = 1;
             break;
           };
+
           i2 += 1;
         };
         i += 1;
       };
       i -= 1;
       i2 = nrow * i2;
-      
+    
       switch (i) {
           case 3: return std::span<const int>(int_v.data() + i2, nrow);
           case 4: return std::span<const unsigned int>(uint_v.data() + i2, nrow);
@@ -7097,9 +7109,9 @@ class Dataframe{
           rows.push_back(i2);
         };
       };
-      i2 = 0;
       bool is_found = 0;
       while (!is_found) {
+        i2 = 0;
         while (i2 < matr_idx[i].size()) {
           if (x == matr_idx[i][i2]) {
             is_found = 1;
