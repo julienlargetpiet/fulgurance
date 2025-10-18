@@ -5951,7 +5951,7 @@ template <typename T> double diff_mean(std::vector<T> &x) {
 //@T Dataframe
 //@U Dataframe my_dataframe
 //@X
-//@D Dataframe objects supporting reading csv, with custom separator, storing columns in differents type vectors, creating a new Dataframe object on top of an already existing one specifying the rows and columns to copy, the same goes for a matrix (as <code>std::vector&lt;std::vector&lt;T&gt;&gt;</code>) and <code>std::vector&lt;T&gt;</code>. See examples.
+//@D Dataframe objects supporting writing / reading csv, storing columns in differents vectors type (automatically or not), specifying the rows and columns to copy or get by reference, perform all types of joins, groupby... See examples.
 //@A See_below : See below
 //@X
 //@E See below
@@ -7192,44 +7192,6 @@ class Dataframe{
         throw std::out_of_range("idx_colnb_see(): column not found");
     }
 
-    //using ColumnView = std::variant<
-    //    std::span<const int>,
-    //    std::span<const unsigned int>,
-    //    std::span<const double>
-    //>;
-
-    //ColumnView idx_colnb_see(unsigned int &x) const {
-    //  unsigned int i = 2;
-    //  unsigned int i2;
-    //  bool is_found = 0;
-
-    //  while (!is_found) {
-
-    //    i2 = 0;
-    //    while (i2 < matr_idx[i].size()) {
-
-    //      if (x == matr_idx[i][i2]) {
-    //        is_found = 1;
-    //        break;
-    //      };
-
-    //      i2 += 1;
-    //    };
-    //    i += 1;
-    //  };
-    //  i -= 1;
-    //  i2 = nrow * i2;
-    //
-    //  switch (i) {
-    //      case 3: return std::span<const int>(int_v.data() + i2, nrow);
-    //      case 4: return std::span<const unsigned int>(uint_v.data() + i2, nrow);
-    //      case 5: return std::span<const double>(dbl_v.data() + i2, nrow);
-    //      default:
-    //          throw std::runtime_error("unsupported type index");
-    //  }
-
-    //};
-
     std::span<const std::string> idx_colstr_see(unsigned int &x) const {
       unsigned int i2 = 0;
 
@@ -7263,23 +7225,6 @@ class Dataframe{
       return std::span<const char>(chr_v.data() + i2, nrow);
  
     };
-
-    //std::span<const bool> idx_colbl_see(unsigned int &x) const {
-    //  unsigned int i2 = 0;
-
-    //  while (i2 < matr_idx[2].size()) {
-
-    //    if (x == matr_idx[2][i2]) {
-    //      break;
-    //    };
-
-    //    i2 += 1;
-    //  };
-    //  i2 = nrow * i2;
-    //
-    //  return std::span<const bool>(bool_v.data() + i2, nrow);
- 
-    //};
 
     std::span<const int> idx_colint_see(unsigned int &x) const {
       unsigned int i2 = 0;
@@ -7333,76 +7278,6 @@ class Dataframe{
     };
 
     #endif
-
-    template <typename T> void idx_colnb(std::vector<int> rows, unsigned int x, std::vector<T> &rtn_v) {
-      rtn_v.reserve(nrow);
-      unsigned int i, i2 = 0;
-
-      if constexpr (std::is_same_v<T, bool>) {
-        while (i2 < matr_idx[2].size()) {
-          if (x == matr_idx[2][i2]) {
-            break;
-          };
-          i2 += 1;
-        };
-        
-        if (i2 == matr_idx[2].size())
-          throw std::out_of_range("idx_colnb<bool>: column index not found");
-        
-        i2 = nrow * i2;
-        for (i = 0; i < rows.size(); ++i) {
-          rtn_v.push_back(bool_v[i2 + rows[i]]);
-        };
-      } else if constexpr (std::is_same_v<T, int>) {
-        while (i2 < matr_idx[3].size()) {
-          if (x == matr_idx[3][i2]) {
-            break;
-          };
-          i2 += 1;
-        };
-
-        if (i2 == matr_idx[3].size())
-          throw std::out_of_range("idx_colnb<int>: column index not found");
-
-        i2 = nrow * i2;
-        for (i = 0; i < rows.size(); ++i) {
-          rtn_v.push_back(int_v[i2 + rows[i]]);
-        };
-      } else if constexpr (std::is_same_v<T, unsigned int>) {
-        while (i2 < matr_idx[4].size()) {
-          if (x == matr_idx[4][i2]) {
-            break;
-          };
-          i2 += 1;
-        };
-
-        if (i2 == matr_idx[4].size())
-          throw std::out_of_range("idx_colnb<unsigned int>: column index not found");
-
-        i2 = nrow * i2;
-        for (i = 0; i < rows.size(); ++i) {
-          rtn_v.push_back(uint_v[i2 + rows[i]]);
-        };
-      } else if constexpr (std::is_same_v<T, double>) {
-        while (i2 < matr_idx[5].size()) {
-          if (x == matr_idx[5][i2]) {
-            break;
-          };
-          i2 += 1;
-        };
-
-        if (i2 == matr_idx[5].size())
-          throw std::out_of_range("idx_colnb<double>: column index not found");
-
-        i2 = nrow * i2;
-        for (i = 0; i < rows.size(); ++i) {
-          rtn_v.push_back(dbl_v[i2 + rows[i]]);
-        };
-      } else {
-        throw std::runtime_error("Dataframe::idx_colnb() -> invalid column type index.");
-      };
-
-    };
 
     void idx_colbl(std::vector<int> rows, unsigned int x, 
                     std::vector<bool> &rtn_v) {
@@ -8829,38 +8704,6 @@ class Dataframe{
 //@E :12: 7    8    s9
 //@E :13: 2    3    a4
 //@E :14: 7    8    m9
-//@X
-
-//@T Dataframe.idx_colnb
-//@U template &lt;typename T&gt; void idx_colnb(std::vector&lt;int&gt; rows, unsigned int x, std::vector&lt;T&gt; &rtn_v)
-//@X
-//@D Allow to copy a int, unsigned int , bool or double column as a vector&lt;T&gt;, by column index.
-//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
-//@A x : is the index of the column to copy
-//@A rtn_v : is the vector that will contain the column to copy
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E std::vector&lt;int&gt; currows = {1, 0, 1};
-//@E std::vector&lt;unsigned int&gt; outv = {};
-//@E obj1.idx_colnb(currows, 2, outv);
-//@E print_nvec(outv);
-//@E :0: 8 3 8
-//@X
-
-//@T Dataframe.name_colnb
-//@U template &lt;typename T&gt; void name_colnb(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;T&gt; &rtn_v)
-//@X
-//@D Allow to copy a int, unsigned int , bool or double column as a vector&lt;T&gt;, by column name.
-//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
-//@A x : is the name of the column to copy
-//@A rtn_v : is the vector that will contain the column to copy
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E std::vector&lt;int&gt; currows = {1, 0, 1};
-//@E std::vector&lt;unsigned int&gt; outv = {};
-//@E obj1.name_colnb(currows, "col2", outv);
-//@E print_nvec(outv);
-//@E :0: 8 3 8
 //@X
 
 //@T Dataframe.idx_colnb_see
