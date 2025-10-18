@@ -7168,38 +7168,67 @@ class Dataframe{
         std::span<const unsigned int>,
         std::span<const double>
     >;
-
-    ColumnView idx_colnb_see(unsigned int &x) const {
-      unsigned int i = 2;
-      unsigned int i2;
-      bool is_found = 0;
-
-      while (!is_found) {
-
-        i2 = 0;
-        while (i2 < matr_idx[i].size()) {
-
-          if (x == matr_idx[i][i2]) {
-            is_found = 1;
-            break;
-          };
-
-          i2 += 1;
-        };
-        i += 1;
-      };
-      i -= 1;
-      i2 = nrow * i2;
     
-      switch (i) {
-          case 3: return std::span<const int>(int_v.data() + i2, nrow);
-          case 4: return std::span<const unsigned int>(uint_v.data() + i2, nrow);
-          case 5: return std::span<const double>(dbl_v.data() + i2, nrow);
-          default:
-              throw std::runtime_error("unsupported type index");
-      }
+    ColumnView idx_colnb_see(unsigned int &x) const {
+        unsigned int i2 = 0;
+    
+        for (unsigned int i = 3; i <= 5; ++i) {
+            for (i2 = 0; i2 < matr_idx[i].size(); ++i2) {
+                if (x == matr_idx[i][i2]) {
+                    const size_t offset = static_cast<size_t>(nrow) * i2;
+    
+                    switch (i) {
+                        case 3:
+                            return std::span<const int>(int_v.data() + offset, nrow);
+                        case 4:
+                            return std::span<const unsigned int>(uint_v.data() + offset, nrow);
+                        case 5:
+                            return std::span<const double>(dbl_v.data() + offset, nrow);
+                    }
+                }
+            }
+        }
+    
+        throw std::out_of_range("idx_colnb_see(): column not found");
+    }
 
-    };
+    //using ColumnView = std::variant<
+    //    std::span<const int>,
+    //    std::span<const unsigned int>,
+    //    std::span<const double>
+    //>;
+
+    //ColumnView idx_colnb_see(unsigned int &x) const {
+    //  unsigned int i = 2;
+    //  unsigned int i2;
+    //  bool is_found = 0;
+
+    //  while (!is_found) {
+
+    //    i2 = 0;
+    //    while (i2 < matr_idx[i].size()) {
+
+    //      if (x == matr_idx[i][i2]) {
+    //        is_found = 1;
+    //        break;
+    //      };
+
+    //      i2 += 1;
+    //    };
+    //    i += 1;
+    //  };
+    //  i -= 1;
+    //  i2 = nrow * i2;
+    //
+    //  switch (i) {
+    //      case 3: return std::span<const int>(int_v.data() + i2, nrow);
+    //      case 4: return std::span<const unsigned int>(uint_v.data() + i2, nrow);
+    //      case 5: return std::span<const double>(dbl_v.data() + i2, nrow);
+    //      default:
+    //          throw std::runtime_error("unsupported type index");
+    //  }
+
+    //};
 
     std::span<const std::string> idx_colstr_see(unsigned int &x) const {
       unsigned int i2 = 0;
