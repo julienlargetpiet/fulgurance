@@ -7307,7 +7307,7 @@ class Dataframe{
 
     template <typename T> void idx_colnb(std::vector<int> rows, unsigned int x, std::vector<T> &rtn_v) {
       rtn_v.reserve(nrow);
-      unsigned int i, i2;
+      unsigned int i, i2 = 0;
 
       if constexpr (std::is_same_v<T, bool>) {
         while (i2 < matr_idx[2].size()) {
@@ -7316,6 +7316,10 @@ class Dataframe{
           };
           i2 += 1;
         };
+        
+        if (i2 == matr_idx[2].size())
+          throw std::out_of_range("idx_colnb<bool>: column index not found");
+        
         i2 = nrow * i2;
         for (i = 0; i < rows.size(); ++i) {
           rtn_v.push_back(bool_v[i2 + rows[i]]);
@@ -7327,6 +7331,10 @@ class Dataframe{
           };
           i2 += 1;
         };
+
+        if (i2 == matr_idx[3].size())
+          throw std::out_of_range("idx_colnb<int>: column index not found");
+
         i2 = nrow * i2;
         for (i = 0; i < rows.size(); ++i) {
           rtn_v.push_back(int_v[i2 + rows[i]]);
@@ -7338,6 +7346,10 @@ class Dataframe{
           };
           i2 += 1;
         };
+
+        if (i2 == matr_idx[4].size())
+          throw std::out_of_range("idx_colnb<unsigned int>: column index not found");
+
         i2 = nrow * i2;
         for (i = 0; i < rows.size(); ++i) {
           rtn_v.push_back(uint_v[i2 + rows[i]]);
@@ -7349,6 +7361,10 @@ class Dataframe{
           };
           i2 += 1;
         };
+
+        if (i2 == matr_idx[5].size())
+          throw std::out_of_range("idx_colnb<double>: column index not found");
+
         i2 = nrow * i2;
         for (i = 0; i < rows.size(); ++i) {
           rtn_v.push_back(dbl_v[i2 + rows[i]]);
