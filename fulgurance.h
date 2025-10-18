@@ -6791,7 +6791,7 @@ class Dataframe{
       };
     };
 
-    void display_tweak(std::vector<bool> &x, std::vector<int> &colv) {
+    void display_filter(std::vector<bool> &x, std::vector<int> &colv) {
       unsigned int i2b;
       unsigned int i3;
       unsigned int i4;
@@ -6997,7 +6997,7 @@ class Dataframe{
 
     };
 
-    template <typename T> void name_colint(std::vector<int> rows, std::string colname, std::vector<T> &rtn_v) {
+    template <typename T> void name_colbl(std::vector<int> rows, std::string colname, std::vector<T> &rtn_v) {
       if (name_v.size() == 0) {
         std::cout << "no column names\n";
         reinitiate();
@@ -7048,6 +7048,60 @@ class Dataframe{
         };
       };
     };
+
+    //template <typename T> void name_colnb(std::vector<int> rows, std::string colname, std::vector<T> &rtn_v) {
+    //  if (name_v.size() == 0) {
+    //    std::cout << "no column names\n";
+    //    reinitiate();
+    //    return;
+    //  };
+    //  unsigned int x = 0;
+    //  while (colname != name_v[x]) {
+    //    x += 1;
+    //  };
+    //  rtn_v.reserve(nrow);
+    //  unsigned int i = 2;
+    //  unsigned int i2;
+    //  if (rows[0] == -1) {
+    //    rows.pop_back();
+    //    for (i2 = 0; i2 < nrow; ++i2) {
+    //      rows.push_back(i2);
+    //    };
+    //  };
+    //  i2 = 0;
+    //  bool is_found = 0;
+    //  while (!is_found) {
+    //    while (i2 < matr_idx[i].size()) {
+    //      if (x == matr_idx[i][i2]) {
+    //        is_found = 1;
+    //        break;
+    //      };
+    //      i2 += 1;
+    //    };
+    //    i += 1;
+    //  };
+    //  i -= 1;
+    //  i2 = nrow * i2;
+    //  if (i == 2) {
+    //    for (i = 0; i < rows.size(); ++i) {
+    //      rtn_v.push_back(bool_v[i2 + rows[i]]);
+    //    };
+    //  } else if (i == 3) {
+    //    for (i = 0; i < rows.size(); ++i) {
+    //      rtn_v.push_back(int_v[i2 + rows[i]]);
+    //    };
+    //  } else if (i == 4) {
+    //    for (i = 0; i < rows.size(); ++i) {
+    //      rtn_v.push_back(uint_v[i2 + rows[i]]);
+    //    };
+    //  } else if (i == 5) {
+    //    for (i = 0; i < rows.size(); ++i) {
+    //      rtn_v.push_back(dbl_v[i2 + rows[i]]);
+    //    };
+    //  };
+    //};
+
+    #if __cplusplus >= 202002L 
 
     template <typename T>
     void fapply_col(void (&f)(T&), unsigned int &n) {
@@ -7109,6 +7163,8 @@ class Dataframe{
       };
     };
 
+    #endif
+
     #if __cplusplus >= 202002L
 
     using ColumnView = std::variant<
@@ -7117,7 +7173,7 @@ class Dataframe{
         std::span<const double>
     >;
 
-    ColumnView idx_colint(unsigned int &x) const {
+    ColumnView idx_colnb_see(unsigned int &x) const {
       unsigned int i = 2;
       unsigned int i2;
       bool is_found = 0;
@@ -7149,9 +7205,111 @@ class Dataframe{
 
     };
 
+    std::span<const std::string> idx_colstr_see(unsigned int &x) const {
+      unsigned int i2 = 0;
+
+      while (i2 < matr_idx[0].size()) {
+
+        if (x == matr_idx[0][i2]) {
+          break;
+        };
+
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+    
+      return std::span<const std::string>(str_v.data() + i2, nrow);
+ 
+    };
+
+    std::span<const char> idx_colchr_see(unsigned int &x) const {
+      unsigned int i2 = 0;
+
+      while (i2 < matr_idx[1].size()) {
+
+        if (x == matr_idx[1][i2]) {
+          break;
+        };
+
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+    
+      return std::span<const char>(chr_v.data() + i2, nrow);
+ 
+    };
+
+    //std::span<const bool> idx_colbl_see(unsigned int &x) const {
+    //  unsigned int i2 = 0;
+
+    //  while (i2 < matr_idx[2].size()) {
+
+    //    if (x == matr_idx[2][i2]) {
+    //      break;
+    //    };
+
+    //    i2 += 1;
+    //  };
+    //  i2 = nrow * i2;
+    //
+    //  return std::span<const bool>(bool_v.data() + i2, nrow);
+ 
+    //};
+
+    std::span<const int> idx_colint_see(unsigned int &x) const {
+      unsigned int i2 = 0;
+
+      while (i2 < matr_idx[3].size()) {
+
+        if (x == matr_idx[3][i2]) {
+          break;
+        };
+
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+    
+      return std::span<const int>(int_v.data() + i2, nrow);
+ 
+    };
+
+    std::span<const unsigned int> idx_coluint_see(unsigned int &x) const {
+      unsigned int i2 = 0;
+
+      while (i2 < matr_idx[4].size()) {
+
+        if (x == matr_idx[4][i2]) {
+          break;
+        };
+
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+    
+      return std::span<const unsigned int>(uint_v.data() + i2, nrow);
+ 
+    };
+
+    std::span<const double> idx_coldbl_see(unsigned int &x) const {
+      unsigned int i2 = 0;
+
+      while (i2 < matr_idx[5].size()) {
+
+        if (x == matr_idx[5][i2]) {
+          break;
+        };
+
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+    
+      return std::span<const double>(dbl_v.data() + i2, nrow);
+ 
+    };
+
     #endif
 
-    template <typename T> void idx_colint_like(std::vector<int> rows, unsigned int x, std::vector<T> &rtn_v) {
+    template <typename T> void idx_colnb(std::vector<int> rows, unsigned int x, std::vector<T> &rtn_v) {
       rtn_v.reserve(nrow);
       unsigned int i = 2;
       unsigned int i2;
@@ -7193,8 +7351,116 @@ class Dataframe{
           rtn_v.push_back(dbl_v[i2 + rows[i]]);
         };
       } else {
-        throw std::runtime_error("Dataframe::idx_colint() -> invalid column type index.");
+        throw std::runtime_error("Dataframe::idx_colnb() -> invalid column type index.");
       }
+    };
+
+    void idx_colbl(std::vector<int> rows, unsigned int x, 
+                    std::vector<bool> &rtn_v) {
+      rtn_v.reserve(nrow);
+      unsigned int i = 2;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        rows.reserve(nrow);
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      i2 = 0;
+      while (i2 < matr_idx[3].size()) {
+        if (x == matr_idx[3][i2]) {
+          break;
+        };
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+
+      for (i = 0; i < rows.size(); ++i) {
+        rtn_v.push_back(bool_v[i2 + rows[i]]);
+      };
+
+    };
+
+    void idx_colint(std::vector<int> rows, unsigned int x, 
+                    std::vector<int> &rtn_v) {
+      rtn_v.reserve(nrow);
+      unsigned int i = 2;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        rows.reserve(nrow);
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      i2 = 0;
+      while (i2 < matr_idx[3].size()) {
+        if (x == matr_idx[3][i2]) {
+          break;
+        };
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+
+      for (i = 0; i < rows.size(); ++i) {
+        rtn_v.push_back(int_v[i2 + rows[i]]);
+      };
+
+    };
+
+    void idx_coluint(std::vector<int> rows, unsigned int x, 
+                    std::vector<unsigned int> &rtn_v) {
+      rtn_v.reserve(nrow);
+      unsigned int i = 2;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        rows.reserve(nrow);
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      i2 = 0;
+      while (i2 < matr_idx[3].size()) {
+        if (x == matr_idx[3][i2]) {
+          break;
+        };
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+
+      for (i = 0; i < rows.size(); ++i) {
+        rtn_v.push_back(uint_v[i2 + rows[i]]);
+      };
+
+    };
+
+    void idx_coldbl(std::vector<int> rows, unsigned int x, 
+                    std::vector<double> &rtn_v) {
+      rtn_v.reserve(nrow);
+      unsigned int i = 2;
+      unsigned int i2;
+      if (rows[0] == -1) {
+        rows.pop_back();
+        rows.reserve(nrow);
+        for (i2 = 0; i2 < nrow; ++i2) {
+          rows.push_back(i2);
+        };
+      };
+      i2 = 0;
+      while (i2 < matr_idx[3].size()) {
+        if (x == matr_idx[3][i2]) {
+          break;
+        };
+        i2 += 1;
+      };
+      i2 = nrow * i2;
+
+      for (i = 0; i < rows.size(); ++i) {
+        rtn_v.push_back(dbl_v[i2 + rows[i]]);
+      };
+
     };
 
     void name_colstr(std::vector<int> rows, std::string colname, std::vector<std::string> &rtn_v) {
@@ -8516,8 +8782,8 @@ class Dataframe{
 //@E :14: 7    8    m9
 //@X
 
-//@T Dataframe.idx_colint_like
-//@U template &lt;typename T&gt; void idx_colint_like(std::vector&lt;int&gt; rows, unsigned int x, std::vector&lt;T&gt; &rtn_v)
+//@T Dataframe.idx_colnb
+//@U template &lt;typename T&gt; void idx_colnb(std::vector&lt;int&gt; rows, unsigned int x, std::vector&lt;T&gt; &rtn_v)
 //@X
 //@D Allow to copy a int, unsigned int , bool or double column as a vector&lt;T&gt;, by column index.
 //@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
@@ -8527,13 +8793,13 @@ class Dataframe{
 //@E // after reading teste_dataframe.csv as obj1
 //@E std::vector&lt;int&gt; currows = {1, 0, 1};
 //@E std::vector&lt;unsigned int&gt; outv = {};
-//@E obj1.idx_colint_like(currows, 2, outv);
+//@E obj1.idx_colnb(currows, 2, outv);
 //@E print_nvec(outv);
 //@E :0: 8 3 8
 //@X
 
-//@T Dataframe.name_colint_like
-//@U template &lt;typename T&gt; void name_colint_like(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;T&gt; &rtn_v)
+//@T Dataframe.name_colnb
+//@U template &lt;typename T&gt; void name_colnb(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;T&gt; &rtn_v)
 //@X
 //@D Allow to copy a int, unsigned int , bool or double column as a vector&lt;T&gt;, by column name.
 //@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
@@ -8543,19 +8809,19 @@ class Dataframe{
 //@E // after reading teste_dataframe.csv as obj1
 //@E std::vector&lt;int&gt; currows = {1, 0, 1};
 //@E std::vector&lt;unsigned int&gt; outv = {};
-//@E obj1.name_colint_like(currows, "col2", outv);
+//@E obj1.name_colnb(currows, "col2", outv);
 //@E print_nvec(outv);
 //@E :0: 8 3 8
 //@X
 
-//@T Dataframe.idx_colint
+//@T Dataframe.idx_colnb_see
 //@U using ColumnView = std::variant&lt;
 //@U         std::span&lt;const int&gt;,
 //@U         std::span&lt;const unsigned int&gt;,
 //@U         std::span&lt;const double&gt;
 //@U     &gt;;
 //@U 
-//@U     ColumnView idx_colint(unsigned int &x) const
+//@U     ColumnView idx_colnb_see(unsigned int &x) const
 //@X
 //@D Allow to get the reference of a int, unsigned int or double column as a span&lt;T&gt;, by column index (>= C++ 20).
 //@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all. Intended to be used for creating boolean vecotr by your own functions, to maybe filter data later with <code>Dataframe.display_tweak(), Dataframe.idx_dataframe_bool(), Dataframe.name_dataframe_bool(), Dataframe.idx_colstr_bool, ...</code>
@@ -8566,13 +8832,13 @@ class Dataframe{
 //@E 
 //@E std::vector&lt;int&gt; cols = {-1};
 //@E 
-//@E auto col = obj1.idx_colint(n);
+//@E auto col = obj1.idx_colnb_see(n);
 //@X
 
-//@T Dataframe.display_tweak
-//@U void display_tweak(std::vector&lt;bool&gt; &x, std::vector&lt;int&gt; &colv)
+//@T Dataframe.display_filter
+//@U void display_filter(std::vector&lt;bool&gt; &x, std::vector&lt;int&gt; &colv)
 //@X
-//@D Print the current dataframe. Works seemlessly with <code>Dataframe.idx_colint()</code> to efficiently create boolean vecotr to filter rows, see example.
+//@D Print the current dataframe. Works seemlessly with <code>Dataframe.idx_colnb_see()</code> to efficiently create boolean vecotr to filter rows, see example.
 //@A x : is the boolean vecotr filtering the rows to display
 //@X
 //@E // after reading teste_dataframe.csv as obj1
@@ -8581,7 +8847,7 @@ class Dataframe{
 //@E
 //@E std::vector&lt;int&gt; cols = {-1};
 //@E
-//@E auto col = obj1.idx_colint2(n);
+//@E auto col = obj1.idx_colnb_see(n);
 //@E
 //@E std::vector&lt;bool&gt; mask; 
 //@E
@@ -8591,7 +8857,7 @@ class Dataframe{
 //@E         mask[i] = span[i] &gt; 3;
 //@E }, col);
 //@E 
-//@E obj1.display_tweak(mask, cols);
+//@E obj1.display_filter(mask, cols);
 //@E
 //@E     &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;
 //@E     col1   col2   col3   col4  col5  col6
