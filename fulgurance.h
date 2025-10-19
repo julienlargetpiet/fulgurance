@@ -7891,6 +7891,46 @@ class Dataframe{
       };
     };
 
+  void transform_inner_fast(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col) {
+      unsigned int i2;
+      const auto& cur_tmp = cur_obj.get_tmp_val_refv();
+      const std::vector<std::string>& ext_colv = cur_tmp[ext_col];
+      std::vector<std::string> in_colv = tmp_val_refv[in_col];
+      std::string cur_val;
+      unsigned int nrow2 = nrow;
+      nrow = 0;
+      const unsigned int ext_nrow = cur_obj.get_nrow();
+      for (int i = nrow - 1; i >= 0; --i) {
+        i2 = 0;
+        cur_val = in_colv[i];
+        while (i2 < ext_nrow) {
+          if (cur_val == ext_colv[i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+        if (i2 < ext_nrow) {
+          for (i2 = 0; i2 < ncol; ++i2) {
+            tmp_val_refv[i2][nrow] = cur_tmp[i2][i];
+            if (type_refv[i2] == typeid(std::string).name()) {
+              str_v[nrow2 * i2 + nrow] = str_v[nrow2 * i2 + i];
+            } else if (type_refv[i2] == typeid(char).name()) {
+              chr_v[nrow2 * i2 + nrow] = chr_v[nrow2 * i2 + i];
+            } else if (type_refv[i2] == typeid(bool).name()) {
+              bool_v[nrow2 * i2 + nrow] = bool_v[nrow2 * i2 + i];
+            } else if (type_refv[i2] == typeid(int).name()) {
+              int_v[nrow2 * i2 + nrow] = int_v[nrow2 * i2 + i];
+            } else if (type_refv[i2] == typeid(unsigned int).name()) {
+              uint_v[nrow2 * i2 + nrow] = uint_v[nrow2 * i2 + i];
+            } else if (type_refv[i2] == typeid(double).name()) {
+              dbl_v[nrow2 * i2 + nrow] = dbl_v[nrow2 * i2 + i];
+            };
+          };
+          nrow += 1;
+        };
+      };
+    };
+
     void transform_inner(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col) {
       unsigned int i2;
       const auto& cur_tmp = cur_obj.get_tmp_val_refv();
@@ -10058,7 +10098,7 @@ std::vector<std::vector<bool>> all_comb(unsigned int &k, unsigned int &n) {
 };
 
 //@T all_comb_iter
-//@U unsigned int all_comb_iter(std::deque&lt;bool&gt; &x)
+//@U unsigned int all_comb_iter(std::vector&lt;bool&gt; &x)
 //@X
 //@D Returns the number of iterations to find the input boolean vector according to all_comb algorithm
 //@A x : is the input boolean vector
