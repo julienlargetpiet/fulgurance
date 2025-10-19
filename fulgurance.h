@@ -7065,7 +7065,7 @@ class Dataframe{
         std::span<const double>
     >;
     
-    ColumnView idx_colnb_see(unsigned int &x) const {
+    ColumnView view_colnb(unsigned int &x) const {
         unsigned int i2 = 0;
     
         for (unsigned int i = 3; i <= 5; ++i) {
@@ -7085,10 +7085,10 @@ class Dataframe{
             }
         }
     
-        throw std::out_of_range("idx_colnb_see(): column not found");
+        throw std::out_of_range("view_colnb(): column not found");
     }
 
-    std::span<const std::string> idx_colstr_see(unsigned int &x) const {
+    std::span<const std::string> view_colstr(unsigned int &x) const {
       unsigned int i2 = 0;
 
       while (i2 < matr_idx[0].size()) {
@@ -7105,7 +7105,7 @@ class Dataframe{
  
     };
 
-    std::span<const char> idx_colchr_see(unsigned int &x) const {
+    std::span<const char> view_colchr(unsigned int &x) const {
       unsigned int i2 = 0;
 
       while (i2 < matr_idx[1].size()) {
@@ -7122,7 +7122,7 @@ class Dataframe{
  
     };
 
-    std::span<const int> idx_colint_see(unsigned int &x) const {
+    std::span<const int> view_colint(unsigned int &x) const {
       unsigned int i2 = 0;
 
       while (i2 < matr_idx[3].size()) {
@@ -7139,7 +7139,7 @@ class Dataframe{
  
     };
 
-    std::span<const unsigned int> idx_coluint_see(unsigned int &x) const {
+    std::span<const unsigned int> view_coluint(unsigned int &x) const {
       unsigned int i2 = 0;
 
       while (i2 < matr_idx[4].size()) {
@@ -7156,7 +7156,7 @@ class Dataframe{
  
     };
 
-    std::span<const double> idx_coldbl_see(unsigned int &x) const {
+    std::span<const double> view_coldbl(unsigned int &x) const {
       unsigned int i2 = 0;
 
       while (i2 < matr_idx[5].size()) {
@@ -7484,7 +7484,7 @@ class Dataframe{
         };
         ncol = max_ncol;
       };
-      for (unsigned int i : cols) {
+      for (int& i : cols) {
         cur_v = {};
         for (i2 = 0; i2 < nrow; ++i2) {
           cur_v.push_back(cur_tmp[i][i2]);  
@@ -7513,16 +7513,20 @@ class Dataframe{
         };
         ncol = max_ncol;
       };
-      for (unsigned int i : cols) {
+      for (i2 = 0; i2 < mask.size(); i2 += 1) {
+        if (mask[i2]) {
+          nrow += 1;
+        };
+      };
+      for (int& i : cols) {
         cur_v = {};
-        for (i2 = 0; i2 < nrow; ++i2) {
-          if (mask[i]) {
+        for (i2 = 0; i2 < mask.size(); ++i2) {
+          if (mask[i2]) {
             cur_v.push_back(cur_tmp[i][i2]);
           };
         };
         tmp_val_refv.push_back(cur_v);
       };
-      nrow = cur_v.size();
       type_classification();
       name_v = cur_obj.get_colname();
       name_v_row = cur_obj.get_rowname(); 
@@ -8418,7 +8422,7 @@ class Dataframe{
 //@T Dataframe.display_filter
 //@U void display_filter(std::vector&lt;bool&gt; &x, std::vector&lt;int&gt; &colv)
 //@X
-//@D Print the current dataframe. Works seemlessly with <code>Dataframe.idx_colnb_see()</code> to efficiently create boolean vecotr to filter rows, see example.
+//@D Print the current dataframe. Works seemlessly with <code>Dataframe.view_colnb()</code> to efficiently create boolean vecotr to filter rows, see example.
 //@A x : is the boolean vecotr filtering the rows to display
 //@X
 //@E // after reading teste_dataframe.csv as obj1
@@ -8427,7 +8431,7 @@ class Dataframe{
 //@E
 //@E std::vector&lt;int&gt; cols = {-1};
 //@E
-//@E auto col = obj1.idx_colnb_see(n);
+//@E auto col = obj1.view_colnb(n);
 //@E
 //@E std::vector&lt;bool&gt; mask; 
 //@E
@@ -8452,8 +8456,8 @@ class Dataframe{
 //@E :14: 6      7      8      m9    10    i
 //@X
 
-//@T Dataframe.idx_dataframe
-//@U void idx_dataframe(std::vector&lt;int&gt; &rows, std::vector&lt;int&gt; &cols, Dataframe &cur_obj)
+//@T Dataframe.get_dataframe
+//@U void get_dataframe(std::vector&lt;int&gt; &cols, Dataframe &cur_obj)
 //@X
 //@D Allow to copy a dataframe choosing columns (by index) of the copied dataframe. 
 //@A cols : is the vector of the index of the columns to copy (<code>{-1}</code>) for all
@@ -8462,7 +8466,7 @@ class Dataframe{
 //@E // after reading teste_dataframe.csv as obj1
 //@E Dataframe obj2;
 //@E std::vector&lt;int&gt; idx_cols2 = {1, 2, 3};
-//@E obj2.idx_dataframe(idx_cols2, obj1);
+//@E obj2.get_dataframe(idx_cols2, obj1);
 //@E 
 //@E obj2.display();
 //@E     col1 col2 col3
@@ -8483,58 +8487,153 @@ class Dataframe{
 //@E :14: 7    8    m9
 //@X
 
-//@T Dataframe.idx_colnb_see
+//@T Dataframe.get_dataframe_filter
+//@U void get_dataframe_filter(std::vector&lt;int&gt; &cols, Dataframe &cur_obj, std::vector&lt;bool&gt; &mask)
+//@X
+//@D Allow to copy a dataframe choosing columns (by index) of the copied dataframe, while applying a mask on the desired rows. 
+//@A cols : is the vector of the index of the columns to copy (<code>{-1}</code>) for all
+//@A cur_obj : is the dataframe that will contain all the rows and columns of the copied dataframe
+//@A mask : is the boolean mask vector
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E unsigned int n = 3;
+//@E auto vec = obj1.view_colnb(n);
+//@E std::vector&lt;bool&gt; vmask = {};
+//@E std::visit([&vmask](auto&& span) {
+//@E     vmask.resize(span.size());
+//@E     for (size_t i = 0; i &lt; span.size(); ++i)
+//@E         vmask[i] = span[i] &gt; 4;
+//@E }, vec);
+//@E Dataframe obj2;
+//@E std::vector&lt;int&gt; idx_cols2 = {1, 2, 3};
+//@E obj2.get_dataframe_filter(idx_cols2, obj1, vmask);
+//@E 
+//@E obj2.display();
+//@E     col1 col2 col3
+//@E :1:  7    8    bb
+//@E :3:  7    8    uu
+//@E :5:  7    8    s9
+//@E :7:  7    8    m9
+//@E :8:  7    8    s9
+//@E :10: 7    8    m9
+//@E :11: 7    8    m9
+//@E :12: 7    8    s9
+//@E :14: 7    8    m9
+//@X
+
+//@T Dataframe.view_colnb
 //@U using ColumnView = std::variant&lt;
 //@U         std::span&lt;const int&gt;,
 //@U         std::span&lt;const unsigned int&gt;,
 //@U         std::span&lt;const double&gt;
 //@U     &gt;;
 //@U 
-//@U     ColumnView idx_colnb_see(unsigned int &x) const
+//@U     ColumnView view_colnb(unsigned int &x) const
 //@X
 //@D Allow to get the reference of a int, unsigned int or double column as a span&lt;T&gt;, by column index (>= C++ 20).
-//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all. Intended to be used for creating boolean vecotr by your own functions, to maybe filter data later with <code>Dataframe.display_filter(), Dataframe.idx_dataframe_filter(), Dataframe.get_col_filter, ...</code>
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all. Intended to be used for creating boolean vecotr by your own functions, to maybe filter data later with <code>Dataframe.display_filter(), Dataframe.get_dataframe_filter(), Dataframe.get_col_filter, ...</code>
 //@A x : is the index of the column to get the ref from
 //@X
 //@E // after reading teste_dataframe.csv as obj1
 //@E unsigned int n = 1;
 //@E 
-//@E std::vector&lt;int&gt; cols = {-1};
-//@E 
-//@E auto col = obj1.idx_colnb_see(n);
+//@E auto col = obj1.view_colnb(n);
 //@X
 
-//@T Dataframe.idx_colstr
-//@U void idx_colstr(std::vector&lt;int&gt; rows, unsigned int x, std::vector&lt;std::string&gt; &rtn_v)
+//@T Dataframe.view_colstr
+//@U std::span&lt;const std::string&gt; view_colstr(unsigned int &x) const 
 //@X
-//@D Allow to copy a std::string column as a vector&lt;std::string&gt;, by column index.
-//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@D Allow to get the reference of a std::string column by column index.
+//@A x : is the index of the column to get the ref from
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E unsigned int n = 3;
+//@E 
+//@E auto col = obj1.view_colstr(n);
+//@X
+
+//@T Dataframe.view_colchr
+//@U std::span&lt;const std::string&gt; view_colchr(unsigned int &x) const 
+//@X
+//@D Allow to get the reference of a char column by column index.
+//@A x : is the index of the column to get the ref from
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E unsigned int n = 5;
+//@E 
+//@E auto col = obj1.view_colchr(n);
+//@X
+
+//@T Dataframe.view_colint
+//@U std::span&lt;const std::string&gt; view_colint(unsigned int &x) const 
+//@X
+//@D Allow to get the reference of an int column by column index.
+//@A x : is the index of the column to get the ref from
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E unsigned int n = 4;
+//@E 
+//@E auto col = obj1.view_colstr(n);
+//@X
+
+//@T Dataframe.view_coluint
+//@U std::span&lt;const std::string&gt; view_coluint(unsigned int &x) const 
+//@X
+//@D Allow to get the reference of an uint column by column index.
+//@A x : is the index of the column to get the ref from
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E unsigned int n = 0;
+//@E 
+//@E auto col = obj1.view_colchr(n);
+//@X
+
+//@T Dataframe.view_coldbl
+//@U std::span&lt;const std::string&gt; view_coldbl(unsigned int &x) const 
+//@X
+//@D Allow to get the reference of a double column by column index.
+//@A x : is the index of the column to get the ref from
+//@X
+//@E // after reading teste_dataframe.csv as obj1
+//@E unsigned int n = 1;
+//@E 
+//@E auto col = obj1.view_coldbl(n);
+//@X
+
+//@T Dataframe.get_col
+//@U template &lt;typename T&gt;
+//@U void get_col(unsigned int x, std::vector&lt;T&gt; &rtn_v)
+//@X
+//@D Allow to copy a column as a vector, by column index.
 //@A x : is the index of the column to copy
 //@A rtn_v : is the vector that will contain the column to copy
 //@X
 //@E // after reading teste_dataframe.csv as obj1
 //@E std::vector&lt;std::string&gt; outv2 = {};
-//@E obj1.idx_colstr(currows, 3, outv2);
-//@E print_svec(outv2);
-//@E :0: bb aa bb
+//@E obj1.get_col(3, outv2);
 //@X
 
-//@T Dataframe.idx_colchr
-//@U void idx_colchr(std::vector&lt;int&gt; rows, unsigned int x, std::vector&lt;char&gt; &rtn_v)
+//@T Dataframe.get_col_filter
+//@U template &lt;typename T&gt;
+//@U void get_col_filter(unsigned int x, std::vector&lt;T&gt; &rtn_v, std::vector&lt;bool&gt; &mask)
 //@X
-//@D Allow to copy a char column as a vector&lt;char&gt;, by column index.
-//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
+//@D Allow to copy a column as a vector, by column index with a boolean vector mask to keep the desired lines.
 //@A x : is the index of the column to copy
 //@A rtn_v : is the vector that will contain the column to copy
 //@X
 //@E // after reading teste_dataframe.csv as obj1
-//@E std::vector&lt;char&gt; outv3 = {};
-//@E obj1.idx_colchr(currows, 5, outv3);
-//@E for (char i : outv3) {
-//@E   std::cout &lt;&lt; i &lt;&lt; " ";
-//@E };
-//@E std::cout &lt;&lt; "\n";
-//@E e z e
+//@E std::vector&lt;std::string&gt; outv2 = {};
+//@E unsigned int n = 0;
+//@E std::vector&lt;bool&gt; mask;
+//@E unsigned int nrow = obj1.get_nrow();
+//@E mask.reserve(nrow);
+//@E auto vec = obj1.view_coluint(n);
+//@E std::visit([&mask](auto&& span) {
+//@E     mask.resize(span.size());
+//@E     for (size_t i = 0; i &lt; span.size(); ++i)
+//@E         mask[i] = span[i] &gt; 3;
+//@E }, vec);
+//@E obj1.get_col(3, outv2, mask);
 //@X
 
 //@T Dataframe.get_nrow
@@ -8592,10 +8691,10 @@ class Dataframe{
 //@E obj1.set_colname();
 //@X
 
-//@T Dataframe.replace_colnb
-//@U template &lt;typename T&gt; void replace_colnb(std::vector&lt;T&gt; &x, unsigned int &colnb)
+//@T Dataframe.replace_col
+//@U template &lt;typename T&gt; void replace_col(std::vector&lt;T&gt; &x, unsigned int &colnb)
 //@X
-//@D Replace a int, unsigned int, bool or double column of the associated dataframe.
+//@D Replace a column of the associated dataframe.
 //@A x : is the column (as vector) that will replace the dataframe column
 //@A colnb : is the index of the column to replace
 //@X
@@ -8604,7 +8703,7 @@ class Dataframe{
 //@E std::vector&lt;unsigned int&gt; rpl_col = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 
 //@E                                       10, 11, 12, 13, 14};
 //@E unsigned int col = 0;
-//@E obj1.replace_colnb(rpl_col, col);
+//@E obj1.replace_col(rpl_col, col);
 //@E obj1.display();
 //@E      &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;
 //@E      col1   col2   col3   col4  col5  col6
@@ -8623,74 +8722,6 @@ class Dataframe{
 //@E  :12: 12     7      8      s9    10    p
 //@E  :13: 13     2      3      NA    5     j
 //@E  :14: 14     7      8      m9    10    i
-//@X
-
-//@T Dataframe.replace_colstr
-//@U void replace_colstr(std::vector&lt;std::string&gt; &x, unsigned int &colnb)
-//@X
-//@D Replace a string column of the associated dataframe.
-//@A x : is the column (as vector) that will replace the dataframe column
-//@A colnb : is the index of the column to replace
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E
-//@E std::vector&lt;std::string&gt; rpl_col = {"0", "1", "2", "3", "4", "5", "6", 
-//@E                                         "7", "8", "9", 
-//@E                                         "10", "11", "12", "13", "14"};
-//@E unsigned int col = 3;
-//@E obj1.replace_colstr(rpl_col, col);
-//@E obj1.display();
-//@E     &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;
-//@E     col1   col2   col3   col4  col5  col6
-//@E :0:  1      2      3      0     5     z
-//@E :1:  6      7      8      1     10    e
-//@E :2:  1      2      3      2     5     h
-//@E :3:  6      7      8      3     10    a
-//@E :4:  1      2      3      4     -5    q
-//@E :5:  6      7      8      5     10    p
-//@E :6:  1      2      3      6     5     j
-//@E :7:  6      7      8      7     10    i
-//@E :8:  6      7      8      8     10    p
-//@E :9:  1      2      3      9     5     j
-//@E :10: 6      7      8      10    10    i
-//@E :11: 6      7      8      11    10    i
-//@E :12: 6      7      8      12    10    p
-//@E :13: 1      2      3      13    5     j
-//@E :14: 6      7      8      14    10    i
-//@X
-
-//@T Dataframe.replace_colchr
-//@U void replace_colchr(std::vector&lt;char&gt; &x, unsigned int &colnb)
-//@X
-//@D Replace a string column of the associated dataframe.
-//@A x : is the column (as vector) that will replace the dataframe column
-//@A colnb : is the index of the column to replace
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E
-//@E std::vector&lt;char&gt; rpl_col = {'c', 'c', 'c', 'c', 'c', 'c', 'c', 
-//@E                                       'c', 'c', 'c', 
-//@E                                       'b', 'b', 'v', 'v', 'v'};
-//@E unsigned int col = 5;
-//@E obj1.replace_colchr(rpl_col, col);
-//@E obj1.display();
-//@E     &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;
-//@E     col1   col2   col3   col4  col5  col6
-//@E :0:  1      2      3      aa    5     c
-//@E :1:  6      7      8      bb    10    c
-//@E :2:  1      2      3      cc    5     c
-//@E :3:  6      7      8      uu    10    c
-//@E :4:  1      2      3      s4    -5    c
-//@E :5:  6      7      8      s9    10    c
-//@E :6:  1      2      3      a4    5     c
-//@E :7:  6      7      8      m9    10    c
-//@E :8:  6      7      8      s9    10    c
-//@E :9:  1      2      3      a4    5     c
-//@E :10: 6      7      8      m9    10    b
-//@E :11: 6      7      8      m9    10    b
-//@E :12: 6      7      8      s9    10    v
-//@E :13: 1      2      3      NA    5     v
-//@E :14: 6      7      8      m9    10    v
 //@X
 
 //@T Dataframe.add_col
