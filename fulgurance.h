@@ -6997,110 +6997,6 @@ class Dataframe{
 
     };
 
-    template <typename T> void name_colbl(std::vector<int> rows, std::string colname, std::vector<T> &rtn_v) {
-      if (name_v.size() == 0) {
-        std::cout << "no column names\n";
-        reinitiate();
-        return;
-      };
-      unsigned int x = 0;
-      while (colname != name_v[x]) {
-        x += 1;
-      };
-      rtn_v.reserve(nrow);
-      unsigned int i = 2;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
-        };
-      };
-      i2 = 0;
-      bool is_found = 0;
-      while (!is_found) {
-        while (i2 < matr_idx[i].size()) {
-          if (x == matr_idx[i][i2]) {
-            is_found = 1;
-            break;
-          };
-          i2 += 1;
-        };
-        i += 1;
-      };
-      i -= 1;
-      i2 = nrow * i2;
-      if (i == 2) {
-        for (i = 0; i < rows.size(); ++i) {
-          rtn_v.push_back(bool_v[i2 + rows[i]]);
-        };
-      } else if (i == 3) {
-        for (i = 0; i < rows.size(); ++i) {
-          rtn_v.push_back(int_v[i2 + rows[i]]);
-        };
-      } else if (i == 4) {
-        for (i = 0; i < rows.size(); ++i) {
-          rtn_v.push_back(uint_v[i2 + rows[i]]);
-        };
-      } else if (i == 5) {
-        for (i = 0; i < rows.size(); ++i) {
-          rtn_v.push_back(dbl_v[i2 + rows[i]]);
-        };
-      };
-    };
-
-    //template <typename T> void name_colnb(std::vector<int> rows, std::string colname, std::vector<T> &rtn_v) {
-    //  if (name_v.size() == 0) {
-    //    std::cout << "no column names\n";
-    //    reinitiate();
-    //    return;
-    //  };
-    //  unsigned int x = 0;
-    //  while (colname != name_v[x]) {
-    //    x += 1;
-    //  };
-    //  rtn_v.reserve(nrow);
-    //  unsigned int i = 2;
-    //  unsigned int i2;
-    //  if (rows[0] == -1) {
-    //    rows.pop_back();
-    //    for (i2 = 0; i2 < nrow; ++i2) {
-    //      rows.push_back(i2);
-    //    };
-    //  };
-    //  i2 = 0;
-    //  bool is_found = 0;
-    //  while (!is_found) {
-    //    while (i2 < matr_idx[i].size()) {
-    //      if (x == matr_idx[i][i2]) {
-    //        is_found = 1;
-    //        break;
-    //      };
-    //      i2 += 1;
-    //    };
-    //    i += 1;
-    //  };
-    //  i -= 1;
-    //  i2 = nrow * i2;
-    //  if (i == 2) {
-    //    for (i = 0; i < rows.size(); ++i) {
-    //      rtn_v.push_back(bool_v[i2 + rows[i]]);
-    //    };
-    //  } else if (i == 3) {
-    //    for (i = 0; i < rows.size(); ++i) {
-    //      rtn_v.push_back(int_v[i2 + rows[i]]);
-    //    };
-    //  } else if (i == 4) {
-    //    for (i = 0; i < rows.size(); ++i) {
-    //      rtn_v.push_back(uint_v[i2 + rows[i]]);
-    //    };
-    //  } else if (i == 5) {
-    //    for (i = 0; i < rows.size(); ++i) {
-    //      rtn_v.push_back(dbl_v[i2 + rows[i]]);
-    //    };
-    //  };
-    //};
-
     #if __cplusplus >= 202002L 
 
     template <typename T>
@@ -7279,469 +7175,289 @@ class Dataframe{
 
     #endif
 
-    void idx_colbl(std::vector<int> rows, unsigned int x, 
-                    std::vector<bool> &rtn_v) {
-      rtn_v.reserve(nrow);
-      unsigned int i = 2;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        rows.reserve(nrow);
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
-        };
-      };
-      i2 = 0;
-      while (i2 < matr_idx[3].size()) {
-        if (x == matr_idx[3][i2]) {
-          break;
-        };
-        i2 += 1;
-      };
-      i2 = nrow * i2;
-
-      for (i = 0; i < rows.size(); ++i) {
-        rtn_v.push_back(bool_v[i2 + rows[i]]);
-      };
-
-    };
-
-    void idx_colint(std::vector<int> rows, unsigned int x, 
-                    std::vector<int> &rtn_v) {
-      rtn_v.reserve(nrow);
-      unsigned int i = 2;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        rows.reserve(nrow);
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
-        };
-      };
-      i2 = 0;
-      while (i2 < matr_idx[3].size()) {
-        if (x == matr_idx[3][i2]) {
-          break;
-        };
-        i2 += 1;
-      };
-      i2 = nrow * i2;
-
-      for (i = 0; i < rows.size(); ++i) {
-        rtn_v.push_back(int_v[i2 + rows[i]]);
-      };
-
-    };
-
-    void idx_coluint(std::vector<int> rows, unsigned int x, 
-                    std::vector<unsigned int> &rtn_v) {
-      rtn_v.reserve(nrow);
-      unsigned int i = 2;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        rows.reserve(nrow);
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
-        };
-      };
-      i2 = 0;
-      while (i2 < matr_idx[3].size()) {
-        if (x == matr_idx[3][i2]) {
-          break;
-        };
-        i2 += 1;
-      };
-      i2 = nrow * i2;
-
-      for (i = 0; i < rows.size(); ++i) {
-        rtn_v.push_back(uint_v[i2 + rows[i]]);
-      };
-
-    };
-
-    void idx_coldbl(std::vector<int> rows, unsigned int x, 
-                    std::vector<double> &rtn_v) {
-      rtn_v.reserve(nrow);
-      unsigned int i = 2;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        rows.reserve(nrow);
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
-        };
-      };
-      i2 = 0;
-      while (i2 < matr_idx[3].size()) {
-        if (x == matr_idx[3][i2]) {
-          break;
-        };
-        i2 += 1;
-      };
-      i2 = nrow * i2;
-
-      for (i = 0; i < rows.size(); ++i) {
-        rtn_v.push_back(dbl_v[i2 + rows[i]]);
-      };
-
-    };
-
-    void name_colstr(std::vector<int> rows, std::string colname, std::vector<std::string> &rtn_v) {
-      if (name_v.size() == 0) {
-        std::cout << "no column names\n";
-        reinitiate();
-        return;
-      };
-      unsigned int x = 0;
-      while (colname != name_v[x]) {
-        x += 1;
-      };
+    template <typename T>
+    void get_col_filter(unsigned int &x, 
+                    std::vector<T> &rtn_v,
+                    std::vector<bool> &mask) {
       rtn_v.reserve(nrow);
       unsigned int i;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
-        };
-      };
-      i2 = 0;
-      while (i2 < matr_idx[0].size()) {
-        if (x == matr_idx[0][i2]) {
-          break;
-        };
-        i2 += 1;
-      };
-      i2 = nrow * i2;
-      for (i = 0; i < rows.size(); ++i) {
-        rtn_v.push_back(str_v[i2 + rows[i]]);
-      };
-    };
+      unsigned int i2 = 0;
 
-    void idx_colstr(std::vector<int> rows, unsigned int x, std::vector<std::string> &rtn_v) {
-      rtn_v.reserve(nrow);
-      unsigned int i;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
-        };
-      };
-      i2 = 0;
-      while (i2 < matr_idx[0].size()) {
-        if (x == matr_idx[0][i2]) {
-          break;
-        };
-        i2 += 1;
-      };
-      i2 = nrow * i2;
-      for (i = 0; i < rows.size(); ++i) {
-        rtn_v.push_back(str_v[i2 + rows[i]]);
-      };
-    };
+      if constexpr (std::is_same_v<T, bool>) {
 
-    void name_colchr(std::vector<int> rows, std::string colname, std::vector<char> &rtn_v) {
-      if (name_v.size() == 0) {
-        std::cout << "no column names\n";
-        reinitiate();
-        return;
-      };
-      unsigned int x = 0;
-      while (colname != name_v[x]) {
-        x += 1;
-      };
-      rtn_v.reserve(nrow);
-      unsigned int i;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
-        };
-      };
-      i2 = 0;
-      while (i2 < matr_idx[1].size()) {
-        if (x == matr_idx[1][i2]) {
-          break;
-        };
-        i2 += 1;
-      };
-      i2 = nrow * i2;
-      for (i = 0; i < rows.size(); ++i) {
-        rtn_v.push_back(chr_v[i2 + rows[i]]);
-      };
-    };
-
-    void idx_colchr(std::vector<int> rows, unsigned int x, std::vector<char> &rtn_v) {
-      rtn_v.reserve(nrow);
-      unsigned int i;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
-        };
-      };
-      i2 = 0;
-      while (i2 < matr_idx[1].size()) {
-        if (x == matr_idx[1][i2]) {
-          break;
-        };
-        i2 += 1;
-      };
-      i2 = nrow * i2;
-      for (i = 0; i < rows.size(); ++i) {
-        rtn_v.push_back(chr_v[i2 + rows[i]]);
-      };
-    };
-
-    template <typename T> void name_matrint(std::vector<int> rows, std::vector<std::string> x_v, std::vector<std::vector<T>> &rtn_matr) {
-      std::vector<T> rtn_v;
-      unsigned int i;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
-        };
-      };
-      bool is_found;
-      unsigned int x;
-      if (name_v.size() == 0) {
-        std::cout << "There are no column names\n";
-        reinitiate();
-        return;
-      };
-      for (std::string cur_name : x_v) {
-        x = 0;
-        while (cur_name != name_v[x]) {
-          x += 1;
-        };
-        rtn_v = {};
-        rtn_v.reserve(nrow);
-        i = 2;
-        i2 = 0;
-        is_found = 0;
-        while (!is_found) {
-          while (i2 < matr_idx[i].size()) {
-            if (x == matr_idx[i][i2]) {
-              is_found = 1;
-              break;
-            };
-            i2 += 1;
+        while (i2 < matr_idx[2].size()) {
+          if (x == matr_idx[2][i2]) {
+            break;
           };
-          i += 1;
+          i2 += 1;
         };
-        i -= 1;
+
+        if (i2 == matr_idx[2].size()) {
+          std::cerr << "Error in (get_col), no column found\n";
+          return;
+        };
+
         i2 = nrow * i2;
-        if (i == 2) {
-          for (i = 0; i < rows.size(); ++i) {
-            rtn_v.push_back(bool_v[i2 + rows[i]]);
-          };
-        } else if (i == 3) {
-          for (i = 0; i < rows.size(); ++i) {
-            rtn_v.push_back(int_v[i2 + rows[i]]);
-          };
-        } else if (i == 4) {
-          for (i = 0; i < rows.size(); ++i) {
-            rtn_v.push_back(uint_v[i2 + rows[i]]);
-          };
-        } else if (i == 5) {
-          for (i = 0; i < rows.size(); ++i) {
-            rtn_v.push_back(dbl_v[i2 + rows[i]]);
-          };
-        };
-        rtn_matr.push_back(rtn_v);
-      };
-    };
 
-    template <typename T> void idx_matrint(std::vector<int> rows, std::vector<unsigned int> x_v, std::vector<std::vector<T>> &rtn_matr) {
-      std::vector<T> rtn_v;
-      unsigned int i;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
-        };
-      };
-      bool is_found;
-      for (unsigned int x : x_v) {
-        rtn_v = {};
-        rtn_v.reserve(nrow);
-        i = 2;
-        i2 = 0;
-        is_found = 0;
-        while (!is_found) {
-          while (i2 < matr_idx[i].size()) {
-            if (x == matr_idx[i][i2]) {
-              is_found = 1;
-              break;
-            };
-            i2 += 1;
+        for (i = 0; i < nrow; ++i) {
+          if (mask[i]) {
+            rtn_v.push_back(bool_v[i2 + i]);
           };
-          i += 1;
         };
-        i -= 1;
+
+      } else if constexpr (std::is_same_v<T, int>) {
+
+        while (i2 < matr_idx[3].size()) {
+          if (x == matr_idx[3][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+
+        if (i2 == matr_idx[3].size()) {
+          std::cerr << "Error in (get_col), no column found\n";
+          return;
+        };
+
         i2 = nrow * i2;
-        if (i == 2) {
-          for (i = 0; i < rows.size(); ++i) {
-            rtn_v.push_back(bool_v[i2 + rows[i]]);
-          };
-        } else if (i == 3) {
-          for (i = 0; i < rows.size(); ++i) {
-            rtn_v.push_back(int_v[i2 + rows[i]]);
-          };
-        } else if (i == 4) {
-          for (i = 0; i < rows.size(); ++i) {
-            rtn_v.push_back(uint_v[i2 + rows[i]]);
-          };
-        } else if (i == 5) {
-          for (i = 0; i < rows.size(); ++i) {
-            rtn_v.push_back(dbl_v[i2 + rows[i]]);
-          };
-        };
-        rtn_matr.push_back(rtn_v);
-      };
-    };
 
-    void name_matrstr(std::vector<int> rows, std::vector<std::string> x_v, std::vector<std::vector<std::string>> &rtn_matr) {
-      std::vector<std::string> rtn_v;
-      unsigned int i;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
+        for (i = 0; i < nrow; ++i) {
+          if (mask[i]) {
+            rtn_v.push_back(int_v[i2 + i]);
+          };
         };
-      };
-      unsigned int x;
-      if (name_v.size() == 0) {
-        std::cout << "There are no column names\n";
-        reinitiate();
-        return;
-      };
-      for (std::string cur_name : x_v) {
-        x = 0;
-        while (cur_name != name_v[x]) {
-          x += 1;
+
+      } else if constexpr (std::is_same_v<T, unsigned int>) {
+
+        while (i2 < matr_idx[4].size()) {
+          if (x == matr_idx[4][i2]) {
+            break;
+          };
+          i2 += 1;
         };
-        rtn_v = {};
-        rtn_v.reserve(nrow);
-        i2 = 0;
+
+        if (i2 == matr_idx[4].size()) {
+          std::cerr << "Error in (get_col), no column found\n";
+          return;
+        };
+
+        i2 = nrow * i2;
+
+        for (i = 0; i < nrow; ++i) {
+          if (mask[i]) {
+            rtn_v.push_back(uint_v[i2 + i]);
+          };
+        };
+
+      } else if constexpr (std::is_same_v<T, double>) {
+
+        while (i2 < matr_idx[5].size()) {
+          if (x == matr_idx[5][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+
+        if (i2 == matr_idx[5].size()) {
+          std::cerr << "Error in (get_col), no column found\n";
+          return;
+        };
+
+        i2 = nrow * i2;
+
+        for (i = 0; i < nrow; ++i) {
+          if (mask[i]) {
+            rtn_v.push_back(dbl_v[i2 + i]);
+          };
+        };
+
+      } else if constexpr (std::is_same_v<T, std::string>) {
+
         while (i2 < matr_idx[0].size()) {
           if (x == matr_idx[0][i2]) {
             break;
           };
           i2 += 1;
         };
+
+        if (i2 == matr_idx[0].size()) {
+          std::cerr << "Error in (get_col), no column found\n";
+          return;
+        };
+
         i2 = nrow * i2;
-        for (i = 0; i < rows.size(); ++i) {
-          rtn_v.push_back(str_v[i2 + rows[i]]);
-        }; 
-        rtn_matr.push_back(rtn_v);
+
+        for (i = 0; i < nrow; ++i) {
+          if (mask[i]) {
+            rtn_v.push_back(str_v[i2 + i]);
+          };
+        };
+
+      } else if constexpr (std::is_same_v<T, char>) {
+
+        while (i2 < matr_idx[1].size()) {
+          if (x == matr_idx[1][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+
+        if (i2 == matr_idx[1].size()) {
+          std::cerr << "Error in (get_col), no column found\n";
+          return;
+        };
+
+        i2 = nrow * i2;
+
+        for (i = 0; i < nrow; ++i) {
+          if (mask[i]) {
+            rtn_v.push_back(chr_v[i2 + i]);
+          };
+        };
+
+      } else {
+        std::cerr << "Error in (get_col), unsupported type\n";
+        return;
       };
+
     };
 
-    void idx_matrstr(std::vector<int> rows, std::vector<unsigned int> x_v, std::vector<std::vector<std::string>> &rtn_matr) {
-      std::vector<std::string> rtn_v;
+
+    template <typename T>
+    void get_col(unsigned int &x, 
+                    std::vector<T> &rtn_v) {
+      rtn_v.reserve(nrow);
       unsigned int i;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
+      unsigned int i2 = 0;
+
+      if constexpr (std::is_same_v<T, bool>) {
+
+        while (i2 < matr_idx[2].size()) {
+          if (x == matr_idx[2][i2]) {
+            break;
+          };
+          i2 += 1;
         };
-      };
-      for (unsigned int x : x_v) {
-        rtn_v = {};
-        rtn_v.reserve(nrow);
-        i = 2;
-        i2 = 0;
+
+        if (i2 == matr_idx[2].size()) {
+          std::cerr << "Error in (get_col), no column found\n";
+          return;
+        };
+
+        i2 = nrow * i2;
+
+        for (i = 0; i < nrow; ++i) {
+          rtn_v.push_back(bool_v[i2 + i]);
+        };
+
+      } else if constexpr (std::is_same_v<T, int>) {
+
+        while (i2 < matr_idx[3].size()) {
+          if (x == matr_idx[3][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+
+        if (i2 == matr_idx[3].size()) {
+          std::cerr << "Error in (get_col), no column found\n";
+          return;
+        };
+
+        i2 = nrow * i2;
+
+        for (i = 0; i < nrow; ++i) {
+          rtn_v.push_back(int_v[i2 + i]);
+        };
+
+      } else if constexpr (std::is_same_v<T, unsigned int>) {
+
+        while (i2 < matr_idx[4].size()) {
+          if (x == matr_idx[4][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+
+        if (i2 == matr_idx[4].size()) {
+          std::cerr << "Error in (get_col), no column found\n";
+          return;
+        };
+
+        i2 = nrow * i2;
+
+        for (i = 0; i < nrow; ++i) {
+          rtn_v.push_back(uint_v[i2 + i]);
+        };
+
+      } else if constexpr (std::is_same_v<T, double>) {
+
+        while (i2 < matr_idx[5].size()) {
+          if (x == matr_idx[5][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+
+        if (i2 == matr_idx[5].size()) {
+          std::cerr << "Error in (get_col), no column found\n";
+          return;
+        };
+
+        i2 = nrow * i2;
+
+        for (i = 0; i < nrow; ++i) {
+          rtn_v.push_back(dbl_v[i2 + i]);
+        };
+
+      } else if constexpr (std::is_same_v<T, std::string>) {
+
         while (i2 < matr_idx[0].size()) {
           if (x == matr_idx[0][i2]) {
             break;
           };
           i2 += 1;
         };
-        i2 = nrow * i2;
-        for (i = 0; i < rows.size(); ++i) {
-          rtn_v.push_back(str_v[i2 + rows[i]]);
-        };
-        rtn_matr.push_back(rtn_v);
-      };
-    };
 
-    void name_matrchr(std::vector<int> rows, std::vector<std::string> x_v, std::vector<std::vector<char>> &rtn_matr) {
-      std::vector<char> rtn_v;
-      unsigned int i;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
+        if (i2 == matr_idx[0].size()) {
+          std::cerr << "Error in (get_col), no column found\n";
+          return;
         };
-      };
-      unsigned int x;
-      if (name_v.size() == 0) {
-        std::cout << "There are no column names\n";
-        reinitiate();
+
+        i2 = nrow * i2;
+
+        for (i = 0; i < nrow; ++i) {
+          rtn_v.push_back(str_v[i2 + i]);
+        };
+
+      } else if constexpr (std::is_same_v<T, char>) {
+
+        while (i2 < matr_idx[1].size()) {
+          if (x == matr_idx[1][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+
+        if (i2 == matr_idx[1].size()) {
+          std::cerr << "Error in (get_col), no column found\n";
+          return;
+        };
+
+        i2 = nrow * i2;
+
+        for (i = 0; i < nrow; ++i) {
+          rtn_v.push_back(chr_v[i2 + i]);
+        };
+
+      } else {
+        std::cerr << "Error in (get_col), unsupported type\n";
         return;
       };
-      for (std::string cur_name : x_v) {
-        x = 0;
-        while (cur_name != name_v[x]) {
-          x += 1;
-        };
-        rtn_v = {};
-        rtn_v.reserve(nrow);
-        i2 = 0;
-        while (i2 < matr_idx[1].size()) {
-          if (x == matr_idx[1][i2]) {
-            break;
-          };
-          i2 += 1;
-        };
-        i2 = nrow * i2;
-        for (i = 0; i < rows.size(); ++i) {
-          rtn_v.push_back(chr_v[i2 + rows[i]]);
-        }; 
-        rtn_matr.push_back(rtn_v);
-      };
+
     };
 
-    void idx_matrchr(std::vector<int> rows, std::vector<unsigned int> x_v, std::vector<std::vector<char>> &rtn_matr) {
-      std::vector<char> rtn_v;
-      unsigned int i;
-      unsigned int i2;
-      if (rows[0] == -1) {
-        rows.pop_back();
-        for (i2 = 0; i2 < nrow; ++i2) {
-          rows.push_back(i2);
-        };
-      };
-      for (unsigned int x : x_v) {
-        rtn_v = {};
-        rtn_v.reserve(nrow);
-        i = 2;
-        i2 = 0;
-        while (i2 < matr_idx[1].size()) {
-          if (x == matr_idx[1][i2]) {
-            break;
-          };
-          i2 += 1;
-        };
-        i2 = nrow * i2;
-        for (i = 0; i < rows.size(); ++i) {
-          rtn_v.push_back(chr_v[i2 + rows[i]]);
-        };
-        rtn_matr.push_back(rtn_v);
-      };
-    };
-
-    std::vector<std::vector<std::string>> get_tmp_val_refv() {
+    const std::vector<std::vector<std::string>>& get_tmp_val_refv() const {
       return tmp_val_refv;
     };
 
@@ -7753,38 +7469,16 @@ class Dataframe{
       return ncol;
     };
 
-    void name_dataframe(std::vector<int> &rows, std::vector<std::string> &name_cols, Dataframe &cur_obj) {
+    void get_dataframe(std::vector<int> &cols, Dataframe &cur_obj) {
       unsigned int i2;
-      unsigned int max_nrow = cur_obj.get_nrow();
+      nrow = cur_obj.get_nrow();
       unsigned int max_ncol = cur_obj.get_ncol();
-      std::vector<std::string> objcname = cur_obj.get_colname();
-      nrow = rows.size();
-      ncol = name_cols.size();
-      if (objcname.size() == 0) {
-        std::cout << "The dataframe has no column name\n";
-        reinitiate();
-        return;
-      };
-      std::vector<int> cols = {};
-      for (std::string valstr : objcname) {
-        for (i2 = 0; i2 < ncol; ++i2) {
-          if (valstr == objcname[i2]) {
-            cols.push_back(i2);
-            break;
-          };
-        };
-      };
-      std::vector<std::vector<std::string>> cur_tmp = cur_obj.get_tmp_val_refv();
+      ncol = cols.size();
+      const auto& cur_tmp = cur_obj.get_tmp_val_refv();
       std::vector<std::string> cur_v = {};
-      if (rows[0] == -1) {
-        rows.pop_back();
-        for (i2 = 0; i2 < max_nrow; ++i2) {
-          rows.push_back(i2);
-        };
-        nrow = max_nrow;
-      };
       if (cols[0] == -1) {
         cols.pop_back();
+        cols.reserve(max_ncol);
         for (i2 = 0; i2 < max_ncol; ++i2) {
           cols.push_back(i2);
         };
@@ -7793,7 +7487,7 @@ class Dataframe{
       for (unsigned int i : cols) {
         cur_v = {};
         for (i2 = 0; i2 < nrow; ++i2) {
-          cur_v.push_back(cur_tmp[i][rows[i2]]);  
+          cur_v.push_back(cur_tmp[i][i2]);  
         };
         tmp_val_refv.push_back(cur_v);
       };
@@ -7803,23 +7497,17 @@ class Dataframe{
       longest_determine();
     };
 
-    void idx_dataframe(std::vector<int> &rows, std::vector<int> &cols, Dataframe &cur_obj) {
+    void get_dataframe_filter(std::vector<int> &cols, 
+                    Dataframe &cur_obj,
+                    std::vector<bool> &mask) {
       unsigned int i2;
-      unsigned int max_nrow = cur_obj.get_nrow();
       unsigned int max_ncol = cur_obj.get_ncol();
-      nrow = rows.size();
       ncol = cols.size();
-      std::vector<std::vector<std::string>> cur_tmp = cur_obj.get_tmp_val_refv();
+      const auto& cur_tmp = cur_obj.get_tmp_val_refv();
       std::vector<std::string> cur_v = {};
-      if (rows[0] == -1) {
-        rows.pop_back();
-        for (i2 = 0; i2 < max_nrow; ++i2) {
-          rows.push_back(i2);
-        };
-        nrow = max_nrow;
-      };
       if (cols[0] == -1) {
         cols.pop_back();
+        cols.reserve(max_ncol);
         for (i2 = 0; i2 < max_ncol; ++i2) {
           cols.push_back(i2);
         };
@@ -7828,10 +7516,13 @@ class Dataframe{
       for (unsigned int i : cols) {
         cur_v = {};
         for (i2 = 0; i2 < nrow; ++i2) {
-          cur_v.push_back(cur_tmp[i][rows[i2]]);  
+          if (mask[i]) {
+            cur_v.push_back(cur_tmp[i][i2]);
+          };
         };
         tmp_val_refv.push_back(cur_v);
       };
+      nrow = cur_v.size();
       type_classification();
       name_v = cur_obj.get_colname();
       name_v_row = cur_obj.get_rowname(); 
@@ -7891,148 +7582,231 @@ class Dataframe{
       };
     };
 
-    template <typename T> void replace_colint(std::vector<T> &x, unsigned int &colnb) {
+    template <typename T> void replace_col(std::vector<T> &x, unsigned int &colnb) {
+
+      if (x.size() != nrow) {
+        std::cerr << "Error: vector length (" << x.size()
+                  << ") does not match nrow (" << nrow << ")\n";
+        return;
+      }
+
       unsigned int i = 2;
-      unsigned int i2;
-      bool is_found = 0;
-      while (!is_found) {
-        i2 = 0;
-        while (i2 < matr_idx[i].size()) {
-          if (colnb == matr_idx[i][i2]) {
-            is_found = 1;
+      unsigned int i2 = 0;
+      if constexpr (std::is_same_v<T, bool>) {
+
+        while (i2 < matr_idx[2].size()) {
+          if (colnb == matr_idx[2][i2]) {
             break;
           };
           i2 += 1;
         };
-        i += 1;
-      };
-      i -= 1;
-      i2 = nrow * i2;
-      if (i == 2) {
+
+        if (i2 == matr_idx[2].size()) {
+            std::cerr << "Error: column " << colnb << " not found for this type in (replace_col)\n";
+            return;
+        }
+
+        i2 = nrow * i2;
+
         for (i = 0; i < nrow; ++i) {
           bool_v[i2 + i] = x[i];
           tmp_val_refv[colnb][i] = std::to_string(x[i]);
         };
-      } else if (i == 3) {
+      } else if constexpr (std::is_same_v<T, int>) {
+
+        while (i2 < matr_idx[3].size()) {
+          if (colnb == matr_idx[3][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+        
+        if (i2 == matr_idx[3].size()) {
+            std::cerr << "Error: column " << colnb << " not found for this type in (replace_col)\n";
+            return;
+        }
+
+        i2 = nrow * i2;
+
         for (i = 0; i < nrow; ++i) {
           int_v[i2 + i] = x[i];
           tmp_val_refv[colnb][i] = std::to_string(x[i]);
         };
-      } else if (i == 4) {
+      } else if constexpr (std::is_same_v<T, unsigned int>) {
+
+        while (i2 < matr_idx[4].size()) {
+          if (colnb == matr_idx[4][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+        
+        if (i2 == matr_idx[4].size()) {
+            std::cerr << "Error: column " << colnb << " not found for this type in (replace_col)\n";
+            return;
+        }
+
+        i2 = nrow * i2;
+
         for (i = 0; i < nrow; ++i) {
           uint_v[i2 + i] = x[i];
           tmp_val_refv[colnb][i] = std::to_string(x[i]);
         };
-      } else if (i == 5) {
+      } else if constexpr (std::is_same_v<T, double>) {
+
+        while (i2 < matr_idx[5].size()) {
+          if (colnb == matr_idx[5][i2]) {
+            break;
+          };
+          i2 += 1;
+        };
+        
+        if (i2 == matr_idx[5].size()) {
+            std::cerr << "Error: column " << colnb << " not found for this type in (replace_col)\n";
+            return;
+        }
+
+        i2 = nrow * i2;
+
         for (i = 0; i < nrow; ++i) {
           dbl_v[i2 + i] = x[i];
           tmp_val_refv[colnb][i] = std::to_string(x[i]);
         };
-      };
-    };
+      } else if constexpr (std::is_same_v<T, std::string>) {
 
-    void replace_colstr(std::vector<std::string> &x, unsigned int &colnb) {
-      unsigned int i;
-      unsigned int i2 = 0;
-      while (1) {
-        if (colnb == matr_idx[0][i2]) {
-          break;
+        while (i2 < matr_idx[0].size()) {
+          if (colnb == matr_idx[0][i2]) {
+            break;
+          };
+          i2 += 1;
         };
-        i2 += 1;
-      };
-      i2 = nrow * i2;
-      for (i = 0; i < nrow; ++i) {
-        str_v[i2 + i] = x[i];
-        tmp_val_refv[colnb][i] = x[i];
-      };
-    };
+        
+        if (i2 == matr_idx[0].size()) {
+            std::cerr << "Error: column " << colnb << " not found for this type in (replace_col)\n";
+            return;
+        }
 
-    void replace_colchr(std::vector<char> &x, unsigned int &colnb) {
-      unsigned int i;
-      unsigned int i2 = 0;
-      std::string cur_str;
-      while (1) {
-        if (colnb == matr_idx[1][i2]) {
-          break;
+        i2 = nrow * i2;
+
+        for (i = 0; i < nrow; ++i) {
+          str_v[i2 + i] = x[i];
+          tmp_val_refv[colnb][i] = x[i];
         };
-        i2 += 1;
-      };
-      i2 = nrow * i2;
-      for (i = 0; i < nrow; ++i) {
-        chr_v[i2 + i] = x[i];
-        cur_str = "";
-        cur_str.push_back(x[i]);
-        tmp_val_refv[colnb][i] = cur_str;
+
+      } else if constexpr (std::is_same_v<T, char>) {
+
+        while (i2 < matr_idx[1].size()) {
+          if (colnb == matr_idx[1][i2]) {
+            break;
+          };
+          i2 += 1;
+        }; 
+
+        if (i2 == matr_idx[1].size()) {
+            std::cerr << "Error: column " << colnb << " not found for this type in (replace_col)\n";
+            return;
+        }
+
+        i2 = nrow * i2;
+
+        for (i = 0; i < nrow; ++i) {
+          chr_v[i2 + i] = x[i];
+          tmp_val_refv[colnb][i] = std::string(1, x[i]);
+        };
+
+      } else {
+        std::cerr << "Error unsupported type in (replace_col)\n";
       };
     };
 
-    template <typename T> void add_colint(std::vector<T> &x, std::string name = "NA") {
+    template <typename T> void add_col(std::vector<T> &x, std::string name = "NA") {
+      if (x.size() != nrow) {
+        std::cerr << "Error: vector length (" << x.size()
+                  << ") does not match nrow (" << nrow << ")\n";
+        return;
+      };
       name_v.push_back(name);
-      unsigned int i;
       std::vector<std::string> cur_v = {};
-      if (typeid(T).name() == typeid(bool).name()) {
+      cur_v.reserve(nrow);
+      if constexpr (std::is_same_v<T, bool>) {
         matr_idx[2].push_back(ncol);
         type_refv.push_back(typeid(bool).name());
-        for (i = 0; i < nrow; ++i) {
-          bool_v.push_back(x[i]);
-          cur_v.push_back(std::to_string(x[i]));
+        for (auto &i : x) {
+          bool_v.push_back(i);
+          cur_v.push_back(std::to_string(i));
         };
-      } else if (typeid(T).name() == typeid(int).name()) {
+      } else if constexpr (std::is_same_v<T, int>) {
         matr_idx[3].push_back(ncol);
         type_refv.push_back(typeid(int).name());
-        for (i = 0; i < nrow; ++i) {
-          int_v.push_back(x[i]);
-          cur_v.push_back(std::to_string(x[i]));
+        for (auto &i : x) {
+          int_v.push_back(i);
+          cur_v.push_back(std::to_string(i));
         };
-      } else if (typeid(T).name() == typeid(unsigned int).name()) {
+      } else if constexpr (std::is_same_v<T, unsigned int>) {
         matr_idx[4].push_back(ncol);
         type_refv.push_back(typeid(unsigned int).name());
-        for (i = 0; i < nrow; ++i) {
-          uint_v.push_back(x[i]);
-          cur_v.push_back(std::to_string(x[i]));
+        for (auto &i : x) {
+          uint_v.push_back(i);
+          cur_v.push_back(std::to_string(i));
         };
-      } else if (typeid(T).name() == typeid(double).name()) {
+      } else if constexpr (std::is_same_v<T, double>) {
         matr_idx[5].push_back(ncol);
         type_refv.push_back(typeid(double).name());
-        for (i = 0; i < nrow; ++i) {
-          dbl_v.push_back(x[i]);
-          cur_v.push_back(std::to_string(x[i]));
+        for (auto &i : x) {
+          dbl_v.push_back(i);
+          cur_v.push_back(std::to_string(i));
         }; 
+      } else if constexpr (std::is_same_v<T, char>) {
+        matr_idx[1].push_back(ncol);
+        type_refv.push_back(typeid(char).name());
+        for (auto &i : x) {
+          chr_v.push_back(i);
+          cur_v.push_back(std::string(1, i));
+        }; 
+      } else if constexpr (std::is_same_v<T, std::string>) {
+        matr_idx[0].push_back(ncol);
+        type_refv.push_back(typeid(std::string).name());
+        for (auto &i : x) {
+          str_v.push_back(i);
+          cur_v.push_back(i);
+        }; 
+      } else {
+        std::cerr << "Error in (add_col) type not suported \n";
       };
       tmp_val_refv.push_back(cur_v);
       ncol += 1;
     };
 
-    void add_colstr(std::vector<std::string> &x, std::string name = "NA") {
-      name_v.push_back(name);
-      unsigned int i;
-      std::vector<std::string> cur_v = {};
-      matr_idx[0].push_back(ncol);
-      type_refv.push_back(typeid(std::string).name());
-      for (i = 0; i < nrow; ++i) {
-        str_v.push_back(x[i]);
-        cur_v.push_back(x[i]);
-      };
-      tmp_val_refv.push_back(cur_v);
-      ncol += 1;
-    };
+    //void add_colstr(std::vector<std::string> &x, std::string name = "NA") {
+    //  name_v.push_back(name);
+    //  unsigned int i;
+    //  std::vector<std::string> cur_v = {};
+    //  matr_idx[0].push_back(ncol);
+    //  type_refv.push_back(typeid(std::string).name());
+    //  for (i = 0; i < nrow; ++i) {
+    //    str_v.push_back(x[i]);
+    //    cur_v.push_back(x[i]);
+    //  };
+    //  tmp_val_refv.push_back(cur_v);
+    //  ncol += 1;
+    //};
 
-    void add_colchr(std::vector<char> &x, std::string name = "NA") {
-      name_v.push_back(name);
-      unsigned int i;
-      std::vector<std::string> cur_v = {};
-      matr_idx[1].push_back(ncol);
-      type_refv.push_back(typeid(char).name());
-      std::string cur_str;
-      for (i = 0; i < nrow; ++i) {
-        chr_v.push_back(x[i]);
-        cur_str = "";
-        cur_str.push_back(x[i]);
-        cur_v.push_back(cur_str);
-      };
-      tmp_val_refv.push_back(cur_v);
-      ncol += 1;
-    };
+    //void add_colchr(std::vector<char> &x, std::string name = "NA") {
+    //  name_v.push_back(name);
+    //  unsigned int i;
+    //  std::vector<std::string> cur_v = {};
+    //  matr_idx[1].push_back(ncol);
+    //  type_refv.push_back(typeid(char).name());
+    //  std::string cur_str;
+    //  for (i = 0; i < nrow; ++i) {
+    //    chr_v.push_back(x[i]);
+    //    cur_str = "";
+    //    cur_str.push_back(x[i]);
+    //    cur_v.push_back(cur_str);
+    //  };
+    //  tmp_val_refv.push_back(cur_v);
+    //  ncol += 1;
+    //};
 
     void rm_col(std::vector<unsigned int> &nbcolv) {
       unsigned int i;
@@ -8115,8 +7889,8 @@ class Dataframe{
 
     void transform_inner(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col) {
       unsigned int i2;
-      std::vector<std::vector<std::string>> cur_tmp = cur_obj.get_tmp_val_refv();
-      std::vector<std::string> ext_colv = cur_tmp[ext_col];
+      const auto& cur_tmp = cur_obj.get_tmp_val_refv();
+      const std::vector<std::string>& ext_colv = cur_tmp[ext_col];
       std::vector<std::string> in_colv = tmp_val_refv[in_col];
       std::string cur_val;
       const unsigned int ext_nrow = cur_obj.get_nrow();
@@ -8154,8 +7928,8 @@ class Dataframe{
     void transform_excluding(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col) {
       unsigned int i2;
       unsigned int i3;
-      std::vector<std::vector<std::string>> cur_tmp = cur_obj.get_tmp_val_refv();
-      std::vector<std::string> ext_colv = cur_tmp[ext_col];
+      const auto& cur_tmp = cur_obj.get_tmp_val_refv();
+      const std::vector<std::string>& ext_colv = cur_tmp[ext_col];
       std::vector<std::string> in_colv = tmp_val_refv[in_col];
       std::string cur_val;
       const unsigned int ext_nrow = cur_obj.get_nrow();
@@ -8224,10 +7998,10 @@ class Dataframe{
       for (i = 0; i < ncol2; ++i) {
         type_refv.push_back(type2[i]);
       };
-      std::vector<std::vector<std::string>> tmp1 = obj1.get_tmp_val_refv();
-      std::vector<std::vector<std::string>> tmp2 = obj2.get_tmp_val_refv();
-      std::vector<std::string> col1 = tmp1[key1];
-      std::vector<std::string> col2 = tmp2[key2];
+      const auto& tmp1 = obj1.get_tmp_val_refv();
+      const auto& tmp2 = obj2.get_tmp_val_refv();
+      const std::vector<std::string>& col1 = tmp1[key1];
+      const std::vector<std::string>& col2 = tmp2[key2];
       std::string cur_str;
       for (i = 0; i < nrow1; ++i) {
         cur_str = col1[i];
@@ -8284,10 +8058,10 @@ class Dataframe{
       for (i = 0; i < ncol2; ++i) {
         type_refv.push_back(type2[i]);
       };
-      std::vector<std::vector<std::string>> tmp1 = obj1.get_tmp_val_refv();
-      std::vector<std::vector<std::string>> tmp2 = obj2.get_tmp_val_refv();
-      std::vector<std::string> col1 = tmp1[key1];
-      std::vector<std::string> col2 = tmp2[key2];
+      const auto& tmp1 = obj1.get_tmp_val_refv();
+      const auto& tmp2 = obj2.get_tmp_val_refv();
+      const std::vector<std::string>& col1 = tmp1[key1];
+      const std::vector<std::string>& col2 = tmp2[key2];
       std::string cur_str;
       for (i = 0; i < nrow1; ++i) {
         i2 = 0;
@@ -8348,10 +8122,10 @@ class Dataframe{
       for (i = 0; i < ncol2; ++i) {
         type_refv.push_back(type2[i]);
       };
-      std::vector<std::vector<std::string>> tmp1 = obj1.get_tmp_val_refv();
-      std::vector<std::vector<std::string>> tmp2 = obj2.get_tmp_val_refv();
-      std::vector<std::string> col1 = tmp1[key1];
-      std::vector<std::string> col2 = tmp2[key2];
+      const auto& tmp1 = obj1.get_tmp_val_refv();
+      const auto& tmp2 = obj2.get_tmp_val_refv();
+      const std::vector<std::string>& col1 = tmp1[key1];
+      const std::vector<std::string>& col2 = tmp2[key2];
       std::string cur_str;
       for (i = 0; i < nrow1; ++i) {
         i2 = 0;
@@ -8432,10 +8206,10 @@ class Dataframe{
       for (i = 0; i < ncol2; ++i) {
         type_refv.push_back(type2[i]);
       };
-      std::vector<std::vector<std::string>> tmp1 = obj1.get_tmp_val_refv();
-      std::vector<std::vector<std::string>> tmp2 = obj2.get_tmp_val_refv();
-      std::vector<std::string> col1 = tmp1[key1];
-      std::vector<std::string> col2 = tmp2[key2];
+      const auto& tmp1 = obj1.get_tmp_val_refv();
+      const auto& tmp2 = obj2.get_tmp_val_refv();
+      const std::vector<std::string>& col1 = tmp1[key1];
+      const std::vector<std::string>& col2 = tmp2[key2];
       std::string cur_str;
       for (i = 0; i < nrow1; ++i) {
         i2 = 0;
@@ -8681,49 +8455,14 @@ class Dataframe{
 //@T Dataframe.idx_dataframe
 //@U void idx_dataframe(std::vector&lt;int&gt; &rows, std::vector&lt;int&gt; &cols, Dataframe &cur_obj)
 //@X
-//@D Allow to copy a dataframe choosing rows and columns (by index) of the copied dataframe. 
-//@A rows : is the vector containing all the rows to copy (<code>{-1}</code>) for all
+//@D Allow to copy a dataframe choosing columns (by index) of the copied dataframe. 
 //@A cols : is the vector of the index of the columns to copy (<code>{-1}</code>) for all
 //@A cur_obj : is the dataframe that will contain all the rows and columns of the copied dataframe
 //@X
 //@E // after reading teste_dataframe.csv as obj1
 //@E Dataframe obj2;
-//@E std::vector&lt;int&gt; idx_rows = {-1};
 //@E std::vector&lt;int&gt; idx_cols2 = {1, 2, 3};
-//@E obj2.idx_dataframe(idx_rows, idx_cols2, obj1);
-//@E 
-//@E obj2.display();
-//@E     col1 col2 col3
-//@E :0:  2    3    aa
-//@E :1:  7    8    bb
-//@E :2:  2    3    cc
-//@E :3:  7    8    uu
-//@E :4:  2    3    s4
-//@E :5:  7    8    s9
-//@E :6:  2    3    a4
-//@E :7:  7    8    m9
-//@E :8:  7    8    s9
-//@E :9:  2    3    a4
-//@E :10: 7    8    m9
-//@E :11: 7    8    m9
-//@E :12: 7    8    s9
-//@E :13: 2    3    a4
-//@E :14: 7    8    m9
-//@X
-
-//@T Dataframe.name_dataframe
-//@U void name_dataframe(std::vector&lt;int&gt; &rows, std::vector&lt;int&gt; &name_cols, Dataframe &cur_obj)
-//@X
-//@D Allow to copy a dataframe choosing rows and columns (by name) of the copied dataframe. 
-//@A rows : is the vector containing all the rows to copy (<code>{-1}</code>) for all
-//@A cols : is the vector of the name of the columns to copy
-//@A cur_obj : is the dataframe that will contain all the rows and columns of the copied dataframe
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E Dataframe obj2;
-//@E std::vector&lt;int&gt; idx_rows = {-1};
-//@E std::vector&lt;std::string&gt; idx_cols2 = {"col2", "col3", "col4"};
-//@E obj2.name_dataframe(idx_rows, idx_cols2, obj1);
+//@E obj2.idx_dataframe(idx_cols2, obj1);
 //@E 
 //@E obj2.display();
 //@E     col1 col2 col3
@@ -8754,7 +8493,7 @@ class Dataframe{
 //@U     ColumnView idx_colnb_see(unsigned int &x) const
 //@X
 //@D Allow to get the reference of a int, unsigned int or double column as a span&lt;T&gt;, by column index (>= C++ 20).
-//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all. Intended to be used for creating boolean vecotr by your own functions, to maybe filter data later with <code>Dataframe.display_tweak(), Dataframe.idx_dataframe_bool(), Dataframe.name_dataframe_bool(), Dataframe.idx_colstr_bool, ...</code>
+//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all. Intended to be used for creating boolean vecotr by your own functions, to maybe filter data later with <code>Dataframe.display_filter(), Dataframe.idx_dataframe_filter(), Dataframe.get_col_filter, ...</code>
 //@A x : is the index of the column to get the ref from
 //@X
 //@E // after reading teste_dataframe.csv as obj1
@@ -8780,21 +8519,6 @@ class Dataframe{
 //@E :0: bb aa bb
 //@X
 
-//@T Dataframe.name_colstr
-//@U template &lt;typename T&gt; void name_colstr(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;T&gt; &rtn_v)
-//@X
-//@D Allow to copy a int, unsigned int , bool or double column as a vector&lt;std::string&gt;, by column name.
-//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
-//@A x : is the name of the column to copy
-//@A rtn_v : is the vector that will contain the column to copy
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E std::vector&lt;std::string&gt; outv2 = {};
-//@E obj1.name_colstr(currows, "col4", outv2);
-//@E print_svec(outv2);
-//@E :0: bb aa bb
-//@X
-
 //@T Dataframe.idx_colchr
 //@U void idx_colchr(std::vector&lt;int&gt; rows, unsigned int x, std::vector&lt;char&gt; &rtn_v)
 //@X
@@ -8811,138 +8535,6 @@ class Dataframe{
 //@E };
 //@E std::cout &lt;&lt; "\n";
 //@E e z e
-//@X
-
-//@T Dataframe.name_colchr
-//@U void name_colchr(std::vector&lt;int&gt; rows, std::string colname, std::vector&lt;char&gt; &rtn_v)
-//@X
-//@D Allow to copy a char column as a vector&lt;char&gt;, by column name.
-//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
-//@A x : is the name of the column to copy
-//@A rtn_v : is the vector that will contain the column to copy
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E std::vector&lt;char&gt; outv3 = {};
-//@E obj1.name_colchr(currows, "col6", outv3);
-//@E for (char i : outv3) {
-//@E   std::cout &lt;&lt; i &lt;&lt; " ";
-//@E };
-//@E std::cout &lt;&lt; "\n";
-//@E e z e
-//@X
-
-//@T Dataframe.idx_matrint
-//@U template &lt;typename T&gt; void idx_matrint(std::vector&lt;int&gt; rows, std::vector&lt;unsigned int&gt; x_v, std::vector&lt;std::vector&lt;T&gt;&gt; &rtn_matr)
-//@X
-//@D Allow to copy a set of columns that are same type (int, unsigned int, bool or double) as a <code> std::vector&lt;std::vector&lt;T&gt;&gt; </code>, by column index.
-//@A rows : is a vector containing the row indices to copy (<code> {-1} </code>) for all
-//@A x_v : is the vector containing the indices of the column to copy
-//@A rtn_matr : is the matrix that will contain all the columns copyed
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E std::vector&lt;std::vector&lt;unsigned int&gt;&gt; out_matr = {};
-//@E std::vector&lt;unsigned int&gt; idx_cols = {1, 0, 2, 2};
-//@E obj1.idx_matrint(currows, idx_cols, out_matr);
-//@E print_nmatr(out_matr);
-//@E                   [0]               [1]               [2]               [3]
-//@E :0:                 7                 6                 8                 8
-//@E :1:                 2                 1                 3                 3
-//@E :2:                 7                 6                 8                 8
-//@X
-
-//@T Dataframe.name_matrint
-//@U template &lt;typename T&gt; void name_matrint(std::vector&lt;int&gt; rows, std::vector&lt;std::string&gt; x_v, std::vector&lt;std::vector&lt;T&gt;&gt; &rtn_matr)
-//@X
-//@D Allow to copy a set of columns that are same type (int, unsigned int, bool or double) as a <code>std::vector&lt;std::vector&lt;T&gt;&gt;</code>, by column name.
-//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
-//@A x_v : is the vector containing the names of the column to copy
-//@A rtn_matr : is the matrix that will contain all the columns copyed
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E std::vector&lt;std::vector&lt;unsigned int&gt;&gt; out_matr = {};
-//@E std::vector&lt;std::string&gt; idx_vec2 = {"col1", "col2", "col3"};
-//@E obj1.name_matrint(currows, idx_vec2, out_matr);
-//@E print_nmatr(out_matr);
-//@E                   [0]               [1]               [2]
-//@E :0:                 6                 7                 8
-//@E :1:                 1                 2                 3
-//@E :2:                 6                 7                 8
-//@X
-
-//@T Dataframe.idx_matrstr
-//@U void idx_matrstr(std::vector&lt;int&gt; rows, std::vector&lt;unsigned int&gt; x_v, std::vector&lt;std::vector&lt;std::string&gt;&gt; &rtn_matr)
-//@X
-//@D Allow to copy a set of columns that are <code>std::string</code> type as a <code>std::vector&lt;std::vector&lt;std::string&gt;&gt;</code>, by column index.
-//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
-//@A x_v : is the vector containing the indices of the column to copy
-//@A rtn_matr : is the matrix that will contain all the columns copyed
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E std::vector&lt;std::vector&lt;std::string&gt;&gt; out_matr2 = {};
-//@E std::vector&lt;unsigned int&gt; idx_cols = {3};
-//@E obj1.idx_matrstr(currows, idx_cols, out_matr2);
-//@E print_smatr(out_matr2);
-//@E                     [0]
-//@E :0:                   bb
-//@E :1:                   aa
-//@E :2:                   bb
-//@X
-
-//@T Dataframe.name_matrstr
-//@U void name_matrstr(std::vector&lt;int&gt; rows, std::vector&lt;std::string&gt; x_v, std::vector&lt;std::vector&lt;std::string&gt;&gt; &rtn_matr)
-//@X
-//@D Allow to copy a set of columns that are <code>std::string</code> type as a <code>std::vector&lt;std::vector&lt;std::string&gt;&gt;</code>, by column name.
-//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
-//@A x_v : is the vector containing the names of the column to copy
-//@A rtn_matr : is the matrix that will contain all the columns copyed
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E std::vector&lt;std::vector&lt;std::string&gt;&gt; out_matr2 = {};
-//@E std::vector&lt;std::string&gt; idx_vec2 = {"col4"};
-//@E obj1.name_matrstr(currows, idx_vec2, out_matr2);
-//@E print_smatr(out_matr2);
-//@E                     [0]
-//@E :0:                   bb
-//@E :1:                   aa
-//@E :2:                   bb
-//@X
-
-//@T Dataframe.idx_matrchr
-//@U void idx_matrchr(std::vector&lt;int&gt; rows, std::vector&lt;unsigned int&gt; x_v, std::vector&lt;std::vector&lt;char&gt;&gt; &rtn_matr)
-//@X
-//@D Allow to copy a set of columns that are <code>char</code> type as a <code>std::vector&lt;std::vector&lt;char&gt;&gt;</code>, by column index.
-//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
-//@A x_v : is the vector containing the indices of the column to copy
-//@A rtn_matr : is the matrix that will contain all the columns copyed
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E std::vector&lt;std::vector&lt;char&gt;&gt; out_matr3 = {};
-//@E std::vector&lt;unsigned int&gt; idx_cols = {5};
-//@E obj1.idx_matrchr(currows, idx_cols, out_matr3);
-//@E print_smatr(out_matr3);
-//@E                     [0]
-//@E :0:                    e
-//@E :1:                    z
-//@E :2:                    e
-//@X
-
-//@T Dataframe.name_matrchr
-//@U void name_matrchr(std::vector&lt;int&gt; rows, std::vector&lt;std::string&gt; x_v, std::vector&lt;std::vector&lt;char&gt;&gt; &rtn_matr)
-//@X
-//@D Allow to copy a set of columns that are <code>char</code> type as a <code>std::vector&lt;std::vector&lt;char&gt;&gt;</code>, by column name.
-//@A rows : is a vector containing the row indices to copy (<code>{-1}</code>) for all
-//@A x_v : is the vector containing the names of the column to copy
-//@A rtn_matr : is the matrix that will contain all the columns copyed
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E std::vector&lt;char&gt; out_matr3 = {};
-//@E std::vector&lt;std::string&gt; idx_vec2 = {"col6"};
-//@E obj1.name_matrchr(currows, idx_vec2, out_matr3);
-//@E print_smatr(out_matr3);
-//@E                     [0]
-//@E :0:                    e
-//@E :1:                    z
-//@E :2:                    e
 //@X
 
 //@T Dataframe.get_nrow
@@ -9000,8 +8592,8 @@ class Dataframe{
 //@E obj1.set_colname();
 //@X
 
-//@T Dataframe.replace_colint
-//@U template &lt;typename T&gt; void replace_colint(std::vector&lt;T&gt; &x, unsigned int &colnb)
+//@T Dataframe.replace_colnb
+//@U template &lt;typename T&gt; void replace_colnb(std::vector&lt;T&gt; &x, unsigned int &colnb)
 //@X
 //@D Replace a int, unsigned int, bool or double column of the associated dataframe.
 //@A x : is the column (as vector) that will replace the dataframe column
@@ -9012,7 +8604,7 @@ class Dataframe{
 //@E std::vector&lt;unsigned int&gt; rpl_col = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 
 //@E                                       10, 11, 12, 13, 14};
 //@E unsigned int col = 0;
-//@E obj1.replace_colint(rpl_col, col);
+//@E obj1.replace_colnb(rpl_col, col);
 //@E obj1.display();
 //@E      &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt;
 //@E      col1   col2   col3   col4  col5  col6
@@ -9101,17 +8693,17 @@ class Dataframe{
 //@E :14: 6      7      8      m9    10    v
 //@X
 
-//@T Dataframe.add_colint
-//@U template &lt;typename T&gt; void add_colint(std::vector&lt;T&gt; &x, std::string name = "NA")
+//@T Dataframe.add_col
+//@U template &lt;typename T&gt; void add_col(std::vector&lt;T&gt; &x, std::string name = "NA")
 //@X
-//@D Add a column int, unsigned int, bool or double type to the associated dataframe
+//@D Add a column int, unsigned int, bool, double, char or string type to the associated dataframe
 //@A x : is the column to add
 //@A name : is the column to add name
 //@X
 //@E // after reading teste_dataframe.csv as obj1
 //@E std::vector&lt;unsigned int&gt; rpl_col = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 
 //@E                                       10, 11, 12, 13, 14};
-//@E obj1.add_colint(rpl_col);
+//@E obj1.add_col(rpl_col);
 //@E obj1.display();
 //@E     &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt; &lt;uint&gt;
 //@E     col1   col2   col3   col4  col5  col6   NA
@@ -9130,70 +8722,6 @@ class Dataframe{
 //@E :12: 6      7      8      s9    10    p      12
 //@E :13: 1      2      3      NA    5     j      13
 //@E :14: 6      7      8      m9    10    i      14
-//@X
-
-//@T Dataframe.add_colstr
-//@U void add_colstr(std::vector&lt;std::string&gt; &x, std::string name = "NA")
-//@X
-//@D Add a column string type to the associated dataframe.
-//@A x : is the column to add
-//@A name : is the column to add name
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E 
-//@E std::vector&lt;std::string&gt; rpl_col = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", 
-//@E                                       "10", "11", "12", "13", "14"};
-//@E obj1.add_colstr(rpl_col);
-//@E obj1.display();
-//@E     &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt; &lt;str&gt;
-//@E     col1   col2   col3   col4  col5  col6   NA
-//@E :0:  1      2      3      aa    5     z      0
-//@E :1:  6      7      8      bb    10    e      1
-//@E :2:  1      2      3      cc    5     h      2
-//@E :3:  6      7      8      uu    10    a      3
-//@E :4:  1      2      3      s4    -5    q      4
-//@E :5:  6      7      8      s9    10    p      5
-//@E :6:  1      2      3      a4    5     j      6
-//@E :7:  6      7      8      m9    10    i      7
-//@E :8:  6      7      8      s9    10    p      8
-//@E :9:  1      2      3      a4    5     j      9
-//@E :10: 6      7      8      m9    10    i      10
-//@E :11: 6      7      8      m9    10    i      11
-//@E :12: 6      7      8      s9    10    p      12
-//@E :13: 1      2      3      NA    5     j      13
-//@E :14: 6      7      8      m9    10    i      14
-//@X
-
-//@T Dataframe.add_colchr
-//@U add_colchr(std::vector&lt;char&gt; &x, std::string name = "NA")
-//@X
-//@D Add a column char type to the associated dataframe.
-//@A x : is the column to add
-//@A name : is the column to add name
-//@X
-//@E // after reading teste_dataframe.csv as obj1
-//@E std::vector&lt;char&gt; rpl_col = {'c', 'c', 'c', 'c', 'c', 'c', 'c', 
-//@E                                       'c', 'c', 'c', 
-//@E                                       'b', 'b', 'v', 'v', 'v'};
-//@E obj1.add_colchr(rpl_col);
-//@E obj1.display();
-//@E     &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;int&gt; &lt;char&gt; &lt;char&gt;
-//@E     col1   col2   col3   col4  col5  col6   NA
-//@E :0:  1      2      3      aa    5     z      c
-//@E :1:  6      7      8      bb    10    e      c
-//@E :2:  1      2      3      cc    5     h      c
-//@E :3:  6      7      8      uu    10    a      c
-//@E :4:  1      2      3      s4    -5    q      c
-//@E :5:  6      7      8      s9    10    p      c
-//@E :6:  1      2      3      a4    5     j      c
-//@E :7:  6      7      8      m9    10    i      c
-//@E :8:  6      7      8      s9    10    p      c
-//@E :9:  1      2      3      a4    5     j      c
-//@E :10: 6      7      8      m9    10    i      b
-//@E :11: 6      7      8      m9    10    i      b
-//@E :12: 6      7      8      s9    10    p      v
-//@E :13: 1      2      3      NA    5     j      v
-//@E :14: 6      7      8      m9    10    i      v
 //@X
 
 //@T Dataframe.rm_col
