@@ -7900,16 +7900,14 @@ class Dataframe{
       unsigned int nrow2 = nrow;
       nrow = 0;
       const unsigned int ext_nrow = cur_obj.get_nrow();
-      for (int i = nrow - 1; i >= 0; --i) {
-        i2 = 0;
-        cur_val = in_colv[i];
-        while (i2 < ext_nrow) {
-          if (cur_val == ext_colv[i2]) {
-            break;
-          };
-          i2 += 1;
-        };
-        if (i2 < ext_nrow) {
+
+      std::unordered_set<std::string> lookup;
+      lookup.reserve(ext_nrow);
+      for (unsigned int j = 0; j < ext_nrow; ++j)
+        lookup.insert(ext_colv[j]);
+
+      for (int i = nrow2 - 1; i >= 0; --i) {
+        if (lookup.contains(in_colv[i])) {
           for (i2 = 0; i2 < ncol; ++i2) {
             tmp_val_refv[i2][nrow] = cur_tmp[i2][i];
             if (type_refv[i2] == typeid(std::string).name()) {
