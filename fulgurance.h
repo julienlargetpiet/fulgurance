@@ -4574,7 +4574,7 @@ bool all(const std::vector<bool> &x) {
   return 1;
 };
 
-//@L3 Sorting algorithms 
+//@L3 Infamous Gnome Sorting Algorithm
 
 //@T sort_descin
 //@U template &lt;typename T&gt; void sort_descin(std::vector&lt;T&gt; &x) 
