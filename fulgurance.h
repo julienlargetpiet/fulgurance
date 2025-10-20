@@ -7350,18 +7350,18 @@ class Dataframe{
       return tmp_val_refv;
     };
 
-    unsigned int get_nrow() {
+    const unsigned int& get_nrow() const {
       return nrow;
     };
 
-    unsigned int get_ncol() {
+    const unsigned int& get_ncol() const {
       return ncol;
     };
 
     void get_dataframe(std::vector<int> &cols, Dataframe &cur_obj) {
       unsigned int i2;
       nrow = cur_obj.get_nrow();
-      unsigned int max_ncol = cur_obj.get_ncol();
+      const unsigned int& max_ncol = cur_obj.get_ncol();
       ncol = cols.size();
       const auto& cur_tmp = cur_obj.get_tmp_val_refv();
       std::vector<std::string> cur_v = {};
@@ -7390,7 +7390,7 @@ class Dataframe{
                     Dataframe &cur_obj,
                     std::vector<bool> &mask) {
       unsigned int i2;
-      unsigned int max_ncol = cur_obj.get_ncol();
+      const unsigned int& max_ncol = cur_obj.get_ncol();
       ncol = cols.size();
       const auto& cur_tmp = cur_obj.get_tmp_val_refv();
       std::vector<std::string> cur_v = {};
@@ -7759,7 +7759,7 @@ class Dataframe{
       std::array<unsigned int, 6> pos_col;
       unsigned int pos_colv;
       nrow = 0;
-      const unsigned int ext_nrow = cur_obj.get_nrow();
+      const unsigned int& ext_nrow = cur_obj.get_nrow();
 
       std::unordered_set<std::string> lookup;
       lookup.reserve(ext_nrow);
@@ -7813,7 +7813,7 @@ class Dataframe{
       std::array<unsigned int, 6> pos_col;
       unsigned int pos_colv;
       nrow = 0;
-      const unsigned int ext_nrow = cur_obj.get_nrow();
+      const unsigned int& ext_nrow = cur_obj.get_nrow();
 
       std::unordered_set<std::string> lookup;
       lookup.reserve(ext_nrow);
@@ -7908,7 +7908,7 @@ class Dataframe{
       std::string cur_val;
       std::array<unsigned int, 6> pos_vec;
       unsigned int pos_vl;
-      const unsigned int ext_nrow = cur_obj.get_nrow();
+      const unsigned int& ext_nrow = cur_obj.get_nrow();
 
       std::unordered_set<std::string> lookup;
       lookup.reserve(ext_nrow);
@@ -7962,7 +7962,7 @@ class Dataframe{
       std::string cur_val;
       std::array<unsigned int, 6> pos_vec;
       unsigned int pos_vl;
-      const unsigned int ext_nrow = cur_obj.get_nrow();
+      const unsigned int& ext_nrow = cur_obj.get_nrow();
 
       std::unordered_set<std::string> lookup;
       lookup.reserve(ext_nrow);
@@ -8048,17 +8048,15 @@ class Dataframe{
     };
 
     void merge_inner(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
-      unsigned int ncol1 = obj1.get_ncol();
-      unsigned int ncol2 = obj2.get_ncol();
+      const unsigned int& ncol1 = obj1.get_ncol();
+      const unsigned int& ncol2 = obj2.get_ncol();
       std::vector<std::string> cur_vstr;
       ncol = ncol1 + ncol2;
-      const unsigned int nrow1 = obj1.get_nrow();
-      const unsigned int nrow2 = obj2.get_nrow();
       unsigned int i;
       unsigned int i2;
       unsigned int i3;
-      std::vector<std::string> name1 = obj1.get_colname();
-      std::vector<std::string> name2 = obj2.get_colname();
+      const std::vector<std::string>& name1 = obj1.get_colname();
+      const std::vector<std::string>& name2 = obj2.get_colname();
       if (colname) {
         name_v.resize(ncol);
         if (name1.size() > 0) {
@@ -8076,8 +8074,8 @@ class Dataframe{
       for (i = 0; i < ncol; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
-      std::vector<const char*> type1 = obj1.get_typecol();
-      std::vector<const char*> type2 = obj2.get_typecol();
+      const std::vector<const char*>& type1 = obj1.get_typecol();
+      const std::vector<const char*>& type2 = obj2.get_typecol();
       type_refv.reserve(ncol);
       for (i = 0; i < ncol1; ++i) {
         type_refv.push_back(type1[i]);
@@ -8110,17 +8108,15 @@ class Dataframe{
     };
 
     void merge_excluding(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
-      unsigned int ncol1 = obj1.get_ncol();
-      unsigned int ncol2 = obj2.get_ncol();
+      const unsigned int& ncol1 = obj1.get_ncol();
+      const unsigned int& ncol2 = obj2.get_ncol();
       std::vector<std::string> cur_vstr;
       ncol = ncol1 + ncol2;
-      const unsigned int nrow1 = obj1.get_nrow();
-      const unsigned int nrow2 = obj2.get_nrow();
       unsigned int i;
       unsigned int i2;
       unsigned int i3;
-      std::vector<std::string> name1 = obj1.get_colname();
-      std::vector<std::string> name2 = obj2.get_colname();
+      const std::vector<std::string>& name1 = obj1.get_colname();
+      const std::vector<std::string>& name2 = obj2.get_colname();
       if (colname) {
         name_v.resize(ncol);
         if (name1.size() > 0) {
@@ -8138,8 +8134,8 @@ class Dataframe{
       for (i = 0; i < ncol; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
-      std::vector<const char*> type1 = obj1.get_typecol();
-      std::vector<const char*> type2 = obj2.get_typecol();
+      const std::vector<const char*>& type1 = obj1.get_typecol();
+      const std::vector<const char*>& type2 = obj2.get_typecol();
       type_refv.reserve(ncol);
       for (i = 0; i < ncol1; ++i) {
         type_refv.push_back(type1[i]);
@@ -8171,17 +8167,15 @@ class Dataframe{
     };
     
     void merge_excluding_both(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
-      unsigned int ncol1 = obj1.get_ncol();
-      unsigned int ncol2 = obj2.get_ncol();
+      const unsigned int& ncol1 = obj1.get_ncol();
+      const unsigned int& ncol2 = obj2.get_ncol();
       std::vector<std::string> cur_vstr;
       ncol = ncol1 + ncol2;
-      const unsigned int nrow1 = obj1.get_nrow();
-      const unsigned int nrow2 = obj2.get_nrow();
       unsigned int i;
       unsigned int i2;
       unsigned int i3;
-      std::vector<std::string> name1 = obj1.get_colname();
-      std::vector<std::string> name2 = obj2.get_colname();
+      const std::vector<std::string>& name1 = obj1.get_colname();
+      const std::vector<std::string>& name2 = obj2.get_colname();
       if (colname) {
         name_v.resize(ncol);
         if (name1.size() > 0) {
@@ -8199,8 +8193,8 @@ class Dataframe{
       for (i = 0; i < ncol; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
-      std::vector<const char*> type1 = obj1.get_typecol();
-      std::vector<const char*> type2 = obj2.get_typecol();
+      const std::vector<const char*>& type1 = obj1.get_typecol();
+      const std::vector<const char*>& type2 = obj2.get_typecol();
       type_refv.reserve(ncol);
       for (i = 0; i < ncol1; ++i) {
         type_refv.push_back(type1[i]);
@@ -8248,17 +8242,15 @@ class Dataframe{
     };
 
     void merge_all(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
-      unsigned int ncol1 = obj1.get_ncol();
-      unsigned int ncol2 = obj2.get_ncol();
+      const unsigned int& ncol1 = obj1.get_ncol();
+      const unsigned int& ncol2 = obj2.get_ncol();
       std::vector<std::string> cur_vstr;
       ncol = ncol1 + ncol2;
-      const unsigned int nrow1 = obj1.get_nrow();
-      const unsigned int nrow2 = obj2.get_nrow();
       unsigned int i;
       unsigned int i2;
       unsigned int i3;
-      std::vector<std::string> name1 = obj1.get_colname();
-      std::vector<std::string> name2 = obj2.get_colname();
+      const std::vector<std::string>& name1 = obj1.get_colname();
+      const std::vector<std::string>& name2 = obj2.get_colname();
       if (colname) {
         name_v.resize(ncol);
         if (name1.size() > 0) {
@@ -8276,8 +8268,8 @@ class Dataframe{
       for (i = 0; i < ncol; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
-      std::vector<const char*> type1 = obj1.get_typecol();
-      std::vector<const char*> type2 = obj2.get_typecol();
+      const std::vector<const char*>& type1 = obj1.get_typecol();
+      const std::vector<const char*>& type2 = obj2.get_typecol();
       type_refv.reserve(ncol);
       for (i = 0; i < ncol1; ++i) {
         type_refv.push_back(type1[i]);
@@ -8385,15 +8377,15 @@ class Dataframe{
       };
     };
 
-    std::vector<std::string> get_colname() {
+    const std::vector<std::string>& get_colname() const {
       return name_v;
     };
 
-    std::vector<std::string> get_rowname() {
+    const std::vector<std::string>& get_rowname() const {
       return name_v_row;
     };
 
-    std::vector<const char*> get_typecol() {
+    const std::vector<const char*>& get_typecol() const {
       return type_refv;
     };
 
