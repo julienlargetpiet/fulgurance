@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <unordered_set>
+#include <unordered_map>
 #include <deque>
 #include <cmath>
 #include <chrono>
@@ -7668,38 +7669,7 @@ class Dataframe{
       tmp_val_refv.push_back(cur_v);
       ncol += 1;
     };
-
-    //void add_colstr(std::vector<std::string> &x, std::string name = "NA") {
-    //  name_v.push_back(name);
-    //  unsigned int i;
-    //  std::vector<std::string> cur_v = {};
-    //  matr_idx[0].push_back(ncol);
-    //  type_refv.push_back(typeid(std::string).name());
-    //  for (i = 0; i < nrow; ++i) {
-    //    str_v.push_back(x[i]);
-    //    cur_v.push_back(x[i]);
-    //  };
-    //  tmp_val_refv.push_back(cur_v);
-    //  ncol += 1;
-    //};
-
-    //void add_colchr(std::vector<char> &x, std::string name = "NA") {
-    //  name_v.push_back(name);
-    //  unsigned int i;
-    //  std::vector<std::string> cur_v = {};
-    //  matr_idx[1].push_back(ncol);
-    //  type_refv.push_back(typeid(char).name());
-    //  std::string cur_str;
-    //  for (i = 0; i < nrow; ++i) {
-    //    chr_v.push_back(x[i]);
-    //    cur_str = "";
-    //    cur_str.push_back(x[i]);
-    //    cur_v.push_back(cur_str);
-    //  };
-    //  tmp_val_refv.push_back(cur_v);
-    //  ncol += 1;
-    //};
-
+    
     void rm_col(std::vector<unsigned int> &nbcolv) {
       unsigned int i;
       unsigned int i2;
@@ -7783,7 +7753,7 @@ class Dataframe{
       unsigned int i2;
       const auto& cur_tmp = cur_obj.get_tmp_val_refv();
       const std::vector<std::string>& ext_colv = cur_tmp[ext_col];
-      std::vector<std::string> in_colv = tmp_val_refv[in_col];
+      const std::vector<std::string>& in_colv = tmp_val_refv[in_col];
       std::string cur_val;
       unsigned int nrow2 = nrow;
       std::array<unsigned int, 6> pos_col;
@@ -7837,7 +7807,7 @@ class Dataframe{
       unsigned int i2;
       const auto& cur_tmp = cur_obj.get_tmp_val_refv();
       const std::vector<std::string>& ext_colv = cur_tmp[ext_col];
-      std::vector<std::string> in_colv = tmp_val_refv[in_col];
+      const std::vector<std::string>& in_colv = tmp_val_refv[in_col];
       std::string cur_val;
       unsigned int nrow2 = nrow;
       std::array<unsigned int, 6> pos_col;
@@ -7888,56 +7858,190 @@ class Dataframe{
       unsigned int nrow3;
       for (i2 = 0; i2 < ncol; i2 += 1) {
         nrow3 = nrow2;
-        while (nrow3 > nrow) {
-          tmp_val_refv[i2].pop_back();
-          if (type_refv[i2] == typeid(std::string).name()) {
+        if (type_refv[i2] == typeid(std::string).name()) {
+          while (nrow3 > nrow) {
+            tmp_val_refv[i2].pop_back();
             str_v.pop_back();
-          } else if (type_refv[i2] == typeid(char).name()) {
-            chr_v.pop_back();
-          } else if (type_refv[i2] == typeid(bool).name()) {
-            bool_v.pop_back();
-          } else if (type_refv[i2] == typeid(int).name()) {
-            int_v.pop_back();
-          } else if (type_refv[i2] == typeid(unsigned int).name()) {
-            uint_v.pop_back();
-          } else {
-            dbl_v.pop_back();
+            nrow3 -= 1;
           };
-          nrow3 -= 1;
+        } else if (type_refv[i2] == typeid(char).name()) {
+          while (nrow3 > nrow) {
+            tmp_val_refv[i2].pop_back();
+            chr_v.pop_back();
+            nrow3 -= 1;
+          };
+        } else if (type_refv[i2] == typeid(bool).name()) {
+          while (nrow3 > nrow) {
+            tmp_val_refv[i2].pop_back();
+            bool_v.pop_back();
+            nrow3 -= 1;
+          };
+        } else if (type_refv[i2] == typeid(int).name()) {
+          while (nrow3 > nrow) {
+            tmp_val_refv[i2].pop_back();
+            int_v.pop_back();
+            nrow3 -= 1;
+          };
+        } else if (type_refv[i2] == typeid(unsigned int).name()) {
+          while (nrow3 > nrow) {
+            tmp_val_refv[i2].pop_back();
+            uint_v.pop_back();
+            nrow3 -= 1;
+          };
+        } else {
+          while (nrow3 > nrow) {
+            tmp_val_refv[i2].pop_back();
+            dbl_v.pop_back();
+            nrow3 -= 1;
+          };
         };
       };
     };
 
     void transform_excluding(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col) {
       unsigned int i2;
-      unsigned int i3;
-      const auto& cur_tmp = cur_obj.get_tmp_val_refv();
+      unsigned int nrow2 = nrow;
+      nrow = 0;
+      std::vector<std::vector<std::string>> cur_tmp = cur_obj.get_tmp_val_refv();
       const std::vector<std::string>& ext_colv = cur_tmp[ext_col];
-      std::vector<std::string> in_colv = tmp_val_refv[in_col];
+      const std::vector<std::string>& in_colv = tmp_val_refv[in_col];
       std::string cur_val;
+      std::array<unsigned int, 6> pos_vec;
+      unsigned int pos_vl;
       const unsigned int ext_nrow = cur_obj.get_nrow();
-      for (int i = nrow - 1; i >= 0; --i) {
-        cur_val = in_colv[i];
-        for (i2 = 0; i2 < ext_nrow; ++i2) {
-          if (cur_val == ext_colv[i2]) {
-            nrow -= 1;
-            for (i3 = 0; i3 < ncol; ++i3) {
-              tmp_val_refv[i3].erase(tmp_val_refv[i3].begin() + i);
-              if (type_refv[i3] == typeid(std::string).name()) {
-                str_v.erase(str_v.begin() + nrow * i3 + i);
-              } else if (type_refv[i3] == typeid(char).name()) {
-                chr_v.erase(chr_v.begin() + nrow * i3 + i);
-              } else if (type_refv[i3] == typeid(bool).name()) {
-                bool_v.erase(bool_v.begin() + nrow * i3 + i);
-              } else if (type_refv[i3] == typeid(int).name()) {
-                int_v.erase(int_v.begin() + nrow * i3 + i);
-              } else if (type_refv[i3] == typeid(unsigned int).name()) {
-                uint_v.erase(uint_v.begin() + nrow * i3 + i);
-              } else if (type_refv[i3] == typeid(double).name()) {
-                dbl_v.erase(dbl_v.begin() + nrow * i3 + i);
-              };
+
+      std::unordered_set<std::string> lookup;
+      lookup.reserve(ext_nrow);
+      for (int j = 0; j < ext_nrow; j += 1) {
+        lookup.insert(ext_colv[j]);
+      };
+
+      for (int i = 0; i < nrow2; i += 1) {
+        if (!(lookup.contains(in_colv[i]))) {
+          pos_vec = {0, 0, 0, 0, 0, 0};
+          for (i2 = 0; i2 < ncol; i2 += 1) {
+            tmp_val_refv[i2][nrow] = tmp_val_refv[i2][i];
+            if (type_refv[i2] == typeid(std::string).name()) {
+              pos_vl = pos_vec[0];
+              str_v[pos_vl * nrow2 + nrow] = str_v[pos_vl * nrow2 + i];
+              pos_vec[0] += 1;
+            } else if (type_refv[i2] == typeid(char).name()) {
+              pos_vl = pos_vec[1];
+              chr_v[pos_vl * nrow2 + nrow] = chr_v[pos_vl * nrow2 + i];
+              pos_vec[1] += 1;
+            } else if (type_refv[i2] == typeid(bool).name()) {
+              pos_vl = pos_vec[2];
+              bool_v[pos_vl * nrow2 + nrow] = bool_v[pos_vl * nrow2 + i];
+              pos_vec[2] += 1;
+            } else if (type_refv[i2] == typeid(int).name()) {
+              pos_vl = pos_vec[3];
+              int_v[pos_vl * nrow2 + nrow] = int_v[pos_vl * nrow2 + i];
+              pos_vec[3] += 1;
+            } else if (type_refv[i2] == typeid(unsigned int).name()) {
+              pos_vl = pos_vec[4];
+              uint_v[pos_vl * nrow2 + nrow] = uint_v[pos_vl * nrow2 + i];
+              pos_vec[4] += 1;
+            } else if (type_refv[i2] == typeid(double).name()) {
+              pos_vl = pos_vec[5];
+              dbl_v[pos_vl * nrow2 + nrow] = dbl_v[pos_vl * nrow2 + i];
+              pos_vec[5] += 1;
             };
-            break;
+          };
+          nrow += 1;
+        };
+      };
+    };
+
+    void transform_excluding_clean(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col) {
+      unsigned int i2;
+      unsigned int nrow2 = nrow;
+      nrow = 0;
+      std::vector<std::vector<std::string>> cur_tmp = cur_obj.get_tmp_val_refv();
+      const std::vector<std::string>& ext_colv = cur_tmp[ext_col];
+      const std::vector<std::string>& in_colv = tmp_val_refv[in_col];
+      std::string cur_val;
+      std::array<unsigned int, 6> pos_vec;
+      unsigned int pos_vl;
+      const unsigned int ext_nrow = cur_obj.get_nrow();
+
+      std::unordered_set<std::string> lookup;
+      lookup.reserve(ext_nrow);
+      for (auto &j : ext_colv) {
+        lookup.insert(j);
+      };
+
+      for (int i = 0; i < nrow2; i += 1) {
+        if (!(lookup.contains(in_colv[i]))) {
+          pos_vec = {0, 0, 0, 0, 0, 0};
+          for (i2 = 0; i2 < ncol; i2 += 1) {
+            tmp_val_refv[i2][nrow] = tmp_val_refv[i2][i];
+            if (type_refv[i2] == typeid(std::string).name()) {
+              pos_vl = pos_vec[0];
+              str_v[pos_vl * nrow2 + nrow] = str_v[pos_vl * nrow2 + i];
+              pos_vec[0] += 1;
+            } else if (type_refv[i2] == typeid(char).name()) {
+              pos_vl = pos_vec[1];
+              chr_v[pos_vl * nrow2 + nrow] = chr_v[pos_vl * nrow2 + i];
+              pos_vec[1] += 1;
+            } else if (type_refv[i2] == typeid(bool).name()) {
+              pos_vl = pos_vec[2];
+              bool_v[pos_vl * nrow2 + nrow] = bool_v[pos_vl * nrow2 + i];
+              pos_vec[2] += 1;
+            } else if (type_refv[i2] == typeid(int).name()) {
+              pos_vl = pos_vec[3];
+              int_v[pos_vl * nrow2 + nrow] = int_v[pos_vl * nrow2 + i];
+              pos_vec[3] += 1;
+            } else if (type_refv[i2] == typeid(unsigned int).name()) {
+              pos_vl = pos_vec[4];
+              uint_v[pos_vl * nrow2 + nrow] = uint_v[pos_vl * nrow2 + i];
+              pos_vec[4] += 1;
+            } else if (type_refv[i2] == typeid(double).name()) {
+              pos_vl = pos_vec[5];
+              dbl_v[pos_vl * nrow2 + nrow] = dbl_v[pos_vl * nrow2 + i];
+              pos_vec[5] += 1;
+            };
+          };
+          nrow += 1;
+        };
+      };
+      unsigned int nrow3;
+      for (i2 = 0; i2 < ncol; i2 += 1) {
+        nrow3 = nrow2;
+        if (type_refv[i2] == typeid(std::string).name()) {
+          while (nrow3 > nrow) {
+            tmp_val_refv[i2].pop_back();
+            str_v.pop_back();
+            nrow3 -= 1;
+          };
+        } else if (type_refv[i2] == typeid(char).name()) {
+          while (nrow3 > nrow) {
+            tmp_val_refv[i2].pop_back();
+            chr_v.pop_back();
+            nrow3 -= 1;
+          };
+        } else if (type_refv[i2] == typeid(bool).name()) {
+          while (nrow3 > nrow) {
+            tmp_val_refv[i2].pop_back();
+            bool_v.pop_back();
+            nrow3 -= 1;
+          };
+        } else if (type_refv[i2] == typeid(int).name()) {
+          while (nrow3 > nrow) {
+            tmp_val_refv[i2].pop_back();
+            int_v.pop_back();
+            nrow3 -= 1;
+          };
+        } else if (type_refv[i2] == typeid(unsigned int).name()) {
+          while (nrow3 > nrow) {
+            tmp_val_refv[i2].pop_back();
+            uint_v.pop_back();
+            nrow3 -= 1;
+          };
+        } else {
+          while (nrow3 > nrow) {
+            tmp_val_refv[i2].pop_back();
+            dbl_v.pop_back();
+            nrow3 -= 1;
           };
         };
       };
@@ -7968,7 +8072,7 @@ class Dataframe{
           };
         };
       };
-      tmp_val_refv.resize(ncol);
+      tmp_val_refv.reserve(ncol);
       for (i = 0; i < ncol; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
@@ -7985,19 +8089,20 @@ class Dataframe{
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
       const std::vector<std::string>& col2 = tmp2[key2];
-      std::string cur_str;
-      for (i = 0; i < nrow1; ++i) {
-        cur_str = col1[i];
-        for (i2 = 0; i2 < nrow2; ++i2) {
-          if (cur_str == col2[i2]) {
-            for (i3 = 0; i3 < ncol1; ++i3) {
-              tmp_val_refv[i3].push_back(tmp1[i3][i]);
-            };
-            for (i3 = 0; i3 < ncol2; ++i3) {
-              tmp_val_refv[ncol1 + i3].push_back(tmp2[i3][i2]);
-            };
-            nrow += 1;
-            break;
+      std::unordered_multimap<std::string, size_t> b_index;
+      for (size_t j = 0; j < col2.size(); ++j) {
+        b_index.insert({col2[j], j});
+      };
+      for (size_t i = 0; i < col1.size(); ++i) {
+        auto range = b_index.equal_range(col1[i]);
+        for (auto it = range.first; it != range.second; ++it) {
+          nrow += 1;
+          size_t idx = it->second;
+          for (i2 = 0; i2 < ncol1; i2 += 1) {
+            tmp_val_refv[i2].push_back(tmp1[i2][i]);
+          };
+          for (i2 = 0; i2 < ncol2; i2 += 1) {
+            tmp_val_refv[ncol1 + i2].push_back(tmp2[i2][idx]);
           };
         };
       };
@@ -8013,6 +8118,7 @@ class Dataframe{
       const unsigned int nrow2 = obj2.get_nrow();
       unsigned int i;
       unsigned int i2;
+      unsigned int i3;
       std::vector<std::string> name1 = obj1.get_colname();
       std::vector<std::string> name2 = obj2.get_colname();
       if (colname) {
@@ -8028,7 +8134,7 @@ class Dataframe{
           };
         };
       };
-      tmp_val_refv.resize(ncol);
+      tmp_val_refv.reserve(ncol);
       for (i = 0; i < ncol; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
@@ -8045,29 +8151,25 @@ class Dataframe{
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
       const std::vector<std::string>& col2 = tmp2[key2];
-      std::string cur_str;
-      for (i = 0; i < nrow1; ++i) {
-        i2 = 0;
-        cur_str = col1[i];
-        while (i2 < nrow2) {
-          if (cur_str == col2[i2]) {
-            break;
-          };
-         i2 += 1;
-        };
-        if (i2 == nrow2) {
-          for (i2 = 0; i2 < ncol1; ++i2) {
+      std::unordered_multimap<std::string, size_t> b_index;
+      for (size_t j = 0; j < col2.size(); ++j) {
+        b_index.insert({col2[j], j});
+      };
+      for (size_t i = 0; i < col1.size(); ++i) {
+        auto range = b_index.equal_range(col1[i]);
+        if (range.first == range.second) {
+          nrow += 1;
+          for (i2 = 0; i2 < ncol1; i2 += 1) {
             tmp_val_refv[i2].push_back(tmp1[i2][i]);
           };
-          for (i2 = 0; i2 < ncol2; ++i2) {
-            tmp_val_refv[i2 + ncol1].push_back("NA");
+          for (i2 = 0; i2 < ncol2; i2 += 1) {
+            tmp_val_refv[ncol1 + i2].push_back("NA");
           };
-          nrow += 1;
         };
       };
       longest_determine();
     };
-
+    
     void merge_excluding_both(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
       unsigned int ncol1 = obj1.get_ncol();
       unsigned int ncol2 = obj2.get_ncol();
@@ -8077,6 +8179,7 @@ class Dataframe{
       const unsigned int nrow2 = obj2.get_nrow();
       unsigned int i;
       unsigned int i2;
+      unsigned int i3;
       std::vector<std::string> name1 = obj1.get_colname();
       std::vector<std::string> name2 = obj2.get_colname();
       if (colname) {
@@ -8092,7 +8195,7 @@ class Dataframe{
           };
         };
       };
-      tmp_val_refv.resize(ncol);
+      tmp_val_refv.reserve(ncol);
       for (i = 0; i < ncol; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
@@ -8109,43 +8212,36 @@ class Dataframe{
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
       const std::vector<std::string>& col2 = tmp2[key2];
-      std::string cur_str;
-      for (i = 0; i < nrow1; ++i) {
-        i2 = 0;
-        cur_str = col1[i];
-        while (i2 < nrow2) {
-          if (cur_str == col2[i2]) {
-            break;
-          };
-         i2 += 1;
-        };
-        if (i2 == nrow2) {
-          for (i2 = 0; i2 < ncol1; ++i2) {
+      std::unordered_multimap<std::string, size_t> b_index;
+      for (size_t j = 0; j < col2.size(); ++j) {
+        b_index.insert({col2[j], j});
+      };
+      std::unordered_multimap<std::string, size_t> a_index;
+      for (size_t j = 0; j < col1.size(); ++j) {
+        a_index.insert({col1[j], j});
+      };
+      for (size_t i = 0; i < col1.size(); ++i) {
+        auto range = b_index.equal_range(col1[i]);
+        if (range.first == range.second) {
+          nrow += 1;
+          for (i2 = 0; i2 < ncol1; i2 += 1) {
             tmp_val_refv[i2].push_back(tmp1[i2][i]);
           };
-          for (i2 = 0; i2 < ncol2; ++i2) {
-            tmp_val_refv[i2 + ncol1].push_back("NA");
+          for (i2 = 0; i2 < ncol2; i2 += 1) {
+            tmp_val_refv[ncol1 + i2].push_back("NA");
           };
-          nrow += 1;
         };
       };
-      for (i = 0; i < nrow2; ++i) {
-        i2 = 0;
-        cur_str = col2[i];
-        while (i2 < nrow1) {
-          if (cur_str == col1[i2]) {
-            break;
-          };
-         i2 += 1;
-        };
-        if (i2 == nrow1) {
-          for (i2 = 0; i2 < ncol1; ++i2) {
+      for (size_t i = 0; i < col2.size(); ++i) {
+        auto range = a_index.equal_range(col2[i]);
+        if (range.first == range.second) {
+          nrow += 1;
+          for (i2 = 0; i2 < ncol1; i2 += 1) {
             tmp_val_refv[i2].push_back("NA");
           };
-          for (i2 = 0; i2 < ncol2; ++i2) {
-            tmp_val_refv[i2 + ncol1].push_back(tmp2[i2][i]);
+          for (i2 = 0; i2 < ncol2; i2 += 1) {
+            tmp_val_refv[ncol1 + i2].push_back(tmp2[i2][i]);
           };
-          nrow += 1;
         };
       };
       longest_determine();
@@ -8176,7 +8272,7 @@ class Dataframe{
           };
         };
       };
-      tmp_val_refv.resize(ncol);
+      tmp_val_refv.reserve(ncol);
       for (i = 0; i < ncol; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
@@ -8193,62 +8289,83 @@ class Dataframe{
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
       const std::vector<std::string>& col2 = tmp2[key2];
-      std::string cur_str;
-      for (i = 0; i < nrow1; ++i) {
-        i2 = 0;
-        cur_str = col1[i];
-        while (i2 < nrow2) {
-          if (cur_str == col2[i2]) {
-            break;
-          };
-         i2 += 1;
-        };
-        if (i2 == nrow2) {
-          for (i2 = 0; i2 < ncol1; ++i2) {
+      std::unordered_multimap<std::string, size_t> b_index;
+      for (size_t j = 0; j < col2.size(); ++j) {
+        b_index.insert({col2[j], j});
+      };
+      std::unordered_multimap<std::string, size_t> a_index;
+      for (size_t j = 0; j < col1.size(); ++j) {
+        a_index.insert({col1[j], j});
+      };
+      for (size_t i = 0; i < col1.size(); ++i) {
+        auto range = b_index.equal_range(col1[i]);
+        if (range.first == range.second) {
+          nrow += 1;
+          for (i2 = 0; i2 < ncol1; i2 += 1) {
             tmp_val_refv[i2].push_back(tmp1[i2][i]);
           };
-          for (i2 = 0; i2 < ncol2; ++i2) {
-            tmp_val_refv[i2 + ncol1].push_back("NA");
+          for (i2 = 0; i2 < ncol2; i2 += 1) {
+            tmp_val_refv[ncol1 + i2].push_back("NA");
           };
-          nrow += 1;
+        } else {
+          for (auto it = range.first; it != range.second; ++it) {
+            nrow += 1;
+            size_t idx = it->second;
+            for (i2 = 0; i2 < ncol1; i2 += 1) {
+              tmp_val_refv[i2].push_back(tmp1[i2][i]);
+            };
+            for (i2 = 0; i2 < ncol2; i2 += 1) {
+              tmp_val_refv[ncol1 + i2].push_back(tmp2[i2][idx]);
+            };
+          };
         };
       };
-      for (i = 0; i < nrow2; ++i) {
-        i2 = 0;
-        cur_str = col2[i];
-        while (i2 < nrow1) {
-          if (cur_str == col1[i2]) {
-            break;
-          };
-         i2 += 1;
-        };
-        if (i2 == nrow1) {
-          for (i2 = 0; i2 < ncol1; ++i2) {
+      for (size_t i = 0; i < col2.size(); ++i) {
+        auto range = a_index.equal_range(col2[i]);
+        if (range.first == range.second) {
+          nrow += 1;
+          for (i2 = 0; i2 < ncol1; i2 += 1) {
             tmp_val_refv[i2].push_back("NA");
           };
-          for (i2 = 0; i2 < ncol2; ++i2) {
-            tmp_val_refv[i2 + ncol1].push_back(tmp2[i2][i]);
-          };
-          nrow += 1;
-        };
-      };
-      for (i = 0; i < nrow1; ++i) {
-        cur_str = col1[i];
-        for (i2 = 0; i2 < nrow2; ++i2) {
-          if (cur_str == col2[i2]) {
-            for (i3 = 0; i3 < ncol1; ++i3) {
-              tmp_val_refv[i3].push_back(tmp1[i3][i]);
-            };
-            for (i3 = 0; i3 < ncol2; ++i3) {
-              tmp_val_refv[ncol1 + i3].push_back(tmp2[i3][i2]);
-            };
-            nrow += 1;
-            break;
+          for (i2 = 0; i2 < ncol2; i2 += 1) {
+            tmp_val_refv[ncol1 + i2].push_back(tmp2[i2][i]);
           };
         };
       };
       longest_determine();
     };
+
+    //void transform_left_join(Dataframe &obj, 
+    //                unsigned int &key1, 
+    //                unsigned int &key2) {
+    //  ncol2 = obj.get_ncol();
+    //  ncol += ncol2;
+    //  unsigned int i;
+    //  std::vector<std::string> vec_str = {};
+    //  std::vector<const char*> vec_type = obj.get_typecol();
+    //  std::vector<std::string> vec_str(nrow);
+    //  std::vector<char> vec_str(nrow);
+    //  std::vector<bool> vec_chr(nrow);
+    //  std::vector<int> vec_int(nrow);
+    //  std::vector<unsigned int> vec_uint(nrow);
+    //  std::vector<double> vec_dbl(nrow);
+    //  for (i = 0; i < ncol2; i += 1) {
+    //    tmp_val_refv.push_back(vec_str);
+    //    if (vec_type[i] == typeid(std::string).name()) {
+    //      str_v.resize(str_v.size() + nrow);
+    //    } else if (vec_type[i] == typeid(char).name()) {
+    //      chr_v.resize(chr_v.size() + nrow);
+    //    } else if (vec_type[i] == typeid(bool).name()) {
+    //      bool_v.resize(bool_v.size() + nrow);
+    //    } else if (vec_type[i] == typeid(int).name()) {
+    //      int_v.resize(int_v.size() + nrow);
+    //    } else if (vec_type[i] == typeid(unsigned int).name()) {
+    //      uint_v.resize(uint_v.size() + nrow);
+    //    } else {
+    //      dbl_v.resize(dbl_v.size() + nrow);
+    //    };
+    //  };
+    //};
 
     void set_colname(std::vector<std::string> &x) {
       if (x.size() != ncol) {
@@ -8921,10 +9038,10 @@ class Dataframe{
 //@T Dataframe.transform_excluding
 //@U void transform_excluding(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col)
 //@X
-//@D Applies a excluding join on the associated dataframe.
-//@A cur_obj : is the other dataframe used for the excluding join
+//@D Applies an excluding join on the associated dataframe.
+//@A cur_obj : is the other dataframe used for inner join
 //@A in_col : is the index of the column representing the key (primary) of the associated dataframe
-//@A ext_col : is the index of the column representing the key (foreign) of the other dataframe used for the excluding join
+//@A ext_col : is the index of the column representing the key (foreign) of the other dataframe used for the inner join
 //@X
 //@E
 //@E Dataframe obj1, obj2;
@@ -8942,11 +9059,44 @@ class Dataframe{
 //@E 
 //@E obj1.transform_excluding(obj2, col1, col2);
 //@E obj1.display();
-//@E    &lt;str&gt; &lt;uint&gt;
-//@E    col1  col2
-//@E :0: id3   1
-//@E :1: id10  1
-//@E :2: id13  6
+//@E  &lt;str&gt; &lt;uint&gt;
+//@E     col1  col2
+//@E    col1  col2   col3   col4   col5
+//@E :0: id3   1      2      3      cc
+//@E :1: id10  1      2      3      a4
+//@E :2: id13  6      7      8      s9
+//@X
+
+//@T Dataframe.transform_excluding_clean
+//@U void transform_excluding_clean(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col)
+//@X
+//@D Applies an excluding join on the associated dataframe. Is basically the same as transform_excluding but uses another algorithm that takes more time but frees memory after having kept the common elements.
+//@A cur_obj : is the other dataframe used for inner join
+//@A in_col : is the index of the column representing the key (primary) of the associated dataframe
+//@A ext_col : is the index of the column representing the key (foreign) of the other dataframe used for the inner join
+//@X
+//@E
+//@E Dataframe obj1, obj2;
+//@E std::string filename = "outb.csv";
+//@E obj1.readf(filename);
+//@E 
+//@E std::vector&lt;unsigned int&gt; colv = {4, 3, 2};
+//@E obj1.rm_col(colv);
+//@E 
+//@E std::string f2 = "outb2.csv";
+//@E obj2.readf(f2);
+//@E 
+//@E unsigned int col1 = 0;
+//@E unsigned int col2 = 0;
+//@E 
+//@E obj1.transform_excluding_clean(obj2, col1, col2);
+//@E obj1.display();
+//@E  &lt;str&gt; &lt;uint&gt;
+//@E     col1  col2
+//@E    col1  col2   col3   col4   col5
+//@E :0: id3   1      2      3      cc
+//@E :1: id10  1      2      3      a4
+//@E :2: id13  6      7      8      s9
 //@X
 
 //@T Dataframe.merge_inner
@@ -9081,24 +9231,26 @@ class Dataframe{
 //@E 
 //@E obj3.merge_all(obj1, obj2, 1, col1, col2);
 //@E obj3.display();
-//@E     &lt;str&gt; &lt;uint&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
-//@E 
-//@E :0:  id3   1      NA    NA     NA
-//@E :1:  id10  1      NA    NA     NA
-//@E :2:  id13  6      NA    NA     NA
-//@E :3:  NA    NA     id119 7      8
-//@E :4:  id1   1      id1   2      3
-//@E :5:  id2   6      id2   7      8
-//@E :6:  id4   6      id4   7      8
-//@E :7:  id5   1      id5   2      3
-//@E :8:  id6   6      id6   7      8
-//@E :9:  id7   1      id7   2      3
-//@E :10: id8   6      id8   2      3
-//@E :11: id9   6      id9   7      8
-//@E :12: id11  6      id11  7      8
-//@E :13: id12  6      id12  7      8
-//@E :14: id14  1      id14  7      8
-//@E :15: id15  6      id15  2      3
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
+//@E     [0]   [1]    [2]    [3]    [4]   [5]   [6]    [7]
+//@E :0:  id1   1      2      3      aa    id1   2      3
+//@E :1:  id1   1      2      3      aa    id1   22     3
+//@E :2:  id2   6      7      8      bb    id2   7      8
+//@E :3:  id3   1      2      3      cc    NA    NA     NA
+//@E :4:  id4   6      7      8      uu    id4   7      8
+//@E :5:  id5   1      2      3      s4    id5   2      3
+//@E :6:  id6   6      7      8      s9    id6   7      8
+//@E :7:  id7   1      2      3      a4    id7   2      3
+//@E :8:  id8   6      7      8      m9    id8   2      3
+//@E :9:  id9   6      7      8      s9    id9   7      8
+//@E :10: id10  1      2      3      a4    NA    NA     NA
+//@E :11: id11  6      7      8      m9    id11  7      8
+//@E :12: id11  6      7      8      m9    id11  17     8
+//@E :13: id12  6      7      8      m9    id12  7      8
+//@E :14: id13  6      7      8      s9    NA    NA     NA
+//@E :15: id14  1      2      3      NA    id14  7      8
+//@E :16: id15  6      7      8      m9    id15  2      3
+//@E :17: NA    NA     NA     NA     NA    id119 7      8
 //@X
 
 //@L1 Apply any function on indefinite numbers of same type vectors
