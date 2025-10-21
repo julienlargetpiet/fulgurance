@@ -8107,6 +8107,66 @@ class Dataframe{
       longest_determine();
     };
 
+    void merge_inner2(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
+      const unsigned int& ncol1 = obj1.get_ncol();
+      const unsigned int& ncol2 = obj2.get_ncol();
+      std::vector<std::string> cur_vstr;
+      ncol = ncol1 + ncol2;
+      unsigned int i;
+      unsigned int i2;
+      unsigned int i3;
+      const std::vector<std::string>& name1 = obj1.get_colname();
+      const std::vector<std::string>& name2 = obj2.get_colname();
+      if (colname) {
+        name_v.resize(ncol);
+        if (name1.size() > 0) {
+          for (i = 0; i < name1.size(); ++i) {
+            name_v.push_back(name1[i]);
+          };
+        };
+        if (name2.size() > 0) {
+          for (i = 0; i < name2.size(); ++i) {
+            name_v.push_back(name2[i]);
+          };
+        };
+      };
+      tmp_val_refv.reserve(ncol);
+      for (i = 0; i < ncol; ++i) {
+        tmp_val_refv.push_back(cur_vstr);
+      };
+      const std::vector<const char*>& type1 = obj1.get_typecol();
+      const std::vector<const char*>& type2 = obj2.get_typecol();
+      type_refv.reserve(ncol);
+      for (i = 0; i < ncol1; ++i) {
+        type_refv.push_back(type1[i]);
+      };
+      for (i = 0; i < ncol2; ++i) {
+        type_refv.push_back(type2[i]);
+      };
+      const auto& tmp1 = obj1.get_tmp_val_refv();
+      const auto& tmp2 = obj2.get_tmp_val_refv();
+      const std::vector<std::string>& col1 = tmp1[key1];
+      const std::vector<std::string>& col2 = tmp2[key2];
+      std::unordered_multimap<std::string, size_t> b_index;
+      for (size_t j = 0; j < col2.size(); ++j) {
+        b_index.insert({col2[j], j});
+      };
+      for (size_t i = 0; i < col1.size(); ++i) {
+        auto it = b_index.find(col1[i]);
+        if (it != b_index.end()) {
+          nrow += 1;
+          size_t idx = it->second;
+          for (i2 = 0; i2 < ncol1; i2 += 1) {
+            tmp_val_refv[i2].push_back(tmp1[i2][i]);
+          };
+          for (i2 = 0; i2 < ncol2; i2 += 1) {
+            tmp_val_refv[ncol1 + i2].push_back(tmp2[i2][idx]);
+          };
+        };
+      };
+      longest_determine();
+    };
+
     void merge_excluding(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
       const unsigned int& ncol1 = obj1.get_ncol();
       const unsigned int& ncol2 = obj2.get_ncol();
@@ -8327,6 +8387,90 @@ class Dataframe{
       longest_determine();
     };
 
+    void merge_all2(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
+      const unsigned int& ncol1 = obj1.get_ncol();
+      const unsigned int& ncol2 = obj2.get_ncol();
+      std::vector<std::string> cur_vstr;
+      ncol = ncol1 + ncol2;
+      unsigned int i;
+      unsigned int i2;
+      unsigned int i3;
+      const std::vector<std::string>& name1 = obj1.get_colname();
+      const std::vector<std::string>& name2 = obj2.get_colname();
+      if (colname) {
+        name_v.resize(ncol);
+        if (name1.size() > 0) {
+          for (i = 0; i < name1.size(); ++i) {
+            name_v.push_back(name1[i]);
+          };
+        };
+        if (name2.size() > 0) {
+          for (i = 0; i < name2.size(); ++i) {
+            name_v.push_back(name2[i]);
+          };
+        };
+      };
+      tmp_val_refv.reserve(ncol);
+      for (i = 0; i < ncol; ++i) {
+        tmp_val_refv.push_back(cur_vstr);
+      };
+      const std::vector<const char*>& type1 = obj1.get_typecol();
+      const std::vector<const char*>& type2 = obj2.get_typecol();
+      type_refv.reserve(ncol);
+      for (i = 0; i < ncol1; ++i) {
+        type_refv.push_back(type1[i]);
+      };
+      for (i = 0; i < ncol2; ++i) {
+        type_refv.push_back(type2[i]);
+      };
+      const auto& tmp1 = obj1.get_tmp_val_refv();
+      const auto& tmp2 = obj2.get_tmp_val_refv();
+      const std::vector<std::string>& col1 = tmp1[key1];
+      const std::vector<std::string>& col2 = tmp2[key2];
+      std::unordered_multimap<std::string, size_t> b_index;
+      for (size_t j = 0; j < col2.size(); ++j) {
+        b_index.insert({col2[j], j});
+      };
+      std::unordered_multimap<std::string, size_t> a_index;
+      for (size_t j = 0; j < col1.size(); ++j) {
+        a_index.insert({col1[j], j});
+      };
+      for (size_t i = 0; i < col1.size(); ++i) {
+        auto it = b_index.find(col1[i]);
+        if (it == b_index.end()) {
+          nrow += 1;
+          for (i2 = 0; i2 < ncol1; i2 += 1) {
+            tmp_val_refv[i2].push_back(tmp1[i2][i]);
+          };
+          for (i2 = 0; i2 < ncol2; i2 += 1) {
+            tmp_val_refv[ncol1 + i2].push_back("NA");
+          };
+        } else {
+          nrow += 1;
+          size_t idx = it->second;
+          for (i2 = 0; i2 < ncol1; i2 += 1) {
+            tmp_val_refv[i2].push_back(tmp1[i2][i]);
+          };
+          for (i2 = 0; i2 < ncol2; i2 += 1) {
+            tmp_val_refv[ncol1 + i2].push_back(tmp2[i2][idx]);
+          };
+        };
+      };
+      for (size_t i = 0; i < col2.size(); ++i) {
+        auto it = a_index.find(col2[i]);
+        if (it == a_index.end()) {
+          nrow += 1;
+          for (i2 = 0; i2 < ncol1; i2 += 1) {
+            tmp_val_refv[i2].push_back("NA");
+          };
+          for (i2 = 0; i2 < ncol2; i2 += 1) {
+            tmp_val_refv[ncol1 + i2].push_back(tmp2[i2][i]);
+          };
+        };
+      };
+      longest_determine();
+    };
+
     //void transform_left_join(Dataframe &obj, 
     //                unsigned int &key1, 
     //                unsigned int &key2) {
@@ -8335,6 +8479,9 @@ class Dataframe{
     //  unsigned int i;
     //  std::vector<std::string> vec_str = {};
     //  std::vector<const char*> vec_type = obj.get_typecol();
+    //  const std::vector<std::string>& col1 = tmp_val_refv[key1];
+    //  const std::vector<std::vector<std::string>>& tmp_val_refv2 = obj.get_tmp_val_refv();
+    //  const std::vector<std::string>& col2 = tmp_val_refv2[key2];
     //  std::vector<std::string> vec_str(nrow);
     //  std::vector<char> vec_str(nrow);
     //  std::vector<bool> vec_chr(nrow);
@@ -8355,6 +8502,18 @@ class Dataframe{
     //      uint_v.resize(uint_v.size() + nrow);
     //    } else {
     //      dbl_v.resize(dbl_v.size() + nrow);
+    //    };
+    //  };
+    //  std::unordered_map<std::string, size_t> lookup;
+    //  for (i = 0; i < col2.size(); i += 1) {
+    //    lookup.insert(col2[i], i);
+    //  };
+    //  for (i = 0; i < col1.size(); i += 1) {
+    //    auto range = lookup.find(col1[i]);
+    //    if () {
+
+    //    } else {
+
     //    };
     //  };
     //};
@@ -9094,6 +9253,47 @@ class Dataframe{
 //@T Dataframe.merge_inner
 //@U void merge_inner(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
 //@X
+//@D Performs a inner join on a newly created dataframe. May creates dupplicates if multiple occurences of the key is found in the second dataframes, use Dataframe.merge_inner2 if you do not want to create dupplicates.
+//@A obj1 : is the first dataframe
+//@A obj2 : is the second dataframe
+//@A colname : 1 to give the column names to the newly created dataframe
+//@A key1 : is the index of the first dataframe column as primary key
+//@A key1 : is the index of the first dataframe column as foreign key
+//@X
+//@E 
+//@E Dataframe obj1, obj2, obj3;
+//@E std::string filename = "csv_test/outb.csv";
+//@E obj1.readf(filename);
+//@E 
+//@E std::string f2 = "csv_test/outb2.csv";
+//@E obj2.readf(f2);
+//@E 
+//@E unsigned int col1 = 0;
+//@E unsigned int col2 = 0;
+//@E 
+//@E obj3.merge_inner(obj1, obj2, 1, col1, col2);
+//@E obj3.display();
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
+//@E     [0]   [1]    [2]    [3]    [4]   [5]   [6]    [7]
+//@E :0:  id1   1      2      3      aa    id1   2      3
+//@E :1:  id1   1      2      3      aa    id1   2      3
+//@E :2:  id2   6      7      8      bb    id2   7      8
+//@E :3:  id4   6      7      8      uu    id4   7      8
+//@E :4:  id5   1      2      3      s4    id5   2      3
+//@E :5:  id6   6      7      8      s9    id6   7      8
+//@E :6:  id7   1      2      3      a4    id7   2      3
+//@E :7:  id8   6      7      8      m9    id8   2      3
+//@E :8:  id9   6      7      8      s9    id9   7      8
+//@E :9:  id11  6      7      8      m9    id11  7      8
+//@E :10: id11  6      7      8      m9    id11  7      8
+//@E :11: id12  6      7      8      m9    id12  7      8
+//@E :12: id14  1      2      3      NA    id14  7      8
+//@E :13: id15  16     7      8      m9    id15  2      3
+//@X
+
+//@T Dataframe.merge_inner2
+//@U void merge_inner2(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
+//@X
 //@D Performs a inner join on a newly created dataframe.
 //@A obj1 : is the first dataframe
 //@A obj2 : is the second dataframe
@@ -9103,34 +9303,31 @@ class Dataframe{
 //@X
 //@E 
 //@E Dataframe obj1, obj2, obj3;
-//@E std::string filename = "outb.csv";
+//@E std::string filename = "csv_test/outb.csv";
 //@E obj1.readf(filename);
 //@E 
-//@E std::vector&lt;unsigned int&gt; colv = {4, 3, 2};
-//@E obj1.rm_col(colv);
-//@E 
-//@E std::string f2 = "outb2.csv";
+//@E std::string f2 = "csv_test/outb2.csv";
 //@E obj2.readf(f2);
 //@E 
 //@E unsigned int col1 = 0;
 //@E unsigned int col2 = 0;
 //@E 
-//@E obj3.merge_inner(obj1, obj2, 1, col1, col2);
+//@E obj3.merge_inner2(obj1, obj2, 1, col1, col2);
 //@E obj3.display();
-//@E     &lt;str&gt; &lt;uint&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
-//@E 
-//@E :0:  id1   1      id1   2      3
-//@E :1:  id2   6      id2   7      8
-//@E :2:  id4   6      id4   7      8
-//@E :3:  id5   1      id5   2      3
-//@E :4:  id6   6      id6   7      8
-//@E :5:  id7   1      id7   2      3
-//@E :6:  id8   6      id8   2      3
-//@E :7:  id9   6      id9   7      8
-//@E :8:  id11  6      id11  7      8
-//@E :9:  id12  6      id12  7      8
-//@E :10: id14  1      id14  7      8
-//@E :11: id15  6      id15  2      3
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
+//@E     [0]   [1]    [2]    [3]    [4]   [5]   [6]    [7]
+//@E :0:  id1   1      2      3      aa    id1   2      3
+//@E :1:  id2   6      7      8      bb    id2   7      8
+//@E :2:  id4   6      7      8      uu    id4   7      8
+//@E :3:  id5   1      2      3      s4    id5   2      3
+//@E :4:  id6   6      7      8      s9    id6   7      8
+//@E :5:  id7   1      2      3      a4    id7   2      3
+//@E :6:  id8   6      7      8      m9    id8   2      3
+//@E :7:  id9   6      7      8      s9    id9   7      8
+//@E :8:  id11  6      7      8      m9    id11  7      8
+//@E :9:  id12  6      7      8      m9    id12  7      8
+//@E :10: id14  1      2      3      NA    id14  7      8
+//@E :11: id15  16     7      8      m9    id15  2      3
 //@X
 
 //@T Dataframe.merge_excluding
@@ -9144,13 +9341,13 @@ class Dataframe{
 //@A key2 : is the index of the column of the right dataframe
 //@X
 //@E Dataframe obj1, obj2, obj3;
-//@E std::string filename = "outb.csv";
+//@E std::string filename = "csv_test/outb.csv";
 //@E obj1.readf(filename);
 //@E 
 //@E std::vector&lt;unsigned int&gt; colv = {4, 3, 2};
 //@E obj1.rm_col(colv);
 //@E 
-//@E std::string f2 = "outb2.csv";
+//@E std::string f2 = "csv_test/outb2.csv";
 //@E obj2.readf(f2);
 //@E 
 //@E unsigned int col1 = 0;
@@ -9176,13 +9373,13 @@ class Dataframe{
 //@A key2 : is the index of the column of the right dataframe
 //@X
 //@E Dataframe obj1, obj2, obj3;
-//@E std::string filename = "outb.csv";
+//@E std::string filename = "csv_test/outb.csv";
 //@E obj1.readf(filename);
 //@E 
 //@E std::vector&lt;unsigned int&gt; colv = {4, 3, 2};
 //@E obj1.rm_col(colv);
 //@E 
-//@E std::string f2 = "outb2.csv";
+//@E std::string f2 = "csv_test/outb2.csv";
 //@E obj2.readf(f2);
 //@E 
 //@E unsigned int col1 = 0;
@@ -9201,7 +9398,7 @@ class Dataframe{
 //@T Dataframe.merge_all
 //@U void merge_all(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
 //@X
-//@D Performs a full join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one.
+//@D Performs a full join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one. May producesdupplicates if several occurences of the same key appears in the second dataframe, use Dataframe.merge_all2 if you do not want to create dupplicates.
 //@A obj1 : is the left dataframe
 //@A obj2 : is the right dataframe
 //@A colname : 1 to give the column names to the newly created dataframe
@@ -9209,13 +9406,10 @@ class Dataframe{
 //@A key2 : is the index of the column of the right dataframe
 //@X
 //@E Dataframe obj1, obj2, obj3;
-//@E std::string filename = "outb.csv";
+//@E std::string filename = "csv_test/outb.csv";
 //@E obj1.readf(filename);
 //@E 
-//@E std::vector&lt;unsigned int&gt; colv = {4, 3, 2};
-//@E obj1.rm_col(colv);
-//@E 
-//@E std::string f2 = "outb2.csv";
+//@E std::string f2 = "csv_test/outb2.csv";
 //@E obj2.readf(f2);
 //@E 
 //@E unsigned int col1 = 0;
@@ -9243,6 +9437,48 @@ class Dataframe{
 //@E :15: id14  1      2      3      NA    id14  7      8
 //@E :16: id15  6      7      8      m9    id15  2      3
 //@E :17: NA    NA     NA     NA     NA    id119 7      8
+//@X
+
+//@T Dataframe.merge_all2
+//@U void merge_all2(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
+//@X
+//@D Performs a full join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one.
+//@A obj1 : is the left dataframe
+//@A obj2 : is the right dataframe
+//@A colname : 1 to give the column names to the newly created dataframe
+//@A key1 : is the index of the column of the left dataframe
+//@A key2 : is the index of the column of the right dataframe
+//@X
+//@E Dataframe obj1, obj2, obj3;
+//@E std::string filename = "csv_test/outb.csv";
+//@E obj1.readf(filename);
+//@E 
+//@E std::string f2 = "csv_test/outb2.csv";
+//@E obj2.readf(f2);
+//@E 
+//@E unsigned int col1 = 0;
+//@E unsigned int col2 = 0;
+//@E 
+//@E obj3.merge_all2(obj1, obj2, 1, col1, col2);
+//@E obj3.display();
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
+//@E     [0]   [1]    [2]    [3]    [4]   [5]   [6]    [7]
+//@E :0:  id1   1      2      3      aa    id1   2      3
+//@E :1:  id2   6      7      8      bb    id2   7      8
+//@E :2:  id3   1      2      3      cc    NA    NA     NA
+//@E :3:  id4   6      7      8      uu    id4   7      8
+//@E :4:  id5   1      2      3      s4    id5   2      3
+//@E :5:  id6   6      7      8      s9    id6   7      8
+//@E :6:  id7   1      2      3      a4    id7   2      3
+//@E :7:  id8   6      7      8      m9    id8   2      3
+//@E :8:  id9   6      7      8      s9    id9   7      8
+//@E :9:  id10  1      2      3      a4    NA    NA     NA
+//@E :10: id11  6      7      8      m9    id11  7      8
+//@E :11: id12  6      7      8      m9    id12  7      8
+//@E :12: id13  6      7      8      s9    NA    NA     NA
+//@E :13: id14  1      2      3      NA    id14  7      8
+//@E :14: id15  16     7      8      m9    id15  2      3
+//@E :15: NA    NA     NA     NA     NA    id119 7      8//@X
 //@X
 
 //@L1 Apply any function on indefinite numbers of same type vectors
