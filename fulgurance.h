@@ -8755,107 +8755,108 @@ class Dataframe{
                     unsigned int default_uint = 0,
                     double default_dbl = 0) {
       const unsigned int& ncol2 = obj.get_ncol();
+      const std::vector<std::vector<unsigned int>>& matr_idx2 = obj.get_matr_idx();
+
       const std::vector<std::string>& str_v2 = obj.get_str_vec();
       const std::vector<char>& chr_v2 = obj.get_chr_vec();
       const std::vector<bool>& bool_v2 = obj.get_bool_vec();
       const std::vector<int>& int_v2 = obj.get_int_vec();
       const std::vector<unsigned int>& uint_v2 = obj.get_uint_vec();
       const std::vector<double>& dbl_v2 = obj.get_dbl_vec();
+      
       const unsigned int size_str = str_v.size() / nrow;
       const unsigned int size_chr = chr_v.size() / nrow;
       const unsigned int size_bool = bool_v.size() / nrow;
       const unsigned int size_int = int_v.size() / nrow;
       const unsigned int size_uint = uint_v.size() / nrow;
       const unsigned int size_dbl = dbl_v.size() / nrow;
+      
       unsigned int i;
       unsigned int i2;
+      
       std::vector<std::string> vec_str(nrow);
+
+      for (i = 0; i < ncol2; i += 1) {
+        tmp_val_refv.push_back(vec_str);
+      };
+
       const std::vector<const char*>& vec_type = obj.get_typecol();
       const std::vector<std::string>& col1 = tmp_val_refv[key1];
       const std::vector<std::vector<std::string>>& tmp_val_refv2 = obj.get_tmp_val_refv();
       const std::vector<std::string>& col2 = tmp_val_refv2[key2];
-      for (i = 0; i < ncol2; i += 1) {
-        tmp_val_refv.push_back(vec_str);
-        if (vec_type[i] == typeid(std::string).name()) {
-          str_v.resize(str_v.size() + nrow);
-        } else if (vec_type[i] == typeid(char).name()) {
-          chr_v.resize(chr_v.size() + nrow);
-        } else if (vec_type[i] == typeid(bool).name()) {
-          bool_v.resize(bool_v.size() + nrow);
-        } else if (vec_type[i] == typeid(int).name()) {
-          int_v.resize(int_v.size() + nrow);
-        } else if (vec_type[i] == typeid(unsigned int).name()) {
-          uint_v.resize(uint_v.size() + nrow);
-        } else {
-          dbl_v.resize(dbl_v.size() + nrow);
-        };
-      };
+
+      str_v.resize(str_v.size() + nrow * matr_idx2[0].size());
+      chr_v.resize(chr_v.size() + nrow * matr_idx2[1].size());
+      bool_v.resize(bool_v.size() + nrow * matr_idx2[2].size());
+      int_v.resize(int_v.size() + nrow * matr_idx2[3].size());
+      uint_v.resize(uint_v.size() + nrow * matr_idx2[4].size());
+      dbl_v.resize(dbl_v.size() + nrow * matr_idx2[5].size());
+             
       std::unordered_multimap<std::string, size_t> lookup;
       for (i = 0; i < col2.size(); i += 1) {
         lookup.insert({col2[i], i});
       };
-      unsigned int pos_vl;
-      std::array<unsigned int, 6> pos_vec;
+ 
+      unsigned int idx;
+      const unsigned int& nrow2 = obj.get_nrow();
       for (i = 0; i < col1.size(); i += 1) {
+
+        std::cout << col1.size() << " " << i << " ll\n";
+
         auto it = lookup.find(col1[i]);
-        pos_vec = {0, 0, 0, 0, 0, 0};
+        std::cout << "ok\n";
         if (it == lookup.end()) {
-          for (i2 = 0; i2 < ncol2; i2 += 1) {
-            tmp_val_refv[ncol + i2][i] = "NA";
-            if (vec_type[i2] == typeid(std::string).name()) {
-              pos_vl = pos_vec[0];
-              str_v[nrow * (size_str + pos_vl) + i] = default_str;
-              pos_vec[0] += 1;
-            } else if (vec_type[i2] == typeid(char).name()) {
-              pos_vl = pos_vec[1];
-              chr_v[nrow * (size_chr + pos_vl) + i] = default_chr;
-              pos_vec[1] += 1;
-            } else if (vec_type[i2] == typeid(bool).name()) {
-              pos_vl = pos_vec[2];
-              bool_v[nrow * (size_bool + pos_vl) + i] = default_bool;
-              pos_vec[2] += 1;
-            } else if (vec_type[i2] == typeid(int).name()) {
-              pos_vl = pos_vec[3];
-              int_v[nrow * (size_int + pos_vl) + i] = default_int;
-              pos_vec[3] += 1;
-            } else if (vec_type[i2] == typeid(unsigned int).name()) {
-              pos_vl = pos_vec[4];
-              uint_v[nrow * (size_uint + pos_vl) + i] = default_uint;
-              pos_vec[4] += 1;
-            } else {
-              pos_vl = pos_vec[5];
-              dbl_v[nrow * (size_dbl + pos_vl) + i] = default_dbl;
-              pos_vec[5] += 1;
-            };
+          std::cout << "ok1\n";
+          for (i2 = 0; i2 < matr_idx2[0].size(); i2 += 1) {
+            tmp_val_refv[ncol + matr_idx2[0][i2]][i] = default_str;
+            str_v[nrow * (size_str + i2) + i] = default_str;
+          };
+          for (i2 = 0; i2 < matr_idx2[1].size(); i2 += 1) {
+            tmp_val_refv[ncol + matr_idx2[1][i2]][i] = std::string(1, default_chr);
+            chr_v[nrow * (size_chr + i2) + i] = default_chr;
+          };
+          for (i2 = 0; i2 < matr_idx2[2].size(); i2 += 1) {
+            tmp_val_refv[ncol + matr_idx2[2][i2]][i] = std::to_string(default_bool);
+            bool_v[nrow * (size_bool + i2) + i] = default_bool;
+          };
+          for (i2 = 0; i2 < matr_idx2[3].size(); i2 += 1) {
+            tmp_val_refv[ncol + matr_idx2[3][i2]][i] = std::to_string(default_int);
+            int_v[nrow * (size_int + i2) + i] = default_int;
+          };
+          for (i2 = 0; i2 < matr_idx2[4].size(); i2 += 1) {
+            tmp_val_refv[ncol + matr_idx2[4][i2]][i] = std::to_string(default_uint);
+            uint_v[nrow * (size_uint + i2) + i] = default_uint;
+          };
+          for (i2 = 0; i2 < matr_idx2[5].size(); i2 += 1) {
+            tmp_val_refv[ncol + matr_idx2[5][i2]][i] = std::to_string(default_dbl);
+            dbl_v[nrow * (size_dbl + i2) + i] = default_dbl;
           };
         } else {
-          for (i2 = 0; i2 < ncol2; i2 += 1) {
-            tmp_val_refv[ncol + i2][i] = tmp_val_refv2[i2][i];
-            if (vec_type[i2] == typeid(std::string).name()) {
-              pos_vl = pos_vec[0];
-              str_v[nrow * (size_str + pos_vl) + i] = str_v2[pos_vl * i2 + i];
-              pos_vec[0] += 1;
-            } else if (vec_type[i2] == typeid(char).name()) {
-              pos_vl = pos_vec[1];
-              chr_v[nrow * (size_chr + pos_vl) + i] = chr_v2[pos_vl * i2 + i];
-              pos_vec[1] += 1;
-            } else if (vec_type[i2] == typeid(bool).name()) {
-              pos_vl = pos_vec[2];
-              bool_v[nrow * (size_bool + pos_vl) + i] = bool_v2[pos_vl * i2 + i];
-              pos_vec[2] += 1;
-            } else if (vec_type[i2] == typeid(int).name()) {
-              pos_vl = pos_vec[3];
-              int_v[nrow * (size_int + pos_vl) + i] = int_v2[pos_vl * i2 + i];
-              pos_vec[3] += 1;
-            } else if (vec_type[i2] == typeid(unsigned int).name()) {
-              pos_vl = pos_vec[4];
-              uint_v[nrow * (size_uint + pos_vl) + i] = uint_v2[pos_vl * i2 + i];
-              pos_vec[4] += 1;
-            } else {
-              pos_vl = pos_vec[5];
-              dbl_v[nrow * (size_dbl + pos_vl) + i] = dbl_v2[pos_vl * i2 + i];
-              pos_vec[5] += 1;
-            };
+          std::cout << "ok2\n";
+          idx = it->second;
+          for (i2 = 0; i2 < matr_idx2[0].size(); i2 += 1) {
+            str_v[nrow * (size_str + i2) + i] = str_v2[nrow2 * i2 + idx];
+            tmp_val_refv[ncol + matr_idx2[0][i2]][i] = tmp_val_refv2[i2][idx];
+          };
+          for (i2 = 0; i2 < matr_idx2[1].size(); i2 += 1) {
+            chr_v[nrow * (size_chr + i2) + i] = chr_v2[nrow2 * i2 + idx];
+            tmp_val_refv[ncol + matr_idx2[1][i2]][i] = tmp_val_refv2[i2][idx];
+          };
+          for (i2 = 0; i2 < matr_idx2[2].size(); i2 += 1) {
+            bool_v[nrow * (size_bool + i2) + i] = bool_v2[nrow2 * i2 + idx];
+            tmp_val_refv[ncol + matr_idx2[2][i2]][i] = tmp_val_refv2[i2][idx];
+          };
+          for (i2 = 0; i2 < matr_idx2[3].size(); i2 += 1) {
+            int_v[nrow * (size_int + i2) + i] = int_v2[nrow2 * i2 + idx];
+            tmp_val_refv[ncol + matr_idx2[3][i2]][i] = tmp_val_refv2[i2][idx];
+          };
+          for (i2 = 0; i2 < matr_idx2[4].size(); i2 += 1) {
+            uint_v[nrow * (size_uint + i2) + i] = uint_v2[nrow2 * i2 + idx];
+            tmp_val_refv[ncol + matr_idx2[4][i2]][i] = tmp_val_refv2[i2][idx];
+          };
+          for (i2 = 0; i2 < matr_idx2[5].size(); i2 += 1) {
+            dbl_v[nrow * (size_dbl + i2) + i] = dbl_v2[nrow2 * i2 + idx];
+            tmp_val_refv[ncol + matr_idx2[5][i2]][i] = tmp_val_refv2[i2][idx];
           };
         };
       };
@@ -9976,17 +9977,17 @@ class Dataframe{
 //@E     col1  col2   col3   col4   col5
 //@E :0:  id1   1      2      3      aa    id1   2      3
 //@E :1:  id2   6      7      8      bb    id12  7      8
-//@E :2:  id3   1      2      3      cc    NA    NA     NA
+//@E :2:  id3   1      2      3      cc    NA    0      0
 //@E :3:  id4   6      7      8      uu    id2   7      8
 //@E :4:  id5   1      2      3      s4    id1   2      3
 //@E :5:  id6   6      7      8      s9    id9   7      8
 //@E :6:  id7   1      2      3      a4    id5   2      3
 //@E :7:  id8   6      7      8      m9    id6   7      8
 //@E :8:  id9   6      7      8      s9    id11  7      8
-//@E :9:  id10  1      2      3      a4    NA    NA     NA
+//@E :9:  id10  1      2      3      a4    NA    0      0
 //@E :10: id11  6      7      8      m9    id11  7      8
 //@E :11: id12  6      7      8      m9    id14  7      8
-//@E :12: id13  6      7      8      s9    NA    NA     NA
+//@E :12: id13  6      7      8      s9    NA    0      0
 //@E :13: id14  1      2      3      NA    id15  2      3
 //@E :14: id15  6      7      8      m9    id119 7      8
 //@X
