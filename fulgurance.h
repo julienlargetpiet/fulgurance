@@ -8706,6 +8706,9 @@ class Dataframe{
         auto it = a_index.find(col2[i]);
         if (it == a_index.end()) {
           nrow += 1;
+          for (i2 = 0; i2 < ncol2; i2 += 1) {
+            tmp_val_refv[ncol1 + i2].push_back(tmp2[i2][i]);
+          };
           for (auto& el : matr_idx1[0]) {
             tmp_val_refv[el].push_back(default_str);
           };
@@ -9744,7 +9747,17 @@ class Dataframe{
 //@X
 
 //@T Dataframe.merge_excluding
-//@U void merge_excluding(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
+//@U void merge_excluding(Dataframe &obj1, 
+//@U                          Dataframe &obj2, 
+//@U                          bool colname, 
+//@U                          unsigned int &key1, 
+//@U                          unsigned int &key2,
+//@U                          std::string default_str = "NA",
+//@U                          std::string default_chr = " ",
+//@U                          std::string default_bool = "0",
+//@U                          std::string default_int = "0",
+//@U                          std::string default_uint = "0",
+//@U                          std::string default_dbl = "0")
 //@X
 //@D Performs a left excluding join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one.
 //@A obj1 : is the left dataframe
@@ -9757,9 +9770,6 @@ class Dataframe{
 //@E std::string filename = "csv_test/outb.csv";
 //@E obj1.readf(filename);
 //@E 
-//@E std::vector&lt;unsigned int&gt; colv = {4, 3, 2};
-//@E obj1.rm_col(colv);
-//@E 
 //@E std::string f2 = "csv_test/outb2.csv";
 //@E obj2.readf(f2);
 //@E 
@@ -9768,15 +9778,25 @@ class Dataframe{
 //@E 
 //@E obj3.merge_excluding(obj1, obj2, 1, col1, col2);
 //@E obj3.display();
-//@E    &lt;str&gt; &lt;uint&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
-//@E 
-//@E :0: id3   1      NA    NA     NA
-//@E :1: id10  1      NA    NA     NA
-//@E :2: id13  6      NA    NA     NA
+//@E    &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
+//@E    [0]   [1]    [2]    [3]    [4]   [5]   [6]    [7]
+//@E :0: id3   1      2      3      cc    NA    0      0
+//@E :1: id10  1      2      3      a4    NA    0      0
+//@E :2: id13  6      7      8      s9    NA    0      0
 //@X
 
 //@T Dataframe.merge_excluding_both
-//@U void merge_excluding_both(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
+//@U void merge_excluding_both(Dataframe &obj1, 
+//@U                               Dataframe &obj2, 
+//@U                               bool colname, 
+//@U                               unsigned int &key1, 
+//@U                               unsigned int &key2,
+//@U                               std::string default_str = "NA",
+//@U                               std::string default_chr = " ",
+//@U                               std::string default_bool = "0",
+//@U                               std::string default_int = "0",
+//@U                               std::string default_uint = "0",
+//@U                               std::string default_dbl = "0")
 //@X
 //@D Performs a full excluding join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one.
 //@A obj1 : is the left dataframe
@@ -9789,9 +9809,6 @@ class Dataframe{
 //@E std::string filename = "csv_test/outb.csv";
 //@E obj1.readf(filename);
 //@E 
-//@E std::vector&lt;unsigned int&gt; colv = {4, 3, 2};
-//@E obj1.rm_col(colv);
-//@E 
 //@E std::string f2 = "csv_test/outb2.csv";
 //@E obj2.readf(f2);
 //@E 
@@ -9800,16 +9817,26 @@ class Dataframe{
 //@E 
 //@E obj3.merge_excluding_both(obj1, obj2, 1, col1, col2);
 //@E obj3.display();
-//@E    &lt;str&gt; &lt;uint&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
-//@E 
-//@E :0: id3   1      NA    NA     NA
-//@E :1: id10  1      NA    NA     NA
-//@E :2: id13  6      NA    NA     NA
-//@E :3: NA    NA     id119 7      8
+//@E    &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
+//@E    [0]   [1]    [2]    [3]    [4]   [5]   [6]    [7]
+//@E :0: id3   1      2      3      cc    NA    0      0
+//@E :1: id10  1      2      3      a4    NA    0      0
+//@E :2: id13  6      7      8      s9    NA    0      0
+//@E :3: NA    0      0      0      NA    id119 7      8
 //@X
 
 //@T Dataframe.merge_all
-//@U void merge_all(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
+//@U void merge_all(Dataframe &obj1, 
+//@U                     Dataframe &obj2, 
+//@U                     bool colname, 
+//@U                     unsigned int &key1, 
+//@U                     unsigned int &key2,
+//@U                     std::string default_str = "NA",
+//@U                     std::string default_chr = " ",
+//@U                     std::string default_bool = "0",
+//@U                     std::string default_int = "0",
+//@U                     std::string default_uint = "0",
+//@U                     std::string default_dbl = "0") 
 //@X
 //@D Performs a full join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one. May producesdupplicates if several occurences of the same key appears in the second dataframe, use Dataframe.merge_all2 if you do not want to create dupplicates.
 //@A obj1 : is the left dataframe
@@ -9835,25 +9862,35 @@ class Dataframe{
 //@E :0:  id1   1      2      3      aa    id1   2      3
 //@E :1:  id1   1      2      3      aa    id1   22     3
 //@E :2:  id2   6      7      8      bb    id2   7      8
-//@E :3:  id3   1      2      3      cc    NA    NA     NA
+//@E :3:  id3   1      2      3      cc    NA    0      0
 //@E :4:  id4   6      7      8      uu    id4   7      8
 //@E :5:  id5   1      2      3      s4    id5   2      3
 //@E :6:  id6   6      7      8      s9    id6   7      8
 //@E :7:  id7   1      2      3      a4    id7   2      3
 //@E :8:  id8   6      7      8      m9    id8   2      3
 //@E :9:  id9   6      7      8      s9    id9   7      8
-//@E :10: id10  1      2      3      a4    NA    NA     NA
+//@E :10: id10  1      2      3      a4    NA    0      0
 //@E :11: id11  6      7      8      m9    id11  7      8
 //@E :12: id11  6      7      8      m9    id11  17     8
 //@E :13: id12  6      7      8      m9    id12  7      8
-//@E :14: id13  6      7      8      s9    NA    NA     NA
+//@E :14: id13  6      7      8      s9    NA    0      0
 //@E :15: id14  1      2      3      NA    id14  7      8
 //@E :16: id15  6      7      8      m9    id15  2      3
 //@E :17: NA    NA     NA     NA     NA    id119 7      8
 //@X
 
 //@T Dataframe.merge_all2
-//@U void merge_all2(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2)
+//@U void merge_all2(Dataframe &obj1, 
+//@U                     Dataframe &obj2, 
+//@U                     bool colname, 
+//@U                     unsigned int &key1, 
+//@U                     unsigned int &key2,
+//@U                     std::string default_str = "NA",
+//@U                     std::string default_chr = " ",
+//@U                     std::string default_bool = "0",
+//@U                     std::string default_int = "0",
+//@U                     std::string default_uint = "0",
+//@U                     std::string default_dbl = "0") 
 //@X
 //@D Performs a full join to the associated dataframe (newly created). The first dataframe as argument is considered as the left one.
 //@A obj1 : is the left dataframe
