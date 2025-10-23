@@ -8804,9 +8804,7 @@ class Dataframe{
         std::cout << col1.size() << " " << i << " ll\n";
 
         auto it = lookup.find(col1[i]);
-        std::cout << "ok\n";
         if (it == lookup.end()) {
-          std::cout << "ok1\n";
           for (i2 = 0; i2 < matr_idx2[0].size(); i2 += 1) {
             tmp_val_refv[ncol + matr_idx2[0][i2]][i] = default_str;
             str_v[nrow * (size_str + i2) + i] = default_str;
@@ -8832,7 +8830,6 @@ class Dataframe{
             dbl_v[nrow * (size_dbl + i2) + i] = default_dbl;
           };
         } else {
-          std::cout << "ok2\n";
           idx = it->second;
           for (i2 = 0; i2 < matr_idx2[0].size(); i2 += 1) {
             str_v[nrow * (size_str + i2) + i] = str_v2[nrow2 * i2 + idx];
