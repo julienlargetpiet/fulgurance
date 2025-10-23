@@ -4006,6 +4006,42 @@ template <typename T> unsigned int match_min(const std::vector<T> &x) {
   return rtn;
 };
 
+//@T match_n
+//@U template typename &lt;T&gt;
+//@U std::vector&lt;unsigned int &gt;
+//@U match_n(const std::vector&lt;T&gt;& x, const std::vector&lt;T&gt;& ptrn)
+//@X
+//@D Returns all the first index of occurence of all input elements in a set.
+//@A x : is the input set (where are the elements to be found)
+//@A ptrn : is the vector containing all the elements to match
+//@X
+//@E
+//@E
+//@E std::vector&lt;std::string&gt; vec1 = {"az", "pp", "mm", "ff", "ff", "uv"};
+//@E
+//@E  std::vector&lt;std::string&gt; vec2 = {"ff", "ff", "mm"};
+//@E
+//@E  std::vector&lt;unsigned int&gt; vecout = match_n(vec1, vec2);
+//@E :0: 3 3 2
+//@X
+
+template <typename T> std::vector<unsigned int> match_n(const std::vector<T>& x, const std::vector<T>& ptrn) {
+  unsigned int i2;
+  std::vector<unsigned int> rtn_v(ptrn.size());
+  for (unsigned int i = 0; i < ptrn.size(); i += 1) {
+    i2 = 0;
+    T cur_ptrn = ptrn[i];
+    while (x[i2] != cur_ptrn) {
+      i2 += 1;
+      if (i2 == x.size()) {
+        break;
+      };
+    };
+    rtn_v[i] = i2;
+  };
+  return rtn_v;
+};
+
 //@L3 Grep
 
 //@T grep
@@ -4577,18 +4613,18 @@ bool all(const std::vector<bool> &x) {
 
 //@L3 Infamous Gnome Sorting Algorithm
 
-//@T sort_descin
-//@U template &lt;typename T&gt; void sort_descin(std::vector&lt;T&gt; &x) 
+//@T sort_desc
+//@U template &lt;typename T&gt; void sort_desc(std::vector&lt;T&gt; &x) 
 //@X
 //@D Transforms a stl vector (int, float, double, bool) to a sorted decreasing stl vector.
 //@A x : stl vector (int, float, double, bool) 
 //@X
 //@E std::vector&lt;int&gt; vec = {1, 5, 2, 1, 5, 22};
-//@E sort_descin(vec);
+//@E sort_desc(vec);
 //@E {22, 5, 5, 2, 1, 1}
 //@X
 
-template <typename T> void sort_descin(std::vector<T> &x) {
+template <typename T> void sort_desc(std::vector<T> &x) {
   const unsigned int n = x.size();
   int i = 1;
   T ref;
@@ -4606,18 +4642,18 @@ template <typename T> void sort_descin(std::vector<T> &x) {
   };
 };
 
-//@T sort_ascin
-//@U template &lt;typename T&gt; void sort_ascin(std::vector&lt;T&gt; &x) 
+//@T sort_asc
+//@U template &lt;typename T&gt; void sort_asc(std::vector&lt;T&gt; &x) 
 //@X
 //@D Transforms a stl vector (int, float, double, bool) to a sorted increasing stl vector.
 //@A x : stl vector (int, float, double, bool) 
 //@X
 //@E std::vector&lt;int&gt; vec = {1, 5, 2, 1, 5, 22};
-//@E sort_ascin(vec);
+//@E sort_asc(vec);
 //@E {1, 1, 2, 5, 5, 22}
 //@X
 
-template <typename T> void sort_ascin(std::vector<T> &x) {
+template <typename T> void sort_asc(std::vector<T> &x) {
   const unsigned int n = x.size();
   int i = 1;
   T ref;
@@ -4633,72 +4669,6 @@ template <typename T> void sort_ascin(std::vector<T> &x) {
       i+= 1;
     };
   };
-};
-
-//@T sort_descout
-//@U template &lt;typename T&gt; void sort_descout(std::vector&lt;T&gt; &x) 
-//@X
-//@D Returns a stl sorted decreasingly vector from a  stl vector (int, float, double, bool).
-//@A x : stl vector (int, float, double, bool) 
-//@X
-//@E std::vector&lt;int&gt; vec = {1, 5, 2, 1, 5, 22};
-//@E std::&lt;int&gt; out = sort_descout(vec);
-//@E {22, 5, 5, 2, 1, 1}
-//@X
-
-template <typename T> std::vector<T> sort_descout(const std::vector<T> &x) {
-  std::vector<T> rtn = x;
-  const unsigned int n = x.size();
-  int i = 1;
-  T ref;
-  while (i < n) {
-    if (rtn[i] > rtn[i - 1]) {
-      ref = rtn[i];
-      rtn[i] = rtn[i - 1];
-      rtn[i - 1] = ref;
-      if (i > 1) {
-        i -= 1;
-      } else {
-        i += 1;
-      };
-    } else {
-      i += 1;
-    };
-  };
-  return rtn;
-};
-
-//@T sort_ascout
-//@U template &lt;typename T&gt; void sort_ascout(std::vector&lt;T&gt; &x) 
-//@X
-//@D Returns a stl sorted increasingly vector from a  stl vector (int, float, double, bool).
-//@A x : stl vector (int, float, double, bool) 
-//@X
-//@E std::vector&lt;int&gt; vec = {1, 5, 2, 1, 5, 22};
-//@E std::&lt;int&gt; out = sort_ascout(vec);
-//@E {1, 1, 2, 5, 5, 22}
-//@X
-
-template <typename T> std::vector<T> sort_ascout(const std::vector<T> &x) {
-  std::vector<T> rtn = x;
-  const unsigned int n = x.size();
-  int i = 1;
-  T ref;
-  while (i < n) {
-    if (rtn[i] < rtn[i - 1]) {
-      ref = rtn[i];
-      rtn[i] = rtn[i - 1];
-      rtn[i - 1] = ref;
-      if (i > 1) {
-        i -= 1;
-      } else {
-        i += 1;
-      };
-    } else {
-      i += 1;
-    };
-  };
-  return rtn;
 };
 
 bool is_greater_str(std::string &x, std::string &x2, 
@@ -5892,6 +5862,10 @@ class Dataframe{
 
     const std::vector<double>& get_dbl_vec() const {
       return dbl_v;
+    };
+
+    const std::vector<std::vector<unsigned int>>& get_matr_idx() const {
+      return matr_idx;
     };
 
     void longest_determine() {
@@ -8128,6 +8102,148 @@ class Dataframe{
           };
         };
       };
+      type_classification();
+      longest_determine();
+    };
+
+    void transform_merge_inner2(Dataframe &obj, 
+                    unsigned int &key1, 
+                    unsigned int &key2) {
+      const unsigned int& ncol2 = obj.get_ncol();
+      std::vector<std::string> cur_vstr(nrow);
+      unsigned int nrow2 = nrow;
+      const unsigned int& nrowb = obj.get_nrow();
+      nrow = 0;
+      unsigned int i;
+      unsigned int i2;
+      unsigned int i3;
+      const std::vector<std::string>& name2 = obj.get_colname();
+      if (name_v.size() > 0) {
+        name_v.insert(name_v.end(), name2.begin(), name2.end()); 
+      };
+      tmp_val_refv.reserve(ncol);
+      for (i = 0; i < ncol2; ++i) {
+        tmp_val_refv.push_back(cur_vstr);
+      };
+      const std::vector<const char*>& type2 = obj.get_typecol();
+      type_refv.insert(type_refv.end(), type2.begin(), type2.end());
+      const auto& tmp2 = obj.get_tmp_val_refv();
+      const std::vector<std::string>& col1 = tmp_val_refv[key1];
+      const std::vector<std::string>& col2 = tmp2[key2];
+      
+      std::unordered_multimap<std::string, size_t> b_index;
+      for (size_t j = 0; j < col2.size(); ++j) {
+        b_index.insert({col2[j], j});
+      };
+
+      std::vector<std::string> str_v2 = obj.get_str_vec();
+      std::vector<char> chr_v2 = obj.get_chr_vec();
+      std::vector<bool> bool_v2 = obj.get_bool_vec();
+      std::vector<int> int_v2 = obj.get_int_vec();
+      std::vector<unsigned int> uint_v2 = obj.get_uint_vec();
+      std::vector<double> dbl_v2 = obj.get_dbl_vec();
+
+      std::vector<std::string> tmp_str_v(nrow2);
+      std::vector<char> tmp_chr_v(nrow2);
+      std::vector<bool> tmp_bool_v(nrow2);
+      std::vector<int> tmp_int_v(nrow2);
+      std::vector<unsigned int> tmp_uint_v(nrow2);
+      std::vector<double> tmp_dbl_v(nrow2);
+
+      std::array<unsigned int, 6> pos_vec;
+      unsigned int pos_val;
+
+      unsigned int pre_str_val = str_v.size() / nrow2;
+      unsigned int pre_chr_val = chr_v.size() / nrow2;
+      unsigned int pre_bool_val = bool_v.size() / nrow2;
+      unsigned int pre_int_val = int_v.size() / nrow2;
+      unsigned int pre_uint_val = uint_v.size() / nrow2;
+      unsigned int pre_dbl_val = dbl_v.size() / nrow2;
+
+      for (auto& el : type2) {
+        if (el == typeid(std::string).name()) {
+          str_v.insert(str_v.end(), tmp_str_v.begin(), tmp_str_v.end());
+        } else if (el == typeid(char).name()) {
+          chr_v.insert(chr_v.end(), tmp_chr_v.begin(), tmp_chr_v.end());
+        } else if (el == typeid(bool).name()) {
+          bool_v.insert(bool_v.end(), tmp_bool_v.begin(), tmp_bool_v.end());
+        } else if (el == typeid(int).name()) {
+          int_v.insert(int_v.end(), tmp_int_v.begin(), tmp_int_v.end());
+        } else if (el == typeid(unsigned int).name()) {
+          uint_v.insert(uint_v.end(), tmp_uint_v.begin(), tmp_uint_v.end());
+        } else {
+          dbl_v.insert(dbl_v.end(), tmp_dbl_v.begin(), tmp_dbl_v.end());
+        };
+      };
+
+      for (size_t i = 0; i < col1.size(); ++i) {
+        auto it = b_index.find(col1[i]);
+        if (it != b_index.end()) {
+          size_t idx = it->second;
+          pos_vec = {0, 0, 0, 0, 0, 0};
+          for (i2 = 0; i2 < ncol; i2 += 1) {
+            tmp_val_refv[i2][nrow] = tmp_val_refv[i2][i];
+            auto type_val = type_refv[i2];
+            if (type_val == typeid(std::string).name()) {
+              pos_val = pos_vec[0];
+              str_v[nrow2 * pos_val + nrow] = str_v[nrow2 * pos_val + i];
+              pos_vec[0] += 1;
+            } else if (type_val == typeid(char).name()) {
+              pos_val = pos_vec[1];
+              chr_v[nrow2 * pos_val + nrow] = chr_v[nrow2 * pos_val + i];
+              pos_vec[1] += 1;
+            } else if (type_val == typeid(bool).name()) {
+              pos_val = pos_vec[2];
+              bool_v[nrow2 * pos_val + nrow] = bool_v[nrow2 * pos_val + i];
+              pos_vec[2] += 1;
+            } else if (type_val == typeid(int).name()) {
+              pos_val = pos_vec[3];
+              int_v[nrow2 * pos_val + nrow] = int_v[nrow2 * pos_val + i];
+              pos_vec[3] += 1;
+            } else if (type_val == typeid(unsigned int).name()) {
+              pos_val = pos_vec[4];
+              uint_v[nrow2 * pos_val + nrow] = uint_v[nrow2 * pos_val + i];
+              pos_vec[4] += 1;
+            } else {
+              pos_val = pos_vec[5];
+              dbl_v[nrow2 * pos_val + nrow] = dbl_v[nrow2 * pos_val + i];
+              pos_vec[5] += 1;
+            };
+          };
+          pos_vec = {0, 0, 0, 0, 0, 0};
+          for (i2 = 0; i2 < ncol2; i2 += 1) {
+            tmp_val_refv[ncol + i2][nrow] = tmp2[i2][idx];
+            auto type_val = type2[i2];
+            if (type_val == typeid(std::string).name()) {
+              pos_val = pos_vec[0];
+              str_v[nrow2 * (pre_str_val + pos_val) + nrow] = str_v2[nrowb * pos_val + idx];
+              pos_vec[0] += 1;
+            } else if (type_val == typeid(char).name()) {
+              pos_val = pos_vec[1];
+              chr_v[nrow2 * (pre_chr_val + pos_val) + nrow] = chr_v2[nrowb * pos_val + idx];
+              pos_vec[1] += 1;
+            } else if (type_val == typeid(bool).name()) {
+              pos_val = pos_vec[2];
+              bool_v[nrow2 * (pre_bool_val + pos_val) + nrow] = bool_v2[nrowb * pos_val + idx];
+              pos_vec[2] += 1;
+            } else if (type_val == typeid(int).name()) {
+              pos_val = pos_vec[3];
+              int_v[nrow2 * (pre_int_val + pos_val) + nrow] = int_v2[nrowb * pos_val + idx];
+              pos_vec[3] += 1;
+            } else if (type_val == typeid(unsigned int).name()) {
+              pos_val = pos_vec[4];
+              uint_v[nrow2 * (pre_uint_val + pos_val) + nrow] = uint_v2[nrowb * pos_val + idx];
+              pos_vec[4] += 1;
+            } else {
+              pos_val = pos_vec[5];
+              dbl_v[nrow2 * (pre_dbl_val + pos_val) + nrow] = dbl_v2[nrowb * pos_val + idx];
+              pos_vec[5] += 1;
+            }; 
+          };
+          nrow += 1;
+        };
+      };
+      ncol += ncol2;
       longest_determine();
     };
 
@@ -8160,13 +8276,6 @@ class Dataframe{
       };
       const std::vector<const char*>& type1 = obj1.get_typecol();
       const std::vector<const char*>& type2 = obj2.get_typecol();
-      type_refv.reserve(ncol);
-      for (i = 0; i < ncol1; ++i) {
-        type_refv.push_back(type1[i]);
-      };
-      for (i = 0; i < ncol2; ++i) {
-        type_refv.push_back(type2[i]);
-      };
       const auto& tmp1 = obj1.get_tmp_val_refv();
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
@@ -8189,9 +8298,20 @@ class Dataframe{
         };
       };
       longest_determine();
+      type_classification();
     };
 
-    void merge_excluding(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
+    void merge_excluding(Dataframe &obj1, 
+                         Dataframe &obj2, 
+                         bool colname, 
+                         unsigned int &key1, 
+                         unsigned int &key2,
+                         std::string default_str = "NA",
+                         std::string default_chr = " ",
+                         std::string default_bool = "0",
+                         std::string default_int = "0",
+                         std::string default_uint = "0",
+                         std::string default_dbl = "0") {
       const unsigned int& ncol1 = obj1.get_ncol();
       const unsigned int& ncol2 = obj2.get_ncol();
       std::vector<std::string> cur_vstr;
@@ -8199,6 +8319,7 @@ class Dataframe{
       unsigned int i;
       unsigned int i2;
       unsigned int i3;
+      const std::vector<std::vector<unsigned int>>& matr_idx2 = obj2.get_matr_idx();
       const std::vector<std::string>& name1 = obj1.get_colname();
       const std::vector<std::string>& name2 = obj2.get_colname();
       if (colname) {
@@ -8220,13 +8341,6 @@ class Dataframe{
       };
       const std::vector<const char*>& type1 = obj1.get_typecol();
       const std::vector<const char*>& type2 = obj2.get_typecol();
-      type_refv.reserve(ncol);
-      for (i = 0; i < ncol1; ++i) {
-        type_refv.push_back(type1[i]);
-      };
-      for (i = 0; i < ncol2; ++i) {
-        type_refv.push_back(type2[i]);
-      };
       const auto& tmp1 = obj1.get_tmp_val_refv();
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
@@ -8242,15 +8356,41 @@ class Dataframe{
           for (i2 = 0; i2 < ncol1; i2 += 1) {
             tmp_val_refv[i2].push_back(tmp1[i2][i]);
           };
-          for (i2 = 0; i2 < ncol2; i2 += 1) {
-            tmp_val_refv[ncol1 + i2].push_back("NA");
+          for (auto& el : matr_idx2[0]) {
+            tmp_val_refv[ncol1 + el].push_back(default_str);
+          };
+          for (auto& el : matr_idx2[1]) {
+            tmp_val_refv[ncol1 + el].push_back(default_chr);
+          };
+          for (auto& el : matr_idx2[2]) {
+            tmp_val_refv[ncol1 + el].push_back(default_bool);
+          };
+          for (auto& el : matr_idx2[3]) {
+            tmp_val_refv[ncol1 + el].push_back(default_int);
+          };
+          for (auto& el : matr_idx2[4]) {
+            tmp_val_refv[ncol1 + el].push_back(default_uint);
+          };
+          for (auto& el : matr_idx2[5]) {
+            tmp_val_refv[ncol1 + el].push_back(default_dbl);
           };
         };
       };
       longest_determine();
+      type_classification();
     };
     
-    void merge_excluding_both(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
+    void merge_excluding_both(Dataframe &obj1, 
+                              Dataframe &obj2, 
+                              bool colname, 
+                              unsigned int &key1, 
+                              unsigned int &key2,
+                              std::string default_str = "NA",
+                              std::string default_chr = " ",
+                              std::string default_bool = "0",
+                              std::string default_int = "0",
+                              std::string default_uint = "0",
+                              std::string default_dbl = "0") {
       const unsigned int& ncol1 = obj1.get_ncol();
       const unsigned int& ncol2 = obj2.get_ncol();
       std::vector<std::string> cur_vstr;
@@ -8258,6 +8398,8 @@ class Dataframe{
       unsigned int i;
       unsigned int i2;
       unsigned int i3;
+      const std::vector<std::vector<unsigned int>>& matr_idx1 = obj1.get_matr_idx();
+      const std::vector<std::vector<unsigned int>>& matr_idx2 = obj2.get_matr_idx();
       const std::vector<std::string>& name1 = obj1.get_colname();
       const std::vector<std::string>& name2 = obj2.get_colname();
       if (colname) {
@@ -8279,13 +8421,6 @@ class Dataframe{
       };
       const std::vector<const char*>& type1 = obj1.get_typecol();
       const std::vector<const char*>& type2 = obj2.get_typecol();
-      type_refv.reserve(ncol);
-      for (i = 0; i < ncol1; ++i) {
-        type_refv.push_back(type1[i]);
-      };
-      for (i = 0; i < ncol2; ++i) {
-        type_refv.push_back(type2[i]);
-      };
       const auto& tmp1 = obj1.get_tmp_val_refv();
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
@@ -8305,8 +8440,23 @@ class Dataframe{
           for (i2 = 0; i2 < ncol1; i2 += 1) {
             tmp_val_refv[i2].push_back(tmp1[i2][i]);
           };
-          for (i2 = 0; i2 < ncol2; i2 += 1) {
-            tmp_val_refv[ncol1 + i2].push_back("NA");
+          for (auto& el : matr_idx2[0]) {
+            tmp_val_refv[ncol1 + el].push_back(default_str);
+          };
+          for (auto& el : matr_idx2[1]) {
+            tmp_val_refv[ncol1 + el].push_back(default_chr);
+          };
+          for (auto& el : matr_idx2[2]) {
+            tmp_val_refv[ncol1 + el].push_back(default_bool);
+          };
+          for (auto& el : matr_idx2[3]) {
+            tmp_val_refv[ncol1 + el].push_back(default_int);
+          };
+          for (auto& el : matr_idx2[4]) {
+            tmp_val_refv[ncol1 + el].push_back(default_uint);
+          };
+          for (auto& el : matr_idx2[5]) {
+            tmp_val_refv[ncol1 + el].push_back(default_dbl);
           };
         };
       };
@@ -8314,8 +8464,23 @@ class Dataframe{
         auto range = a_index.equal_range(col2[i]);
         if (range.first == range.second) {
           nrow += 1;
-          for (i2 = 0; i2 < ncol1; i2 += 1) {
-            tmp_val_refv[i2].push_back("NA");
+          for (auto& el : matr_idx1[0]) {
+            tmp_val_refv[el].push_back(default_str);
+          };
+          for (auto& el : matr_idx1[1]) {
+            tmp_val_refv[el].push_back(default_chr);
+          };
+          for (auto& el : matr_idx1[2]) {
+            tmp_val_refv[el].push_back(default_bool);
+          };
+          for (auto& el : matr_idx1[3]) {
+            tmp_val_refv[el].push_back(default_int);
+          };
+          for (auto& el : matr_idx1[4]) {
+            tmp_val_refv[el].push_back(default_uint);
+          };
+          for (auto& el : matr_idx1[5]) {
+            tmp_val_refv[el].push_back(default_dbl);
           };
           for (i2 = 0; i2 < ncol2; i2 += 1) {
             tmp_val_refv[ncol1 + i2].push_back(tmp2[i2][i]);
@@ -8323,9 +8488,20 @@ class Dataframe{
         };
       };
       longest_determine();
+      type_classification();
     };
 
-    void merge_all(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
+    void merge_all(Dataframe &obj1, 
+                    Dataframe &obj2, 
+                    bool colname, 
+                    unsigned int &key1, 
+                    unsigned int &key2,
+                    std::string default_str = "NA",
+                    std::string default_chr = " ",
+                    std::string default_bool = "0",
+                    std::string default_int = "0",
+                    std::string default_uint = "0",
+                    std::string default_dbl = "0") {
       const unsigned int& ncol1 = obj1.get_ncol();
       const unsigned int& ncol2 = obj2.get_ncol();
       std::vector<std::string> cur_vstr;
@@ -8333,6 +8509,8 @@ class Dataframe{
       unsigned int i;
       unsigned int i2;
       unsigned int i3;
+      const std::vector<std::vector<unsigned int>>& matr_idx1 = obj1.get_matr_idx();
+      const std::vector<std::vector<unsigned int>>& matr_idx2 = obj2.get_matr_idx();
       const std::vector<std::string>& name1 = obj1.get_colname();
       const std::vector<std::string>& name2 = obj2.get_colname();
       if (colname) {
@@ -8354,13 +8532,6 @@ class Dataframe{
       };
       const std::vector<const char*>& type1 = obj1.get_typecol();
       const std::vector<const char*>& type2 = obj2.get_typecol();
-      type_refv.reserve(ncol);
-      for (i = 0; i < ncol1; ++i) {
-        type_refv.push_back(type1[i]);
-      };
-      for (i = 0; i < ncol2; ++i) {
-        type_refv.push_back(type2[i]);
-      };
       const auto& tmp1 = obj1.get_tmp_val_refv();
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
@@ -8380,8 +8551,23 @@ class Dataframe{
           for (i2 = 0; i2 < ncol1; i2 += 1) {
             tmp_val_refv[i2].push_back(tmp1[i2][i]);
           };
-          for (i2 = 0; i2 < ncol2; i2 += 1) {
-            tmp_val_refv[ncol1 + i2].push_back("NA");
+          for (auto& el : matr_idx2[0]) {
+            tmp_val_refv[ncol1 + el].push_back(default_str);
+          };
+          for (auto& el : matr_idx2[1]) {
+            tmp_val_refv[ncol1 + el].push_back(default_chr);
+          };
+          for (auto& el : matr_idx2[2]) {
+            tmp_val_refv[ncol1 + el].push_back(default_bool);
+          };
+          for (auto& el : matr_idx2[3]) {
+            tmp_val_refv[ncol1 + el].push_back(default_int);
+          };
+          for (auto& el : matr_idx2[4]) {
+            tmp_val_refv[ncol1 + el].push_back(default_uint);
+          };
+          for (auto& el : matr_idx2[5]) {
+            tmp_val_refv[ncol1 + el].push_back(default_dbl);
           };
         } else {
           for (auto it = range.first; it != range.second; ++it) {
@@ -8400,8 +8586,23 @@ class Dataframe{
         auto range = a_index.equal_range(col2[i]);
         if (range.first == range.second) {
           nrow += 1;
-          for (i2 = 0; i2 < ncol1; i2 += 1) {
-            tmp_val_refv[i2].push_back("NA");
+          for (auto& el : matr_idx1[0]) {
+            tmp_val_refv[el].push_back(default_str);
+          };
+          for (auto& el : matr_idx1[1]) {
+            tmp_val_refv[el].push_back(default_chr);
+          };
+          for (auto& el : matr_idx1[2]) {
+            tmp_val_refv[el].push_back(default_bool);
+          };
+          for (auto& el : matr_idx1[3]) {
+            tmp_val_refv[el].push_back(default_int);
+          };
+          for (auto& el : matr_idx1[4]) {
+            tmp_val_refv[el].push_back(default_uint);
+          };
+          for (auto& el : matr_idx1[5]) {
+            tmp_val_refv[el].push_back(default_dbl);
           };
           for (i2 = 0; i2 < ncol2; i2 += 1) {
             tmp_val_refv[ncol1 + i2].push_back(tmp2[i2][i]);
@@ -8409,9 +8610,20 @@ class Dataframe{
         };
       };
       longest_determine();
+      type_classification();
     };
 
-    void merge_all2(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
+    void merge_all2(Dataframe &obj1, 
+                    Dataframe &obj2, 
+                    bool colname, 
+                    unsigned int &key1, 
+                    unsigned int &key2,
+                    std::string default_str = "NA",
+                    std::string default_chr = " ",
+                    std::string default_bool = "0",
+                    std::string default_int = "0",
+                    std::string default_uint = "0",
+                    std::string default_dbl = "0") {
       const unsigned int& ncol1 = obj1.get_ncol();
       const unsigned int& ncol2 = obj2.get_ncol();
       std::vector<std::string> cur_vstr;
@@ -8419,6 +8631,8 @@ class Dataframe{
       unsigned int i;
       unsigned int i2;
       unsigned int i3;
+      const std::vector<std::vector<unsigned int>>& matr_idx1 = obj1.get_matr_idx();
+      const std::vector<std::vector<unsigned int>>& matr_idx2 = obj2.get_matr_idx();
       const std::vector<std::string>& name1 = obj1.get_colname();
       const std::vector<std::string>& name2 = obj2.get_colname();
       if (colname) {
@@ -8440,13 +8654,6 @@ class Dataframe{
       };
       const std::vector<const char*>& type1 = obj1.get_typecol();
       const std::vector<const char*>& type2 = obj2.get_typecol();
-      type_refv.reserve(ncol);
-      for (i = 0; i < ncol1; ++i) {
-        type_refv.push_back(type1[i]);
-      };
-      for (i = 0; i < ncol2; ++i) {
-        type_refv.push_back(type2[i]);
-      };
       const auto& tmp1 = obj1.get_tmp_val_refv();
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
@@ -8466,8 +8673,23 @@ class Dataframe{
           for (i2 = 0; i2 < ncol1; i2 += 1) {
             tmp_val_refv[i2].push_back(tmp1[i2][i]);
           };
-          for (i2 = 0; i2 < ncol2; i2 += 1) {
-            tmp_val_refv[ncol1 + i2].push_back("NA");
+          for (auto& el : matr_idx2[0]) {
+            tmp_val_refv[ncol1 + el].push_back(default_str);
+          };
+          for (auto& el : matr_idx2[1]) {
+            tmp_val_refv[ncol1 + el].push_back(default_chr);
+          };
+          for (auto& el : matr_idx2[2]) {
+            tmp_val_refv[ncol1 + el].push_back(default_bool);
+          };
+          for (auto& el : matr_idx2[3]) {
+            tmp_val_refv[ncol1 + el].push_back(default_int);
+          };
+          for (auto& el : matr_idx2[4]) {
+            tmp_val_refv[ncol1 + el].push_back(default_uint);
+          };
+          for (auto& el : matr_idx2[5]) {
+            tmp_val_refv[ncol1 + el].push_back(default_dbl);
           };
         } else {
           nrow += 1;
@@ -8484,15 +8706,31 @@ class Dataframe{
         auto it = a_index.find(col2[i]);
         if (it == a_index.end()) {
           nrow += 1;
-          for (i2 = 0; i2 < ncol1; i2 += 1) {
-            tmp_val_refv[i2].push_back("NA");
+          for (auto& el : matr_idx1[0]) {
+            tmp_val_refv[el].push_back(default_str);
+          };
+          for (auto& el : matr_idx1[1]) {
+            tmp_val_refv[el].push_back(default_chr);
+          };
+          for (auto& el : matr_idx1[2]) {
+            tmp_val_refv[el].push_back(default_bool);
+          };
+          for (auto& el : matr_idx1[3]) {
+            tmp_val_refv[el].push_back(default_int);
+          };
+          for (auto& el : matr_idx1[4]) {
+            tmp_val_refv[el].push_back(default_uint);
+          };
+          for (auto& el : matr_idx1[5]) {
+            tmp_val_refv[el].push_back(default_dbl);
           };
           for (i2 = 0; i2 < ncol2; i2 += 1) {
-            tmp_val_refv[ncol1 + i2].push_back(tmp2[i2][i]);
+            tmp_val_refv[i2].push_back(tmp2[i2][i]);
           };
         };
       };
       longest_determine();
+      type_classification();
     };
 
     void transform_left_join(Dataframe &obj, 
@@ -8613,6 +8851,83 @@ class Dataframe{
       ncol += ncol2;
       const std::vector<std::string>& colname2 = obj.get_colname();
       name_v.insert(name_v.end(), name_v.begin(), name_v.end());
+      longest_determine();
+    };
+
+    void transform_filter(std::vector<bool>& mask) {
+      unsigned int i2;
+      unsigned int nrow2 = nrow;
+      nrow = 0;
+      std::array<unsigned int, 6> pos_vec;
+      unsigned int pos_vl;
+      for (unsigned int i = 0; i < nrow2; i += 1) {
+        if (mask[i]) {
+          pos_vec = {0, 0, 0, 0, 0, 0};
+          for (i2 = 0; i2 < ncol; i2 += 1) {
+            tmp_val_refv[i2][nrow] = tmp_val_refv[i2][i];
+            if (type_refv[i2] == typeid(std::string).name()) {
+              pos_vl = pos_vec[0];
+              str_v[nrow2 * pos_vl + nrow] = str_v[nrow2 * pos_vl + i];
+              pos_vec[0] += 1;
+            } else if (type_refv[i2] == typeid(char).name()) {
+              pos_vl = pos_vec[1];
+              chr_v[nrow2 * pos_vl + nrow] = chr_v[nrow2 * pos_vl + i];
+              pos_vec[1] += 1;
+            } else if (type_refv[i2] == typeid(bool).name()) {
+              pos_vl = pos_vec[2];
+              bool_v[nrow2 * pos_vl + nrow] = bool_v[nrow2 * pos_vl + i];
+              pos_vec[2] += 1;
+            } else if (type_refv[i2] == typeid(int).name()) {
+              pos_vl = pos_vec[3];
+              int_v[nrow2 * pos_vl + nrow] = int_v[nrow2 * pos_vl + i];
+              pos_vec[3] += 1;
+            } else if (type_refv[i2] == typeid(unsigned int).name()) {
+              pos_vl = pos_vec[4];
+              uint_v[nrow2 * pos_vl + nrow] = uint_v[nrow2 * pos_vl + i];
+              pos_vec[4] += 1;
+            } else {
+              pos_vl = pos_vec[5];
+              dbl_v[nrow2 * pos_vl + nrow] = dbl_v[nrow2 * pos_vl + i];
+              pos_vec[5] += 1;
+            };
+          };
+          nrow += 1;
+        };
+      }
+    };
+
+    void transform_group_by(std::vector<unsigned int> &x,
+                            std::string sumcolname = "n") {
+      std::unordered_map<std::string, unsigned int> lookup;
+      std::vector<unsigned int> occ_v;
+      std::vector<std::string> occ_v_str;
+      occ_v_str.reserve(nrow);
+      occ_v.reserve(nrow);
+      std::string key;
+      std::vector<std::string> key_vec(nrow);
+      unsigned int i;
+      unsigned int i2;
+      for (i = 0; i < nrow; i += 1) {
+        key = tmp_val_refv[x[0]][i];
+        for (i2 = 1; i2 < x.size(); i2 += 1) {
+          key += tmp_val_refv[x[i2]][i];
+        };
+        lookup[key] += 1;
+        key_vec[i] = key;
+      };
+      unsigned int occ_val;
+      for (auto& el : key_vec) {
+        occ_val = lookup[el];
+        occ_v.push_back(occ_val);
+        occ_v_str.push_back(std::to_string(occ_val));
+      };
+      uint_v.insert(uint_v.end(), occ_v.begin(), occ_v.end());
+      tmp_val_refv.push_back(occ_v_str);
+      if (name_v.size() > 0) {
+        name_v.push_back(sumcolname);
+      };
+      type_refv.push_back(typeid(unsigned int).name());
+      ncol += 1;
       longest_determine();
     };
 
@@ -9579,6 +9894,87 @@ class Dataframe{
 //@E :15: NA    NA     NA     NA     NA    id119 7      8//@X
 //@X
 
+//@T Dataframe.transform_left_join
+//@U void transform_left_join(Dataframe &obj, 
+//@U                     unsigned int &key1, 
+//@U                     unsigned int &key2,
+//@U                     std::string default_str = "NA",
+//@U                     char default_chr = ' ',
+//@U                     bool default_bool = 0,
+//@U                     int default_int = 0,
+//@U                     unsigned int default_uint = 0,
+//@U                     double default_dbl = 0) 
+//@X
+//@D Transforms the dataframe performing a left join.
+//@A obj : is the second dataframe
+//@A key1 : is the column index of the primary key
+//@A key2 : is the foreign key
+//@A default_str : is the default value for NA string values
+//@A default_chr : is the default value for NA char values
+//@A default_bool : is the default value for NA boolean values
+//@A default_int : is the default value for NA int values
+//@A default_uint : is the default value for NA unsigned int values
+//@A default_dbl : is the default value for NA double values
+//@X
+//@E  Dataframe obj1, obj2;
+//@E  std::string fname = "csv_test/outb.csv";
+//@E  obj1.readf(fname);
+//@E  fname = "csv_test/outb2.csv";
+//@E  obj2.readf(fname);
+//@E
+//@E  unsigned int n = 0;
+//@E  obj1.transform_left_join(obj2, n, n);
+//@E
+//@E  obj1.display();
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
+//@E     col1  col2   col3   col4   col5
+//@E :0:  id1   1      2      3      aa    id1   2      3
+//@E :1:  id2   6      7      8      bb    id12  7      8
+//@E :2:  id3   1      2      3      cc    NA    NA     NA
+//@E :3:  id4   6      7      8      uu    id2   7      8
+//@E :4:  id5   1      2      3      s4    id1   2      3
+//@E :5:  id6   6      7      8      s9    id9   7      8
+//@E :6:  id7   1      2      3      a4    id5   2      3
+//@E :7:  id8   6      7      8      m9    id6   7      8
+//@E :8:  id9   6      7      8      s9    id11  7      8
+//@E :9:  id10  1      2      3      a4    NA    NA     NA
+//@E :10: id11  6      7      8      m9    id11  7      8
+//@E :11: id12  6      7      8      m9    id14  7      8
+//@E :12: id13  6      7      8      s9    NA    NA     NA
+//@E :13: id14  1      2      3      NA    id15  2      3
+//@E :14: id15  6      7      8      m9    id119 7      8
+//@X
+
+//@T Dataframe.transform_filter
+//@U void transform_filter(std::vector&lt;bool&gt;& mask)
+//@X
+//@D Keeps the desired row from a boolean mask.
+//@A mask : is the boolean mask
+//@X
+//@E Dataframe obj1, obj2;
+//@E std::string fname = "csv_test/outb.csv";
+//@E obj1.readf(fname);
+//@E fname = "csv_test/outb2.csv";
+//@E obj2.readf(fname);
+//@E
+//@E std::vector<bool> mask = {0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1};
+//@E
+//@E obj1.transform_filter(mask);
+//@E
+//@E obj1.display();
+//@E    &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt;
+//@E    col1  col2   col3   col4   col5
+//@E :0: id2   6      7      8      bb
+//@E :1: id4   6      7      8      uu
+//@E :2: id5   1      2      3      s4
+//@E :3: id6   6      7      8      s9
+//@E :4: id8   6      7      8      m9
+//@E :5: id10  1      2      3      a4
+//@E :6: id11  6      7      8      m9
+//@E :7: id12  6      7      8      m9
+//@E :8: id14  1      2      3      NA
+//@X
+
 //@L1 Apply any function on indefinite numbers of same type vectors
 
 //@T Fapply object
@@ -9989,7 +10385,8 @@ std::vector<std::string> ascend_sort_date(std::vector<std::string> &x,
     };
     val_fmt[cnt] += std::stoi(date_v[idx_fmt[cnt2]]);
   };
-  std::vector<int> val_fmt2 = sort_ascout(val_fmt);
+  std::vector<int> val_fmt2;
+  sort_asc(val_fmt);
   unsigned int cur_idx;
   for (cnt = 0; cnt < n; ++cnt) {
     cur_idx = match(val_fmt, val_fmt2[cnt]);
@@ -10061,7 +10458,8 @@ std::vector<std::string> descend_sort_date(std::vector<std::string> &x,
     };
     val_fmt[cnt] += std::stoi(date_v[idx_fmt[cnt2]]);
   };
-  std::vector<int> val_fmt2 = sort_descout(val_fmt);
+  std::vector<int> val_fmt2;
+  sort_desc(val_fmt);
   unsigned int cur_idx;
   for (cnt = 0; cnt < n; ++cnt) {
     cur_idx = match(val_fmt, val_fmt2[cnt]);
@@ -12739,7 +13137,8 @@ template <typename TB> class Matrix{
           detval2 *= rtn_matr[vec[i] * N + i];
         }
 
-        pos_vec = sort_ascout(diff2(set_pos, vec));
+        pos_vec = diff2(set_pos, vec);
+        sort_asc(pos_vec);
         
        detval2 *= ((rtn_matr[pos_vec[1] * N + N - 1] * rtn_matr[pos_vec[0] * N + N - 2] - rtn_matr[pos_vec[0] * N + N - 1] * rtn_matr[pos_vec[1] * N + N - 2])); 
 
@@ -12763,7 +13162,7 @@ template <typename TB> class Matrix{
         };
         sub_pos = sub(vec.begin(), vec.begin() + i + 1);
         pos_vec = diff2(set_pos, sub_pos);
-        pos_vec = sort_descout(pos_vec);
+        sort_desc(pos_vec);
         cur_pos = pos_vec[pos_vec.size() - 1];
 
         int min_pos = cur_pos;
