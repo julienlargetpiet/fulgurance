@@ -8160,18 +8160,23 @@ class Dataframe{
       unsigned int pre_uint_val = uint_v.size() / nrow2;
       unsigned int pre_dbl_val = dbl_v.size() / nrow2;
 
-      for (auto& el : type2) {
-        if (el == typeid(std::string).name()) {
+      for (auto& el : matr_idx) {
+        for (size_t i = 0; i < el.size(); i += 1) {
           str_v.insert(str_v.end(), tmp_str_v.begin(), tmp_str_v.end());
-        } else if (el == typeid(char).name()) {
+        };
+        for (size_t i = 0; i < el.size(); i += 1) {
           chr_v.insert(chr_v.end(), tmp_chr_v.begin(), tmp_chr_v.end());
-        } else if (el == typeid(bool).name()) {
+        };
+        for (size_t i = 0; i < el.size(); i += 1) {
           bool_v.insert(bool_v.end(), tmp_bool_v.begin(), tmp_bool_v.end());
-        } else if (el == typeid(int).name()) {
+        };
+        for (size_t i = 0; i < el.size(); i += 1) {
           int_v.insert(int_v.end(), tmp_int_v.begin(), tmp_int_v.end());
-        } else if (el == typeid(unsigned int).name()) {
+        };
+        for (size_t i = 0; i < el.size(); i += 1) {
           uint_v.insert(uint_v.end(), tmp_uint_v.begin(), tmp_uint_v.end());
-        } else {
+        };
+        for (size_t i = 0; i < el.size(); i += 1) {
           dbl_v.insert(dbl_v.end(), tmp_dbl_v.begin(), tmp_dbl_v.end());
         };
       };
