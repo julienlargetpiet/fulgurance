@@ -8160,22 +8160,22 @@ class Dataframe{
       unsigned int pre_uint_val = uint_v.size() / nrow2;
       unsigned int pre_dbl_val = dbl_v.size() / nrow2;
 
-      for (size_t i = 0; i < matr_idx[0].size(); i += 1) {
+      for (auto& el : matr_idx[0]) {
         str_v.insert(str_v.end(), tmp_str_v.begin(), tmp_str_v.end());
       };
-      for (size_t i = 0; i < matr_idx[1].size(); i += 1) {
+      for (auto& el : matr_idx[1]) {
         chr_v.insert(chr_v.end(), tmp_chr_v.begin(), tmp_chr_v.end());
       };
-      for (size_t i = 0; i < matr_idx[2].size(); i += 1) {
+      for (auto& el : matr_idx[2]) {
         bool_v.insert(bool_v.end(), tmp_bool_v.begin(), tmp_bool_v.end());
       };
-      for (size_t i = 0; i < matr_idx[3].size(); i += 1) {
+      for (auto& el : matr_idx[3]) {
         int_v.insert(int_v.end(), tmp_int_v.begin(), tmp_int_v.end());
       };
-      for (size_t i = 0; i < matr_idx[4].size(); i += 1) {
+      for (auto& el : matr_idx[4]) {
         uint_v.insert(uint_v.end(), tmp_uint_v.begin(), tmp_uint_v.end());
       };
-      for (size_t i = 0; i < matr_idx[5].size(); i += 1) {
+      for (auto& el : matr_idx[5]) {
         dbl_v.insert(dbl_v.end(), tmp_dbl_v.begin(), tmp_dbl_v.end());
       };
 
