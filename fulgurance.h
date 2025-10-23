@@ -8125,6 +8125,7 @@ class Dataframe{
       for (i = 0; i < ncol2; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
+      const std::vector<std::vector<unsigned int>>& matr_idx2 = obj.get_matr_idx();
       const std::vector<const char*>& type2 = obj.get_typecol();
       type_refv.insert(type_refv.end(), type2.begin(), type2.end());
       const auto& tmp2 = obj.get_tmp_val_refv();
@@ -8150,7 +8151,6 @@ class Dataframe{
       std::vector<unsigned int> tmp_uint_v(nrow2);
       std::vector<double> tmp_dbl_v(nrow2);
 
-      std::array<unsigned int, 6> pos_vec;
       unsigned int pos_val;
 
       unsigned int pre_str_val = str_v.size() / nrow2;
@@ -8185,65 +8185,75 @@ class Dataframe{
         auto it = b_index.find(col1[i]);
         if (it != b_index.end()) {
           size_t idx = it->second;
-          pos_vec = {0, 0, 0, 0, 0, 0};
-          for (i2 = 0; i2 < ncol; i2 += 1) {
-            tmp_val_refv[i2][nrow] = tmp_val_refv[i2][i];
-            auto type_val = type_refv[i2];
-            if (type_val == typeid(std::string).name()) {
-              pos_val = pos_vec[0];
-              str_v[nrow2 * pos_val + nrow] = str_v[nrow2 * pos_val + i];
-              pos_vec[0] += 1;
-            } else if (type_val == typeid(char).name()) {
-              pos_val = pos_vec[1];
-              chr_v[nrow2 * pos_val + nrow] = chr_v[nrow2 * pos_val + i];
-              pos_vec[1] += 1;
-            } else if (type_val == typeid(bool).name()) {
-              pos_val = pos_vec[2];
-              bool_v[nrow2 * pos_val + nrow] = bool_v[nrow2 * pos_val + i];
-              pos_vec[2] += 1;
-            } else if (type_val == typeid(int).name()) {
-              pos_val = pos_vec[3];
-              int_v[nrow2 * pos_val + nrow] = int_v[nrow2 * pos_val + i];
-              pos_vec[3] += 1;
-            } else if (type_val == typeid(unsigned int).name()) {
-              pos_val = pos_vec[4];
-              uint_v[nrow2 * pos_val + nrow] = uint_v[nrow2 * pos_val + i];
-              pos_vec[4] += 1;
-            } else {
-              pos_val = pos_vec[5];
-              dbl_v[nrow2 * pos_val + nrow] = dbl_v[nrow2 * pos_val + i];
-              pos_vec[5] += 1;
+          for (auto& el : matr_idx) {
+            for (i2 = 0; i2 < el.size(); i2 += 1) {
+              str_v[nrow2 * i2 + nrow] = str_v[nrow2 * i2 + i];
+              pos_val = matr_idx[0][i2];
+              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+            };
+            for (i2 = 0; i2 < el.size(); i2 += 1) {
+              chr_v[nrow2 * i2 + nrow] = chr_v[nrow2 * i2 + i];
+              pos_val = matr_idx[1][i2];
+              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+            };
+            for (i2 = 0; i2 < el.size(); i2 += 1) {
+              bool_v[nrow2 * i2 + nrow] = bool_v[nrow2 * i2 + i];
+              pos_val = matr_idx[2][i2];
+              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+            };
+            for (i2 = 0; i2 < el.size(); i2 += 1) {
+              int_v[nrow2 * i2 + nrow] = int_v[nrow2 * i2 + i];
+              pos_val = matr_idx[3][i2];
+              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+            };
+            for (i2 = 0; i2 < el.size(); i2 += 1) {
+              uint_v[nrow2 * i2 + nrow] = uint_v[nrow2 * i2 + i];
+              pos_val = matr_idx[4][i2];
+              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+            };
+            for (i2 = 0; i2 < el.size(); i2 += 1) {
+              dbl_v[nrow2 * i2 + nrow] = dbl_v[nrow2 * i2 + i];
+              pos_val = matr_idx[5][i2];
+              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
             };
           };
-          pos_vec = {0, 0, 0, 0, 0, 0};
-          for (i2 = 0; i2 < ncol2; i2 += 1) {
-            tmp_val_refv[ncol + i2][nrow] = tmp2[i2][idx];
-            auto type_val = type2[i2];
-            if (type_val == typeid(std::string).name()) {
-              pos_val = pos_vec[0];
-              str_v[nrow2 * (pre_str_val + pos_val) + nrow] = str_v2[nrowb * pos_val + idx];
-              pos_vec[0] += 1;
-            } else if (type_val == typeid(char).name()) {
-              pos_val = pos_vec[1];
-              chr_v[nrow2 * (pre_chr_val + pos_val) + nrow] = chr_v2[nrowb * pos_val + idx];
-              pos_vec[1] += 1;
-            } else if (type_val == typeid(bool).name()) {
-              pos_val = pos_vec[2];
-              bool_v[nrow2 * (pre_bool_val + pos_val) + nrow] = bool_v2[nrowb * pos_val + idx];
-              pos_vec[2] += 1;
-            } else if (type_val == typeid(int).name()) {
-              pos_val = pos_vec[3];
-              int_v[nrow2 * (pre_int_val + pos_val) + nrow] = int_v2[nrowb * pos_val + idx];
-              pos_vec[3] += 1;
-            } else if (type_val == typeid(unsigned int).name()) {
-              pos_val = pos_vec[4];
-              uint_v[nrow2 * (pre_uint_val + pos_val) + nrow] = uint_v2[nrowb * pos_val + idx];
-              pos_vec[4] += 1;
-            } else {
-              pos_val = pos_vec[5];
-              dbl_v[nrow2 * (pre_dbl_val + pos_val) + nrow] = dbl_v2[nrowb * pos_val + idx];
-              pos_vec[5] += 1;
-            }; 
+          for (auto& el : matr_idx2) {
+            for (i2 = 0; i2 < el.size(); i2 += 1) {
+              pos_val = pre_str_val + i2;
+              str_v[nrow2 * pos_val + nrow] = str_v[nrow2 * pos_val + i];
+              pos_val = ncol + matr_idx[0][i2];
+              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+            };
+            for (i2 = 0; i2 < el.size(); i2 += 1) {
+              pos_val = pre_chr_val + i2;
+              chr_v[nrow2 * pos_val + nrow] = chr_v[nrow2 * pos_val + i];
+              pos_val = ncol + matr_idx[1][i2];
+              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+            };
+            for (i2 = 0; i2 < el.size(); i2 += 1) {
+              pos_val = pre_bool_val + i2;
+              bool_v[nrow2 * pos_val + nrow] = bool_v[nrow2 * pos_val + i];
+              pos_val = ncol + matr_idx[2][i2];
+              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+            };
+            for (i2 = 0; i2 < el.size(); i2 += 1) {
+              pos_val = pre_int_val + i2;
+              int_v[nrow2 * pos_val + nrow] = int_v[nrow2 * pos_val + i];
+              pos_val = ncol + matr_idx[3][i2];
+              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+            };
+            for (i2 = 0; i2 < el.size(); i2 += 1) {
+              pos_val = pre_uint_val + i2;
+              uint_v[nrow2 * pos_val + nrow] = uint_v[nrow2 * pos_val + i];
+              pos_val = ncol + matr_idx[4][i2];
+              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+            };
+            for (i2 = 0; i2 < el.size(); i2 += 1) {
+              pos_val = pre_dbl_val + i2;
+              dbl_v[nrow2 * pos_val + nrow] = dbl_v[nrow2 * pos_val + i];
+              pos_val = ncol + matr_idx[5][i2];
+              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+            };
           };
           nrow += 1;
         };
