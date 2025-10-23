@@ -9915,20 +9915,20 @@ class Dataframe{
 //@E     [0]   [1]    [2]    [3]    [4]   [5]   [6]    [7]
 //@E :0:  id1   1      2      3      aa    id1   2      3
 //@E :1:  id2   6      7      8      bb    id2   7      8
-//@E :2:  id3   1      2      3      cc    NA    NA     NA
+//@E :2:  id3   1      2      3      cc    NA    0      0
 //@E :3:  id4   6      7      8      uu    id4   7      8
 //@E :4:  id5   1      2      3      s4    id5   2      3
 //@E :5:  id6   6      7      8      s9    id6   7      8
 //@E :6:  id7   1      2      3      a4    id7   2      3
 //@E :7:  id8   6      7      8      m9    id8   2      3
 //@E :8:  id9   6      7      8      s9    id9   7      8
-//@E :9:  id10  1      2      3      a4    NA    NA     NA
+//@E :9:  id10  1      2      3      a4    NA    0      0
 //@E :10: id11  6      7      8      m9    id11  7      8
 //@E :11: id12  6      7      8      m9    id12  7      8
-//@E :12: id13  6      7      8      s9    NA    NA     NA
+//@E :12: id13  6      7      8      s9    NA    0      0
 //@E :13: id14  1      2      3      NA    id14  7      8
 //@E :14: id15  16     7      8      m9    id15  2      3
-//@E :15: NA    NA     NA     NA     NA    id119 7      8//@X
+//@E :15: NA    0      0      0      NA    id119 7      8
 //@X
 
 //@T Dataframe.transform_left_join
