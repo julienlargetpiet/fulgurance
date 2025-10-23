@@ -8185,75 +8185,71 @@ class Dataframe{
         auto it = b_index.find(col1[i]);
         if (it != b_index.end()) {
           size_t idx = it->second;
-          for (auto& el : matr_idx) {
-            for (i2 = 0; i2 < el.size(); i2 += 1) {
-              str_v[nrow2 * i2 + nrow] = str_v[nrow2 * i2 + i];
-              pos_val = matr_idx[0][i2];
-              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
-            };
-            for (i2 = 0; i2 < el.size(); i2 += 1) {
-              chr_v[nrow2 * i2 + nrow] = chr_v[nrow2 * i2 + i];
-              pos_val = matr_idx[1][i2];
-              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
-            };
-            for (i2 = 0; i2 < el.size(); i2 += 1) {
-              bool_v[nrow2 * i2 + nrow] = bool_v[nrow2 * i2 + i];
-              pos_val = matr_idx[2][i2];
-              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
-            };
-            for (i2 = 0; i2 < el.size(); i2 += 1) {
-              int_v[nrow2 * i2 + nrow] = int_v[nrow2 * i2 + i];
-              pos_val = matr_idx[3][i2];
-              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
-            };
-            for (i2 = 0; i2 < el.size(); i2 += 1) {
-              uint_v[nrow2 * i2 + nrow] = uint_v[nrow2 * i2 + i];
-              pos_val = matr_idx[4][i2];
-              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
-            };
-            for (i2 = 0; i2 < el.size(); i2 += 1) {
-              dbl_v[nrow2 * i2 + nrow] = dbl_v[nrow2 * i2 + i];
-              pos_val = matr_idx[5][i2];
-              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
-            };
+          for (i2 = 0; i2 < matr_idx[0].size(); i2 += 1) {
+            str_v[nrow2 * i2 + nrow] = str_v[nrow2 * i2 + i];
+            pos_val = matr_idx[0][i2];
+            tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
           };
-          for (auto& el : matr_idx2) {
-            for (i2 = 0; i2 < el.size(); i2 += 1) {
-              pos_val = pre_str_val + i2;
-              str_v[nrow2 * pos_val + nrow] = str_v[nrow2 * pos_val + i];
-              pos_val = ncol + matr_idx[0][i2];
-              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
-            };
-            for (i2 = 0; i2 < el.size(); i2 += 1) {
-              pos_val = pre_chr_val + i2;
-              chr_v[nrow2 * pos_val + nrow] = chr_v[nrow2 * pos_val + i];
-              pos_val = ncol + matr_idx[1][i2];
-              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
-            };
-            for (i2 = 0; i2 < el.size(); i2 += 1) {
-              pos_val = pre_bool_val + i2;
-              bool_v[nrow2 * pos_val + nrow] = bool_v[nrow2 * pos_val + i];
-              pos_val = ncol + matr_idx[2][i2];
-              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
-            };
-            for (i2 = 0; i2 < el.size(); i2 += 1) {
-              pos_val = pre_int_val + i2;
-              int_v[nrow2 * pos_val + nrow] = int_v[nrow2 * pos_val + i];
-              pos_val = ncol + matr_idx[3][i2];
-              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
-            };
-            for (i2 = 0; i2 < el.size(); i2 += 1) {
-              pos_val = pre_uint_val + i2;
-              uint_v[nrow2 * pos_val + nrow] = uint_v[nrow2 * pos_val + i];
-              pos_val = ncol + matr_idx[4][i2];
-              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
-            };
-            for (i2 = 0; i2 < el.size(); i2 += 1) {
-              pos_val = pre_dbl_val + i2;
-              dbl_v[nrow2 * pos_val + nrow] = dbl_v[nrow2 * pos_val + i];
-              pos_val = ncol + matr_idx[5][i2];
-              tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
-            };
+          for (i2 = 0; i2 < matr_idx[1].size(); i2 += 1) {
+            chr_v[nrow2 * i2 + nrow] = chr_v[nrow2 * i2 + i];
+            pos_val = matr_idx[1][i2];
+            tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+          };
+          for (i2 = 0; i2 < matr_idx[2].size(); i2 += 1) {
+            bool_v[nrow2 * i2 + nrow] = bool_v[nrow2 * i2 + i];
+            pos_val = matr_idx[2][i2];
+            tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+          };
+          for (i2 = 0; i2 < matr_idx[3].size(); i2 += 1) {
+            int_v[nrow2 * i2 + nrow] = int_v[nrow2 * i2 + i];
+            pos_val = matr_idx[3][i2];
+            tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+          };
+          for (i2 = 0; i2 < matr_idx[4].size(); i2 += 1) {
+            uint_v[nrow2 * i2 + nrow] = uint_v[nrow2 * i2 + i];
+            pos_val = matr_idx[4][i2];
+            tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+          };
+          for (i2 = 0; i2 < matr_idx[5].size(); i2 += 1) {
+            dbl_v[nrow2 * i2 + nrow] = dbl_v[nrow2 * i2 + i];
+            pos_val = matr_idx[5][i2];
+            tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+          };
+          for (i2 = 0; i2 < matr_idx2[0].size(); i2 += 1) {
+            pos_val = pre_str_val + i2;
+            str_v[nrow2 * pos_val + nrow] = str_v[nrow2 * pos_val + i];
+            pos_val = ncol + matr_idx[0][i2];
+            tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+          };
+          for (i2 = 0; i2 < matr_idx2[1].size(); i2 += 1) {
+            pos_val = pre_chr_val + i2;
+            chr_v[nrow2 * pos_val + nrow] = chr_v[nrow2 * pos_val + i];
+            pos_val = ncol + matr_idx[1][i2];
+            tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+          };
+          for (i2 = 0; i2 < matr_idx2[2].size(); i2 += 1) {
+            pos_val = pre_bool_val + i2;
+            bool_v[nrow2 * pos_val + nrow] = bool_v[nrow2 * pos_val + i];
+            pos_val = ncol + matr_idx[2][i2];
+            tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+          };
+          for (i2 = 0; i2 < matr_idx2[3].size(); i2 += 1) {
+            pos_val = pre_int_val + i2;
+            int_v[nrow2 * pos_val + nrow] = int_v[nrow2 * pos_val + i];
+            pos_val = ncol + matr_idx[3][i2];
+            tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+          };
+          for (i2 = 0; i2 < matr_idx2[4].size(); i2 += 1) {
+            pos_val = pre_uint_val + i2;
+            uint_v[nrow2 * pos_val + nrow] = uint_v[nrow2 * pos_val + i];
+            pos_val = ncol + matr_idx[4][i2];
+            tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
+          };
+          for (i2 = 0; i2 < matr_idx2[5].size(); i2 += 1) {
+            pos_val = pre_dbl_val + i2;
+            dbl_v[nrow2 * pos_val + nrow] = dbl_v[nrow2 * pos_val + i];
+            pos_val = ncol + matr_idx[5][i2];
+            tmp_val_refv[pos_val][nrow] = tmp_val_refv[pos_val][i];
           };
           nrow += 1;
         };
