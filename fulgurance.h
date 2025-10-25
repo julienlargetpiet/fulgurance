@@ -9026,8 +9026,8 @@ class Dataframe{
 
     void pivot_int(Dataframe &obj, unsigned int &n1, unsigned int& n2, unsigned int& n3) {
       const std::vector<std::vector<std::string>>& tmp = obj.get_tmp_val_refv();
-      std::vector<std::string> col_vec = tmp[n1];
-      std::vector<std::string> row_vec = tmp[n2];
+      const std::vector<std::string>& col_vec = tmp[n1];
+      const std::vector<std::string>& row_vec = tmp[n2];
       const unsigned int& nrow2 = obj.get_nrow();
       const std::vector<std::vector<unsigned int>>& matr_idx2 = obj.get_matr_idx();
       unsigned int i = 0;
@@ -9059,6 +9059,7 @@ class Dataframe{
         if (!idx_row.contains(cur_key)) {
           idx_row[cur_key] = idx_row.size();
         };
+        key.push_back('\0');
         key += cur_key;
         lookup[key] += tmp_int_v[i];
       };
@@ -9072,7 +9073,9 @@ class Dataframe{
       int cur_int;      
       for (const auto& [key_v, value] : idx_col) {
         for (const auto& [key_v2, value2] : idx_row) {
-          key = key_v + key_v2;
+          key = key_v;
+          key.push_back('\0');
+          key += key_v2;
           if (lookup.contains(key)) {
             cur_int = lookup[key];
             int_v[value * nrow + value2] = cur_int;
@@ -9098,8 +9101,8 @@ class Dataframe{
 
     void pivot_uint(Dataframe &obj, unsigned int &n1, unsigned int& n2, unsigned int& n3) {
       const std::vector<std::vector<std::string>>& tmp = obj.get_tmp_val_refv();
-      std::vector<std::string> col_vec = tmp[n1];
-      std::vector<std::string> row_vec = tmp[n2];
+      const std::vector<std::string>& col_vec = tmp[n1];
+      const std::vector<std::string>& row_vec = tmp[n2];
       const unsigned int& nrow2 = obj.get_nrow();
       const std::vector<std::vector<unsigned int>>& matr_idx2 = obj.get_matr_idx();
       unsigned int i = 0;
@@ -9131,6 +9134,7 @@ class Dataframe{
         if (!idx_row.contains(cur_key)) {
           idx_row[cur_key] = idx_row.size();
         };
+        key.push_back('\0');
         key += cur_key;
         lookup[key] += tmp_uint_v[i];
       };
@@ -9144,7 +9148,9 @@ class Dataframe{
       unsigned int cur_uint;      
       for (const auto& [key_v, value] : idx_col) {
         for (const auto& [key_v2, value2] : idx_row) {
-          key = key_v + key_v2;
+          key = key_v;
+          key.push_back('\0');
+          key += key_v2;
           if (lookup.contains(key)) {
             cur_uint = lookup[key];
             uint_v[value * nrow + value2] = cur_uint;
@@ -9170,8 +9176,8 @@ class Dataframe{
 
     void pivot_dbl(Dataframe &obj, unsigned int &n1, unsigned int& n2, unsigned int& n3) {
       const std::vector<std::vector<std::string>>& tmp = obj.get_tmp_val_refv();
-      std::vector<std::string> col_vec = tmp[n1];
-      std::vector<std::string> row_vec = tmp[n2];
+      const std::vector<std::string>& col_vec = tmp[n1];
+      const std::vector<std::string>& row_vec = tmp[n2];
       const unsigned int& nrow2 = obj.get_nrow();
       const std::vector<std::vector<unsigned int>>& matr_idx2 = obj.get_matr_idx();
       unsigned int i = 0;
@@ -9203,6 +9209,7 @@ class Dataframe{
         if (!idx_row.contains(cur_key)) {
           idx_row[cur_key] = idx_row.size();
         };
+        key.push_back('\0');
         key += cur_key;
         lookup[key] += tmp_dbl_v[i];
       };
@@ -9216,7 +9223,9 @@ class Dataframe{
       double cur_dbl;
       for (const auto& [key_v, value] : idx_col) {
         for (const auto& [key_v2, value2] : idx_row) {
-          key = key_v + key_v2;
+          key = key_v;
+          key.push_back('\0');
+          key += key_v2;
           if (lookup.contains(key)) {
             cur_dbl = lookup[key];
             dbl_v[value * nrow + value2] = cur_dbl;
@@ -10358,7 +10367,7 @@ class Dataframe{
 //@E
 //@E  obj3.display();
 //@E
-//@E    <double> <double>
+//@E    &lt;double&gt; &lt;double&gt;
 //@E    A        B
 //@E D : 27       14
 //@E C : 0        30
@@ -10405,7 +10414,7 @@ class Dataframe{
 //@E
 //@E  obj3.display();
 //@E
-//@E    <int> <int>
+//@E    &lt;int&gt; &lt;int&gt;
 //@E    A        B
 //@E D : 27       14
 //@E C : 0        30
@@ -10452,7 +10461,7 @@ class Dataframe{
 //@E
 //@E  obj3.display();
 //@E
-//@E    <uint> <uint>
+//@E    &lt;uint&gt; &lt;uint&gt;
 //@E    A        B
 //@E D : 27       14
 //@E C : 0        30
