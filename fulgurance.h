@@ -5816,6 +5816,15 @@ template <typename T> double diff_mean(std::vector<T> &x) {
 //@E See below
 //@X
 
+struct PairHash {
+    using sv = std::string_view;
+    std::size_t operator()(const std::pair<sv, sv>& p) const noexcept {
+        std::size_t h1 = std::hash<sv>{}(p.first);
+        std::size_t h2 = std::hash<sv>{}(p.second);
+        return h1 ^ (h2 + 0x9e3779b97f4a7c15ULL + (h1 << 6) + (h1 >> 2));
+    }
+};
+
 class Dataframe{
   private:
     
@@ -9035,7 +9044,9 @@ class Dataframe{
       const std::vector<int>& cur_int_v = obj.get_int_vec();
 
       std::vector<int> tmp_int_v = {};
-      std::unordered_map<std::string, int> lookup;
+
+      std::unordered_map<std::pair<std::string_view, std::string_view>, int, PairHash> lookup;
+
       std::string key;
       for (auto& el : matr_idx2[3]) {
         if (n3 == el) {
@@ -9046,7 +9057,6 @@ class Dataframe{
         };
         i += 1;
       };
-      std::string cur_key;
       std::unordered_map<std::string, int> idx_col;
       std::unordered_map<std::string, int> idx_row;
 
@@ -9055,13 +9065,11 @@ class Dataframe{
         if (!idx_col.contains(key)) {
           idx_col[key] = idx_col.size();
         };
-        cur_key = row_vec[i];
-        if (!idx_row.contains(cur_key)) {
-          idx_row[cur_key] = idx_row.size();
+        key = row_vec[i];
+        if (!idx_row.contains(key)) {
+          idx_row[key] = idx_row.size();
         };
-        key.push_back('\0');
-        key += cur_key;
-        lookup[key] += tmp_int_v[i];
+        lookup[{col_vec[i], row_vec[i]}] += tmp_int_v[i];
       };
       int_v.resize(lookup.size());
       ncol = idx_row.size();
@@ -9073,11 +9081,9 @@ class Dataframe{
       int cur_int;      
       for (const auto& [key_v, value] : idx_col) {
         for (const auto& [key_v2, value2] : idx_row) {
-          key = key_v;
-          key.push_back('\0');
-          key += key_v2;
-          if (lookup.contains(key)) {
-            cur_int = lookup[key];
+          auto key_pair = std::pair<std::string_view, std::string_view> {key_v, key_v2};
+          if (lookup.contains(key_pair)) {
+            cur_int = lookup[key_pair];
             int_v[value * nrow + value2] = cur_int;
             tmp_val_refv[value][value2] = std::to_string(cur_int);
           };
@@ -9110,7 +9116,7 @@ class Dataframe{
       const std::vector<unsigned int>& cur_uint_v = obj.get_uint_vec();
 
       std::vector<unsigned int> tmp_uint_v = {};
-      std::unordered_map<std::string, unsigned int> lookup;
+      std::unordered_map<std::pair<std::string_view, std::string_view>, unsigned int, PairHash> lookup;
       std::string key;
       for (auto& el : matr_idx2[4]) {
         if (n3 == el) {
@@ -9121,7 +9127,6 @@ class Dataframe{
         };
         i += 1;
       };
-      std::string cur_key;
       std::unordered_map<std::string, unsigned int> idx_col;
       std::unordered_map<std::string, unsigned int> idx_row;
 
@@ -9130,13 +9135,11 @@ class Dataframe{
         if (!idx_col.contains(key)) {
           idx_col[key] = idx_col.size();
         };
-        cur_key = row_vec[i];
-        if (!idx_row.contains(cur_key)) {
-          idx_row[cur_key] = idx_row.size();
+        key = row_vec[i];
+        if (!idx_row.contains(key)) {
+          idx_row[key] = idx_row.size();
         };
-        key.push_back('\0');
-        key += cur_key;
-        lookup[key] += tmp_uint_v[i];
+        lookup[{ col_vec[i], row_vec[i] }] += tmp_uint_v[i];
       };
       uint_v.resize(lookup.size());
       ncol = idx_row.size();
@@ -9148,11 +9151,9 @@ class Dataframe{
       unsigned int cur_uint;      
       for (const auto& [key_v, value] : idx_col) {
         for (const auto& [key_v2, value2] : idx_row) {
-          key = key_v;
-          key.push_back('\0');
-          key += key_v2;
-          if (lookup.contains(key)) {
-            cur_uint = lookup[key];
+          auto key_pair = std::pair<std::string_view, std::string_view>{key_v, key_v2};
+          if (lookup.contains(key_pair)) {
+            cur_uint = lookup[key_pair];
             uint_v[value * nrow + value2] = cur_uint;
             tmp_val_refv[value][value2] = std::to_string(cur_uint);
           };
@@ -9185,7 +9186,9 @@ class Dataframe{
       const std::vector<double>& cur_dbl_v = obj.get_dbl_vec();
 
       std::vector<double> tmp_dbl_v = {};
-      std::unordered_map<std::string, double> lookup;
+
+      std::unordered_map<std::pair<std::string_view, std::string_view>, double, PairHash> lookup;
+
       std::string key;
       for (auto& el : matr_idx2[4]) {
         if (n3 == el) {
@@ -9196,7 +9199,6 @@ class Dataframe{
         };
         i += 1;
       };
-      std::string cur_key;
       std::unordered_map<std::string, unsigned int> idx_col;
       std::unordered_map<std::string, unsigned int> idx_row;
 
@@ -9205,13 +9207,11 @@ class Dataframe{
         if (!idx_col.contains(key)) {
           idx_col[key] = idx_col.size();
         };
-        cur_key = row_vec[i];
-        if (!idx_row.contains(cur_key)) {
-          idx_row[cur_key] = idx_row.size();
+        key = row_vec[i];
+        if (!idx_row.contains(key)) {
+          idx_row[key] = idx_row.size();
         };
-        key.push_back('\0');
-        key += cur_key;
-        lookup[key] += tmp_dbl_v[i];
+        lookup[{col_vec[i], row_vec[i]}] += tmp_dbl_v[i];
       };
       dbl_v.resize(lookup.size());
       ncol = idx_row.size();
@@ -9223,11 +9223,9 @@ class Dataframe{
       double cur_dbl;
       for (const auto& [key_v, value] : idx_col) {
         for (const auto& [key_v2, value2] : idx_row) {
-          key = key_v;
-          key.push_back('\0');
-          key += key_v2;
-          if (lookup.contains(key)) {
-            cur_dbl = lookup[key];
+          auto key_pair = std::pair<std::string_view, std::string_view>{key_v, key_v2};
+          if (lookup.contains(key_pair)) {
+            cur_dbl = lookup[key_pair];
             dbl_v[value * nrow + value2] = cur_dbl;
             tmp_val_refv[value][value2] = std::to_string(cur_dbl);
           };
