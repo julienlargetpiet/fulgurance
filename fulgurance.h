@@ -5846,7 +5846,7 @@ class Dataframe{
     std::vector<std::string> name_v_row = {};
     std::vector<unsigned int> longest_v = {};
 
-    std::vector<const char*> type_refv = {};
+    std::vector<char> type_refv = {};
     std::vector<std::vector<std::string>> tmp_val_refv = {};
 
     const std::vector<std::string>& get_str_vec() const {
@@ -6381,27 +6381,27 @@ class Dataframe{
       for (i = 0; i < dtype.size(); i += 1) {
         switch (dtype[i]) {
           case 's' : { matr_idx[0].push_back(i);
-                       type_refv.push_back(typeid(std::string).name());
+                       type_refv.push_back('s');
                        break;
                        };
           case 'c' : { matr_idx[1].push_back(i);
-                       type_refv.push_back(typeid(char).name());
+                       type_refv.push_back('c');
                        break;
                        };
           case 'b' : { matr_idx[2].push_back(i);
-                       type_refv.push_back(typeid(bool).name());
+                       type_refv.push_back('b');
                        break;
                         };
           case 'i' : { matr_idx[3].push_back(i);
-                       type_refv.push_back(typeid(int).name());
+                       type_refv.push_back('i');
                        break;
                        };
           case 'u' : { matr_idx[4].push_back(i);
-                       type_refv.push_back(typeid(unsigned int).name());
+                       type_refv.push_back('u');
                        break;
                         };
           case 'd' : { matr_idx[5].push_back(i);
-                       type_refv.push_back(typeid(double).name());
+                       type_refv.push_back('d');
                        break;
                         };
         };
@@ -6612,14 +6612,14 @@ class Dataframe{
           is_nb = can_be_nb(cur_str2);
           if (!is_nb) {
             if (cur_str.length() > 1) {
-              type_refv.push_back(typeid(std::string).name());
+              type_refv.push_back('s');
               matr_idx[0].push_back(i);
               break;
             };
           } else {
             is_flt_dbl = can_be_flt_dbl(cur_str2);
             if (is_flt_dbl) {
-              type_refv.push_back(typeid(double).name());
+              type_refv.push_back('d');
               matr_idx[5].push_back(i);
               break;
             };
@@ -6638,42 +6638,42 @@ class Dataframe{
         };
         if (i2 == nrow) {
           if (!is_nb) {
-            type_refv.push_back(typeid(char).name());
+            type_refv.push_back('c');
             matr_idx[1].push_back(i);
           } else if (is_bool) {
-            type_refv.push_back(typeid(bool).name());
+            type_refv.push_back('b');
             matr_idx[2].push_back(i);
           } else if (!is_unsigned) {
-            type_refv.push_back(typeid(int).name());
+            type_refv.push_back('i');
             matr_idx[3].push_back(i);
           } else {
-            type_refv.push_back(typeid(unsigned int).name());
+            type_refv.push_back('u');
             matr_idx[4].push_back(i);
           };
         };
       };
       for (i = 0; i < ncol; ++i) {
-        if (type_refv[i] == typeid(std::string).name()) {
+        if (type_refv[i] == 's') {
           for (i2 = 0; i2 < nrow; ++i2) {
             cur_str = tmp_val_refv[i][i2];
             str_v.push_back(cur_str);
           };
-        } else if (type_refv[i] == typeid(char).name()) {
+        } else if (type_refv[i] == 'c') {
           for (i2 = 0; i2 < nrow; ++i2) {
             cur_str = tmp_val_refv[i][i2];
             chr_v.push_back(cur_str[0]);
           };
-        } else if (type_refv[i] == typeid(bool).name()) {
+        } else if (type_refv[i] == 'b') {
           for (i2 = 0; i2 < nrow; ++i2) {
             cur_str = tmp_val_refv[i][i2];
             bool_v.push_back(std::stoi(cur_str));
           };
-        } else if (type_refv[i] == typeid(int).name()) {
+        } else if (type_refv[i] == 'i') {
           for (i2 = 0; i2 < nrow; ++i2) {
             cur_str = tmp_val_refv[i][i2];
             int_v.push_back(std::stoi(cur_str));
           };
-        } else if (type_refv[i] == typeid(unsigned int).name()) {
+        } else if (type_refv[i] == 'u') {
           for (i2 = 0; i2 < nrow; ++i2) {
             cur_str = tmp_val_refv[i][i2];
             uint_v.push_back(std::stoi(cur_str));
@@ -6705,32 +6705,32 @@ class Dataframe{
       };
       std::string cur_str;
       for (auto& i2 : colv) {
-        if (type_refv[i2] == typeid(std::string).name()) {
+        if (type_refv[i2] == 's') {
           cur_str = "<str>";
           if (longest_v[i2] < 5) {
             longest_v[i2] = 5;
           };
-        } else if (type_refv[i2] == typeid(char).name()) {
+        } else if (type_refv[i2] == 'c') {
           cur_str = "<char>";
           if (longest_v[i2] < 6) {
             longest_v[i2] = 6;
           };
-        } else if (type_refv[i2] == typeid(bool).name()) {
+        } else if (type_refv[i2] == 'b') {
           cur_str = "<bool>";
           if (longest_v[i2] < 6) {
             longest_v[i2] = 6;
           };
-        } else if (type_refv[i2] == typeid(int).name()) {
+        } else if (type_refv[i2] == 'i') {
           cur_str = "<int>";
           if (longest_v[i2] < 5) {
             longest_v[i2] = 5;
           };
-        } else if (type_refv[i2] == typeid(unsigned int).name()) {
+        } else if (type_refv[i2] == 'u') {
           cur_str = "<uint>";
           if (longest_v[i2] < 6) {
             longest_v[i2] = 6;
           };
-        } else if (type_refv[i2] == typeid(double).name()) {
+        } else if (type_refv[i2] == 'd') {
           cur_str = "<double>";
           if (longest_v[i2] < 8) {
             longest_v[i2] = 8;
@@ -6801,32 +6801,32 @@ class Dataframe{
       };
       std::string cur_str;
       for (i2 = 0; i2 < ncol; ++i2) {
-        if (type_refv[i2] == typeid(std::string).name()) {
+        if (type_refv[i2] == 's') {
           cur_str = "<str>";
           if (longest_v[i2] < 5) {
             longest_v[i2] = 5;
           };
-        } else if (type_refv[i2] == typeid(char).name()) {
+        } else if (type_refv[i2] == 'c') {
           cur_str = "<char>";
           if (longest_v[i2] < 6) {
             longest_v[i2] = 6;
           };
-        } else if (type_refv[i2] == typeid(bool).name()) {
+        } else if (type_refv[i2] == 'b') {
           cur_str = "<bool>";
           if (longest_v[i2] < 6) {
             longest_v[i2] = 6;
           };
-        } else if (type_refv[i2] == typeid(int).name()) {
+        } else if (type_refv[i2] == 'i') {
           cur_str = "<int>";
           if (longest_v[i2] < 5) {
             longest_v[i2] = 5;
           };
-        } else if (type_refv[i2] == typeid(unsigned int).name()) {
+        } else if (type_refv[i2] == 'u') {
           cur_str = "<uint>";
           if (longest_v[i2] < 6) {
             longest_v[i2] = 6;
           };
-        } else if (type_refv[i2] == typeid(double).name()) {
+        } else if (type_refv[i2] == 'd') {
           cur_str = "<double>";
           if (longest_v[i2] < 8) {
             longest_v[i2] = 8;
@@ -7469,7 +7469,7 @@ class Dataframe{
         i2 = 0;
         while (i2 + 1 < ncol) {
           cur_str = tmp_val_refv[i2][i];
-          if (type_refv[i2] == typeid(std::string).name()) {
+          if (type_refv[i2] == 's') {
             for (i3 = 0; i3 < cur_str.length(); ++i3) {
               if (cur_str[i3] == delim) {
                 cur_str.insert(0, 1, str_context_bgn);
@@ -7486,7 +7486,7 @@ class Dataframe{
           outfile << delim;
         };
         cur_str = tmp_val_refv[i2][i];
-        if (type_refv[i2] == typeid(std::string).name()) {
+        if (type_refv[i2] == 's') {
           for (i3 = 0; i3 < cur_str.length(); ++i3) {
             if (cur_str[i3] == delim) {
               cur_str.insert(0, 1, str_context_bgn);
@@ -7651,42 +7651,42 @@ class Dataframe{
       cur_v.reserve(nrow);
       if constexpr (std::is_same_v<T, bool>) {
         matr_idx[2].push_back(ncol);
-        type_refv.push_back(typeid(bool).name());
+        type_refv.push_back('b');
         for (auto &i : x) {
           bool_v.push_back(i);
           cur_v.push_back(std::to_string(i));
         };
       } else if constexpr (std::is_same_v<T, int>) {
         matr_idx[3].push_back(ncol);
-        type_refv.push_back(typeid(int).name());
+        type_refv.push_back('i');
         for (auto &i : x) {
           int_v.push_back(i);
           cur_v.push_back(std::to_string(i));
         };
       } else if constexpr (std::is_same_v<T, unsigned int>) {
         matr_idx[4].push_back(ncol);
-        type_refv.push_back(typeid(unsigned int).name());
+        type_refv.push_back('u');
         for (auto &i : x) {
           uint_v.push_back(i);
           cur_v.push_back(std::to_string(i));
         };
       } else if constexpr (std::is_same_v<T, double>) {
         matr_idx[5].push_back(ncol);
-        type_refv.push_back(typeid(double).name());
+        type_refv.push_back('d');
         for (auto &i : x) {
           dbl_v.push_back(i);
           cur_v.push_back(std::to_string(i));
         }; 
       } else if constexpr (std::is_same_v<T, char>) {
         matr_idx[1].push_back(ncol);
-        type_refv.push_back(typeid(char).name());
+        type_refv.push_back('c');
         for (auto &i : x) {
           chr_v.push_back(i);
           cur_v.push_back(std::string(1, i));
         }; 
       } else if constexpr (std::is_same_v<T, std::string>) {
         matr_idx[0].push_back(ncol);
-        type_refv.push_back(typeid(std::string).name());
+        type_refv.push_back('s');
         for (auto &i : x) {
           str_v.push_back(i);
           cur_v.push_back(i);
@@ -7751,22 +7751,22 @@ class Dataframe{
         if (i2 == x[cnt]) {
           for (i = 0; i < ncol; ++i) {
             tmp_val_refv[i].erase(tmp_val_refv[i].begin() + i2);
-            if (type_refv[i] == typeid(std::string).name()) {
+            if (type_refv[i] == 's') {
               str_v.erase(str_v.begin() + alrd_v[0] * nrow + i2);
               alrd_v[0] += 1;
-            } else if (type_refv[i] == typeid(char).name()) {
+            } else if (type_refv[i] == 'c') {
               chr_v.erase(chr_v.begin() + alrd_v[1] * nrow + i2);
               alrd_v[1] += 1;
-            } else if (type_refv[i] == typeid(bool).name()) {
+            } else if (type_refv[i] == 'b') {
               bool_v.erase(bool_v.begin() + alrd_v[2] * nrow + i2);
               alrd_v[2] += 1;
-            } else if (type_refv[i] == typeid(int).name()) {
+            } else if (type_refv[i] == 'i') {
               int_v.erase(int_v.begin() + alrd_v[3] * nrow + i2);
               alrd_v[3] += 1;
-            } else if (type_refv[i] == typeid(unsigned int).name()) {
+            } else if (type_refv[i] == 'u') {
               uint_v.erase(uint_v.begin() + alrd_v[4] * nrow + i2);
               alrd_v[4] += 1;
-            } else if (type_refv[i] == typeid(double).name()) {
+            } else if (type_refv[i] == 'd') {
               dbl_v.erase(dbl_v.begin() + alrd_v[5] * nrow + i2);
               alrd_v[5] += 1;
             };
@@ -7800,23 +7800,23 @@ class Dataframe{
           for (i2 = 0; i2 < ncol; ++i2) {
 
             tmp_val_refv[i2][nrow] = tmp_val_refv[i2][i];
-            if (type_refv[i2] == typeid(std::string).name()) {
+            if (type_refv[i2] == 's') {
               pos_colv = pos_col[0];
               str_v[nrow2 * pos_colv + nrow] = str_v[nrow2 * pos_colv + i];
               pos_col[0] += 1;
-            } else if (type_refv[i2] == typeid(char).name()) {
+            } else if (type_refv[i2] == 'c') {
               pos_colv = pos_col[1];
               chr_v[nrow2 * pos_colv + nrow] = chr_v[nrow2 * pos_colv + i];
               pos_col[1] += 1;
-            } else if (type_refv[i2] == typeid(bool).name()) {
+            } else if (type_refv[i2] == 'b') {
               pos_colv = pos_col[2];
               bool_v[nrow2 * pos_colv + nrow] = bool_v[nrow2 * pos_colv + i];
               pos_col[2] += 1;
-            } else if (type_refv[i2] == typeid(int).name()) {
+            } else if (type_refv[i2] == 'i') {
               pos_colv = pos_col[3];
               int_v[nrow2 * pos_colv + nrow] = int_v[nrow2 * pos_colv + i];
               pos_col[3] += 1;
-            } else if (type_refv[i2] == typeid(unsigned int).name()) {
+            } else if (type_refv[i2] == 'u') {
               pos_colv = pos_col[4];
               uint_v[nrow2 * pos_colv + nrow] = uint_v[nrow2 * pos_colv + i];
               pos_col[4] += 1;
@@ -7854,23 +7854,23 @@ class Dataframe{
           for (i2 = 0; i2 < ncol; ++i2) {
 
             tmp_val_refv[i2][nrow] = tmp_val_refv[i2][i];
-            if (type_refv[i2] == typeid(std::string).name()) {
+            if (type_refv[i2] == 's') {
               pos_colv = pos_col[0];
               str_v[nrow2 * pos_colv + nrow] = str_v[nrow2 * pos_colv + i];
               pos_col[0] += 1;
-            } else if (type_refv[i2] == typeid(char).name()) {
+            } else if (type_refv[i2] == 'c') {
               pos_colv = pos_col[1];
               chr_v[nrow2 * pos_colv + nrow] = chr_v[nrow2 * pos_colv + i];
               pos_col[1] += 1;
-            } else if (type_refv[i2] == typeid(bool).name()) {
+            } else if (type_refv[i2] == 'b') {
               pos_colv = pos_col[2];
               bool_v[nrow2 * pos_colv + nrow] = bool_v[nrow2 * pos_colv + i];
               pos_col[2] += 1;
-            } else if (type_refv[i2] == typeid(int).name()) {
+            } else if (type_refv[i2] == 'i') {
               pos_colv = pos_col[3];
               int_v[nrow2 * pos_colv + nrow] = int_v[nrow2 * pos_colv + i];
               pos_col[3] += 1;
-            } else if (type_refv[i2] == typeid(unsigned int).name()) {
+            } else if (type_refv[i2] == 'u') {
               pos_colv = pos_col[4];
               uint_v[nrow2 * pos_colv + nrow] = uint_v[nrow2 * pos_colv + i];
               pos_col[4] += 1;
@@ -7886,31 +7886,31 @@ class Dataframe{
       unsigned int nrow3;
       for (i2 = 0; i2 < ncol; i2 += 1) {
         nrow3 = nrow2;
-        if (type_refv[i2] == typeid(std::string).name()) {
+        if (type_refv[i2] == 's') {
           while (nrow3 > nrow) {
             tmp_val_refv[i2].pop_back();
             str_v.pop_back();
             nrow3 -= 1;
           };
-        } else if (type_refv[i2] == typeid(char).name()) {
+        } else if (type_refv[i2] == 'c') {
           while (nrow3 > nrow) {
             tmp_val_refv[i2].pop_back();
             chr_v.pop_back();
             nrow3 -= 1;
           };
-        } else if (type_refv[i2] == typeid(bool).name()) {
+        } else if (type_refv[i2] == 'b') {
           while (nrow3 > nrow) {
             tmp_val_refv[i2].pop_back();
             bool_v.pop_back();
             nrow3 -= 1;
           };
-        } else if (type_refv[i2] == typeid(int).name()) {
+        } else if (type_refv[i2] == 'i') {
           while (nrow3 > nrow) {
             tmp_val_refv[i2].pop_back();
             int_v.pop_back();
             nrow3 -= 1;
           };
-        } else if (type_refv[i2] == typeid(unsigned int).name()) {
+        } else if (type_refv[i2] == 'u') {
           while (nrow3 > nrow) {
             tmp_val_refv[i2].pop_back();
             uint_v.pop_back();
@@ -7949,27 +7949,27 @@ class Dataframe{
           pos_vec = {0, 0, 0, 0, 0, 0};
           for (i2 = 0; i2 < ncol; i2 += 1) {
             tmp_val_refv[i2][nrow] = tmp_val_refv[i2][i];
-            if (type_refv[i2] == typeid(std::string).name()) {
+            if (type_refv[i2] == 's') {
               pos_vl = pos_vec[0];
               str_v[pos_vl * nrow2 + nrow] = str_v[pos_vl * nrow2 + i];
               pos_vec[0] += 1;
-            } else if (type_refv[i2] == typeid(char).name()) {
+            } else if (type_refv[i2] == 'c') {
               pos_vl = pos_vec[1];
               chr_v[pos_vl * nrow2 + nrow] = chr_v[pos_vl * nrow2 + i];
               pos_vec[1] += 1;
-            } else if (type_refv[i2] == typeid(bool).name()) {
+            } else if (type_refv[i2] == 'b') {
               pos_vl = pos_vec[2];
               bool_v[pos_vl * nrow2 + nrow] = bool_v[pos_vl * nrow2 + i];
               pos_vec[2] += 1;
-            } else if (type_refv[i2] == typeid(int).name()) {
+            } else if (type_refv[i2] == 'i') {
               pos_vl = pos_vec[3];
               int_v[pos_vl * nrow2 + nrow] = int_v[pos_vl * nrow2 + i];
               pos_vec[3] += 1;
-            } else if (type_refv[i2] == typeid(unsigned int).name()) {
+            } else if (type_refv[i2] == 'u') {
               pos_vl = pos_vec[4];
               uint_v[pos_vl * nrow2 + nrow] = uint_v[pos_vl * nrow2 + i];
               pos_vec[4] += 1;
-            } else if (type_refv[i2] == typeid(double).name()) {
+            } else if (type_refv[i2] == 'd') {
               pos_vl = pos_vec[5];
               dbl_v[pos_vl * nrow2 + nrow] = dbl_v[pos_vl * nrow2 + i];
               pos_vec[5] += 1;
@@ -8003,27 +8003,27 @@ class Dataframe{
           pos_vec = {0, 0, 0, 0, 0, 0};
           for (i2 = 0; i2 < ncol; i2 += 1) {
             tmp_val_refv[i2][nrow] = tmp_val_refv[i2][i];
-            if (type_refv[i2] == typeid(std::string).name()) {
+            if (type_refv[i2] == 's') {
               pos_vl = pos_vec[0];
               str_v[pos_vl * nrow2 + nrow] = str_v[pos_vl * nrow2 + i];
               pos_vec[0] += 1;
-            } else if (type_refv[i2] == typeid(char).name()) {
+            } else if (type_refv[i2] == 'c') {
               pos_vl = pos_vec[1];
               chr_v[pos_vl * nrow2 + nrow] = chr_v[pos_vl * nrow2 + i];
               pos_vec[1] += 1;
-            } else if (type_refv[i2] == typeid(bool).name()) {
+            } else if (type_refv[i2] == 'b') {
               pos_vl = pos_vec[2];
               bool_v[pos_vl * nrow2 + nrow] = bool_v[pos_vl * nrow2 + i];
               pos_vec[2] += 1;
-            } else if (type_refv[i2] == typeid(int).name()) {
+            } else if (type_refv[i2] == 'i') {
               pos_vl = pos_vec[3];
               int_v[pos_vl * nrow2 + nrow] = int_v[pos_vl * nrow2 + i];
               pos_vec[3] += 1;
-            } else if (type_refv[i2] == typeid(unsigned int).name()) {
+            } else if (type_refv[i2] == 'u') {
               pos_vl = pos_vec[4];
               uint_v[pos_vl * nrow2 + nrow] = uint_v[pos_vl * nrow2 + i];
               pos_vec[4] += 1;
-            } else if (type_refv[i2] == typeid(double).name()) {
+            } else if (type_refv[i2] == 'd') {
               pos_vl = pos_vec[5];
               dbl_v[pos_vl * nrow2 + nrow] = dbl_v[pos_vl * nrow2 + i];
               pos_vec[5] += 1;
@@ -8035,31 +8035,31 @@ class Dataframe{
       unsigned int nrow3;
       for (i2 = 0; i2 < ncol; i2 += 1) {
         nrow3 = nrow2;
-        if (type_refv[i2] == typeid(std::string).name()) {
+        if (type_refv[i2] == 's') {
           while (nrow3 > nrow) {
             tmp_val_refv[i2].pop_back();
             str_v.pop_back();
             nrow3 -= 1;
           };
-        } else if (type_refv[i2] == typeid(char).name()) {
+        } else if (type_refv[i2] == 'c') {
           while (nrow3 > nrow) {
             tmp_val_refv[i2].pop_back();
             chr_v.pop_back();
             nrow3 -= 1;
           };
-        } else if (type_refv[i2] == typeid(bool).name()) {
+        } else if (type_refv[i2] == 'b') {
           while (nrow3 > nrow) {
             tmp_val_refv[i2].pop_back();
             bool_v.pop_back();
             nrow3 -= 1;
           };
-        } else if (type_refv[i2] == typeid(int).name()) {
+        } else if (type_refv[i2] == 'i') {
           while (nrow3 > nrow) {
             tmp_val_refv[i2].pop_back();
             int_v.pop_back();
             nrow3 -= 1;
           };
-        } else if (type_refv[i2] == typeid(unsigned int).name()) {
+        } else if (type_refv[i2] == 'u') {
           while (nrow3 > nrow) {
             tmp_val_refv[i2].pop_back();
             uint_v.pop_back();
@@ -8102,8 +8102,8 @@ class Dataframe{
       for (i = 0; i < ncol; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
-      const std::vector<const char*>& type1 = obj1.get_typecol();
-      const std::vector<const char*>& type2 = obj2.get_typecol();
+      const std::vector<char>& type1 = obj1.get_typecol();
+      const std::vector<char>& type2 = obj2.get_typecol();
       type_refv.reserve(ncol);
       for (i = 0; i < ncol1; ++i) {
         type_refv.push_back(type1[i]);
@@ -8156,7 +8156,7 @@ class Dataframe{
         tmp_val_refv.push_back(cur_vstr);
       };
       const std::vector<std::vector<unsigned int>>& matr_idx2 = obj.get_matr_idx();
-      const std::vector<const char*>& type2 = obj.get_typecol();
+      const std::vector<char>& type2 = obj.get_typecol();
       type_refv.insert(type_refv.end(), type2.begin(), type2.end());
       const auto& tmp2 = obj.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp_val_refv[key1];
@@ -8339,8 +8339,8 @@ class Dataframe{
       for (i = 0; i < ncol; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
-      const std::vector<const char*>& type1 = obj1.get_typecol();
-      const std::vector<const char*>& type2 = obj2.get_typecol();
+      const std::vector<char>& type1 = obj1.get_typecol();
+      const std::vector<char>& type2 = obj2.get_typecol();
       const auto& tmp1 = obj1.get_tmp_val_refv();
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
@@ -8404,8 +8404,8 @@ class Dataframe{
       for (i = 0; i < ncol; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
-      const std::vector<const char*>& type1 = obj1.get_typecol();
-      const std::vector<const char*>& type2 = obj2.get_typecol();
+      const std::vector<char>& type1 = obj1.get_typecol();
+      const std::vector<char>& type2 = obj2.get_typecol();
       const auto& tmp1 = obj1.get_tmp_val_refv();
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
@@ -8484,8 +8484,8 @@ class Dataframe{
       for (i = 0; i < ncol; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
-      const std::vector<const char*>& type1 = obj1.get_typecol();
-      const std::vector<const char*>& type2 = obj2.get_typecol();
+      const std::vector<char>& type1 = obj1.get_typecol();
+      const std::vector<char>& type2 = obj2.get_typecol();
       const auto& tmp1 = obj1.get_tmp_val_refv();
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
@@ -8595,8 +8595,8 @@ class Dataframe{
       for (i = 0; i < ncol; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
-      const std::vector<const char*>& type1 = obj1.get_typecol();
-      const std::vector<const char*>& type2 = obj2.get_typecol();
+      const std::vector<char>& type1 = obj1.get_typecol();
+      const std::vector<char>& type2 = obj2.get_typecol();
       const auto& tmp1 = obj1.get_tmp_val_refv();
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
@@ -8717,8 +8717,8 @@ class Dataframe{
       for (i = 0; i < ncol; ++i) {
         tmp_val_refv.push_back(cur_vstr);
       };
-      const std::vector<const char*>& type1 = obj1.get_typecol();
-      const std::vector<const char*>& type2 = obj2.get_typecol();
+      const std::vector<char>& type1 = obj1.get_typecol();
+      const std::vector<char>& type2 = obj2.get_typecol();
       const auto& tmp1 = obj1.get_tmp_val_refv();
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
@@ -8836,7 +8836,7 @@ class Dataframe{
         tmp_val_refv.push_back(vec_str);
       };
 
-      const std::vector<const char*>& vec_type = obj.get_typecol();
+      const std::vector<char>& vec_type = obj.get_typecol();
       const std::vector<std::string>& col1 = tmp_val_refv[key1];
       const std::vector<std::vector<std::string>>& tmp_val_refv2 = obj.get_tmp_val_refv();
       const std::vector<std::string>& col2 = tmp_val_refv2[key2];
@@ -9028,7 +9028,7 @@ class Dataframe{
       if (name_v.size() > 0) {
         name_v.push_back(sumcolname);
       };
-      type_refv.push_back(typeid(unsigned int).name());
+      type_refv.push_back('u');
       ncol += 1;
       longest_determine();
     };
@@ -9093,7 +9093,7 @@ class Dataframe{
       i = 0;
       matr_idx[3].resize(ncol);
       for (auto& [key_v, value] : idx_col) {
-        type_refv.push_back(typeid(int).name());
+        type_refv.push_back('i');
         name_v[value] = key_v;
         matr_idx[3][i] = i;
         i += 1;
@@ -9163,7 +9163,7 @@ class Dataframe{
       i = 0;
       matr_idx[4].resize(ncol);
       for (auto& [key_v, value] : idx_col) {
-        type_refv.push_back(typeid(unsigned int).name());
+        type_refv.push_back('u');
         name_v[value] = key_v;
         matr_idx[4][i] = i;
         i += 1;
@@ -9235,7 +9235,7 @@ class Dataframe{
       i = 0;
       matr_idx[4].resize(ncol);
       for (auto& [key_v, value] : idx_col) {
-        type_refv.push_back(typeid(unsigned int).name());
+        type_refv.push_back('d');
         name_v[value] = key_v;
         matr_idx[4][i] = i;
         i += 1;
@@ -9273,7 +9273,7 @@ class Dataframe{
       return name_v_row;
     };
 
-    const std::vector<const char*>& get_typecol() const {
+    const std::vector<char>& get_typecol() const {
       return type_refv;
     };
 
