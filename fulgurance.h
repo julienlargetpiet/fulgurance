@@ -8868,38 +8868,38 @@ class Dataframe{
       unsigned int i2;
       unsigned int nrow2 = nrow;
       nrow = 0;
-      std::array<unsigned int, 6> pos_vec;
       unsigned int pos_vl;
       for (unsigned int i = 0; i < nrow2; i += 1) {
         if (mask[i]) {
-          pos_vec = {0, 0, 0, 0, 0, 0};
-          for (i2 = 0; i2 < ncol; i2 += 1) {
-            tmp_val_refv[i2][nrow] = tmp_val_refv[i2][i];
-            if (type_refv[i2] == typeid(std::string).name()) {
-              pos_vl = pos_vec[0];
-              str_v[nrow2 * pos_vl + nrow] = str_v[nrow2 * pos_vl + i];
-              pos_vec[0] += 1;
-            } else if (type_refv[i2] == typeid(char).name()) {
-              pos_vl = pos_vec[1];
-              chr_v[nrow2 * pos_vl + nrow] = chr_v[nrow2 * pos_vl + i];
-              pos_vec[1] += 1;
-            } else if (type_refv[i2] == typeid(bool).name()) {
-              pos_vl = pos_vec[2];
-              bool_v[nrow2 * pos_vl + nrow] = bool_v[nrow2 * pos_vl + i];
-              pos_vec[2] += 1;
-            } else if (type_refv[i2] == typeid(int).name()) {
-              pos_vl = pos_vec[3];
-              int_v[nrow2 * pos_vl + nrow] = int_v[nrow2 * pos_vl + i];
-              pos_vec[3] += 1;
-            } else if (type_refv[i2] == typeid(unsigned int).name()) {
-              pos_vl = pos_vec[4];
-              uint_v[nrow2 * pos_vl + nrow] = uint_v[nrow2 * pos_vl + i];
-              pos_vec[4] += 1;
-            } else {
-              pos_vl = pos_vec[5];
-              dbl_v[nrow2 * pos_vl + nrow] = dbl_v[nrow2 * pos_vl + i];
-              pos_vec[5] += 1;
-            };
+          for (i2 = 0 ; i2 < matr_idx[0].size(); i2 += 1) {
+            pos_vl = matr_idx[0][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            str_v[nrow2 * i2 + nrow] = str_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0 ; i2 < matr_idx[1].size(); i2 += 1) {
+            pos_vl = matr_idx[1][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            chr_v[nrow2 * i2 + nrow] = chr_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0 ; i2 < matr_idx[2].size(); i2 += 1) {
+            pos_vl = matr_idx[2][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            bool_v[nrow2 * i2 + nrow] = bool_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0 ; i2 < matr_idx[3].size(); i2 += 1) {
+            pos_vl = matr_idx[3][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            int_v[nrow2 * i2 + nrow] = int_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0 ; i2 < matr_idx[4].size(); i2 += 1) {
+            pos_vl = matr_idx[4][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            uint_v[nrow2 * i2 + nrow] = uint_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0 ; i2 < matr_idx[5].size(); i2 += 1) {
+            pos_vl = matr_idx[5][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            dbl_v[nrow2 * i2 + nrow] = dbl_v[nrow2 * i2 + i];
           };
           nrow += 1;
         };
@@ -8940,6 +8940,30 @@ class Dataframe{
       ncol += 1;
       longest_determine();
     };
+
+    //void pivot_by_dbl(Dataframe &obj, unsigned int &n1, unsigned int& n2, unsigned int& n3) {
+    //  const std::vector<std::vector<std::string>>& tmp = obj.get_tmp_refv();
+    //  std::vector<std::string> vec_col = tmp[n1];
+    //  const unsigned int& nrow2 = obj.get_nrow();
+    //  std::vector<std::string> row_col = tmp[n2];
+    //  const std::vector<std::vector<unsigned int>>& matr_idx2 = obj.get_matr_idx();
+    //  unsigned int i;
+    //  unsigned int pos_val;
+    //  const std::vector<double>& cur_dbl_v = obj.get_dbl_vec();
+    //  std::vector<double> tmp_dbl_v;
+    //  for (i = 0; i < matr_idx2.size(); ++i) {
+    //    for (auto& el : matr_idx2[5]) {
+    //      if (n3 == el) {
+    //        pos_val = nrow2 * i;
+    //        tmp_dbl_v.insert(tmp_dbl_v.end(), 
+    //                        cur_dbl_v.begin() + pos_val, 
+    //                        cur_dbl_v.end() + pos_val + nrow2);
+    //        goto found;     
+    //      };
+    //    };
+    //  };
+    //  found: ;
+    //};
 
     void set_colname(std::vector<std::string> &x) {
       if (x.size() != ncol) {
