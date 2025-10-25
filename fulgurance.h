@@ -6782,19 +6782,16 @@ class Dataframe{
       unsigned int max_nblngth = 0;
       if (name_v_row.size() == 0) {
         max_nblngth = std::to_string(nrow).length();
-        for (i2 = 0; i2 < max_nblngth + 2; ++i2) {
-          std::cout << " ";
-        };
       } else {
         for (auto& el : name_v_row) {
           if (el.size() > max_nblngth) {
             max_nblngth = el.size();
           };
         };
-        for (i2 = 0; i2 < max_nblngth; ++i2) {
-          std::cout << " ";
-        };
-      }
+      };
+      for (i2 = 0; i2 < max_nblngth + 2; ++i2) {
+        std::cout << " ";
+      };
       std::string cur_str;
       for (i2 = 0; i2 < ncol; ++i2) {
         if (type_refv[i2] == typeid(std::string).name()) {
