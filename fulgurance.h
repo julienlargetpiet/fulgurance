@@ -8853,10 +8853,9 @@ class Dataframe{
       };
  
       unsigned int idx;
+      unsigned int pos_vl;
       const unsigned int& nrow2 = obj.get_nrow();
       for (i = 0; i < col1.size(); i += 1) {
-
-        std::cout << col1.size() << " " << i << " ll\n";
 
         auto it = lookup.find(col1[i]);
         if (it == lookup.end()) {
@@ -8888,34 +8887,44 @@ class Dataframe{
           idx = it->second;
           for (i2 = 0; i2 < matr_idx2[0].size(); i2 += 1) {
             str_v[nrow * (size_str + i2) + i] = str_v2[nrow2 * i2 + idx];
-            tmp_val_refv[ncol + matr_idx2[0][i2]][i] = tmp_val_refv2[i2][idx];
+            pos_vl = matr_idx2[0][i2];
+            tmp_val_refv[ncol + pos_vl][i] = tmp_val_refv2[pos_vl][idx];
           };
           for (i2 = 0; i2 < matr_idx2[1].size(); i2 += 1) {
             chr_v[nrow * (size_chr + i2) + i] = chr_v2[nrow2 * i2 + idx];
-            tmp_val_refv[ncol + matr_idx2[1][i2]][i] = tmp_val_refv2[i2][idx];
+            pos_vl = matr_idx2[1][i2];
+            tmp_val_refv[ncol + pos_vl][i] = tmp_val_refv2[pos_vl][idx];
           };
           for (i2 = 0; i2 < matr_idx2[2].size(); i2 += 1) {
             bool_v[nrow * (size_bool + i2) + i] = bool_v2[nrow2 * i2 + idx];
-            tmp_val_refv[ncol + matr_idx2[2][i2]][i] = tmp_val_refv2[i2][idx];
+            pos_vl = matr_idx2[2][i2];
+            tmp_val_refv[ncol + pos_vl][i] = tmp_val_refv2[pos_vl][idx];
           };
           for (i2 = 0; i2 < matr_idx2[3].size(); i2 += 1) {
             int_v[nrow * (size_int + i2) + i] = int_v2[nrow2 * i2 + idx];
-            tmp_val_refv[ncol + matr_idx2[3][i2]][i] = tmp_val_refv2[i2][idx];
+            pos_vl = matr_idx2[3][i2];
+            tmp_val_refv[ncol + pos_vl][i] = tmp_val_refv2[pos_vl][idx];
           };
           for (i2 = 0; i2 < matr_idx2[4].size(); i2 += 1) {
             uint_v[nrow * (size_uint + i2) + i] = uint_v2[nrow2 * i2 + idx];
-            tmp_val_refv[ncol + matr_idx2[4][i2]][i] = tmp_val_refv2[i2][idx];
+            pos_vl = matr_idx2[4][i2];
+            tmp_val_refv[ncol + pos_vl][i] = tmp_val_refv2[pos_vl][idx];
           };
           for (i2 = 0; i2 < matr_idx2[5].size(); i2 += 1) {
             dbl_v[nrow * (size_dbl + i2) + i] = dbl_v2[nrow2 * i2 + idx];
-            tmp_val_refv[ncol + matr_idx2[5][i2]][i] = tmp_val_refv2[i2][idx];
+            pos_vl = matr_idx2[5][i2];
+            tmp_val_refv[ncol + pos_vl][i] = tmp_val_refv2[pos_vl][idx];
           };
         };
       };
       type_refv.insert(type_refv.end(), vec_type.begin(), vec_type.end());
       ncol += ncol2;
       const std::vector<std::string>& colname2 = obj.get_colname();
-      name_v.insert(name_v.end(), name_v.begin(), name_v.end());
+      if (colname2.size() > 0) {
+        name_v.insert(name_v.end(), colname2.begin(), colname2.end());
+      } else {
+        name_v.resize(ncol);
+      };
       longest_determine();
     };
 
@@ -8996,15 +9005,84 @@ class Dataframe{
       longest_determine();
     };
 
+    void pivot_uint(Dataframe &obj, unsigned int &n1, unsigned int& n2, unsigned int& n3) {
+      const std::vector<std::vector<std::string>>& tmp = obj.get_tmp_val_refv();
+      std::vector<std::string> col_vec = tmp[n1];
+      std::vector<std::string> row_vec = tmp[n2];
+      const unsigned int& nrow2 = obj.get_nrow();
+      const std::vector<std::vector<unsigned int>>& matr_idx2 = obj.get_matr_idx();
+      unsigned int i = 0;
+      unsigned int pos_val;
+      const std::vector<unsigned int>& cur_uint_v = obj.get_uint_vec();
+
+      std::cout << "uint_size: " << cur_uint_v.size() << "\n";
+
+      std::vector<unsigned int> tmp_uint_v = {};
+      std::unordered_map<std::string, unsigned int> lookup;
+      std::string key;
+      for (auto& el : matr_idx2[3]) {
+        if (n3 == el) {
+          pos_val = nrow2 * i;
+          tmp_uint_v.insert(tmp_uint_v.end(), 
+                          cur_uint_v.begin() + pos_val, 
+                          cur_uint_v.begin() + pos_val + nrow2);
+        };
+        i += 1;
+      };
+      std::unordered_set<std::string> col_set;
+      std::unordered_set<std::string> row_set;
+      std::string cur_key;
+
+      std::cout << col_vec.size() << " " << nrow2 << " ok\n";
+
+      for (i = 0; i < nrow2; i += 1) {
+        std::cout << "ii\n";
+        key = col_vec[i];
+        col_set.insert(key);
+        cur_key = row_vec[i];
+        row_set.insert(cur_key);
+        key += cur_key;
+        lookup[key] += tmp_uint_v[i];
+      };
+      dbl_v.resize(lookup.size());
+      i = 0;
+
+      std::cout << "ok2\n";
+
+      std::vector<std::string> cur_vec_str(nrow2);
+      tmp_val_refv.push_back(cur_vec_str);
+
+      for (const auto& [key_v, value] : lookup) {
+        dbl_v[i] = value;
+        tmp_val_refv[0][i] = std::to_string(value);
+        i += 1;
+      };
+      name_v.resize(col_set.size());
+      i = 0;
+      for (auto& el : col_set) {
+        name_v[i] = el;
+        i += 1;
+      };
+      name_v_row.resize(row_set.size());
+      i = 0;
+      for (auto& el : row_set) {
+        name_v_row[i] = el;
+        i += 1;
+      };
+    };
+
     void pivot_dbl(Dataframe &obj, unsigned int &n1, unsigned int& n2, unsigned int& n3) {
       const std::vector<std::vector<std::string>>& tmp = obj.get_tmp_val_refv();
       std::vector<std::string> col_vec = tmp[n1];
-      const unsigned int& nrow2 = obj.get_nrow();
       std::vector<std::string> row_vec = tmp[n2];
+      const unsigned int& nrow2 = obj.get_nrow();
       const std::vector<std::vector<unsigned int>>& matr_idx2 = obj.get_matr_idx();
       unsigned int i = 0;
       unsigned int pos_val;
       const std::vector<double>& cur_dbl_v = obj.get_dbl_vec();
+
+      std::cout << "dbl_size: " << cur_dbl_v.size() << "\n";
+
       std::vector<double> tmp_dbl_v = {};
       std::unordered_map<std::string, double> lookup;
       std::string key;
@@ -9020,8 +9098,11 @@ class Dataframe{
       std::unordered_set<std::string> col_set;
       std::unordered_set<std::string> row_set;
       std::string cur_key;
-      tmp_val_refv.push_back({});
+
+      std::cout << col_vec.size() << " " << nrow2 << " ok\n";
+
       for (i = 0; i < nrow2; i += 1) {
+        std::cout << "ii\n";
         key = col_vec[i];
         col_set.insert(key);
         cur_key = row_vec[i];
@@ -9031,7 +9112,12 @@ class Dataframe{
       };
       dbl_v.resize(lookup.size());
       i = 0;
-      tmp_val_refv[0].resize(lookup.size());
+
+      std::cout << "ok2\n";
+
+      std::vector<std::string> cur_vec_str(nrow2);
+      tmp_val_refv.push_back(cur_vec_str);
+
       for (const auto& [key_v, value] : lookup) {
         dbl_v[i] = value;
         tmp_val_refv[0][i] = std::to_string(value);
