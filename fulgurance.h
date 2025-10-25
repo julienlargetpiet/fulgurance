@@ -10318,6 +10318,147 @@ class Dataframe{
 //@E :8: id14  1      2      3      NA
 //@X
 
+//@T Dataframe.pivot_dbl
+//@U void pivot_dbl(Dataframe &obj, unsigned int &n1, unsigned int& n2, unsigned int& n3)
+//@X
+//@D Performs a pivot to a newly created dataframe.
+//@A obj : is the dataframe from which the pivot is performed
+//@A n1 : is the column index of the columns created for the pivot
+//@A n2 : is the column index of the rows created for the pivot
+//@A n3 : is the column index of the column from which the pivot is performed
+//@X
+//@E
+//@E  // after some random manipulation for obj1 dataframe
+//@E  Dataframe obj3;
+//@E  obj1.display();
+//@E
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;str&gt; &lt;uint&gt; &lt;double&gt;
+//@E     col1  col2   col3   col4   col5  col1  col2   col3
+//@E :0:  id1   1      2      3      A     D     2      3
+//@E :1:  id2   6      7      8      A     D     7      8
+//@E :2:  id3   1      2      3      A     C     0      0
+//@E :3:  id4   6      7      8      B     C     7      8
+//@E :4:  id5   1      2      3      B     C     2      3
+//@E :5:  id6   6      7      8      A     D     7      8
+//@E :6:  id7   1      2      3      B     C     2      3
+//@E :7:  id8   6      7      8      B     D     2      3
+//@E :8:  id9   6      7      8      B     D     7      8
+//@E :9:  id10  1      2      3      A     C     0      0
+//@E :10: id11  6      7      8      A     D     7      8
+//@E :11: id12  6      7      8      B     C     7      8
+//@E :12: id13  6      7      8      B     D     0      0
+//@E :13: id14  1      2      3      B     C     7      8
+//@E :14: id15  16     7      8      B     D     2      3
+//@E
+//@E  unsigned int n1 = 4;
+//@E  unsigned int n2 = 5;
+//@E  unsigned int n3 = 7;
+//@E
+//@E  obj3.pivot_uint(obj1, n, n2, n3);
+//@E
+//@E  obj3.display();
+//@E
+//@E    <double> <double>
+//@E    A        B
+//@E D : 27       14
+//@E C : 0        30
+//@E
+//@X
+
+//@T Dataframe.pivot_int
+//@U void pivot_int(Dataframe &obj, unsigned int &n1, unsigned int& n2, unsigned int& n3)
+//@X
+//@D Performs a pivot to a newly created dataframe.
+//@A obj : is the dataframe from which the pivot is performed
+//@A n1 : is the column index of the columns created for the pivot
+//@A n2 : is the column index of the rows created for the pivot
+//@A n3 : is the column index of the column from which the pivot is performed
+//@X
+//@E
+//@E  // after some random manipulation for obj1 dataframe
+//@E  Dataframe obj3;
+//@E  obj1.display();
+//@E
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;str&gt; &lt;uint&gt; &lt;int&gt;
+//@E     col1  col2   col3   col4   col5  col1  col2   col3
+//@E :0:  id1   1      2      3      A     D     2      3
+//@E :1:  id2   6      7      8      A     D     7      8
+//@E :2:  id3   1      2      3      A     C     0      0
+//@E :3:  id4   6      7      8      B     C     7      8
+//@E :4:  id5   1      2      3      B     C     2      3
+//@E :5:  id6   6      7      8      A     D     7      8
+//@E :6:  id7   1      2      3      B     C     2      3
+//@E :7:  id8   6      7      8      B     D     2      3
+//@E :8:  id9   6      7      8      B     D     7      8
+//@E :9:  id10  1      2      3      A     C     0      0
+//@E :10: id11  6      7      8      A     D     7      8
+//@E :11: id12  6      7      8      B     C     7      8
+//@E :12: id13  6      7      8      B     D     0      0
+//@E :13: id14  1      2      3      B     C     7      8
+//@E :14: id15  16     7      8      B     D     2      3
+//@E
+//@E  unsigned int n1 = 4;
+//@E  unsigned int n2 = 5;
+//@E  unsigned int n3 = 7;
+//@E
+//@E  obj3.pivot_uint(obj1, n, n2, n3);
+//@E
+//@E  obj3.display();
+//@E
+//@E    <int> <int>
+//@E    A        B
+//@E D : 27       14
+//@E C : 0        30
+//@E
+//@X
+
+//@T Dataframe.pivot_uint
+//@U void pivot_uint(Dataframe &obj, unsigned int &n1, unsigned int& n2, unsigned int& n3)
+//@X
+//@D Performs a pivot to a newly created dataframe.
+//@A obj : is the dataframe from which the pivot is performed
+//@A n1 : is the column index of the columns created for the pivot
+//@A n2 : is the column index of the rows created for the pivot
+//@A n3 : is the column index of the column from which the pivot is performed
+//@X
+//@E
+//@E  // after some random manipulation for obj1 dataframe
+//@E  Dataframe obj3;
+//@E  obj1.display();
+//@E
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt; &lt;str&gt; &lt;uint&gt; &lt;uint&gt;
+//@E     col1  col2   col3   col4   col5  col1  col2   col3
+//@E :0:  id1   1      2      3      A     D     2      3
+//@E :1:  id2   6      7      8      A     D     7      8
+//@E :2:  id3   1      2      3      A     C     0      0
+//@E :3:  id4   6      7      8      B     C     7      8
+//@E :4:  id5   1      2      3      B     C     2      3
+//@E :5:  id6   6      7      8      A     D     7      8
+//@E :6:  id7   1      2      3      B     C     2      3
+//@E :7:  id8   6      7      8      B     D     2      3
+//@E :8:  id9   6      7      8      B     D     7      8
+//@E :9:  id10  1      2      3      A     C     0      0
+//@E :10: id11  6      7      8      A     D     7      8
+//@E :11: id12  6      7      8      B     C     7      8
+//@E :12: id13  6      7      8      B     D     0      0
+//@E :13: id14  1      2      3      B     C     7      8
+//@E :14: id15  16     7      8      B     D     2      3
+//@E
+//@E  unsigned int n1 = 4;
+//@E  unsigned int n2 = 5;
+//@E  unsigned int n3 = 7;
+//@E
+//@E  obj3.pivot_uint(obj1, n, n2, n3);
+//@E
+//@E  obj3.display();
+//@E
+//@E    <uint> <uint>
+//@E    A        B
+//@E D : 27       14
+//@E C : 0        30
+//@E
+//@X
+
 //@L1 Apply any function on indefinite numbers of same type vectors
 
 //@T Fapply object
