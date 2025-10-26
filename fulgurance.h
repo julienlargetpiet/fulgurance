@@ -5898,7 +5898,8 @@ class Dataframe{
 
   public:
     
-    void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'', unsigned int strt_row = 0, unsigned int end_row = -1) {
+    template <unsigned int strt_row = 0, unsigned int end_row = 0>
+    void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'') {
       std::string currow;
       std::string cur_str = "";
       std::fstream readfile(file_name);
@@ -5985,7 +5986,7 @@ class Dataframe{
       };
       type_refv.reserve(ncol);
 
-      //if constexpr (strt_row == 0 && end_row == -1) {
+      if constexpr (strt_row == 0 && end_row == 0) {
 
         while (getline(readfile, currow)) {
           verif_ncol = 1;
@@ -6039,13 +6040,195 @@ class Dataframe{
           };
           nrow += 1;
         };
-      //} else if constexpr (strt_row != 0 && end_row != -1) {
-      //  
-      //} else if constexpr (strt_row != 0) {
 
-      //} else if constexpr (end_row != -1) {
+      } else if constexpr (strt_row != 0 && end_row != 0) {
+       
+        unsigned int row_check = 1;
+        while (row_check < strt_row) {
+          getline(readfile, currow);
+          row_check += 1;
+        };
 
-      //};
+        while (getline(readfile, currow)) {
+          verif_ncol = 1;
+          str_cxt = 0;
+          i = 0;
+          while (i < currow.length()) {
+            if (currow[i] == delim && !str_cxt) {
+              if (i == 0) {
+                if (longest_v[verif_ncol - 1] < 2) {
+                  longest_v[verif_ncol - 1] = 2;
+                };
+                tmp_val_refv[0].push_back("NA");
+              } else if (currow[i - 1] == delim) {
+                if (longest_v[verif_ncol - 1] < 2) {
+                  longest_v[verif_ncol - 1] = 2;
+                };
+                tmp_val_refv[verif_ncol - 1].push_back("NA");
+              } else {
+                if (longest_v[verif_ncol - 1] < cur_str.length()) {
+                  longest_v[verif_ncol - 1] = cur_str.length();
+                };
+                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+              };
+              cur_str = "";
+              verif_ncol += 1;
+            } else if (currow[i] == str_context_begin) {
+              str_cxt = 1;
+            } else if (currow[i] == str_context_end) {
+              str_cxt = 0;
+            } else {
+              cur_str.push_back(currow[i]);
+            };
+            i += 1;
+          };
+          if (currow[i - 1] == delim) {
+            if (longest_v[verif_ncol - 1] < 2) {
+              longest_v[verif_ncol - 1] = 2;
+            };
+            tmp_val_refv[verif_ncol - 1].push_back("0");
+          } else {
+            if (longest_v[verif_ncol - 1] < cur_str.length()) {
+              longest_v[verif_ncol - 1] = cur_str.length();
+            };
+            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+          };
+          cur_str = "";
+          if (verif_ncol != ncol) {
+            std::cout << "column number problem at row: " << nrow << "\n";
+            reinitiate();
+            return;
+          };
+          nrow += 1;
+          row_check += 1;
+          if (row_check > end_row) {
+            break;
+          };
+        };
+
+      } else if constexpr (strt_row != 0) {
+
+        unsigned int row_check = 1;
+        while (row_check < strt_row) {
+          getline(readfile, currow);
+          row_check += 1;
+        };
+
+        while (getline(readfile, currow)) {
+          verif_ncol = 1;
+          str_cxt = 0;
+          i = 0;
+          while (i < currow.length()) {
+            if (currow[i] == delim && !str_cxt) {
+              if (i == 0) {
+                if (longest_v[verif_ncol - 1] < 2) {
+                  longest_v[verif_ncol - 1] = 2;
+                };
+                tmp_val_refv[0].push_back("NA");
+              } else if (currow[i - 1] == delim) {
+                if (longest_v[verif_ncol - 1] < 2) {
+                  longest_v[verif_ncol - 1] = 2;
+                };
+                tmp_val_refv[verif_ncol - 1].push_back("NA");
+              } else {
+                if (longest_v[verif_ncol - 1] < cur_str.length()) {
+                  longest_v[verif_ncol - 1] = cur_str.length();
+                };
+                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+              };
+              cur_str = "";
+              verif_ncol += 1;
+            } else if (currow[i] == str_context_begin) {
+              str_cxt = 1;
+            } else if (currow[i] == str_context_end) {
+              str_cxt = 0;
+            } else {
+              cur_str.push_back(currow[i]);
+            };
+            i += 1;
+          };
+          if (currow[i - 1] == delim) {
+            if (longest_v[verif_ncol - 1] < 2) {
+              longest_v[verif_ncol - 1] = 2;
+            };
+            tmp_val_refv[verif_ncol - 1].push_back("0");
+          } else {
+            if (longest_v[verif_ncol - 1] < cur_str.length()) {
+              longest_v[verif_ncol - 1] = cur_str.length();
+            };
+            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+          };
+          cur_str = "";
+          if (verif_ncol != ncol) {
+            std::cout << "column number problem at row: " << nrow << "\n";
+            reinitiate();
+            return;
+          };
+          nrow += 1;
+        };
+
+      } else if constexpr (end_row != -1) {
+
+        unsigned int row_check = 1;
+
+        while (getline(readfile, currow)) {
+          verif_ncol = 1;
+          str_cxt = 0;
+          i = 0;
+          while (i < currow.length()) {
+            if (currow[i] == delim && !str_cxt) {
+              if (i == 0) {
+                if (longest_v[verif_ncol - 1] < 2) {
+                  longest_v[verif_ncol - 1] = 2;
+                };
+                tmp_val_refv[0].push_back("NA");
+              } else if (currow[i - 1] == delim) {
+                if (longest_v[verif_ncol - 1] < 2) {
+                  longest_v[verif_ncol - 1] = 2;
+                };
+                tmp_val_refv[verif_ncol - 1].push_back("NA");
+              } else {
+                if (longest_v[verif_ncol - 1] < cur_str.length()) {
+                  longest_v[verif_ncol - 1] = cur_str.length();
+                };
+                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+              };
+              cur_str = "";
+              verif_ncol += 1;
+            } else if (currow[i] == str_context_begin) {
+              str_cxt = 1;
+            } else if (currow[i] == str_context_end) {
+              str_cxt = 0;
+            } else {
+              cur_str.push_back(currow[i]);
+            };
+            i += 1;
+          };
+          if (currow[i - 1] == delim) {
+            if (longest_v[verif_ncol - 1] < 2) {
+              longest_v[verif_ncol - 1] = 2;
+            };
+            tmp_val_refv[verif_ncol - 1].push_back("0");
+          } else {
+            if (longest_v[verif_ncol - 1] < cur_str.length()) {
+              longest_v[verif_ncol - 1] = cur_str.length();
+            };
+            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+          };
+          cur_str = "";
+          if (verif_ncol != ncol) {
+            std::cout << "column number problem at row: " << nrow << "\n";
+            reinitiate();
+            return;
+          };
+          nrow += 1;
+          row_check += 1;
+          if (row_check > end_row) {
+            break;
+          };
+        };
+
+      };
       type_classification();
     };
 
