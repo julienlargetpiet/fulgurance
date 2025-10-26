@@ -7810,7 +7810,6 @@ class Dataframe{
       const std::vector<std::string>& in_colv = tmp_val_refv[in_col];
       std::string cur_val;
       unsigned int nrow2 = nrow;
-      std::array<unsigned int, 6> pos_col;
       unsigned int pos_colv;
       nrow = 0;
       const unsigned int& ext_nrow = cur_obj.get_nrow();
@@ -7822,35 +7821,35 @@ class Dataframe{
 
       for (int i = 0; i < nrow2; ++i) {
         if (lookup.contains(in_colv[i])) {
-          pos_col = {0, 0, 0, 0, 0, 0};
-          for (i2 = 0; i2 < ncol; ++i2) {
-
-            tmp_val_refv[i2][nrow] = tmp_val_refv[i2][i];
-            if (type_refv[i2] == 's') {
-              pos_colv = pos_col[0];
-              str_v[nrow2 * pos_colv + nrow] = str_v[nrow2 * pos_colv + i];
-              pos_col[0] += 1;
-            } else if (type_refv[i2] == 'c') {
-              pos_colv = pos_col[1];
-              chr_v[nrow2 * pos_colv + nrow] = chr_v[nrow2 * pos_colv + i];
-              pos_col[1] += 1;
-            } else if (type_refv[i2] == 'b') {
-              pos_colv = pos_col[2];
-              bool_v[nrow2 * pos_colv + nrow] = bool_v[nrow2 * pos_colv + i];
-              pos_col[2] += 1;
-            } else if (type_refv[i2] == 'i') {
-              pos_colv = pos_col[3];
-              int_v[nrow2 * pos_colv + nrow] = int_v[nrow2 * pos_colv + i];
-              pos_col[3] += 1;
-            } else if (type_refv[i2] == 'u') {
-              pos_colv = pos_col[4];
-              uint_v[nrow2 * pos_colv + nrow] = uint_v[nrow2 * pos_colv + i];
-              pos_col[4] += 1;
-            } else {
-              pos_colv = pos_col[5];
-              dbl_v[nrow2 * pos_colv + nrow] = dbl_v[nrow2 * pos_colv + i];
-              pos_col[5] += 1;
-            };
+          for (i2 = 0; i2 < matr_idx[0].size(); i2 += 1) {
+            pos_colv = matr_idx[0][i2];
+            str_v[nrow2 * i2 + nrow] = str_v[nrow2 * i2 + i];
+            tmp_val_refv[pos_colv][nrow] = tmp_val_refv[pos_colv][i];
+          };
+          for (i2 = 0; i2 < matr_idx[1].size(); i2 += 1) {
+            pos_colv = matr_idx[1][i2];
+            chr_v[nrow2 * i2 + nrow] = chr_v[nrow2 * i2 + i];
+            tmp_val_refv[pos_colv][nrow] = tmp_val_refv[pos_colv][i];
+          };
+          for (i2 = 0; i2 < matr_idx[2].size(); i2 += 1) {
+            pos_colv = matr_idx[2][i2];
+            bool_v[nrow2 * i2 + nrow] = bool_v[nrow2 * i2 + i];
+            tmp_val_refv[pos_colv][nrow] = tmp_val_refv[pos_colv][i];
+          };
+          for (i2 = 0; i2 < matr_idx[3].size(); i2 += 1) {
+            pos_colv = matr_idx[3][i2];
+            int_v[nrow2 * i2 + nrow] = int_v[nrow2 * i2 + i];
+            tmp_val_refv[pos_colv][nrow] = tmp_val_refv[pos_colv][i];
+          };
+          for (i2 = 0; i2 < matr_idx[4].size(); i2 += 1) {
+            pos_colv = matr_idx[4][i2];
+            uint_v[nrow2 * i2 + nrow] = uint_v[nrow2 * i2 + i];
+            tmp_val_refv[pos_colv][nrow] = tmp_val_refv[pos_colv][i];
+          };
+          for (i2 = 0; i2 < matr_idx[5].size(); i2 += 1) {
+            pos_colv = matr_idx[5][i2];
+            dbl_v[nrow2 * i2 + nrow] = dbl_v[nrow2 * i2 + i];
+            tmp_val_refv[pos_colv][nrow] = tmp_val_refv[pos_colv][i];
           };
           nrow += 1;
         };
@@ -7864,7 +7863,6 @@ class Dataframe{
       const std::vector<std::string>& in_colv = tmp_val_refv[in_col];
       std::string cur_val;
       unsigned int nrow2 = nrow;
-      std::array<unsigned int, 6> pos_col;
       unsigned int pos_colv;
       nrow = 0;
       const unsigned int& ext_nrow = cur_obj.get_nrow();
@@ -7876,35 +7874,35 @@ class Dataframe{
 
       for (int i = 0; i < nrow2; ++i) {
         if (lookup.contains(in_colv[i])) {
-          pos_col = {0, 0, 0, 0, 0, 0};
-          for (i2 = 0; i2 < ncol; ++i2) {
-
-            tmp_val_refv[i2][nrow] = tmp_val_refv[i2][i];
-            if (type_refv[i2] == 's') {
-              pos_colv = pos_col[0];
-              str_v[nrow2 * pos_colv + nrow] = str_v[nrow2 * pos_colv + i];
-              pos_col[0] += 1;
-            } else if (type_refv[i2] == 'c') {
-              pos_colv = pos_col[1];
-              chr_v[nrow2 * pos_colv + nrow] = chr_v[nrow2 * pos_colv + i];
-              pos_col[1] += 1;
-            } else if (type_refv[i2] == 'b') {
-              pos_colv = pos_col[2];
-              bool_v[nrow2 * pos_colv + nrow] = bool_v[nrow2 * pos_colv + i];
-              pos_col[2] += 1;
-            } else if (type_refv[i2] == 'i') {
-              pos_colv = pos_col[3];
-              int_v[nrow2 * pos_colv + nrow] = int_v[nrow2 * pos_colv + i];
-              pos_col[3] += 1;
-            } else if (type_refv[i2] == 'u') {
-              pos_colv = pos_col[4];
-              uint_v[nrow2 * pos_colv + nrow] = uint_v[nrow2 * pos_colv + i];
-              pos_col[4] += 1;
-            } else {
-              pos_colv = pos_col[5];
-              dbl_v[nrow2 * pos_colv + nrow] = dbl_v[nrow2 * pos_colv + i];
-              pos_col[5] += 1;
-            };
+          for (i2 = 0; i2 < matr_idx[0].size(); i2 += 1) {
+            pos_colv = matr_idx[0][i2];
+            str_v[nrow2 * i2 + nrow] = str_v[nrow2 * i2 + i];
+            tmp_val_refv[pos_colv][nrow] = tmp_val_refv[pos_colv][i];
+          };
+          for (i2 = 0; i2 < matr_idx[1].size(); i2 += 1) {
+            pos_colv = matr_idx[1][i2];
+            chr_v[nrow2 * i2 + nrow] = chr_v[nrow2 * i2 + i];
+            tmp_val_refv[pos_colv][nrow] = tmp_val_refv[pos_colv][i];
+          };
+          for (i2 = 0; i2 < matr_idx[2].size(); i2 += 1) {
+            pos_colv = matr_idx[2][i2];
+            bool_v[nrow2 * i2 + nrow] = bool_v[nrow2 * i2 + i];
+            tmp_val_refv[pos_colv][nrow] = tmp_val_refv[pos_colv][i];
+          };
+          for (i2 = 0; i2 < matr_idx[3].size(); i2 += 1) {
+            pos_colv = matr_idx[3][i2];
+            int_v[nrow2 * i2 + nrow] = int_v[nrow2 * i2 + i];
+            tmp_val_refv[pos_colv][nrow] = tmp_val_refv[pos_colv][i];
+          };
+          for (i2 = 0; i2 < matr_idx[4].size(); i2 += 1) {
+            pos_colv = matr_idx[4][i2];
+            uint_v[nrow2 * i2 + nrow] = uint_v[nrow2 * i2 + i];
+            tmp_val_refv[pos_colv][nrow] = tmp_val_refv[pos_colv][i];
+          };
+          for (i2 = 0; i2 < matr_idx[5].size(); i2 += 1) {
+            pos_colv = matr_idx[5][i2];
+            dbl_v[nrow2 * i2 + nrow] = dbl_v[nrow2 * i2 + i];
+            tmp_val_refv[pos_colv][nrow] = tmp_val_refv[pos_colv][i];
           };
           nrow += 1;
         };
@@ -7981,7 +7979,6 @@ class Dataframe{
       const std::vector<std::string>& ext_colv = cur_tmp[ext_col];
       const std::vector<std::string>& in_colv = tmp_val_refv[in_col];
       std::string cur_val;
-      std::array<unsigned int, 6> pos_vec;
       unsigned int pos_vl;
       const unsigned int& ext_nrow = cur_obj.get_nrow();
 
@@ -7993,35 +7990,37 @@ class Dataframe{
 
       for (int i = 0; i < nrow2; i += 1) {
         if (!(lookup.contains(in_colv[i]))) {
-          pos_vec = {0, 0, 0, 0, 0, 0};
-          for (i2 = 0; i2 < ncol; i2 += 1) {
-            tmp_val_refv[i2][nrow] = tmp_val_refv[i2][i];
-            if (type_refv[i2] == 's') {
-              pos_vl = pos_vec[0];
-              str_v[pos_vl * nrow2 + nrow] = str_v[pos_vl * nrow2 + i];
-              pos_vec[0] += 1;
-            } else if (type_refv[i2] == 'c') {
-              pos_vl = pos_vec[1];
-              chr_v[pos_vl * nrow2 + nrow] = chr_v[pos_vl * nrow2 + i];
-              pos_vec[1] += 1;
-            } else if (type_refv[i2] == 'b') {
-              pos_vl = pos_vec[2];
-              bool_v[pos_vl * nrow2 + nrow] = bool_v[pos_vl * nrow2 + i];
-              pos_vec[2] += 1;
-            } else if (type_refv[i2] == 'i') {
-              pos_vl = pos_vec[3];
-              int_v[pos_vl * nrow2 + nrow] = int_v[pos_vl * nrow2 + i];
-              pos_vec[3] += 1;
-            } else if (type_refv[i2] == 'u') {
-              pos_vl = pos_vec[4];
-              uint_v[pos_vl * nrow2 + nrow] = uint_v[pos_vl * nrow2 + i];
-              pos_vec[4] += 1;
-            } else if (type_refv[i2] == 'd') {
-              pos_vl = pos_vec[5];
-              dbl_v[pos_vl * nrow2 + nrow] = dbl_v[pos_vl * nrow2 + i];
-              pos_vec[5] += 1;
-            };
+          for (i2 = 0; i2 < matr_idx[0].size(); i2 += 1) {
+            pos_vl = matr_idx[0][i2];
+            str_v[i2 * nrow2 + nrow] = str_v[i2 * nrow2 + i];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
           };
+          for (i2 = 0; i2 < matr_idx[1].size(); i2 += 1) {
+            pos_vl = matr_idx[1][i2];
+            chr_v[i2 * nrow2 + nrow] = chr_v[i2 * nrow2 + i];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+          };
+          for (i2 = 0; i2 < matr_idx[2].size(); i2 += 1) {
+            pos_vl = matr_idx[2][i2];
+            bool_v[i2 * nrow2 + nrow] = bool_v[i2 * nrow2 + i];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+          };
+          for (i2 = 0; i2 < matr_idx[3].size(); i2 += 1) {
+            pos_vl = matr_idx[3][i2];
+            int_v[i2 * nrow2 + nrow] = int_v[i2 * nrow2 + i];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+          };
+          for (i2 = 0; i2 < matr_idx[4].size(); i2 += 1) {
+            pos_vl = matr_idx[4][i2];
+            uint_v[i2 * nrow2 + nrow] = uint_v[i2 * nrow2 + i];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+          };
+          for (i2 = 0; i2 < matr_idx[5].size(); i2 += 1) {
+            pos_vl = matr_idx[5][i2];
+            dbl_v[i2 * nrow2 + nrow] = dbl_v[i2 * nrow2 + i];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+          };
+
           nrow += 1;
         };
       };
@@ -8035,7 +8034,6 @@ class Dataframe{
       const std::vector<std::string>& ext_colv = cur_tmp[ext_col];
       const std::vector<std::string>& in_colv = tmp_val_refv[in_col];
       std::string cur_val;
-      std::array<unsigned int, 6> pos_vec;
       unsigned int pos_vl;
       const unsigned int& ext_nrow = cur_obj.get_nrow();
 
@@ -8047,35 +8045,37 @@ class Dataframe{
 
       for (int i = 0; i < nrow2; i += 1) {
         if (!(lookup.contains(in_colv[i]))) {
-          pos_vec = {0, 0, 0, 0, 0, 0};
-          for (i2 = 0; i2 < ncol; i2 += 1) {
-            tmp_val_refv[i2][nrow] = tmp_val_refv[i2][i];
-            if (type_refv[i2] == 's') {
-              pos_vl = pos_vec[0];
-              str_v[pos_vl * nrow2 + nrow] = str_v[pos_vl * nrow2 + i];
-              pos_vec[0] += 1;
-            } else if (type_refv[i2] == 'c') {
-              pos_vl = pos_vec[1];
-              chr_v[pos_vl * nrow2 + nrow] = chr_v[pos_vl * nrow2 + i];
-              pos_vec[1] += 1;
-            } else if (type_refv[i2] == 'b') {
-              pos_vl = pos_vec[2];
-              bool_v[pos_vl * nrow2 + nrow] = bool_v[pos_vl * nrow2 + i];
-              pos_vec[2] += 1;
-            } else if (type_refv[i2] == 'i') {
-              pos_vl = pos_vec[3];
-              int_v[pos_vl * nrow2 + nrow] = int_v[pos_vl * nrow2 + i];
-              pos_vec[3] += 1;
-            } else if (type_refv[i2] == 'u') {
-              pos_vl = pos_vec[4];
-              uint_v[pos_vl * nrow2 + nrow] = uint_v[pos_vl * nrow2 + i];
-              pos_vec[4] += 1;
-            } else if (type_refv[i2] == 'd') {
-              pos_vl = pos_vec[5];
-              dbl_v[pos_vl * nrow2 + nrow] = dbl_v[pos_vl * nrow2 + i];
-              pos_vec[5] += 1;
-            };
+          for (i2 = 0; i2 < matr_idx[0].size(); i2 += 1) {
+            pos_vl = matr_idx[0][i2];
+            str_v[i2 * nrow2 + nrow] = str_v[i2 * nrow2 + i];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
           };
+          for (i2 = 0; i2 < matr_idx[1].size(); i2 += 1) {
+            pos_vl = matr_idx[1][i2];
+            chr_v[i2 * nrow2 + nrow] = chr_v[i2 * nrow2 + i];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+          };
+          for (i2 = 0; i2 < matr_idx[2].size(); i2 += 1) {
+            pos_vl = matr_idx[2][i2];
+            bool_v[i2 * nrow2 + nrow] = bool_v[i2 * nrow2 + i];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+          };
+          for (i2 = 0; i2 < matr_idx[3].size(); i2 += 1) {
+            pos_vl = matr_idx[3][i2];
+            int_v[i2 * nrow2 + nrow] = int_v[i2 * nrow2 + i];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+          };
+          for (i2 = 0; i2 < matr_idx[4].size(); i2 += 1) {
+            pos_vl = matr_idx[4][i2];
+            uint_v[i2 * nrow2 + nrow] = uint_v[i2 * nrow2 + i];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+          };
+          for (i2 = 0; i2 < matr_idx[5].size(); i2 += 1) {
+            pos_vl = matr_idx[5][i2];
+            dbl_v[i2 * nrow2 + nrow] = dbl_v[i2 * nrow2 + i];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+          };
+
           nrow += 1;
         };
       };
