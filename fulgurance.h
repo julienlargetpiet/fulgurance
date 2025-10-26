@@ -7915,7 +7915,7 @@ class Dataframe{
                         str_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
                         tmp_val_refv[pos_colv].end());
-        tmp_val_refv[pos_vl].shrink_to_fit();
+        tmp_val_refv[pos_colv].shrink_to_fit();
       };
       str_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[1].size(); i2 += 1) {
@@ -7924,7 +7924,7 @@ class Dataframe{
                         chr_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
                         tmp_val_refv[pos_colv].end());
-        tmp_val_refv[pos_vl].shrink_to_fit();
+        tmp_val_refv[pos_colv].shrink_to_fit();
       };
       chr_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[2].size(); i2 += 1) {
@@ -7933,7 +7933,7 @@ class Dataframe{
                         bool_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
                         tmp_val_refv[pos_colv].end());
-        tmp_val_refv[pos_vl].shrink_to_fit();
+        tmp_val_refv[pos_colv].shrink_to_fit();
       };
       bool_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[3].size(); i2 += 1) {
@@ -7942,7 +7942,7 @@ class Dataframe{
                         int_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
                         tmp_val_refv[pos_colv].end());
-        tmp_val_refv[pos_vl].shrink_to_fit();
+        tmp_val_refv[pos_colv].shrink_to_fit();
       };
       int_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[4].size(); i2 += 1) {
@@ -7951,7 +7951,7 @@ class Dataframe{
                         uint_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
                         tmp_val_refv[pos_colv].end());
-        tmp_val_refv[pos_vl].shrink_to_fit();
+        tmp_val_refv[pos_colv].shrink_to_fit();
       };
       uint_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[5].size(); i2 += 1) {
@@ -7960,7 +7960,7 @@ class Dataframe{
                         dbl_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
                         tmp_val_refv[pos_colv].end());
-        tmp_val_refv[pos_vl].shrink_to_fit();
+        tmp_val_refv[pos_colv].shrink_to_fit();
       };
       dbl_v.shrink_to_fit();
     };
@@ -8071,47 +8071,62 @@ class Dataframe{
           nrow += 1;
         };
       };
-      unsigned int nrow3;
-      for (i2 = 0; i2 < ncol; i2 += 1) {
-        nrow3 = nrow2;
-        if (type_refv[i2] == 's') {
-          while (nrow3 > nrow) {
-            tmp_val_refv[i2].pop_back();
-            str_v.pop_back();
-            nrow3 -= 1;
-          };
-        } else if (type_refv[i2] == 'c') {
-          while (nrow3 > nrow) {
-            tmp_val_refv[i2].pop_back();
-            chr_v.pop_back();
-            nrow3 -= 1;
-          };
-        } else if (type_refv[i2] == 'b') {
-          while (nrow3 > nrow) {
-            tmp_val_refv[i2].pop_back();
-            bool_v.pop_back();
-            nrow3 -= 1;
-          };
-        } else if (type_refv[i2] == 'i') {
-          while (nrow3 > nrow) {
-            tmp_val_refv[i2].pop_back();
-            int_v.pop_back();
-            nrow3 -= 1;
-          };
-        } else if (type_refv[i2] == 'u') {
-          while (nrow3 > nrow) {
-            tmp_val_refv[i2].pop_back();
-            uint_v.pop_back();
-            nrow3 -= 1;
-          };
-        } else {
-          while (nrow3 > nrow) {
-            tmp_val_refv[i2].pop_back();
-            dbl_v.pop_back();
-            nrow3 -= 1;
-          };
-        };
+
+      for (i2 = 0; i2 < matr_idx[0].size(); i2 += 1) {
+        pos_vl = matr_idx[0][i2];
+        str_v.erase(str_v.begin() + nrow * i2, 
+                        str_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
+                        tmp_val_refv[pos_vl].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
       };
+      str_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[1].size(); i2 += 1) {
+        pos_vl = matr_idx[1][i2];
+        chr_v.erase(chr_v.begin() + nrow * i2, 
+                        chr_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
+                        tmp_val_refv[pos_vl].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
+      };
+      chr_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[2].size(); i2 += 1) {
+        pos_vl = matr_idx[2][i2];
+        bool_v.erase(bool_v.begin() + nrow * i2, 
+                        bool_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
+                        tmp_val_refv[pos_vl].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
+      };
+      bool_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[3].size(); i2 += 1) {
+        pos_vl = matr_idx[3][i2];
+        int_v.erase(int_v.begin() + nrow * i2, 
+                        int_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
+                        tmp_val_refv[pos_vl].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
+      };
+      int_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[4].size(); i2 += 1) {
+        pos_vl = matr_idx[4][i2];
+        uint_v.erase(uint_v.begin() + nrow * i2, 
+                        uint_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
+                        tmp_val_refv[pos_vl].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
+      };
+      uint_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[5].size(); i2 += 1) {
+        pos_vl = matr_idx[5][i2];
+        dbl_v.erase(dbl_v.begin() + nrow * i2, 
+                        dbl_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
+                        tmp_val_refv[pos_vl].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
+      };
+      dbl_v.shrink_to_fit();
+
     };
 
     void merge_inner(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
