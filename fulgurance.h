@@ -9071,9 +9071,9 @@ class Dataframe{
         };
         lookup[{col_vec[i], row_vec[i]}] += tmp_int_v[i];
       };
-      int_v.resize(lookup.size());
       ncol = idx_row.size();
       nrow = idx_col.size();
+      int_v.resize(ncol * nrow);
 
       std::vector<std::string> cur_vec_str(idx_row.size());
       tmp_val_refv.resize(ncol, cur_vec_str);
@@ -9141,9 +9141,9 @@ class Dataframe{
         };
         lookup[{ col_vec[i], row_vec[i] }] += tmp_uint_v[i];
       };
-      uint_v.resize(lookup.size());
       ncol = idx_row.size();
       nrow = idx_col.size();
+      uint_v.resize(ncol * nrow);
 
       std::vector<std::string> cur_vec_str(idx_row.size());
       tmp_val_refv.resize(ncol, cur_vec_str);
@@ -9213,9 +9213,9 @@ class Dataframe{
         };
         lookup[{col_vec[i], row_vec[i]}] += tmp_dbl_v[i];
       };
-      dbl_v.resize(lookup.size());
       ncol = idx_row.size();
       nrow = idx_col.size();
+      dbl_v.resize(ncol * nrow);
 
       std::vector<std::string> cur_vec_str(idx_row.size());
       tmp_val_refv.resize(ncol, cur_vec_str);
