@@ -7915,6 +7915,7 @@ class Dataframe{
                         str_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
                         tmp_val_refv[pos_colv].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
       };
       str_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[1].size(); i2 += 1) {
@@ -7923,6 +7924,7 @@ class Dataframe{
                         chr_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
                         tmp_val_refv[pos_colv].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
       };
       chr_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[2].size(); i2 += 1) {
@@ -7931,6 +7933,7 @@ class Dataframe{
                         bool_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
                         tmp_val_refv[pos_colv].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
       };
       bool_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[3].size(); i2 += 1) {
@@ -7939,6 +7942,7 @@ class Dataframe{
                         int_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
                         tmp_val_refv[pos_colv].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
       };
       int_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[4].size(); i2 += 1) {
@@ -7947,6 +7951,7 @@ class Dataframe{
                         uint_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
                         tmp_val_refv[pos_colv].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
       };
       uint_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[5].size(); i2 += 1) {
@@ -7955,9 +7960,9 @@ class Dataframe{
                         dbl_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
                         tmp_val_refv[pos_colv].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
       };
       dbl_v.shrink_to_fit();
-      tmp_val_refv[i2].shrink_to_fit();
     };
 
     void transform_excluding(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col) {
@@ -9127,6 +9132,7 @@ class Dataframe{
                         str_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
                         tmp_val_refv[pos_vl].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
       };
       str_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[1].size(); i2 += 1) {
@@ -9135,6 +9141,7 @@ class Dataframe{
                         chr_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
                         tmp_val_refv[pos_vl].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
       };
       chr_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[2].size(); i2 += 1) {
@@ -9143,6 +9150,7 @@ class Dataframe{
                         bool_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
                         tmp_val_refv[pos_vl].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
       };
       bool_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[3].size(); i2 += 1) {
@@ -9151,6 +9159,7 @@ class Dataframe{
                         int_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
                         tmp_val_refv[pos_vl].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
       };
       int_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[4].size(); i2 += 1) {
@@ -9159,6 +9168,7 @@ class Dataframe{
                         uint_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
                         tmp_val_refv[pos_vl].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
       };
       uint_v.shrink_to_fit();
       for (i2 = 0; i2 < matr_idx[5].size(); i2 += 1) {
@@ -9167,9 +9177,9 @@ class Dataframe{
                         dbl_v.begin() + nrow2 * i2);
         tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
                         tmp_val_refv[pos_vl].end());
+        tmp_val_refv[pos_vl].shrink_to_fit();
       };
       dbl_v.shrink_to_fit();
-      tmp_val_refv[i2].shrink_to_fit();
     };
 
     void transform_group_by(std::vector<unsigned int> &x,
