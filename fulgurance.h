@@ -6691,12 +6691,22 @@ class Dataframe{
       unsigned int i2b;
       unsigned int i3;
       unsigned int i4;
-      unsigned int max_nblngth = std::to_string(nrow).length();
 
       if (colv[0] == -1) {
         colv.resize(ncol);
         for (i2b = 0; i2b < ncol; i2b += 1) {
           colv[i2b] = i2b;
+        };
+      };
+
+      unsigned int max_nblngth = 0;
+      if (name_v_row.size() == 0) {
+        max_nblngth = std::to_string(nrow).length();
+      } else {
+        for (auto& el : name_v_row) {
+          if (el.size() > max_nblngth) {
+            max_nblngth = el.size();
+          };
         };
       };
 
@@ -6764,20 +6774,36 @@ class Dataframe{
         };
       };
       std::cout << "\n";
-      for (unsigned int i = 0; i < nrow; ++i) {
-        if (x[i]) {
-          std::cout << ":" << i << ": ";
-          for (i3 = std::to_string(i).length(); i3 < max_nblngth; ++i3) {
-            std::cout << " ";
-          };
-          for (auto& i2 : colv) {
-            cur_str = tmp_val_refv[i2][i];
-            std::cout << cur_str << " ";
-            for (i3 = cur_str.length(); i3 < longest_v[i2]; ++i3) {
+      if (name_v_row.size() == 0) {
+        for (unsigned int i = 0; i < nrow; ++i) {
+          if (x[i]) {
+            std::cout << ":" << i << ": ";
+            for (i3 = std::to_string(i).length(); i3 < max_nblngth; ++i3) {
               std::cout << " ";
             };
+            for (auto& i2 : colv) {
+              cur_str = tmp_val_refv[i2][i];
+              std::cout << cur_str << " ";
+              for (i3 = cur_str.length(); i3 < longest_v[i2]; ++i3) {
+                std::cout << " ";
+              };
+            };
+            std::cout << "\n";
           };
-          std::cout << "\n";
+        };
+      } else {
+        for (unsigned int i = 0; i < nrow; ++i) {
+          if (x[i]) {
+            std::cout << std::setw(max_nblngth) << name_v_row[i] << " : ";
+            for (auto& i2 : colv) {
+              cur_str = tmp_val_refv[i2][i];
+              std::cout << cur_str << " ";
+              for (i3 = cur_str.length(); i3 < longest_v[i2]; ++i3) {
+                std::cout << " ";
+              };
+            };
+            std::cout << "\n";
+          };
         };
       };
     };
@@ -7883,47 +7909,55 @@ class Dataframe{
           nrow += 1;
         };
       };
-      unsigned int nrow3;
-      for (i2 = 0; i2 < ncol; i2 += 1) {
-        nrow3 = nrow2;
-        if (type_refv[i2] == 's') {
-          while (nrow3 > nrow) {
-            tmp_val_refv[i2].pop_back();
-            str_v.pop_back();
-            nrow3 -= 1;
-          };
-        } else if (type_refv[i2] == 'c') {
-          while (nrow3 > nrow) {
-            tmp_val_refv[i2].pop_back();
-            chr_v.pop_back();
-            nrow3 -= 1;
-          };
-        } else if (type_refv[i2] == 'b') {
-          while (nrow3 > nrow) {
-            tmp_val_refv[i2].pop_back();
-            bool_v.pop_back();
-            nrow3 -= 1;
-          };
-        } else if (type_refv[i2] == 'i') {
-          while (nrow3 > nrow) {
-            tmp_val_refv[i2].pop_back();
-            int_v.pop_back();
-            nrow3 -= 1;
-          };
-        } else if (type_refv[i2] == 'u') {
-          while (nrow3 > nrow) {
-            tmp_val_refv[i2].pop_back();
-            uint_v.pop_back();
-            nrow3 -= 1;
-          };
-        } else {
-          while (nrow3 > nrow) {
-            tmp_val_refv[i2].pop_back();
-            dbl_v.pop_back();
-            nrow3 -= 1;
-          };
-        };
+      for (i2 = 0; i2 < matr_idx[0].size(); i2 += 1) {
+        pos_colv = matr_idx[0][i2];
+        str_v.erase(str_v.begin() + nrow * i2, 
+                        str_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
+                        tmp_val_refv[pos_colv].end());
       };
+      str_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[1].size(); i2 += 1) {
+        pos_colv = matr_idx[1][i2];
+        chr_v.erase(chr_v.begin() + nrow * i2, 
+                        chr_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
+                        tmp_val_refv[pos_colv].end());
+      };
+      chr_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[2].size(); i2 += 1) {
+        pos_colv = matr_idx[2][i2];
+        bool_v.erase(bool_v.begin() + nrow * i2, 
+                        bool_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
+                        tmp_val_refv[pos_colv].end());
+      };
+      bool_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[3].size(); i2 += 1) {
+        pos_colv = matr_idx[3][i2];
+        int_v.erase(int_v.begin() + nrow * i2, 
+                        int_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
+                        tmp_val_refv[pos_colv].end());
+      };
+      int_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[4].size(); i2 += 1) {
+        pos_colv = matr_idx[4][i2];
+        uint_v.erase(uint_v.begin() + nrow * i2, 
+                        uint_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
+                        tmp_val_refv[pos_colv].end());
+      };
+      uint_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[5].size(); i2 += 1) {
+        pos_colv = matr_idx[5][i2];
+        dbl_v.erase(dbl_v.begin() + nrow * i2, 
+                        dbl_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_colv].erase(tmp_val_refv[pos_colv].begin() + nrow, 
+                        tmp_val_refv[pos_colv].end());
+      };
+      dbl_v.shrink_to_fit();
+      tmp_val_refv[i2].shrink_to_fit();
     };
 
     void transform_excluding(Dataframe &cur_obj, unsigned int &in_col, unsigned int &ext_col) {
@@ -8996,6 +9030,146 @@ class Dataframe{
           nrow += 1;
         };
       }
+    };
+
+    void transform_unique(unsigned int& n) {
+      unsigned int nrow2 = nrow;
+      unsigned int i;
+      unsigned int i2;
+      unsigned int pos_vl;
+      nrow = 0;
+      std::unordered_set<std::string> unic_v;
+      for (i = 0; i < nrow2; i += 1) {
+        if (!unic_v.contains(tmp_val_refv[n][i])) {
+          unic_v.insert(tmp_val_refv[n][i]);
+          for (i2 = 0; i2 < matr_idx[0].size(); i2 += 1) {
+            pos_vl = matr_idx[0][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            str_v[nrow2 * i2 + nrow] = str_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0; i2 < matr_idx[1].size(); i2 += 1) {
+            pos_vl = matr_idx[1][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            chr_v[nrow2 * i2 + nrow] = chr_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0; i2 < matr_idx[2].size(); i2 += 1) {
+            pos_vl = matr_idx[2][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            bool_v[nrow2 * i2 + nrow] = bool_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0; i2 < matr_idx[3].size(); i2 += 1) {
+            pos_vl = matr_idx[3][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            int_v[nrow2 * i2 + nrow] = int_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0; i2 < matr_idx[4].size(); i2 += 1) {
+            pos_vl = matr_idx[4][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            uint_v[nrow2 * i2 + nrow] = uint_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0; i2 < matr_idx[5].size(); i2 += 1) {
+            pos_vl = matr_idx[5][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            dbl_v[nrow2 * i2 + nrow] = dbl_v[nrow2 * i2 + i];
+          };
+          nrow += 1;
+        };
+      };
+    };
+
+    void transform_unique_clean(unsigned int& n) {
+      unsigned int nrow2 = nrow;
+      unsigned int i;
+      unsigned int i2;
+      unsigned int pos_vl;
+      nrow = 0;
+      std::unordered_set<std::string> unic_v;
+      for (i = 0; i < nrow2; i += 1) {
+        if (!unic_v.contains(tmp_val_refv[n][i])) {
+          unic_v.insert(tmp_val_refv[n][i]);
+          for (i2 = 0; i2 < matr_idx[0].size(); i2 += 1) {
+            pos_vl = matr_idx[0][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            str_v[nrow2 * i2 + nrow] = str_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0; i2 < matr_idx[1].size(); i2 += 1) {
+            pos_vl = matr_idx[1][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            chr_v[nrow2 * i2 + nrow] = chr_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0; i2 < matr_idx[2].size(); i2 += 1) {
+            pos_vl = matr_idx[2][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            bool_v[nrow2 * i2 + nrow] = bool_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0; i2 < matr_idx[3].size(); i2 += 1) {
+            pos_vl = matr_idx[3][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            int_v[nrow2 * i2 + nrow] = int_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0; i2 < matr_idx[4].size(); i2 += 1) {
+            pos_vl = matr_idx[4][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            uint_v[nrow2 * i2 + nrow] = uint_v[nrow2 * i2 + i];
+          };
+          for (i2 = 0; i2 < matr_idx[5].size(); i2 += 1) {
+            pos_vl = matr_idx[5][i2];
+            tmp_val_refv[pos_vl][nrow] = tmp_val_refv[pos_vl][i];
+            dbl_v[nrow2 * i2 + nrow] = dbl_v[nrow2 * i2 + i];
+          };
+          nrow += 1;
+        };
+      };
+      
+      for (i2 = 0; i2 < matr_idx[0].size(); i2 += 1) {
+        pos_vl = matr_idx[0][i2];
+        str_v.erase(str_v.begin() + nrow * i2, 
+                        str_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
+                        tmp_val_refv[pos_vl].end());
+      };
+      str_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[1].size(); i2 += 1) {
+        pos_vl = matr_idx[1][i2];
+        chr_v.erase(chr_v.begin() + nrow * i2, 
+                        chr_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
+                        tmp_val_refv[pos_vl].end());
+      };
+      chr_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[2].size(); i2 += 1) {
+        pos_vl = matr_idx[2][i2];
+        bool_v.erase(bool_v.begin() + nrow * i2, 
+                        bool_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
+                        tmp_val_refv[pos_vl].end());
+      };
+      bool_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[3].size(); i2 += 1) {
+        pos_vl = matr_idx[3][i2];
+        int_v.erase(int_v.begin() + nrow * i2, 
+                        int_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
+                        tmp_val_refv[pos_vl].end());
+      };
+      int_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[4].size(); i2 += 1) {
+        pos_vl = matr_idx[4][i2];
+        uint_v.erase(uint_v.begin() + nrow * i2, 
+                        uint_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
+                        tmp_val_refv[pos_vl].end());
+      };
+      uint_v.shrink_to_fit();
+      for (i2 = 0; i2 < matr_idx[5].size(); i2 += 1) {
+        pos_vl = matr_idx[5][i2];
+        dbl_v.erase(dbl_v.begin() + nrow * i2, 
+                        dbl_v.begin() + nrow2 * i2);
+        tmp_val_refv[pos_vl].erase(tmp_val_refv[pos_vl].begin() + nrow, 
+                        tmp_val_refv[pos_vl].end());
+      };
+      dbl_v.shrink_to_fit();
+      tmp_val_refv[i2].shrink_to_fit();
     };
 
     void transform_group_by(std::vector<unsigned int> &x,
