@@ -6043,7 +6043,7 @@ class Dataframe{
 
       } else if constexpr (strt_row != 0 && end_row != 0) {
        
-        unsigned int row_check = 1;
+        unsigned int row_check = 0;
         while (row_check < strt_row) {
           getline(readfile, currow);
           row_check += 1;
@@ -6108,7 +6108,7 @@ class Dataframe{
 
       } else if constexpr (strt_row != 0) {
 
-        unsigned int row_check = 1;
+        unsigned int row_check = 0;
         while (row_check < strt_row) {
           getline(readfile, currow);
           row_check += 1;
@@ -6169,7 +6169,7 @@ class Dataframe{
 
       } else if constexpr (end_row != -1) {
 
-        unsigned int row_check = 1;
+        unsigned int row_check = 0;
 
         while (getline(readfile, currow)) {
           verif_ncol = 1;
