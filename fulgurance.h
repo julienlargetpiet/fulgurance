@@ -13249,6 +13249,7 @@ class Dataframe{
 //@T Dataframe.sort_by
 //@U template &lt;bool asc = 1&gt;
 //@U void sort_by(unsigned int& n)
+//@X
 //@D Transforms the dataframe by reordering the rows by the value of a column.
 //@A n : is the column index of the column value to reorder from
 //@X
