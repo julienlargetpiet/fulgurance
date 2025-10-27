@@ -7855,6 +7855,132 @@ class Dataframe{
       };
     };
 
+    void display_filter_idx(std::vector<int> &x, std::vector<int> &colv) {
+      unsigned int i2b;
+      unsigned int i3;
+      unsigned int i4;
+
+      if (colv[0] == -1) {
+        colv.resize(ncol);
+        for (i2b = 0; i2b < ncol; i2b += 1) {
+          colv[i2b] = i2b;
+        };
+      };
+
+      if (x[0] == -1) {
+        x.resize(ncol);
+        for (i2b = 0; i2b < nrow; i2b += 1) {
+          x[i2b] = i2b;
+        };
+      };
+
+      unsigned int max_nblngth = 0;
+      if (name_v_row.size() == 0) {
+        max_nblngth = std::to_string(nrow).length();
+      } else {
+        for (auto& el : name_v_row) {
+          if (el.size() > max_nblngth) {
+            max_nblngth = el.size();
+          };
+        };
+      };
+
+      for (i2b = 0; i2b < max_nblngth + 2; ++i2b) {
+        std::cout << " ";
+      };
+      std::string cur_str;
+      for (auto& i2 : colv) {
+        if (type_refv[i2] == 's') {
+          cur_str = "<str>";
+          if (longest_v[i2] < 5) {
+            longest_v[i2] = 5;
+          };
+        } else if (type_refv[i2] == 'c') {
+          cur_str = "<char>";
+          if (longest_v[i2] < 6) {
+            longest_v[i2] = 6;
+          };
+        } else if (type_refv[i2] == 'b') {
+          cur_str = "<bool>";
+          if (longest_v[i2] < 6) {
+            longest_v[i2] = 6;
+          };
+        } else if (type_refv[i2] == 'i') {
+          cur_str = "<int>";
+          if (longest_v[i2] < 5) {
+            longest_v[i2] = 5;
+          };
+        } else if (type_refv[i2] == 'u') {
+          cur_str = "<uint>";
+          if (longest_v[i2] < 6) {
+            longest_v[i2] = 6;
+          };
+        } else if (type_refv[i2] == 'd') {
+          cur_str = "<double>";
+          if (longest_v[i2] < 8) {
+            longest_v[i2] = 8;
+          };
+        };
+        std::cout << cur_str << " ";  
+        for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
+          std::cout << " ";
+        };
+      };
+
+      std::cout << "\n";
+      for (i2b = 0; i2b < max_nblngth + 2; ++i2b) {
+        std::cout << " ";
+      };
+      if (name_v.size() > 0) {
+        for (auto& i2 : colv) {
+          cur_str = name_v[i2];
+          std::cout << cur_str << " ";  
+          for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
+            std::cout << " ";
+          };
+        };
+      } else {
+        for (auto& i2 : colv) {
+          cur_str = "[" + std::to_string(i2) + "]";
+          std::cout << cur_str << " ";
+          for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
+            std::cout << " ";
+          };
+        };
+      };
+      std::cout << "\n";
+      if (name_v_row.size() == 0) {
+        i4 = 0;
+        for (const auto& el : x) {
+          std::cout << ":" << i4 << ": ";
+          for (i3 = std::to_string(i4).length(); i3 < max_nblngth; ++i3) {
+            std::cout << " ";
+          };
+          for (auto& i2 : colv) {
+            cur_str = tmp_val_refv[i2][el];
+            std::cout << cur_str << " ";
+            for (i3 = cur_str.length(); i3 < longest_v[i2]; ++i3) {
+              std::cout << " ";
+            };
+          };
+          std::cout << "\n";
+          i4 += 1;
+        };
+      } else {
+        for (const auto& el : x) {
+          std::cout << std::setw(max_nblngth) << name_v_row[el] << " : ";
+          for (auto& i2 : colv) {
+            cur_str = tmp_val_refv[i2][el];
+            std::cout << cur_str << " ";
+            for (i3 = cur_str.length(); i3 < longest_v[i2]; ++i3) {
+              std::cout << " ";
+            };
+          };
+          std::cout << "\n";
+        };
+      };
+    };
+
     void display() {
       unsigned int i2;
       unsigned int i3;
@@ -10680,8 +10806,9 @@ class Dataframe{
 //@T Dataframe.display_filter
 //@U void display_filter(std::vector&lt;bool&gt; &x, std::vector&lt;int&gt; &colv)
 //@X
-//@D Print the current dataframe. Works seemlessly with <code>Dataframe.view_colnb()</code> to efficiently create boolean vecotr to filter rows, see example.
-//@A x : is the boolean vecotr filtering the rows to display
+//@D Print the current dataframe. Works seemlessly with <code>Dataframe.view_colnb()</code> to efficiently create boolean vector to filter rows, see example.
+//@A x : is the boolean vector filtering the rows to display
+//@A colv : is the int vector representing the column index of the column to keep, <code>{-1}</code> to keep all columns
 //@X
 //@E // after reading teste_dataframe.csv as obj1
 //@E
@@ -10712,6 +10839,52 @@ class Dataframe{
 //@E :11: 6      7      8      m9    10    i
 //@E :12: 6      7      8      s9    10    p
 //@E :14: 6      7      8      m9    10    i
+//@X
+
+//@T Dataframe.display_filter_idx
+//@U void display_filter_idx(std::vector&lt;int&gt; &x, std::vector&lt;int&gt; &colv)
+//@X
+//@D Print the current dataframe. Works seemlessly with <code>Dataframe.view_colnb()</code> to efficiently create an int vector to filter rows, see example.
+//@A x : is the int vector filtering the rows to display, the vector length is not forced to match the dataframe row number. <code>{-1}</code> to keep all rows in default order
+//@A colv : is the int vector representing the column index of the column to keep, <code>{-1}</code> to keep all columns
+//@X
+//@E
+//@E  Dataframe obj1;
+//@E  std::string fname = "csv_test/outb.csv";
+//@E  obj1.readf&lt;3, 0&gt;(fname);
+//@E  obj1.display();
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt;
+//@E     col1  col2   col3   col4   col5
+//@E :0:  id4   6      7      8      uu
+//@E :1:  id5   1      2      3      s4
+//@E :2:  id6   6      7      8      s9
+//@E :3:  id7   1      2      3      a4
+//@E :4:  id8   6      7      8      m9
+//@E :5:  id9   6      7      8      s9
+//@E :6:  id10  1      2      3      a4
+//@E :7:  id11  6      7      8      m9
+//@E :8:  id12  6      7      8      m9
+//@E :9:  id13  6      7      8      s9
+//@E :10: id14  1      2      3      NA
+//@E :11: id15  16     7      8      m9
+//@E  std::vector&lt;int&gt; rvec = {3, 2, 5, 3, 6, 7, 6, 5, 8, 9, 11, 10};
+//@E  std::vector&lt;int&gt; cvec = {-1};
+//@E  obj1.display_filter_idx(rvec, cvec);
+//@E
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt;
+//@E     col1  col2   col3   col4   col5
+//@E :0:  id7   1      2      3      a4
+//@E :1:  id6   6      7      8      s9
+//@E :2:  id9   6      7      8      s9
+//@E :3:  id7   1      2      3      a4
+//@E :4:  id10  1      2      3      a4
+//@E :5:  id11  6      7      8      m9
+//@E :6:  id10  1      2      3      a4
+//@E :7:  id9   6      7      8      s9
+//@E :8:  id12  6      7      8      m9
+//@E :9:  id13  6      7      8      s9
+//@E :10: id15  16     7      8      m9
+//@E :11: id14  1      2      3      NA
 //@X
 
 //@T Dataframe.get_dataframe
