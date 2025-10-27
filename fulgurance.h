@@ -8620,7 +8620,6 @@ class Dataframe{
       const unsigned int& max_ncol = cur_obj.get_ncol();
       ncol = cols.size();
       const auto& cur_tmp = cur_obj.get_tmp_val_refv();
-      std::vector<std::string> cur_v = {};
       if (cols[0] == -1) {
         cols.pop_back();
         cols.reserve(max_ncol);
@@ -8629,19 +8628,57 @@ class Dataframe{
         };
         ncol = max_ncol;
       };
-      for (i2 = 0; i2 < mask.size(); i2 += 1) {
-        if (mask[i2]) {
-          nrow += 1;
-        };
-      };
+      nrow = count(mask.begin(), mask.end(), true);
+      std::vector<std::string> cur_v(nrow);
+      tmp_val_refv.resize(cols.size(), cur_v);
+      unsigned int i3;
       for (int& i : cols) {
-        cur_v = {};
+        i3 = 0;
         for (i2 = 0; i2 < mask.size(); ++i2) {
           if (mask[i2]) {
-            cur_v.push_back(cur_tmp[i][i2]);
+            tmp_val_refv[i][i3] = cur_tmp[i][i2];
+            i3 += 1;
           };
         };
-        tmp_val_refv.push_back(cur_v);
+      };
+      type_classification();
+      name_v = cur_obj.get_colname();
+      name_v_row = cur_obj.get_rowname(); 
+      longest_determine();
+    };
+
+    void get_dataframe_filter_idx(std::vector<int> &cols, 
+                    Dataframe &cur_obj,
+                    std::vector<int> &mask) {
+      unsigned int i2;
+      const unsigned int& max_ncol = cur_obj.get_ncol();
+      const unsigned int& max_nrow = cur_obj.get_nrow();
+      ncol = cols.size();
+      const auto& cur_tmp = cur_obj.get_tmp_val_refv();
+      if (mask[0] == -1) {
+        mask.pop_back();
+        mask.reserve(max_nrow);
+        for (i2 = 0; i2 < max_nrow; i2 += 1) {
+          mask.push_back(i2);
+        };
+      };
+      nrow = mask.size();
+      std::vector<std::string> cur_v(mask.size());
+      if (cols[0] == -1) {
+        cols.pop_back();
+        cols.reserve(max_ncol);
+        for (i2 = 0; i2 < max_ncol; ++i2) {
+          cols.push_back(i2);
+        };
+        ncol = max_ncol;
+      };
+      tmp_val_refv.resize(cols.size(), cur_v);
+      for (int& i : cols) {
+        i2 = 0;
+        for (const auto& el : mask) {
+          tmp_val_refv[i][i2] = cur_tmp[i][el];
+          i2 += 1;
+        };
       };
       type_classification();
       name_v = cur_obj.get_colname();
@@ -10950,6 +10987,57 @@ class Dataframe{
 //@E :11: 7    8    m9
 //@E :12: 7    8    s9
 //@E :14: 7    8    m9
+//@X
+
+//@T Dataframe.get_dataframe_filter_idx
+//@U void get_dataframe_filter_idx(std::vector&lt;int&gt; &cols, Dataframe &cur_obj, std::vector&lt;int&gt; &mask)
+//@X
+//@D Allow to copy a dataframe choosing columns (by index) of the copied dataframe, while applying an index mask on the desired rows. 
+//@A cols : is the vector of the index of the columns to copy (<code>{-1}</code>) for all
+//@A cur_obj : is the dataframe that will contain all the rows and columns of the copied dataframe
+//@A mask : is the index mask vector, <code>{-1}</code> to keep all rows
+//@X
+//@E 
+//@E   Dataframe obj1, obj2, obj3;
+//@E   std::string fname = "csv_test/outb.csv";
+//@E   obj1.readf&lt;3, 0&gt;(fname);
+//@E   obj1.display();
+//@E
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt;
+//@E     col1  col2   col3   col4   col5
+//@E :0:  id4   6      7      8      uu
+//@E :1:  id5   1      2      3      s4
+//@E :2:  id6   6      7      8      s9
+//@E :3:  id7   1      2      3      a4
+//@E :4:  id8   6      7      8      m9
+//@E :5:  id9   6      7      8      s9
+//@E :6:  id10  1      2      3      a4
+//@E :7:  id11  6      7      8      m9
+//@E :8:  id12  6      7      8      m9
+//@E :9:  id13  6      7      8      s9
+//@E :10: id14  1      2      3      NA
+//@E :11: id15  16     7      8      m9
+//@E
+//@E   std::vector&lt;int&gt; rvec = {3, 2, 5, 3, 6, 7, 6, 5, 8, 9, 11, 10};
+//@E   std::vector&lt;int&gt; cvec = {-1};
+//@E   obj2.get_dataframe_filter_idx(cvec, obj1, rvec);
+//@E   obj2.display();
+//@E
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt;
+//@E     col1  col2   col3   col4   col5
+//@E :0:  id7   1      2      3      a4
+//@E :1:  id6   6      7      8      s9
+//@E :2:  id9   6      7      8      s9
+//@E :3:  id7   1      2      3      a4
+//@E :4:  id10  1      2      3      a4
+//@E :5:  id11  6      7      8      m9
+//@E :6:  id10  1      2      3      a4
+//@E :7:  id9   6      7      8      s9
+//@E :8:  id12  6      7      8      m9
+//@E :9:  id13  6      7      8      s9
+//@E :10: id15  16     7      8      m9
+//@E :11: id14  1      2      3      NA
+//@E
 //@X
 
 //@T Dataframe.view_colnb
