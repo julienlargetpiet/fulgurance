@@ -10556,6 +10556,7 @@ class Dataframe{
 #if 0
 
 //@T Dataframe.readf
+//@U template<unsigned int strt_row = 0, unsigned int end_row = 0>
 //@U void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'')
 //@X
 //@D Import a csv as a Dataframe object.
@@ -10564,13 +10565,16 @@ class Dataframe{
 //@A header_name : is if the first row is in fact the column names
 //@A str_context_begin : is the first symbol of a quote, (to not take in count a comma as a new column if it is in a quote for example)
 //@A str_context_end : is the end symbol for a quote context
+//@A strt_row : is the first row to read, defaults to 0
+//@A end_row : is the last row to read, defaults to max (value of 0)
 //@X
 //@E Dataframe obj1;
 //@E std::string file_name = "teste_dataframe.csv";
-//@E obj1.readf(file_name);
+//@E obj1.readf<3, 8>(file_name); reads from the 3thrd to the 8nth row
 //@X
 
 //@T Dataframe.readf_trim
+//@U template<unsigned int strt_row = 0, unsigned int end_row = 0>
 //@U void readf_trim(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'')
 //@X
 //@D Import a csv as a Dataframe object. Automatically trim the value (removes extra spaces before and after)
@@ -10579,13 +10583,16 @@ class Dataframe{
 //@A header_name : is if the first row is in fact the column names
 //@A str_context_begin : is the first symbol of a quote, (to not take in count a comma as a new column if it is in a quote for example)
 //@A str_context_end : is the end symbol for a quote context
+//@A strt_row : is the first row to read, defaults to 0
+//@A end_row : is the last row to read, defaults to max (value of 0)
 //@X
 //@E Dataframe obj1;
 //@E std::string file_name = "teste_dataframe2.csv";
-//@E obj1.readf_trim(file_name);
+//@E obj1.readf_trim<0, 8>(file_name); // reads until the 8nth row
 //@X
 
 //@T Dataframe.readf_lambda
+//@U template<unsigned int strt_row = 0, unsigned int end_row = 0>
 //@U void readf_lambda(std::string &file_name, void (&f)(std::string&), char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'')
 //@X
 //@D Import a csv as a Dataframe object. Applies a custom function to all values from the csv before parsing it as appropriate data types.
@@ -10595,16 +10602,19 @@ class Dataframe{
 //@A header_name : is if the first row is in fact the column names
 //@A str_context_begin : is the first symbol of a quote, (to not take in count a comma as a new column if it is in a quote for example)
 //@A str_context_end : is the end symbol for a quote context
+//@A strt_row : is the first row to read, defaults to 0
+//@A end_row : is the last row to read, defaults to max (value of 0)
 //@X
 //@E void myfunc (std::string &x) {
 //@E   x.push_back('L');
 //@E };
 //@E Dataframe obj1;
 //@E std::string file_name = "teste_dataframe2.csv";
-//@E obj1.readf_lambda(file_name, myfunc);
+//@E obj1.readf_lambda<3, 0>(file_name, myfunc); // reads from the thirs row
 //@X
 
 //@T Dataframe.readf_alrd
+//@U template<unsigned int strt_row = 0, unsigned int end_row = 0>
 //@U void readf_alrd(std::string &file_name, std::vector&lt;string&gt;& dtype, char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'')
 //@X
 //@D Import a csv as a Dataframe object. This function only makes sense if you know in advance the column data types (faster than semantical analysis). The column data types are contiguously described in <code>dtype</code> argument. The values are 's' (string), 'c' (char), 'b' (bool), 'i' (int), 'u' (unsigned int) and 'd' (double)
@@ -10615,11 +10625,13 @@ class Dataframe{
 //@A header_name : is if the first row is in fact the column names
 //@A str_context_begin : is the first symbol of a quote, (to not take in count a comma as a new column if it is in a quote for example)
 //@A str_context_end : is the end symbol for a quote context
+//@A strt_row : is the first row to read, defaults to 0
+//@A end_row : is the last row to read, defaults to max (value of 0)
 //@X
 //@E std::string dvec = "dsusic";
 //@E Dataframe obj1;
 //@E std::string file_name = "teste_dataframe2.csv";
-//@E obj1.readf_lambda(file_name, dvec);
+//@E obj1.readf_lambda(file_name, dvec); //reads the entire file
 //@X
 
 //@T Dataframe.writef
@@ -11736,7 +11748,7 @@ class Dataframe{
 //@E
 //@X
 
-//@T Dataframe.get_typecol()
+//@T Dataframe.get_typecol
 //@U const std::vector&lt;char&gt;& get_typecol() const
 //@X
 //@D Returns the column type of the dataframe, 'i' (int), 'u', (unsigned int), 'd', double, 's' (string), 'c' (char)
@@ -11744,6 +11756,86 @@ class Dataframe{
 //@X
 //@E const std::vector<char>& dtype = obj1.get_typecol();
 //@E 'c' 'b' 'd' 'i' 
+//@X
+
+//@T Dataframe.transform_unique
+//@U void transform_unique(unsigned int& n)
+//@X
+//@D Trnasforms your current dataframe to keep the unique values from a chosen column.
+//@A n : is the column index
+//@X
+//@E   std::string fname = "csv_test/outb.csv";
+//@E   obj1.readf&lt;3, 0&gt;(fname);
+//@E   obj1.display();
+//@E   
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt;
+//@E     col1  col2   col3   col4   col5
+//@E :0:  id4   6      7      8      uu
+//@E :1:  id5   1      2      3      s4
+//@E :2:  id6   6      7      8      s9
+//@E :3:  id7   1      2      3      a4
+//@E :4:  id8   6      7      8      m9
+//@E :5:  id9   6      7      8      s9
+//@E :6:  id10  1      2      3      a4
+//@E :7:  id11  6      7      8      m9
+//@E :8:  id12  6      7      8      m9
+//@E :9:  id13  6      7      8      s9
+//@E :10: id14  1      2      3      NA
+//@E :11: id15  16     7      8      m9
+//@E
+//@E   unsigned int n = 4;
+//@E   obj1.transform_unique(n);
+//@E   obj1.display();
+//@E
+//@E    &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt;
+//@E    col1  col2   col3   col4   col5
+//@E :0: id4   6      7      8      uu
+//@E :1: id5   1      2      3      s4
+//@E :2: id6   6      7      8      s9
+//@E :3: id7   1      2      3      a4
+//@E :4: id8   6      7      8      m9
+//@E :5: id14  1      2      3      NA
+//@E
+//@X
+
+//@T Dataframe.transform_unique_clean
+//@U void transform_unique_clean(unsigned int& n)
+//@X
+//@D Trnasforms your current dataframe to keep the unique values from a chosen column. Basically the same as transfrm_unique, but frees memory, which can be slower.
+//@A n : is the column index
+//@X
+//@E   std::string fname = "csv_test/outb.csv";
+//@E   obj1.readf&lt;3, 0&gt;(fname);
+//@E   obj1.display();
+//@E   
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt;
+//@E     col1  col2   col3   col4   col5
+//@E :0:  id4   6      7      8      uu
+//@E :1:  id5   1      2      3      s4
+//@E :2:  id6   6      7      8      s9
+//@E :3:  id7   1      2      3      a4
+//@E :4:  id8   6      7      8      m9
+//@E :5:  id9   6      7      8      s9
+//@E :6:  id10  1      2      3      a4
+//@E :7:  id11  6      7      8      m9
+//@E :8:  id12  6      7      8      m9
+//@E :9:  id13  6      7      8      s9
+//@E :10: id14  1      2      3      NA
+//@E :11: id15  16     7      8      m9
+//@E
+//@E   unsigned int n = 4;
+//@E   obj1.transform_unique_clean(n);
+//@E   obj1.display();
+//@E
+//@E    &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt;
+//@E    col1  col2   col3   col4   col5
+//@E :0: id4   6      7      8      uu
+//@E :1: id5   1      2      3      s4
+//@E :2: id6   6      7      8      s9
+//@E :3: id7   1      2      3      a4
+//@E :4: id8   6      7      8      m9
+//@E :5: id14  1      2      3      NA
+//@E
 //@X
 
 //@L1 Apply any function on indefinite numbers of same type vectors
