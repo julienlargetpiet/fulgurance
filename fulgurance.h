@@ -11594,7 +11594,6 @@ class Dataframe{
                    }
         };
       };
-      print_nvec(idx);
       unsigned int pos_vl;
       unsigned int pos_vl2;
       std::vector<std::string> tmp_str_vec = str_v;
@@ -13245,6 +13244,85 @@ class Dataframe{
 //@E :0: id3   1      2      3      cc    NA    0      0
 //@E :1: id10  1      2      3      a4    NA    0      0
 //@E :2: id13  6      7      8      s9    NA    0      0
+//@X
+
+//@T Dataframe.sort_by
+//@U template &lt;bool asc = 1&gt;
+//@U void sort_by(unsigned int& n)
+//@D Transforms the dataframe by reordering the rows by the value of a column.
+//@A n : is the column index of the column value to reorder from
+//@X
+//@E
+//@E  Dataframe obj1;
+//@E  std::string fname = "csv_test/outb.csv";
+//@E  obj1.readf(fname);
+//@E  obj1.display();
+//@E
+//@E  obj1.display();
+//@E 
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt;
+//@E     col1  col2   col3   col4   col5
+//@E :0:  id1   1      2      3      aa
+//@E :1:  id2   6      7      8      bb
+//@E :2:  id3   1      2      3      cc
+//@E :3:  id4   6      7      8      uu
+//@E :4:  id5   1      2      3      s4
+//@E :5:  id6   6      7      8      s9
+//@E :6:  id7   1      2      3      a4
+//@E :7:  id8   6      7      8      m9
+//@E :8:  id9   6      7      8      s9
+//@E :9:  id10  1      2      3      a4
+//@E :10: id11  6      7      8      m9
+//@E :11: id12  6      7      8      m9
+//@E :12: id13  6      7      8      s9
+//@E :13: id14  1      2      3      NA
+//@E :14: id15  16     7      8      m9
+//@E 
+//@E  n = 2;
+//@E  obj1.sort_by(n);
+//@E
+//@E  obj1.display();
+//@E
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt;
+//@E     col1  col2   col3   col4   col5
+//@E :0:  id1   1      2      3      aa
+//@E :1:  id3   1      2      3      cc
+//@E :2:  id5   1      2      3      s4
+//@E :3:  id7   1      2      3      a4
+//@E :4:  id10  1      2      3      a4
+//@E :5:  id14  1      2      3      NA
+//@E :6:  id2   6      7      8      bb
+//@E :7:  id4   6      7      8      uu
+//@E :8:  id6   6      7      8      s9
+//@E :9:  id8   6      7      8      m9
+//@E :10: id9   6      7      8      s9
+//@E :11: id11  6      7      8      m9
+//@E :12: id12  6      7      8      m9
+//@E :13: id13  6      7      8      s9
+//@E :14: id15  16     7      8      m9
+//@E
+//@E  obj1.sort_by<0>(n);
+//@E
+//@E  obj1.display();
+//@E
+//@E     &lt;str&gt; &lt;uint&gt; &lt;uint&gt; &lt;uint&gt; &lt;str&gt;
+//@E     col1  col2   col3   col4   col5
+//@E :0:  id2   6      7      8      bb
+//@E :1:  id4   6      7      8      uu
+//@E :2:  id6   6      7      8      s9
+//@E :3:  id8   6      7      8      m9
+//@E :4:  id9   6      7      8      s9
+//@E :5:  id11  6      7      8      m9
+//@E :6:  id12  6      7      8      m9
+//@E :7:  id13  6      7      8      s9
+//@E :8:  id15  16     7      8      m9
+//@E :9:  id1   1      2      3      aa
+//@E :10: id3   1      2      3      cc
+//@E :11: id5   1      2      3      s4
+//@E :12: id7   1      2      3      a4
+//@E :13: id10  1      2      3      a4
+//@E :14: id14  1      2      3      NA
+//@E
 //@X
 
 //@L1 Apply any function on indefinite numbers of same type vectors
