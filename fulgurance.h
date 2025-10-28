@@ -7655,7 +7655,7 @@ class Dataframe{
         while (i2 < nrow) {
           cur_str = tmp_val_refv[i][i2];
           cur_str2 = cur_str;
-          if (cur_str[0] == '-' & cur_str.length() > 1) {
+          if (cur_str[0] == '-' && cur_str.length() > 1) {
             cur_str2.erase(cur_str2.begin());
           };
           is_nb = can_be_nb(cur_str2);
