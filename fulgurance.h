@@ -5988,9 +5988,14 @@ class Dataframe{
       };
       type_refv.reserve(ncol);
 
+      std::cout << currow << "\n";
+
+      std::cout << "ncol: " << ncol << "\n";
+
       if constexpr (strt_row == 0 && end_row == 0) {
 
         while (getline(readfile, currow)) {
+          
           verif_ncol = 1;
           str_cxt = 0;
           i = 0;
@@ -6014,7 +6019,7 @@ class Dataframe{
               };
               cur_str = "";
               verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
+            } else if (currow[i] == str_context_begin && !str_cxt) {
               str_cxt = 1;
             } else if (currow[i] == str_context_end) {
               str_cxt = 0;
@@ -6035,6 +6040,7 @@ class Dataframe{
             tmp_val_refv[verif_ncol - 1].push_back(cur_str);
           };
           cur_str = "";
+
           if (verif_ncol != ncol) {
             std::cout << "column number problem at row: " << nrow << "\n";
             reinitiate();
@@ -6080,7 +6086,7 @@ class Dataframe{
               };
               cur_str = "";
               verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
+            } else if (currow[i] == str_context_begin && !str_cxt) {
               str_cxt = 1;
             } else if (currow[i] == str_context_end) {
               str_cxt = 0;
@@ -6145,7 +6151,7 @@ class Dataframe{
               };
               cur_str = "";
               verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
+            } else if (currow[i] == str_context_begin && !str_cxt) {
               str_cxt = 1;
             } else if (currow[i] == str_context_end) {
               str_cxt = 0;
@@ -6202,7 +6208,7 @@ class Dataframe{
               };
               cur_str = "";
               verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
+            } else if (currow[i] == str_context_begin && !str_cxt) {
               str_cxt = 1;
             } else if (currow[i] == str_context_end) {
               str_cxt = 0;
