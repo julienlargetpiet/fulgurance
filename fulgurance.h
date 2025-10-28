@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <numeric>
 #include <regex>
+#include "include/ankerl/unordered_dense.h"
 
 #if __cplusplus >= 202002L
 #include <variant>
@@ -9025,7 +9026,9 @@ class Dataframe{
       nrow = 0;
       const unsigned int& ext_nrow = cur_obj.get_nrow();
 
-      std::unordered_set<std::string> lookup;
+      //std::unordered_set<std::string> lookup // standard set (slower);
+      ankerl::unordered_dense::set<std::string> lookup;
+
       lookup.reserve(ext_nrow);
       for (unsigned int j = 0; j < ext_nrow; ++j)
         lookup.insert(ext_colv[j]);
@@ -9078,7 +9081,9 @@ class Dataframe{
       nrow = 0;
       const unsigned int& ext_nrow = cur_obj.get_nrow();
 
-      std::unordered_set<std::string> lookup;
+      //std::unordered_set<std::string> lookup; // standard set (slower)
+      ankerl::unordered_dense::set<std::string> lookup;
+
       lookup.reserve(ext_nrow);
       for (unsigned int j = 0; j < ext_nrow; ++j)
         lookup.insert(ext_colv[j]);
@@ -9193,7 +9198,9 @@ class Dataframe{
       unsigned int pos_vl;
       const unsigned int& ext_nrow = cur_obj.get_nrow();
 
-      std::unordered_set<std::string> lookup;
+      //std::unordered_set<std::string> lookup; // standard set (slower)
+      ankerl::unordered_dense::set<std::string> lookup; 
+
       lookup.reserve(ext_nrow);
       for (int j = 0; j < ext_nrow; j += 1) {
         lookup.insert(ext_colv[j]);
@@ -9248,7 +9255,9 @@ class Dataframe{
       unsigned int pos_vl;
       const unsigned int& ext_nrow = cur_obj.get_nrow();
 
-      std::unordered_set<std::string> lookup;
+      //std::unordered_set<std::string> lookup; // standard set (slower)
+      ankerl::unordered_dense::set<std::string> lookup;
+
       lookup.reserve(ext_nrow);
       for (auto &j : ext_colv) {
         lookup.insert(j);
@@ -9443,7 +9452,8 @@ class Dataframe{
       const std::vector<std::string>& col1 = tmp_val_refv[key1];
       const std::vector<std::string>& col2 = tmp2[key2];
       
-      std::unordered_map<std::string, size_t> b_index;
+      //std::unordered_map<std::string, size_t> b_index; // standard map (slower)
+      ankerl::unordered_dense::map<std::string, size_t> b_index;
       for (size_t j = 0; j < col2.size(); ++j) {
         b_index.insert({col2[j], j});
       };
@@ -9618,7 +9628,8 @@ class Dataframe{
       const std::vector<std::string>& col1 = tmp_val_refv[key1];
       const std::vector<std::string>& col2 = tmp2[key2];
       
-      std::unordered_map<std::string, size_t> b_index;
+      //std::unordered_map<std::string, size_t> b_index; // standard map (slower)
+      ankerl::unordered_dense::map<std::string, size_t> b_index;
       for (size_t j = 0; j < col2.size(); ++j) {
         b_index.insert({col2[j], j});
       };
@@ -9862,7 +9873,8 @@ class Dataframe{
       const auto& tmp2 = obj2.get_tmp_val_refv();
       const std::vector<std::string>& col1 = tmp1[key1];
       const std::vector<std::string>& col2 = tmp2[key2];
-      std::unordered_map<std::string, size_t> b_index;
+      //std::unordered_map<std::string, size_t> b_index; // standard map (slower)
+      ankerl::unordered_dense::map<std::string, size_t> b_index;
       for (size_t j = 0; j < col2.size(); ++j) {
         b_index.insert({col2[j], j});
       };
@@ -9993,7 +10005,8 @@ class Dataframe{
       const std::vector<std::string>& col1 = tmp_val_refv[key1];
       const std::vector<std::string>& col2 = tmp2[key2];
       
-      std::unordered_map<std::string, size_t> b_index;
+      //std::unordered_map<std::string, size_t> b_index; // standard map (slower)
+      ankerl::unordered_dense::map<std::string, size_t> b_index;
       for (size_t j = 0; j < col2.size(); ++j) {
         b_index.insert({col2[j], j});
       };
@@ -10175,7 +10188,8 @@ class Dataframe{
       const std::vector<std::string>& col1 = tmp_val_refv[key1];
       const std::vector<std::string>& col2 = tmp2[key2];
       
-      std::unordered_map<std::string, size_t> b_index;
+      //std::unordered_map<std::string, size_t> b_index; // standard map (slower)
+      ankerl::unordered_dense::map<std::string, size_t> b_index;
       for (size_t j = 0; j < col2.size(); ++j) {
         b_index.insert({col2[j], j});
       };
@@ -10946,7 +10960,9 @@ class Dataframe{
       unsigned int i2;
       unsigned int pos_vl;
       nrow = 0;
-      std::unordered_set<std::string> unic_v;
+      //std::unordered_set<std::string> unic_v; // standard set (slower)
+      ankerl::unordered_dense::set<std::string> unic_v;
+
       for (i = 0; i < nrow2; i += 1) {
         if (!unic_v.contains(tmp_val_refv[n][i])) {
           unic_v.insert(tmp_val_refv[n][i]);
@@ -10991,7 +11007,9 @@ class Dataframe{
       unsigned int i2;
       unsigned int pos_vl;
       nrow = 0;
-      std::unordered_set<std::string> unic_v;
+      //std::unordered_set<std::string> unic_v; // standard set (slower)
+      ankerl::unordered_dense::set<std::string> unic_v;
+
       for (i = 0; i < nrow2; i += 1) {
         if (!unic_v.contains(tmp_val_refv[n][i])) {
           unic_v.insert(tmp_val_refv[n][i]);
@@ -11095,7 +11113,8 @@ class Dataframe{
 
     void transform_group_by(std::vector<unsigned int> &x,
                             std::string sumcolname = "n") {
-      std::unordered_map<std::string, unsigned int> lookup;
+      //std::unordered_map<std::string, unsigned int> lookup; // standard map (slower)
+      ankerl::unordered_dense::map<std::string, unsigned int> lookup;
       std::vector<unsigned int> occ_v;
       std::vector<std::string> occ_v_str;
       occ_v_str.reserve(nrow);
@@ -11140,7 +11159,8 @@ class Dataframe{
 
       std::vector<int> tmp_int_v = {};
 
-      std::unordered_map<std::pair<std::string_view, std::string_view>, int, PairHash> lookup;
+      //std::unordered_map<std::pair<std::string_view, std::string_view>, int, PairHash> lookup; // standard map (slower)
+      ankerl::unordered_dense::map<std::pair<std::string_view, std::string_view>, int, PairHash> lookup;
 
       std::string key;
       for (auto& el : matr_idx2[3]) {
@@ -11152,8 +11172,10 @@ class Dataframe{
         };
         i += 1;
       };
-      std::unordered_map<std::string, int> idx_col;
-      std::unordered_map<std::string, int> idx_row;
+      //std::unordered_map<std::string, int> idx_col; // standard map (slower)
+      ankerl::unordered_dense::map<std::string, int> idx_col;
+      //std::unordered_map<std::string, int> idx_row;
+      ankerl::unordered_dense::map<std::string, int> idx_row;
 
       for (i = 0; i < nrow2; i += 1) {
         key = col_vec[i];
@@ -11211,7 +11233,9 @@ class Dataframe{
       const std::vector<unsigned int>& cur_uint_v = obj.get_uint_vec();
 
       std::vector<unsigned int> tmp_uint_v = {};
-      std::unordered_map<std::pair<std::string_view, std::string_view>, unsigned int, PairHash> lookup;
+      //std::unordered_map<std::pair<std::string_view, std::string_view>, unsigned int, PairHash> lookup; // standard map (slower)
+      ankerl::unordered_dense::map<std::pair<std::string_view, std::string_view>, unsigned int, PairHash> lookup; 
+
       std::string key;
       for (auto& el : matr_idx2[4]) {
         if (n3 == el) {
@@ -11222,8 +11246,10 @@ class Dataframe{
         };
         i += 1;
       };
-      std::unordered_map<std::string, unsigned int> idx_col;
-      std::unordered_map<std::string, unsigned int> idx_row;
+      //std::unordered_map<std::string, unsigned int> idx_col; //standard map (slower)
+      ankerl::unordered_dense::map<std::string, unsigned int> idx_col;
+      //std::unordered_map<std::string, unsigned int> idx_row; // standard map (slower)
+      ankerl::unordered_dense::map<std::string, unsigned int> idx_row;
 
       for (i = 0; i < nrow2; i += 1) {
         key = col_vec[i];
@@ -11282,7 +11308,9 @@ class Dataframe{
 
       std::vector<double> tmp_dbl_v = {};
 
-      std::unordered_map<std::pair<std::string_view, std::string_view>, double, PairHash> lookup;
+      //std::unordered_map<std::pair<std::string_view, std::string_view>, double, PairHash> lookup; //standard map (slower)
+      ankerl::unordered_dense::map<std::pair<std::string_view, std::string_view>, double, PairHash> lookup;
+
 
       std::string key;
       for (auto& el : matr_idx2[4]) {
@@ -11294,8 +11322,10 @@ class Dataframe{
         };
         i += 1;
       };
-      std::unordered_map<std::string, unsigned int> idx_col;
-      std::unordered_map<std::string, unsigned int> idx_row;
+      //std::unordered_map<std::string, unsigned int> idx_col; // standard map (slower)
+      ankerl::unordered_dense::map<std::string, unsigned int> idx_col;
+      //std::unordered_map<std::string, unsigned int> idx_row; // standard map (slower)
+      ankerl::unordered_dense::map<std::string, unsigned int> idx_row;
 
       for (i = 0; i < nrow2; i += 1) {
         key = col_vec[i];
