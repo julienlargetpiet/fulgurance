@@ -5988,10 +5988,6 @@ class Dataframe{
       };
       type_refv.reserve(ncol);
 
-      std::cout << currow << "\n";
-
-      std::cout << "ncol: " << ncol << "\n";
-
       if constexpr (strt_row == 0 && end_row == 0) {
 
         while (getline(readfile, currow)) {
@@ -6000,6 +5996,9 @@ class Dataframe{
           str_cxt = 0;
           i = 0;
           while (i < currow.length()) {
+            if (currow[i] == '\r') {
+              break;
+            };
             if (currow[i] == delim && !str_cxt) {
               if (i == 0) {
                 if (longest_v[verif_ncol - 1] < 2) {
@@ -6067,6 +6066,11 @@ class Dataframe{
           str_cxt = 0;
           i = 0;
           while (i < currow.length()) {
+
+            if (currow[i] == '\r') {
+              break;
+            };
+
             if (currow[i] == delim && !str_cxt) {
               if (i == 0) {
                 if (longest_v[verif_ncol - 1] < 2) {
@@ -6132,6 +6136,11 @@ class Dataframe{
           str_cxt = 0;
           i = 0;
           while (i < currow.length()) {
+
+            if (currow[i] == '\r') {
+              break;
+            };
+
             if (currow[i] == delim && !str_cxt) {
               if (i == 0) {
                 if (longest_v[verif_ncol - 1] < 2) {
@@ -6189,6 +6198,11 @@ class Dataframe{
           str_cxt = 0;
           i = 0;
           while (i < currow.length()) {
+
+            if (currow[i] == '\r') {
+              break;
+            };
+
             if (currow[i] == delim && !str_cxt) {
               if (i == 0) {
                 if (longest_v[verif_ncol - 1] < 2) {
@@ -7652,14 +7666,18 @@ class Dataframe{
       unsigned int i2;
       bool is_nb;
       bool is_flt_dbl;
-      bool is_unsigned = 1;
-      bool is_bool = 1;
+      bool is_unsigned;
+      bool is_bool;
       std::string cur_str;
       std::string cur_str2;
       for (i = 0; i < ncol; ++i) {
+
         i2 = 0;
+        is_bool = 1;
+        is_unsigned = 1;
         while (i2 < nrow) {
           cur_str = tmp_val_refv[i][i2];
+
           cur_str2 = cur_str;
           if (cur_str[0] == '-' && cur_str.length() > 1) {
             cur_str2.erase(cur_str2.begin());
@@ -7667,41 +7685,56 @@ class Dataframe{
           is_nb = can_be_nb(cur_str2);
           if (!is_nb) {
             if (cur_str.length() > 1) {
+              
               type_refv.push_back('s');
               matr_idx[0].push_back(i);
               break;
+
+            } else {
+
+              type_refv.push_back('c');
+              matr_idx[1].push_back(i);
+              break;
+
             };
           } else {
+ 
             is_flt_dbl = can_be_flt_dbl(cur_str2);
             if (is_flt_dbl) {
               type_refv.push_back('d');
               matr_idx[5].push_back(i);
               break;
             };
+
             if (is_unsigned) {
-              if (cur_str[0] == '-') {
+              if (cur_str[0] == '-') { 
                 is_unsigned = 0;
-              };
-            };
-            if (is_bool) {
-              if (cur_str != "0" & cur_str != "1") {
+                type_refv.push_back('i');
+                matr_idx[3].push_back(i);
+                break;
+              } else if (cur_str != "0" && cur_str != "1") {
                 is_bool = 0;
               };
             };
+
+            if (is_bool && i2 > 10) {
+              type_refv.push_back('b');
+              matr_idx[2].push_back(i);
+              is_bool = 0;
+              break;
+            };
+
           };
           i2 += 1;
+          if (i2 > 10) {
+            break;
+          };
         };
-        if (i2 == nrow) {
-          if (!is_nb) {
-            type_refv.push_back('c');
-            matr_idx[1].push_back(i);
-          } else if (is_bool) {
+        if (i2 == 11) {
+          if (is_bool) {
             type_refv.push_back('b');
             matr_idx[2].push_back(i);
-          } else if (!is_unsigned) {
-            type_refv.push_back('i');
-            matr_idx[3].push_back(i);
-          } else {
+          } else if (is_unsigned) {
             type_refv.push_back('u');
             matr_idx[4].push_back(i);
           };
@@ -7721,26 +7754,160 @@ class Dataframe{
         } else if (type_refv[i] == 'b') {
           for (i2 = 0; i2 < nrow; ++i2) {
             cur_str = tmp_val_refv[i][i2];
-            bool_v.push_back(std::stoi(cur_str));
+
+            int value;
+            auto [ptr, ec] = std::from_chars(cur_str.data(), cur_str.data() + cur_str.size(), value);
+            if (ec == std::errc()) {
+                int_v.push_back(value);
+            } else {
+                int_v.push_back(0);
+            };     
+
           };
         } else if (type_refv[i] == 'i') {
           for (i2 = 0; i2 < nrow; ++i2) {
             cur_str = tmp_val_refv[i][i2];
-            int_v.push_back(std::stoi(cur_str));
+
+            int value;
+            auto [ptr, ec] = std::from_chars(cur_str.data(), cur_str.data() + cur_str.size(), value);
+            if (ec == std::errc()) {
+                int_v.push_back(value);
+            } else {
+                int_v.push_back(0);
+            };     
+           
           };
         } else if (type_refv[i] == 'u') {
           for (i2 = 0; i2 < nrow; ++i2) {
             cur_str = tmp_val_refv[i][i2];
-            uint_v.push_back(std::stoi(cur_str));
+
+            int value;
+            auto [ptr, ec] = std::from_chars(cur_str.data(), cur_str.data() + cur_str.size(), value);
+            if (ec == std::errc()) {
+                int_v.push_back(value);
+            } else {
+                int_v.push_back(0);
+            };     
+
           };
         } else {
           for (i2 = 0; i2 < nrow; ++i2) {
             cur_str = tmp_val_refv[i][i2];
-            dbl_v.push_back(std::stoi(cur_str));
+            
+            int value;
+            auto [ptr, ec] = std::from_chars(cur_str.data(), cur_str.data() + cur_str.size(), value);
+            if (ec == std::errc()) {
+                int_v.push_back(value);
+            } else {
+                int_v.push_back(0);
+            };     
+            
           };
         };
       };
     };
+
+    //void type_classification() {
+    //  unsigned int i;
+    //  unsigned int i2;
+    //  bool is_nb;
+    //  bool is_flt_dbl;
+    //  bool is_unsigned = 1;
+    //  bool is_bool;
+    //  std::string cur_str;
+    //  std::string cur_str2;
+    //  for (i = 0; i < ncol; ++i) {
+
+    //    std::cout << "ncol: " << i << "\n";
+
+    //    is_bool = 1;
+    //    i2 = 0;
+    //    while (i2 < nrow) {
+    //      cur_str = tmp_val_refv[i][i2];
+
+    //      std::cout << cur_str << " - " << cur_str.length() << " - " << i2 << "\n";
+
+    //      cur_str2 = cur_str;
+    //      if (cur_str[0] == '-' && cur_str.length() > 1) {
+    //        cur_str2.erase(cur_str2.begin());
+    //      };
+    //      is_nb = can_be_nb(cur_str2);
+    //      if (!is_nb) {
+    //        if (cur_str.length() > 1) {
+    //          type_refv.push_back('s');
+    //          matr_idx[0].push_back(i);
+    //          break;
+    //        };
+    //      } else {
+    //        is_flt_dbl = can_be_flt_dbl(cur_str2);
+    //        if (is_flt_dbl) {
+    //          type_refv.push_back('d');
+    //          matr_idx[5].push_back(i);
+    //          break;
+    //        };
+    //        if (is_unsigned) {
+    //          if (cur_str[0] == '-') {
+    //            is_unsigned = 0;
+    //          };
+    //        };
+    //        if (is_bool) {
+    //          if (cur_str != "0" & cur_str != "1") {
+    //            is_bool = 0;
+    //          };
+    //        };
+    //      };
+    //      i2 += 1;
+    //    };
+    //    if (i2 == nrow) {
+    //      if (!is_nb) {
+    //        type_refv.push_back('c');
+    //        matr_idx[1].push_back(i);
+    //      } else if (is_bool) {
+    //        type_refv.push_back('b');
+    //        matr_idx[2].push_back(i);
+    //      } else if (!is_unsigned) {
+    //        type_refv.push_back('i');
+    //        matr_idx[3].push_back(i);
+    //      } else {
+    //        type_refv.push_back('u');
+    //        matr_idx[4].push_back(i);
+    //      };
+    //    };
+    //  };
+    //  for (i = 0; i < ncol; ++i) {
+    //    if (type_refv[i] == 's') {
+    //      for (i2 = 0; i2 < nrow; ++i2) {
+    //        cur_str = tmp_val_refv[i][i2];
+    //        str_v.push_back(cur_str);
+    //      };
+    //    } else if (type_refv[i] == 'c') {
+    //      for (i2 = 0; i2 < nrow; ++i2) {
+    //        cur_str = tmp_val_refv[i][i2];
+    //        chr_v.push_back(cur_str[0]);
+    //      };
+    //    } else if (type_refv[i] == 'b') {
+    //      for (i2 = 0; i2 < nrow; ++i2) {
+    //        cur_str = tmp_val_refv[i][i2];
+    //        bool_v.push_back(std::stoi(cur_str));
+    //      };
+    //    } else if (type_refv[i] == 'i') {
+    //      for (i2 = 0; i2 < nrow; ++i2) {
+    //        cur_str = tmp_val_refv[i][i2];
+    //        int_v.push_back(std::stoi(cur_str));
+    //      };
+    //    } else if (type_refv[i] == 'u') {
+    //      for (i2 = 0; i2 < nrow; ++i2) {
+    //        cur_str = tmp_val_refv[i][i2];
+    //        uint_v.push_back(std::stoi(cur_str));
+    //      };
+    //    } else {
+    //      for (i2 = 0; i2 < nrow; ++i2) {
+    //        cur_str = tmp_val_refv[i][i2];
+    //        dbl_v.push_back(std::stoi(cur_str));
+    //      };
+    //    };
+    //  };
+    //};
 
     void display_filter(std::vector<bool> &x, std::vector<int> &colv) {
       unsigned int i2b;
