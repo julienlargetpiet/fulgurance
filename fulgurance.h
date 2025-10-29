@@ -6,6 +6,7 @@
 #include <deque>
 #include <cmath>
 #include <chrono>
+#include <immintrin.h>
 #include <thread>
 #include <map>
 #include <fstream>
@@ -542,16 +543,17 @@ std::string itos(unsigned int x) {
 //@X
 #endif
 
-bool can_be_nb(std::string &x) {
+bool can_be_nb(const std::string &x) {
   const unsigned int n = x.length();
   std::string numeric_v = "0123456789";
-  if (x[0] == '.' || x[n - 1] == '.') {
-    return 0;
+  unsigned int i = 0;
+  if (x[0] == '-') {
+    i = 1;
   };
   bool alrd_point = 0;
   unsigned int i2;
   char cur_chr;
-  for (unsigned int i = 0; i < n; ++i) {
+  while (i < n) {
     if (x[i] == '.') {
       if (!alrd_point) {
         alrd_point = 1;
@@ -571,6 +573,7 @@ bool can_be_nb(std::string &x) {
         return 0;
       };
     };
+    i += 1;
   };
   return 1;
 };
@@ -609,7 +612,7 @@ bool can_be_nb(std::string &x) {
 //@X
 #endif
 
-bool can_be_flt_dbl(std::string &x) {
+bool can_be_flt_dbl(const std::string &x) {
   const unsigned int n = x.length();
   std::string numeric_v = "0123456789";
   if (x[0] == '.' || x[n - 1] == '.') {
@@ -5827,6 +5830,56 @@ struct PairHash {
     }
 };
 
+struct CsvMask {
+    std::vector<size_t> commas;
+    std::vector<size_t> newlines;
+    std::vector<size_t> quotes;
+};
+
+CsvMask simd_scan_csv(std::string_view data, char delim, char quote) {
+    CsvMask result;
+    const char* ptr = data.data();
+    const char* end = ptr + data.size();
+
+    __m256i d = _mm256_set1_epi8(delim);
+    __m256i q = _mm256_set1_epi8(quote);
+    __m256i n = _mm256_set1_epi8('\n');
+    __m256i r = _mm256_set1_epi8('\r');
+
+    for (size_t offset = 0; ptr + 32 <= end; ptr += 32, offset += 32) {
+        __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(ptr));
+
+        __m256i cmp_d = _mm256_cmpeq_epi8(chunk, d);
+        __m256i cmp_q = _mm256_cmpeq_epi8(chunk, q);
+        __m256i cmp_n = _mm256_cmpeq_epi8(chunk, n);
+        __m256i cmp_r = _mm256_cmpeq_epi8(chunk, r);
+
+        int mask_d = _mm256_movemask_epi8(cmp_d);
+        int mask_q = _mm256_movemask_epi8(cmp_q);
+        int mask_n = _mm256_movemask_epi8(cmp_n);
+        int mask_r = _mm256_movemask_epi8(cmp_r);
+
+        while (mask_d) { 
+          result.commas.push_back(offset + __builtin_ctz(mask_d)); 
+          mask_d &= mask_d - 1; 
+        };
+        while (mask_q) { 
+          result.quotes.push_back(offset + __builtin_ctz(mask_q)); 
+          mask_q &= mask_q - 1; 
+        };
+        while (mask_n) { 
+          result.newlines.push_back(offset + __builtin_ctz(mask_n)); 
+          mask_n &= mask_n - 1; 
+        };
+        while (mask_r) { 
+          result.newlines.push_back(offset + __builtin_ctz(mask_r)); 
+          mask_r &= mask_r - 1; 
+        };
+    };
+
+    return result;
+}
+
 class Dataframe{
   private:
     
@@ -5880,6 +5933,7 @@ class Dataframe{
     };
 
     void longest_determine() {
+      longest_v = {};
       unsigned int i;
       unsigned int i2;
       if (name_v.size() > 0) {
@@ -5901,361 +5955,491 @@ class Dataframe{
   public:
     
     template <unsigned int strt_row = 0, unsigned int end_row = 0>
-    void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'') {
-      std::string currow;
-      std::string cur_str = "";
-      std::fstream readfile(file_name);
-      getline(readfile, currow);
+    void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context = '\'') {
+       
+      std::ifstream file(file_name, std::ios::binary | std::ios::ate);
+      size_t size = file.tellg();
+      file.seekg(0);
+      std::string buffer(size, '\0');
+      file.read(buffer.data(), size);
+
+      std::string_view csv_view(buffer);
+            
       ncol = 1;
       std::vector<std::string> ex_vec = {};
-      std::vector<unsigned int> matr_unknown_vec = {};
       unsigned int i = 0;
       unsigned int verif_ncol;
-      unsigned int max_lngth;
       bool str_cxt = 0;
+      tmp_val_refv.reserve(64);
+
+      //const char* ptr = csv_view.data();
+      //const char* end = ptr + csv_view.size();
+      //
+      //__m256i comma = _mm256_set1_epi8(',');
+      //__m256i newline = _mm256_set1_epi8('\n');
+
       if (header_name) {
-        while (i < currow.length()) {
-          if (currow[i] == delim && !str_cxt) {
-            if (i == 0) {
-              max_lngth = 2;
-              name_v.push_back("NA");
-            } else if (currow[i - 1] == delim) {
-              max_lngth = 2;
-              name_v.push_back("NA");
-            } else {
-              max_lngth = cur_str.length();
-              name_v.push_back(cur_str);
+
+        bool in_quotes = false;
+        size_t field_start = 0;
+        
+        for (; i < csv_view.size(); ++i) {
+            char c = csv_view[i];
+            if (c == '\n' || c == '\r') {
+              if (i + 1 < csv_view.size() && csv_view[i + 1] == '\n') {
+                ++i;
+              };
+              break;
             };
-            tmp_val_refv.push_back(ex_vec);
-            ncol += 1;
-            cur_str = "";
-            longest_v.push_back(max_lngth);
-          } else if (currow[i] == str_context_begin) {
-            str_cxt = 1; 
-          } else if (currow[i] == str_context_end) {
-            str_cxt = 0;
-          } else {
-            cur_str.push_back(currow[i]);
-          };
-          i += 1;
-        };
-        if (currow[i - 1] == delim) {
-          max_lngth = 2;
-          name_v.push_back("NA");
+            if (c == str_context) {
+                in_quotes = !in_quotes;
+            } else if (c == delim && !in_quotes) {
+                std::string_view field = csv_view.substr(field_start, i - field_start);
+        
+                if (field.empty()) {
+                    name_v.emplace_back("NA");
+                } else {
+                    name_v.emplace_back(field);
+                }
+        
+                tmp_val_refv.emplace_back(std::move(ex_vec));
+                ++ncol;
+                field_start = i + 1;
+            }
+        }
+
+        std::string_view field = csv_view.substr(field_start, i - field_start);
+        if (field.empty()) {
+            name_v.emplace_back("NA");
         } else {
-          max_lngth = cur_str.length();
-          name_v.push_back(cur_str);
-        };
-        tmp_val_refv.push_back(ex_vec);
-        cur_str = "";
-        longest_v.push_back(max_lngth);
+            name_v.emplace_back(field);
+        }
+        tmp_val_refv.emplace_back(std::move(ex_vec));
+        ex_vec.clear();
+        
       } else {
-        while (i < currow.length()) {
-          if (currow[i] == delim && !str_cxt) {
-            if (i == 0) {
-              max_lngth = 2;
-            } else if (currow[i - 1] == delim) {
-              max_lngth = 2;
-            } else {
-              max_lngth = cur_str.length();
-              ex_vec.push_back(cur_str);
-              tmp_val_refv.push_back(ex_vec);
-              ex_vec = {};
+
+        bool in_quotes = false;
+        size_t field_start = 0;
+        
+        for (; i < csv_view.size(); ++i) {
+            char c = csv_view[i];
+            if (c == '\n' || c == '\r') {
+              if (i + 1 < csv_view.size() && csv_view[i + 1] == '\n') {
+                ++i;
+              };
+              break;
             };
-            ncol += 1;
-            cur_str = "";
-            longest_v.push_back(max_lngth);
-          } else if (currow[i] == str_context_begin) {
-            str_cxt = 1;
-          } else if (currow[i] == str_context_end) {
-            str_cxt = 0;
-          } else {
-            cur_str.push_back(currow[i]);
-          };
-          i += 1;
-        };
-        if (currow[i - 1] == delim) {
-          max_lngth = 2;
+            if (c == str_context) {
+                in_quotes = !in_quotes;
+            } else if (c == delim && !in_quotes) {
+                std::string_view field = csv_view.substr(field_start, i - field_start);
+        
+                ex_vec.emplace_back(field);
+                tmp_val_refv.emplace_back(std::move(ex_vec));
+                ex_vec = {};
+                ++ncol;
+                field_start = i + 1;
+            }
+        }
+ 
+        std::string_view field = csv_view.substr(field_start, i - field_start);
+        if (field.empty()) {
+            ex_vec = {"NA"};
         } else {
-          max_lngth = cur_str.length();
-          ex_vec.push_back(cur_str);
-          tmp_val_refv.push_back(ex_vec);
-          ex_vec = {};
-        };
-        cur_str = "";
-        longest_v.push_back(max_lngth);
+            ex_vec.emplace_back(field);
+        }
+        tmp_val_refv.emplace_back(std::move(ex_vec));
+        ex_vec.clear();
         nrow += 1;
       };
       type_refv.reserve(ncol);
 
-      if constexpr (strt_row == 0 && end_row == 0) {
-
-        while (getline(readfile, currow)) {
-          
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-            if (currow[i] == '\r') {
-              break;
-            };
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin && !str_cxt) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("0");
-          } else {
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-          };
-          cur_str = "";
-
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-        };
-
-      } else if constexpr (strt_row != 0 && end_row != 0) {
+      size_t header_end = csv_view.find_first_of("\r\n");
+      if (header_end == std::string_view::npos) header_end = csv_view.size();
+        
+      std::string_view data_view = (header_end < csv_view.size())
+          ? csv_view.substr(header_end + ((header_end + 1 < csv_view.size() && csv_view[header_end] == '\r' && csv_view[header_end + 1] == '\n') ? 2 : 1))
+          : std::string_view{};
       
-        if (strt_row > end_row) {
-          std::cerr << "strt_row must be lower or equal than end_row\n";
-          return;
-        };
-
-        unsigned int row_check = 0;
-        while (row_check < strt_row) {
-          getline(readfile, currow);
-          row_check += 1;
-        };
-
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-
-            if (currow[i] == '\r') {
-              break;
-            };
-
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin && !str_cxt) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("0");
-          } else {
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-          row_check += 1;
-          if (row_check > end_row) {
-            break;
-          };
-        };
-
-      } else if constexpr (strt_row != 0) {
-
-        unsigned int row_check = 0;
-        while (row_check < strt_row) {
-          getline(readfile, currow);
-          row_check += 1;
-        };
-
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-
-            if (currow[i] == '\r') {
-              break;
-            };
-
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin && !str_cxt) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("0");
-          } else {
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-        };
-
-      } else if constexpr (end_row != 0) {
-
-        unsigned int row_check = 0;
-
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-
-            if (currow[i] == '\r') {
-              break;
-            };
-
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin && !str_cxt) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("0");
-          } else {
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-          row_check += 1;
-          if (row_check > end_row) {
-            break;
-          };
-        };
-
+      size_t nrows_est = 0;
+      for (char ch : data_view) if (ch == '\n') ++nrows_est;
+      if (!data_view.empty() && data_view.back() != '\n' && data_view.back() != '\r') ++nrows_est; 
+      
+      for (auto& col : tmp_val_refv) {
+        col.reserve(nrows_est);
       };
+
+      i += 1;
+
+        {
+            const char* base = csv_view.data();
+            const size_t N = csv_view.size();
+        
+            bool in_quotes = false;
+            size_t field_start = i;
+            verif_ncol = 0;
+
+        
+            //size_t pos = i;                 
+            //const char* ptr = base + pos;
+            //const char* end = base + N;
+            size_t remaining = N - i;
+            size_t pos = i;
+
+            __m256i D = _mm256_set1_epi8(delim);
+            __m256i Q = _mm256_set1_epi8(str_context);
+            __m256i NL = _mm256_set1_epi8('\n');
+            __m256i CR = _mm256_set1_epi8('\r');
+    
+
+            for (; pos + 32 <= N; ) {
+              __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
+
+              int mD  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
+              int mQ  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, Q));
+              int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
+              int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
+
+              int mNL_any = (mNL | mCR);
+              int events  = (mD | mNL_any | mQ);
+
+              while (events) {
+                  int bit = __builtin_ctz(events);
+                  size_t idx = pos + bit;
+                  char c = base[idx];
+
+                  if (c == str_context) {
+                      in_quotes = !in_quotes;
+                  }
+                  else if (!in_quotes && c == delim) {
+                      // --- Field boundary ---
+                      std::string_view field = csv_view.substr(field_start, idx - field_start);
+                      tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+                      ++verif_ncol;
+                      field_start = idx + 1;
+                  }
+                  else if (!in_quotes && (c == '\n' || c == '\r')) {
+                      // --- End of row ---
+                      std::string_view field = csv_view.substr(field_start, idx - field_start);
+                      tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+
+                      if (verif_ncol + 1 != ncol) {
+                          std::cerr << "column number problem at row: " << nrow << "\n";
+                          reinitiate();
+                          return;
+                      }
+
+                      ++nrow;
+                      verif_ncol = 0;
+
+                      // Handle CRLF properly
+                      size_t advance = 1;
+                      if (c == '\r' && idx + 1 < N && base[idx + 1] == '\n')
+                          ++advance;
+
+                      field_start = idx + advance;
+                      pos = idx + advance; // realign main loop position
+                      goto next_chunk;
+                  }
+
+                  events &= (events - 1);
+              }
+
+              pos += 32;
+              next_chunk:
+                continue;
+          }
+
+            for (; pos < N; ++pos) {
+                char c = base[pos];
+                if (c == str_context) {
+                    in_quotes = !in_quotes;
+                } else if (!in_quotes && c == delim) {
+                    std::string_view field = csv_view.substr(field_start, pos - field_start);
+                    if (field.empty()) {
+                        tmp_val_refv[verif_ncol].push_back("NA");
+                    } else {
+                        tmp_val_refv[verif_ncol].emplace_back(field);
+                    }
+                    ++verif_ncol;
+                    field_start = pos + 1;
+                } else if (!in_quotes && (c == '\n' || c == '\r')) {
+                    if (verif_ncol + 1 != ncol) {
+                        std::cerr << "column number problem at row: " << nrow << " in readf\n";
+                        reinitiate();
+                        return;
+                    }
+                    std::string_view field = csv_view.substr(field_start, pos - field_start);
+                    if (field.empty()) {
+                        tmp_val_refv[verif_ncol].push_back("NA");
+                    } else {
+                        tmp_val_refv[verif_ncol].emplace_back(field);
+                    }
+        
+                    ++nrow;
+                    verif_ncol = 0;
+        
+                    if (pos + 1 < N && base[pos] == '\r' && base[pos + 1] == '\n') {
+                        ++pos;
+                    }
+                    field_start = pos + 1;
+                }
+            }
+        
+        }
+
+        //bool in_quotes = false;
+        //i += 1;
+        //size_t field_start = i;
+        //verif_ncol = 0;
+
+        //for (; i < csv_view.size(); ++i) {
+        //    char c = csv_view[i];
+        //    if (c == '\n' || c == '\r') {
+
+        //      if (verif_ncol + 1 != ncol) {
+        //          std::cerr << "column number problem at row: " << nrow << " in readf\n";
+        //          reinitiate();
+        //          return;
+        //      }
+
+        //      std::string_view field = csv_view.substr(field_start, i - field_start);
+        //      if (field.empty()) {
+        //          tmp_val_refv[verif_ncol].push_back("NA");
+        //      } else {
+        //          tmp_val_refv[verif_ncol].emplace_back(field);
+        //      }
+
+        //      verif_ncol = 0;
+
+        //      if (i + 1 < csv_view.size() && csv_view[i + 1] == '\n') {
+        //        ++i;
+        //      };
+
+        //      ++nrow;
+        //      field_start = i + 1;
+        //      continue;
+        //    } else if (c == str_context) {
+        //        in_quotes = !in_quotes;
+        //    } else if (c == delim && !in_quotes) {
+        //        std::string_view field = csv_view.substr(field_start, i - field_start);
+        //
+        //        tmp_val_refv[verif_ncol].emplace_back(field);
+        //        ++verif_ncol;
+        //        field_start = i + 1;
+        //    }
+        //}
+
+
+      //} else if constexpr (strt_row != 0 && end_row != 0) {
+      //
+      //  if (strt_row > end_row) {
+      //    std::cerr << "strt_row must be lower or equal than end_row\n";
+      //    return;
+      //  };
+
+      //  unsigned int row_check = 0;
+      //  while (row_check < strt_row) {
+      //    getline(readfile, currow);
+      //    row_check += 1;
+      //  };
+
+      //  while (getline(readfile, currow)) {
+      //    verif_ncol = 1;
+      //    str_cxt = 0;
+      //    i = 0;
+      //    while (i < currow.length()) {
+
+      //      if (currow[i] == '\r') {
+      //        break;
+      //      };
+
+      //      if (currow[i] == delim && !str_cxt) {
+      //        if (i == 0) {
+      //          if (longest_v[verif_ncol - 1] < 2) {
+      //            longest_v[verif_ncol - 1] = 2;
+      //          };
+      //          tmp_val_refv[0].push_back("NA");
+      //        } else if (currow[i - 1] == delim) {
+      //          if (longest_v[verif_ncol - 1] < 2) {
+      //            longest_v[verif_ncol - 1] = 2;
+      //          };
+      //          tmp_val_refv[verif_ncol - 1].push_back("NA");
+      //        } else {
+      //          if (longest_v[verif_ncol - 1] < cur_str.length()) {
+      //            longest_v[verif_ncol - 1] = cur_str.length();
+      //          };
+      //          tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+      //        };
+      //        cur_str = "";
+      //        verif_ncol += 1;
+      //      } else if (currow[i] == str_context_begin && !str_cxt) {
+      //        str_cxt = 1;
+      //      } else if (currow[i] == str_context_end) {
+      //        str_cxt = 0;
+      //      } else {
+      //        cur_str.push_back(currow[i]);
+      //      };
+      //      i += 1;
+      //    };
+      //    if (currow[i - 1] == delim) {
+      //      if (longest_v[verif_ncol - 1] < 2) {
+      //        longest_v[verif_ncol - 1] = 2;
+      //      };
+      //      tmp_val_refv[verif_ncol - 1].push_back("0");
+      //    } else {
+      //      if (longest_v[verif_ncol - 1] < cur_str.length()) {
+      //        longest_v[verif_ncol - 1] = cur_str.length();
+      //      };
+      //      tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+      //    };
+      //    cur_str = "";
+      //    if (verif_ncol != ncol) {
+      //      std::cout << "column number problem at row: " << nrow << "\n";
+      //      reinitiate();
+      //      return;
+      //    };
+      //    nrow += 1;
+      //    row_check += 1;
+      //    if (row_check > end_row) {
+      //      break;
+      //    };
+      //  };
+
+      //} else if constexpr (strt_row != 0) {
+
+      //  unsigned int row_check = 0;
+      //  while (row_check < strt_row) {
+      //    getline(readfile, currow);
+      //    row_check += 1;
+      //  };
+
+      //  while (getline(readfile, currow)) {
+      //    verif_ncol = 1;
+      //    str_cxt = 0;
+      //    i = 0;
+      //    while (i < currow.length()) {
+
+      //      if (currow[i] == '\r') {
+      //        break;
+      //      };
+
+      //      if (currow[i] == delim && !str_cxt) {
+      //        if (i == 0) {
+      //          if (longest_v[verif_ncol - 1] < 2) {
+      //            longest_v[verif_ncol - 1] = 2;
+      //          };
+      //          tmp_val_refv[0].push_back("NA");
+      //        } else if (currow[i - 1] == delim) {
+      //          if (longest_v[verif_ncol - 1] < 2) {
+      //            longest_v[verif_ncol - 1] = 2;
+      //          };
+      //          tmp_val_refv[verif_ncol - 1].push_back("NA");
+      //        } else {
+      //          if (longest_v[verif_ncol - 1] < cur_str.length()) {
+      //            longest_v[verif_ncol - 1] = cur_str.length();
+      //          };
+      //          tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+      //        };
+      //        cur_str = "";
+      //        verif_ncol += 1;
+      //      } else if (currow[i] == str_context_begin && !str_cxt) {
+      //        str_cxt = 1;
+      //      } else if (currow[i] == str_context_end) {
+      //        str_cxt = 0;
+      //      } else {
+      //        cur_str.push_back(currow[i]);
+      //      };
+      //      i += 1;
+      //    };
+      //    if (currow[i - 1] == delim) {
+      //      if (longest_v[verif_ncol - 1] < 2) {
+      //        longest_v[verif_ncol - 1] = 2;
+      //      };
+      //      tmp_val_refv[verif_ncol - 1].push_back("0");
+      //    } else {
+      //      if (longest_v[verif_ncol - 1] < cur_str.length()) {
+      //        longest_v[verif_ncol - 1] = cur_str.length();
+      //      };
+      //      tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+      //    };
+      //    cur_str = "";
+      //    if (verif_ncol != ncol) {
+      //      std::cout << "column number problem at row: " << nrow << "\n";
+      //      reinitiate();
+      //      return;
+      //    };
+      //    nrow += 1;
+      //  };
+
+      //} else if constexpr (end_row != 0) {
+
+      //  unsigned int row_check = 0;
+
+      //  while (getline(readfile, currow)) {
+      //    verif_ncol = 1;
+      //    str_cxt = 0;
+      //    i = 0;
+      //    while (i < currow.length()) {
+
+      //      if (currow[i] == '\r') {
+      //        break;
+      //      };
+
+      //      if (currow[i] == delim && !str_cxt) {
+      //        if (i == 0) {
+      //          if (longest_v[verif_ncol - 1] < 2) {
+      //            longest_v[verif_ncol - 1] = 2;
+      //          };
+      //          tmp_val_refv[0].push_back("NA");
+      //        } else if (currow[i - 1] == delim) {
+      //          if (longest_v[verif_ncol - 1] < 2) {
+      //            longest_v[verif_ncol - 1] = 2;
+      //          };
+      //          tmp_val_refv[verif_ncol - 1].push_back("NA");
+      //        } else {
+      //          if (longest_v[verif_ncol - 1] < cur_str.length()) {
+      //            longest_v[verif_ncol - 1] = cur_str.length();
+      //          };
+      //          tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+      //        };
+      //        cur_str = "";
+      //        verif_ncol += 1;
+      //      } else if (currow[i] == str_context_begin && !str_cxt) {
+      //        str_cxt = 1;
+      //      } else if (currow[i] == str_context_end) {
+      //        str_cxt = 0;
+      //      } else {
+      //        cur_str.push_back(currow[i]);
+      //      };
+      //      i += 1;
+      //    };
+      //    if (currow[i - 1] == delim) {
+      //      if (longest_v[verif_ncol - 1] < 2) {
+      //        longest_v[verif_ncol - 1] = 2;
+      //      };
+      //      tmp_val_refv[verif_ncol - 1].push_back("0");
+      //    } else {
+      //      if (longest_v[verif_ncol - 1] < cur_str.length()) {
+      //        longest_v[verif_ncol - 1] = cur_str.length();
+      //      };
+      //      tmp_val_refv[verif_ncol - 1].push_back(cur_str);
+      //    };
+      //    cur_str = "";
+      //    if (verif_ncol != ncol) {
+      //      std::cout << "column number problem at row: " << nrow << "\n";
+      //      reinitiate();
+      //      return;
+      //    };
+      //    nrow += 1;
+      //    row_check += 1;
+      //    if (row_check > end_row) {
+      //      break;
+      //    };
+      //  };
+
+      //};
       type_classification();
     };
 
@@ -7668,21 +7852,16 @@ class Dataframe{
       bool is_flt_dbl;
       bool is_unsigned;
       bool is_bool;
-      std::string cur_str;
-      std::string cur_str2;
+      type_refv.reserve(ncol);
       for (i = 0; i < ncol; ++i) {
 
         i2 = 0;
         is_bool = 1;
         is_unsigned = 1;
         while (i2 < nrow) {
-          cur_str = tmp_val_refv[i][i2];
+          const std::string& cur_str = tmp_val_refv[i][i2];
 
-          cur_str2 = cur_str;
-          if (cur_str[0] == '-' && cur_str.length() > 1) {
-            cur_str2.erase(cur_str2.begin());
-          };
-          is_nb = can_be_nb(cur_str2);
+          is_nb = can_be_nb(cur_str);
           if (!is_nb) {
             if (cur_str.length() > 1) {
               
@@ -7699,7 +7878,7 @@ class Dataframe{
             };
           } else {
  
-            is_flt_dbl = can_be_flt_dbl(cur_str2);
+            is_flt_dbl = can_be_flt_dbl(cur_str);
             if (is_flt_dbl) {
               type_refv.push_back('d');
               matr_idx[5].push_back(i);
@@ -7743,20 +7922,18 @@ class Dataframe{
       for (i = 0; i < ncol; ++i) {
         if (type_refv[i] == 's') {
           for (i2 = 0; i2 < nrow; ++i2) {
-            cur_str = tmp_val_refv[i][i2];
-            str_v.push_back(cur_str);
+            str_v.push_back(tmp_val_refv[i][i2]);
           };
         } else if (type_refv[i] == 'c') {
           for (i2 = 0; i2 < nrow; ++i2) {
-            cur_str = tmp_val_refv[i][i2];
-            chr_v.push_back(cur_str[0]);
+            chr_v.push_back(tmp_val_refv[i][i2][0]);
           };
         } else if (type_refv[i] == 'b') {
           for (i2 = 0; i2 < nrow; ++i2) {
-            cur_str = tmp_val_refv[i][i2];
+            const std::string& cur2_str = tmp_val_refv[i][i2];
 
             int value;
-            auto [ptr, ec] = std::from_chars(cur_str.data(), cur_str.data() + cur_str.size(), value);
+            auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
             if (ec == std::errc()) {
                 int_v.push_back(value);
             } else {
@@ -7766,10 +7943,10 @@ class Dataframe{
           };
         } else if (type_refv[i] == 'i') {
           for (i2 = 0; i2 < nrow; ++i2) {
-            cur_str = tmp_val_refv[i][i2];
+            const std::string& cur2_str = tmp_val_refv[i][i2];
 
             int value;
-            auto [ptr, ec] = std::from_chars(cur_str.data(), cur_str.data() + cur_str.size(), value);
+            auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
             if (ec == std::errc()) {
                 int_v.push_back(value);
             } else {
@@ -7779,10 +7956,10 @@ class Dataframe{
           };
         } else if (type_refv[i] == 'u') {
           for (i2 = 0; i2 < nrow; ++i2) {
-            cur_str = tmp_val_refv[i][i2];
+            const std::string& cur2_str = tmp_val_refv[i][i2];
 
             int value;
-            auto [ptr, ec] = std::from_chars(cur_str.data(), cur_str.data() + cur_str.size(), value);
+            auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
             if (ec == std::errc()) {
                 int_v.push_back(value);
             } else {
@@ -7792,10 +7969,10 @@ class Dataframe{
           };
         } else {
           for (i2 = 0; i2 < nrow; ++i2) {
-            cur_str = tmp_val_refv[i][i2];
-            
+            const std::string& cur2_str = tmp_val_refv[i][i2];
+
             int value;
-            auto [ptr, ec] = std::from_chars(cur_str.data(), cur_str.data() + cur_str.size(), value);
+            auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
             if (ec == std::errc()) {
                 int_v.push_back(value);
             } else {
@@ -7910,6 +8087,7 @@ class Dataframe{
     //};
 
     void display_filter(std::vector<bool> &x, std::vector<int> &colv) {
+      longest_determine();
       unsigned int i2b;
       unsigned int i3;
       unsigned int i4;
@@ -8031,6 +8209,7 @@ class Dataframe{
     };
 
     void display_filter_idx(std::vector<int> &x, std::vector<int> &colv) {
+      longest_determine();
       unsigned int i2b;
       unsigned int i3;
       unsigned int i4;
@@ -8157,6 +8336,7 @@ class Dataframe{
     };
 
     void display() {
+      longest_determine();
       unsigned int i2;
       unsigned int i3;
       unsigned int i4;
