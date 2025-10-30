@@ -5869,41 +5869,6 @@ inline SimdCountLines simd_count_newlines(const char* data, size_t size) noexcep
     return result;
 }
 
-inline bool can_be_nb2(const std::string &x) {
-  const unsigned int n = x.length();
-  std::string numeric_v = "0123456789";
-  unsigned int i = 0;
-  if (x[0] == '-') {
-    i = 1;
-  };
-  bool alrd_point = 0;
-  unsigned int i2;
-  char cur_chr;
-  while (i < n) {
-    if (x[i] == '.') {
-      if (!alrd_point) {
-        alrd_point = 1;
-      } else {
-        return 0;
-      };
-    } else {
-      cur_chr = x[i];
-      i2 = 0;
-      while (i2 < 10) {
-        if (cur_chr == numeric_v[i2]) {
-          break;
-        };
-        i2 += 1;
-      };
-      if (i2 == 10) {
-        return 0;
-      };
-    };
-    i += 1;
-  };
-  return 1;
-};
-
 inline bool simd_can_be_nb(const char* s, size_t len) noexcept {
     if (len == 0) return false;
 
@@ -5914,60 +5879,20 @@ inline bool simd_can_be_nb(const char* s, size_t len) noexcept {
     for (; i + 32 <= len; i += 32) {
         __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(s + i));
 
-        // Check: (chunk >= '0') & (chunk <= '9')
         __m256i ge0 = _mm256_cmpgt_epi8(chunk, _mm256_sub_epi8(zero, _mm256_set1_epi8(1))); // >= '0'
         __m256i le9 = _mm256_cmpgt_epi8(_mm256_add_epi8(nine, _mm256_set1_epi8(1)), chunk); // <= '9'
         __m256i mask = _mm256_and_si256(ge0, le9);
 
-        // movemask gives 1 bits where high bit of each byte = 1 (true)
         if (_mm256_movemask_epi8(mask) != 0xFFFFFFFF)
             return false;
     }
 
-    // tail loop
     for (; i < len; ++i)
         if ((unsigned char)s[i] < '0' || (unsigned char)s[i] > '9')
             return false;
 
     return true;
 }
-
-inline bool can_be_flt_dbl2(const std::string &x) {
-  const unsigned int n = x.length();
-  std::string numeric_v = "0123456789";
-  if (x[0] == '.' || x[n - 1] == '.') {
-    return 0;
-  };
-  bool alrd_point = 0;
-  unsigned int i2;
-  char cur_chr;
-  for (unsigned int i = 0; i < n; ++i) {
-    if (x[i] == '.') {
-      if (!alrd_point) {
-        alrd_point = 1;
-      } else {
-        return 0;
-      };
-    } else {
-      cur_chr = x[i];
-      i2 = 0;
-      while (i2 < 10) {
-        if (cur_chr == numeric_v[i2]) {
-          break;
-        };
-        i2 += 1;
-      };
-      if (i2 == 10) {
-        return 0;
-      };
-    };
-  };
-  if (alrd_point) {
-    return 1;
-  } else {
-    return 0;
-  };
-};
 
 inline char classify_column(
     const std::vector<std::string>& col_values,
@@ -5979,28 +5904,26 @@ inline char classify_column(
 
     for (size_t i = 0; i < std::min<size_t>(col_values[0].size(), 10); ++i) {
         const std::string& s = col_values[i];
-        bool is_nb = can_be_nb2(s);
 
-        if (!is_nb) {
+        if (!simd_can_be_nb(s.data(), s.size())) {
             if (s.size() > 1) {
                 matr_idx[0].push_back(col_idx);
-                //std::cout << "string\n";
-                return 's'; // string
+                return 's'; 
             } else {
                 matr_idx[1].push_back(col_idx);
-                return 'c'; // char
+                return 'c'; 
             }
         }
 
-        if (can_be_flt_dbl2(s)) {
+        if (std::find(s.begin(), s.end(), '.') != s.end()) {
             matr_idx[5].push_back(col_idx);
-            return 'd'; // double
+            return 'd'; 
         }
 
         if (is_unsigned && s[0] == '-') {
             is_unsigned = false;
             matr_idx[3].push_back(col_idx);
-            return 'i'; // int
+            return 'i'; 
         }
 
         if (s != "0" && s != "1") {
@@ -6009,11 +5932,10 @@ inline char classify_column(
 
         if (is_bool && i > 10) {
             matr_idx[2].push_back(col_idx);
-            return 'b'; // bool
+            return 'b'; 
         }
     }
 
-    // fallback type
     if (is_bool) {
         matr_idx[2].push_back(col_idx);
         return 'b';
@@ -7950,143 +7872,12 @@ class Dataframe{
               type_refv[i] = classify_column(tmp_val_refv[i], local_idx, i);
           }
      
-          // merge local indices
           #pragma omp critical
           for (int k = 0; k < 6; ++k)
               matr_idx[k].insert(matr_idx[k].end(),
                                  local_idx[k].begin(), local_idx[k].end());
       }
       
-      //const size_t max_check = std::min<size_t>(nrow, 11);
-      //
-      //for (i = 0; i < ncol; ++i) {
-
-      //  i2 = 0;
-      //  is_bool = 1;
-      //  is_unsigned = 1;
-      //  while (i2 < max_check) {
-      //    const std::string& cur_str = tmp_val_refv[i][i2];
-
-      //    is_nb = can_be_nb2(cur_str);
-      //    if (!is_nb) {
-      //      if (cur_str.length() > 1) {
-      //        
-      //        type_refv.push_back('s');
-      //        matr_idx[0].push_back(i);
-      //        break;
-
-      //      } else {
-
-      //        type_refv.push_back('c');
-      //        matr_idx[1].push_back(i);
-      //        break;
-
-      //      };
-      //    } else {
- 
-      //      is_flt_dbl = can_be_flt_dbl2(cur_str);
-      //      if (is_flt_dbl) {
-      //        type_refv.push_back('d');
-      //        matr_idx[5].push_back(i);
-      //        break;
-      //      };
-
-      //      if (is_unsigned) {
-      //        if (cur_str[0] == '-') { 
-      //          is_unsigned = 0;
-      //          type_refv.push_back('i');
-      //          matr_idx[3].push_back(i);
-      //          break;
-      //        } else if (cur_str != "0" && cur_str != "1") {
-      //          is_bool = 0;
-      //        };
-      //      };
-
-      //      if (is_bool && i2 > 10) {
-      //        type_refv.push_back('b');
-      //        matr_idx[2].push_back(i);
-      //        is_bool = 0;
-      //        break;
-      //      };
-
-      //    };
-      //    i2 += 1;
-      //  };
-      //  if (i2 == 11) {
-      //    if (is_bool) {
-      //      type_refv.push_back('b');
-      //      matr_idx[2].push_back(i);
-      //    } else if (is_unsigned) {
-      //      type_refv.push_back('u');
-      //      matr_idx[4].push_back(i);
-      //    };
-      //  };
-      //};
-
-      ////#pragma omp parallel for
-      //for (i = 0; i < ncol; ++i) {
-      //  if (type_refv[i] == 's') {
-      //    for (i2 = 0; i2 < nrow; ++i2) {
-      //      str_v.push_back(tmp_val_refv[i][i2]);
-      //    };
-      //  } else if (type_refv[i] == 'c') {
-      //    for (i2 = 0; i2 < nrow; ++i2) {
-      //      chr_v.push_back(tmp_val_refv[i][i2][0]);
-      //    };
-      //  } else if (type_refv[i] == 'b') {
-      //    for (i2 = 0; i2 < nrow; ++i2) {
-      //      const std::string& cur2_str = tmp_val_refv[i][i2];
-
-      //      int value;
-      //      auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
-      //      if (ec == std::errc()) {
-      //          int_v.push_back(value);
-      //      } else {
-      //          int_v.push_back(0);
-      //      };     
-
-      //    };
-      //  } else if (type_refv[i] == 'i') {
-      //    for (i2 = 0; i2 < nrow; ++i2) {
-      //      const std::string& cur2_str = tmp_val_refv[i][i2];
-
-      //      int value;
-      //      auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
-      //      if (ec == std::errc()) {
-      //          int_v.push_back(value);
-      //      } else {
-      //          int_v.push_back(0);
-      //      };     
-      //     
-      //    };
-      //  } else if (type_refv[i] == 'u') {
-      //    for (i2 = 0; i2 < nrow; ++i2) {
-      //      const std::string& cur2_str = tmp_val_refv[i][i2];
-
-      //      int value;
-      //      auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
-      //      if (ec == std::errc()) {
-      //          int_v.push_back(value);
-      //      } else {
-      //          int_v.push_back(0);
-      //      };     
-
-      //    };
-      //  } else {
-      //    for (i2 = 0; i2 < nrow; ++i2) {
-      //      const std::string& cur2_str = tmp_val_refv[i][i2];
-
-      //      int value;
-      //      auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
-      //      if (ec == std::errc()) {
-      //          int_v.push_back(value);
-      //      } else {
-      //          int_v.push_back(0);
-      //      };     
-      //      
-      //    };
-      //  };
-      //};
     };
 
     //void type_classification() {
