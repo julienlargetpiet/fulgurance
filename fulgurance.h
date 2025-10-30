@@ -17,6 +17,7 @@
 #include <numeric>
 #include <regex>
 #include "include/ankerl/unordered_dense.h"
+#include <omp.h>
 
 #if __cplusplus >= 202002L
 #include <variant>
@@ -5823,26 +5824,205 @@ template <typename T> double diff_mean(std::vector<T> &x) {
 //@E See below
 //@X
 
-inline size_t simd_count_newlines(const char* data, size_t size) noexcept {
+struct SimdCountLines {
+    size_t count;
+    std::vector<size_t> positions;
+};
+
+inline SimdCountLines simd_count_newlines(const char* data, size_t size) noexcept {
+    SimdCountLines result;
+    result.positions.reserve(size / 64); // rough heuristic
+
     const __m256i NL = _mm256_set1_epi8('\n');
     const __m256i CR = _mm256_set1_epi8('\r');
+
+    size_t pos = 0;
     size_t count = 0;
 
-    size_t i = 0;
-    for (; i + 32 <= size; i += 32) {
-        __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(data + i));
+    for (; pos + 32 <= size; pos += 32) {
+        __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(data + pos));
+
         int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
         int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
-        count += __builtin_popcount(mNL | mCR);
-        _mm_prefetch(data + i + 512, _MM_HINT_T0);
+
+        int mask = mNL | mCR;
+        while (mask) {
+            int bit = __builtin_ctz(mask);
+            result.positions.push_back(pos + bit);
+            mask &= mask - 1;
+            ++count;
+        }
+
+        // optional prefetch next cache line
+        _mm_prefetch(data + pos + 512, _MM_HINT_T0);
     }
 
-    // tail loop for remaining bytes
-    for (; i < size; ++i)
-        if (data[i] == '\n' || data[i] == '\r')
+    // scalar tail for leftover bytes
+    for (; pos < size; ++pos) {
+        if (data[pos] == '\n' || data[pos] == '\r') {
+            result.positions.push_back(pos);
             ++count;
+        }
+    }
 
-    return count;
+    result.count = count;
+    return result;
+}
+
+inline bool can_be_nb2(const std::string &x) {
+  const unsigned int n = x.length();
+  std::string numeric_v = "0123456789";
+  unsigned int i = 0;
+  if (x[0] == '-') {
+    i = 1;
+  };
+  bool alrd_point = 0;
+  unsigned int i2;
+  char cur_chr;
+  while (i < n) {
+    if (x[i] == '.') {
+      if (!alrd_point) {
+        alrd_point = 1;
+      } else {
+        return 0;
+      };
+    } else {
+      cur_chr = x[i];
+      i2 = 0;
+      while (i2 < 10) {
+        if (cur_chr == numeric_v[i2]) {
+          break;
+        };
+        i2 += 1;
+      };
+      if (i2 == 10) {
+        return 0;
+      };
+    };
+    i += 1;
+  };
+  return 1;
+};
+
+inline bool simd_can_be_nb(const char* s, size_t len) noexcept {
+    if (len == 0) return false;
+
+    static const __m256i zero = _mm256_set1_epi8('0');
+    static const __m256i nine = _mm256_set1_epi8('9');
+
+    size_t i = 0;
+    for (; i + 32 <= len; i += 32) {
+        __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(s + i));
+
+        // Check: (chunk >= '0') & (chunk <= '9')
+        __m256i ge0 = _mm256_cmpgt_epi8(chunk, _mm256_sub_epi8(zero, _mm256_set1_epi8(1))); // >= '0'
+        __m256i le9 = _mm256_cmpgt_epi8(_mm256_add_epi8(nine, _mm256_set1_epi8(1)), chunk); // <= '9'
+        __m256i mask = _mm256_and_si256(ge0, le9);
+
+        // movemask gives 1 bits where high bit of each byte = 1 (true)
+        if (_mm256_movemask_epi8(mask) != 0xFFFFFFFF)
+            return false;
+    }
+
+    // tail loop
+    for (; i < len; ++i)
+        if ((unsigned char)s[i] < '0' || (unsigned char)s[i] > '9')
+            return false;
+
+    return true;
+}
+
+inline bool can_be_flt_dbl2(const std::string &x) {
+  const unsigned int n = x.length();
+  std::string numeric_v = "0123456789";
+  if (x[0] == '.' || x[n - 1] == '.') {
+    return 0;
+  };
+  bool alrd_point = 0;
+  unsigned int i2;
+  char cur_chr;
+  for (unsigned int i = 0; i < n; ++i) {
+    if (x[i] == '.') {
+      if (!alrd_point) {
+        alrd_point = 1;
+      } else {
+        return 0;
+      };
+    } else {
+      cur_chr = x[i];
+      i2 = 0;
+      while (i2 < 10) {
+        if (cur_chr == numeric_v[i2]) {
+          break;
+        };
+        i2 += 1;
+      };
+      if (i2 == 10) {
+        return 0;
+      };
+    };
+  };
+  if (alrd_point) {
+    return 1;
+  } else {
+    return 0;
+  };
+};
+
+inline char classify_column(
+    const std::vector<std::string>& col_values,
+    std::array<std::vector<unsigned int>, 6>& matr_idx,
+    unsigned int col_idx)
+{
+    bool is_bool = true;
+    bool is_unsigned = true;
+
+    for (size_t i = 0; i < std::min<size_t>(col_values[0].size(), 10); ++i) {
+        const std::string& s = col_values[i];
+        bool is_nb = can_be_nb2(s);
+
+        if (!is_nb) {
+            if (s.size() > 1) {
+                matr_idx[0].push_back(col_idx);
+                //std::cout << "string\n";
+                return 's'; // string
+            } else {
+                matr_idx[1].push_back(col_idx);
+                return 'c'; // char
+            }
+        }
+
+        if (can_be_flt_dbl2(s)) {
+            matr_idx[5].push_back(col_idx);
+            return 'd'; // double
+        }
+
+        if (is_unsigned && s[0] == '-') {
+            is_unsigned = false;
+            matr_idx[3].push_back(col_idx);
+            return 'i'; // int
+        }
+
+        if (s != "0" && s != "1") {
+          is_bool = 0;
+        };
+
+        if (is_bool && i > 10) {
+            matr_idx[2].push_back(col_idx);
+            return 'b'; // bool
+        }
+    }
+
+    // fallback type
+    if (is_bool) {
+        matr_idx[2].push_back(col_idx);
+        return 'b';
+    } else if (is_unsigned) {
+        matr_idx[4].push_back(col_idx);
+        return 'u';
+    }
+    matr_idx[3].push_back(col_idx);
+    return 'i';
 }
 
 struct PairHash {
@@ -6031,8 +6211,10 @@ class Dataframe{
                                            csv_view[header_end] == '\r' &&
                                            csv_view[header_end + 1] == '\n') ? 2 : 1))
           : std::string_view{};
-      
-      size_t nrows_est = simd_count_newlines(data_view.data(), data_view.size());
+       
+      auto lines_info = simd_count_newlines(csv_view.data(), csv_view.size());
+      const auto& newline_pos = lines_info.positions;
+      size_t nrows_est = lines_info.count;
       if (!data_view.empty() && data_view.back() != '\n' && data_view.back() != '\r')
           ++nrows_est;
 
@@ -6040,10 +6222,111 @@ class Dataframe{
         col.reserve(nrows_est);
       };
 
+      //nrow = - 1;
+
       i += 1;
 
       if constexpr (strt_row == 0 && end_row == 0) {
- 
+        
+        //const char* base = csv_view.data();
+        //const size_t N = csv_view.size();
+        //
+        //bool in_quotes = false;
+        //
+        //// Preload constants once
+        //const __m256i D  = _mm256_set1_epi8(delim);
+        //const __m256i Q  = _mm256_set1_epi8(str_context);
+      
+        //size_t line_start = i;
+        //size_t start_idx = 0;
+        //while (start_idx < newline_pos.size() && newline_pos[start_idx] <= i)
+        //    ++start_idx;
+        //
+        //// Now iterate only over lines after header
+        //for (size_t row_i = start_idx; row_i < newline_pos.size(); ++row_i) {
+        //    size_t line_end = newline_pos[row_i];
+        //    if (line_end <= line_start)
+        //        continue; // skip malformed or duplicate newline (e.g. CRLF double entry)
+        //
+        //    size_t pos = line_start;
+        //    size_t field_start = line_start;
+        //    unsigned int verif_ncol = 0;
+        //
+        //    // SIMD scan within [line_start, line_end)
+        //    for (; pos + 32 <= line_end; pos += 32) {
+        //        __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
+        //        int mD = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
+        //        int mQ = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, Q));
+        //        int events = (mD | mQ);
+        //
+        //        while (events) {
+        //            int bit = __builtin_ctz(events);
+        //            size_t idx = pos + bit;
+        //            char c = base[idx];
+        //
+        //            if (c == str_context) {
+        //                in_quotes = !in_quotes;
+        //            } else if (!in_quotes && c == delim) {
+        //                std::string_view field = csv_view.substr(field_start, idx - field_start);
+        //                tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+        //                ++verif_ncol;
+        //                field_start = idx + 1;
+        //            }
+        //
+        //            events &= (events - 1);
+        //        }
+        //        _mm_prefetch(base + pos + 512, _MM_HINT_T0);
+        //    }
+        //
+        //    // Scalar tail
+        //    for (; pos < line_end; ++pos) {
+        //        char c = base[pos];
+        //        if (c == str_context)
+        //            in_quotes = !in_quotes;
+        //        else if (!in_quotes && c == delim) {
+        //            std::string_view field = csv_view.substr(field_start, pos - field_start);
+        //            tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+        //            ++verif_ncol;
+        //            field_start = pos + 1;
+        //        }
+        //    }
+        //
+        //    // Push final field
+        //    std::string_view field = csv_view.substr(field_start, line_end - field_start);
+        //    tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+        //
+        //    if (verif_ncol + 1 != ncol) {
+        //        std::cerr << "column number problem at row: " << nrow << "\n";
+        //        reinitiate();
+        //        return;
+        //    }
+        //
+        //    ++nrow;
+        //    line_start = line_end + 1;
+        //}
+
+        //// Handle potential final row (if file doesn’t end with newline)
+        //if (line_start < N) {
+        //    size_t field_start = line_start;
+        //    unsigned int verif_ncol = 0;
+        //
+        //    for (size_t pos = line_start; pos < N; ++pos) {
+        //        char c = base[pos];
+        //        if (c == str_context)
+        //            in_quotes = !in_quotes;
+        //        else if (!in_quotes && c == delim) {
+        //            std::string_view field = csv_view.substr(field_start, pos - field_start);
+        //            tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+        //            ++verif_ncol;
+        //            field_start = pos + 1;
+        //        }
+        //    }
+        //
+        //    std::string_view field = csv_view.substr(field_start, N - field_start);
+        //    tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+        //    ++nrow;
+        //}
+
             const char* base = csv_view.data();
             const size_t N = csv_view.size();
         
@@ -6239,139 +6522,6 @@ class Dataframe{
           }
           
       };
-      //} else if constexpr (strt_row != 0) {
-
-      //  unsigned int row_check = 0;
-      //  while (row_check < strt_row) {
-      //    getline(readfile, currow);
-      //    row_check += 1;
-      //  };
-
-      //  while (getline(readfile, currow)) {
-      //    verif_ncol = 1;
-      //    str_cxt = 0;
-      //    i = 0;
-      //    while (i < currow.length()) {
-
-      //      if (currow[i] == '\r') {
-      //        break;
-      //      };
-
-      //      if (currow[i] == delim && !str_cxt) {
-      //        if (i == 0) {
-      //          if (longest_v[verif_ncol - 1] < 2) {
-      //            longest_v[verif_ncol - 1] = 2;
-      //          };
-      //          tmp_val_refv[0].push_back("NA");
-      //        } else if (currow[i - 1] == delim) {
-      //          if (longest_v[verif_ncol - 1] < 2) {
-      //            longest_v[verif_ncol - 1] = 2;
-      //          };
-      //          tmp_val_refv[verif_ncol - 1].push_back("NA");
-      //        } else {
-      //          if (longest_v[verif_ncol - 1] < cur_str.length()) {
-      //            longest_v[verif_ncol - 1] = cur_str.length();
-      //          };
-      //          tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-      //        };
-      //        cur_str = "";
-      //        verif_ncol += 1;
-      //      } else if (currow[i] == str_context_begin && !str_cxt) {
-      //        str_cxt = 1;
-      //      } else if (currow[i] == str_context_end) {
-      //        str_cxt = 0;
-      //      } else {
-      //        cur_str.push_back(currow[i]);
-      //      };
-      //      i += 1;
-      //    };
-      //    if (currow[i - 1] == delim) {
-      //      if (longest_v[verif_ncol - 1] < 2) {
-      //        longest_v[verif_ncol - 1] = 2;
-      //      };
-      //      tmp_val_refv[verif_ncol - 1].push_back("0");
-      //    } else {
-      //      if (longest_v[verif_ncol - 1] < cur_str.length()) {
-      //        longest_v[verif_ncol - 1] = cur_str.length();
-      //      };
-      //      tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-      //    };
-      //    cur_str = "";
-      //    if (verif_ncol != ncol) {
-      //      std::cout << "column number problem at row: " << nrow << "\n";
-      //      reinitiate();
-      //      return;
-      //    };
-      //    nrow += 1;
-      //  };
-
-      //} else if constexpr (end_row != 0) {
-
-      //  unsigned int row_check = 0;
-
-      //  while (getline(readfile, currow)) {
-      //    verif_ncol = 1;
-      //    str_cxt = 0;
-      //    i = 0;
-      //    while (i < currow.length()) {
-
-      //      if (currow[i] == '\r') {
-      //        break;
-      //      };
-
-      //      if (currow[i] == delim && !str_cxt) {
-      //        if (i == 0) {
-      //          if (longest_v[verif_ncol - 1] < 2) {
-      //            longest_v[verif_ncol - 1] = 2;
-      //          };
-      //          tmp_val_refv[0].push_back("NA");
-      //        } else if (currow[i - 1] == delim) {
-      //          if (longest_v[verif_ncol - 1] < 2) {
-      //            longest_v[verif_ncol - 1] = 2;
-      //          };
-      //          tmp_val_refv[verif_ncol - 1].push_back("NA");
-      //        } else {
-      //          if (longest_v[verif_ncol - 1] < cur_str.length()) {
-      //            longest_v[verif_ncol - 1] = cur_str.length();
-      //          };
-      //          tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-      //        };
-      //        cur_str = "";
-      //        verif_ncol += 1;
-      //      } else if (currow[i] == str_context_begin && !str_cxt) {
-      //        str_cxt = 1;
-      //      } else if (currow[i] == str_context_end) {
-      //        str_cxt = 0;
-      //      } else {
-      //        cur_str.push_back(currow[i]);
-      //      };
-      //      i += 1;
-      //    };
-      //    if (currow[i - 1] == delim) {
-      //      if (longest_v[verif_ncol - 1] < 2) {
-      //        longest_v[verif_ncol - 1] = 2;
-      //      };
-      //      tmp_val_refv[verif_ncol - 1].push_back("0");
-      //    } else {
-      //      if (longest_v[verif_ncol - 1] < cur_str.length()) {
-      //        longest_v[verif_ncol - 1] = cur_str.length();
-      //      };
-      //      tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-      //    };
-      //    cur_str = "";
-      //    if (verif_ncol != ncol) {
-      //      std::cout << "column number problem at row: " << nrow << "\n";
-      //      reinitiate();
-      //      return;
-      //    };
-      //    nrow += 1;
-      //    row_check += 1;
-      //    if (row_check > end_row) {
-      //      break;
-      //    };
-      //  };
-
-      //};
       type_classification();
     };
 
@@ -7784,136 +7934,159 @@ class Dataframe{
       bool is_flt_dbl;
       bool is_unsigned;
       bool is_bool;
-      type_refv.reserve(ncol);
-      for (i = 0; i < ncol; ++i) {
+      type_refv.resize(ncol);
 
-        i2 = 0;
-        is_bool = 1;
-        is_unsigned = 1;
-        while (i2 < nrow) {
-          const std::string& cur_str = tmp_val_refv[i][i2];
+      for (auto& el : matr_idx) {
+        el.reserve(6);
+      };
 
-          is_nb = can_be_nb(cur_str);
-          if (!is_nb) {
-            if (cur_str.length() > 1) {
-              
-              type_refv.push_back('s');
-              matr_idx[0].push_back(i);
-              break;
+      omp_set_num_threads(4);
 
-            } else {
+      #pragma omp parallel
+      {
+          std::array<std::vector<unsigned int>, 6> local_idx;
+          #pragma omp for nowait
+          for (int i = 0; i < ncol; ++i) {
+              type_refv[i] = classify_column(tmp_val_refv[i], local_idx, i);
+          }
+     
+          // merge local indices
+          #pragma omp critical
+          for (int k = 0; k < 6; ++k)
+              matr_idx[k].insert(matr_idx[k].end(),
+                                 local_idx[k].begin(), local_idx[k].end());
+      }
+      
+      //const size_t max_check = std::min<size_t>(nrow, 11);
+      //
+      //for (i = 0; i < ncol; ++i) {
 
-              type_refv.push_back('c');
-              matr_idx[1].push_back(i);
-              break;
+      //  i2 = 0;
+      //  is_bool = 1;
+      //  is_unsigned = 1;
+      //  while (i2 < max_check) {
+      //    const std::string& cur_str = tmp_val_refv[i][i2];
 
-            };
-          } else {
+      //    is_nb = can_be_nb2(cur_str);
+      //    if (!is_nb) {
+      //      if (cur_str.length() > 1) {
+      //        
+      //        type_refv.push_back('s');
+      //        matr_idx[0].push_back(i);
+      //        break;
+
+      //      } else {
+
+      //        type_refv.push_back('c');
+      //        matr_idx[1].push_back(i);
+      //        break;
+
+      //      };
+      //    } else {
  
-            is_flt_dbl = can_be_flt_dbl(cur_str);
-            if (is_flt_dbl) {
-              type_refv.push_back('d');
-              matr_idx[5].push_back(i);
-              break;
-            };
+      //      is_flt_dbl = can_be_flt_dbl2(cur_str);
+      //      if (is_flt_dbl) {
+      //        type_refv.push_back('d');
+      //        matr_idx[5].push_back(i);
+      //        break;
+      //      };
 
-            if (is_unsigned) {
-              if (cur_str[0] == '-') { 
-                is_unsigned = 0;
-                type_refv.push_back('i');
-                matr_idx[3].push_back(i);
-                break;
-              } else if (cur_str != "0" && cur_str != "1") {
-                is_bool = 0;
-              };
-            };
+      //      if (is_unsigned) {
+      //        if (cur_str[0] == '-') { 
+      //          is_unsigned = 0;
+      //          type_refv.push_back('i');
+      //          matr_idx[3].push_back(i);
+      //          break;
+      //        } else if (cur_str != "0" && cur_str != "1") {
+      //          is_bool = 0;
+      //        };
+      //      };
 
-            if (is_bool && i2 > 10) {
-              type_refv.push_back('b');
-              matr_idx[2].push_back(i);
-              is_bool = 0;
-              break;
-            };
+      //      if (is_bool && i2 > 10) {
+      //        type_refv.push_back('b');
+      //        matr_idx[2].push_back(i);
+      //        is_bool = 0;
+      //        break;
+      //      };
 
-          };
-          i2 += 1;
-          if (i2 > 10) {
-            break;
-          };
-        };
-        if (i2 == 11) {
-          if (is_bool) {
-            type_refv.push_back('b');
-            matr_idx[2].push_back(i);
-          } else if (is_unsigned) {
-            type_refv.push_back('u');
-            matr_idx[4].push_back(i);
-          };
-        };
-      };
-      for (i = 0; i < ncol; ++i) {
-        if (type_refv[i] == 's') {
-          for (i2 = 0; i2 < nrow; ++i2) {
-            str_v.push_back(tmp_val_refv[i][i2]);
-          };
-        } else if (type_refv[i] == 'c') {
-          for (i2 = 0; i2 < nrow; ++i2) {
-            chr_v.push_back(tmp_val_refv[i][i2][0]);
-          };
-        } else if (type_refv[i] == 'b') {
-          for (i2 = 0; i2 < nrow; ++i2) {
-            const std::string& cur2_str = tmp_val_refv[i][i2];
+      //    };
+      //    i2 += 1;
+      //  };
+      //  if (i2 == 11) {
+      //    if (is_bool) {
+      //      type_refv.push_back('b');
+      //      matr_idx[2].push_back(i);
+      //    } else if (is_unsigned) {
+      //      type_refv.push_back('u');
+      //      matr_idx[4].push_back(i);
+      //    };
+      //  };
+      //};
 
-            int value;
-            auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
-            if (ec == std::errc()) {
-                int_v.push_back(value);
-            } else {
-                int_v.push_back(0);
-            };     
+      ////#pragma omp parallel for
+      //for (i = 0; i < ncol; ++i) {
+      //  if (type_refv[i] == 's') {
+      //    for (i2 = 0; i2 < nrow; ++i2) {
+      //      str_v.push_back(tmp_val_refv[i][i2]);
+      //    };
+      //  } else if (type_refv[i] == 'c') {
+      //    for (i2 = 0; i2 < nrow; ++i2) {
+      //      chr_v.push_back(tmp_val_refv[i][i2][0]);
+      //    };
+      //  } else if (type_refv[i] == 'b') {
+      //    for (i2 = 0; i2 < nrow; ++i2) {
+      //      const std::string& cur2_str = tmp_val_refv[i][i2];
 
-          };
-        } else if (type_refv[i] == 'i') {
-          for (i2 = 0; i2 < nrow; ++i2) {
-            const std::string& cur2_str = tmp_val_refv[i][i2];
+      //      int value;
+      //      auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
+      //      if (ec == std::errc()) {
+      //          int_v.push_back(value);
+      //      } else {
+      //          int_v.push_back(0);
+      //      };     
 
-            int value;
-            auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
-            if (ec == std::errc()) {
-                int_v.push_back(value);
-            } else {
-                int_v.push_back(0);
-            };     
-           
-          };
-        } else if (type_refv[i] == 'u') {
-          for (i2 = 0; i2 < nrow; ++i2) {
-            const std::string& cur2_str = tmp_val_refv[i][i2];
+      //    };
+      //  } else if (type_refv[i] == 'i') {
+      //    for (i2 = 0; i2 < nrow; ++i2) {
+      //      const std::string& cur2_str = tmp_val_refv[i][i2];
 
-            int value;
-            auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
-            if (ec == std::errc()) {
-                int_v.push_back(value);
-            } else {
-                int_v.push_back(0);
-            };     
+      //      int value;
+      //      auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
+      //      if (ec == std::errc()) {
+      //          int_v.push_back(value);
+      //      } else {
+      //          int_v.push_back(0);
+      //      };     
+      //     
+      //    };
+      //  } else if (type_refv[i] == 'u') {
+      //    for (i2 = 0; i2 < nrow; ++i2) {
+      //      const std::string& cur2_str = tmp_val_refv[i][i2];
 
-          };
-        } else {
-          for (i2 = 0; i2 < nrow; ++i2) {
-            const std::string& cur2_str = tmp_val_refv[i][i2];
+      //      int value;
+      //      auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
+      //      if (ec == std::errc()) {
+      //          int_v.push_back(value);
+      //      } else {
+      //          int_v.push_back(0);
+      //      };     
 
-            int value;
-            auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
-            if (ec == std::errc()) {
-                int_v.push_back(value);
-            } else {
-                int_v.push_back(0);
-            };     
-            
-          };
-        };
-      };
+      //    };
+      //  } else {
+      //    for (i2 = 0; i2 < nrow; ++i2) {
+      //      const std::string& cur2_str = tmp_val_refv[i][i2];
+
+      //      int value;
+      //      auto [ptr, ec] = std::from_chars(cur2_str.data(), cur2_str.data() + cur2_str.size(), value);
+      //      if (ec == std::errc()) {
+      //          int_v.push_back(value);
+      //      } else {
+      //          int_v.push_back(0);
+      //      };     
+      //      
+      //    };
+      //  };
+      //};
     };
 
     //void type_classification() {
