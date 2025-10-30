@@ -2,7 +2,7 @@
 
 int main(int argc, char** argv) {
 
-    std::string file_name = "/home/kvv/ssd1/test_data/Airline_Delay_Cause.csv";
+    std::string file_name = "csv_test/Airline_Delay_Cause.csv";
     int runs = 5;
 
     Dataframe obj1;
