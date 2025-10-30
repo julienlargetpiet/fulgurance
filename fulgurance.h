@@ -7,6 +7,8 @@
 #include <cmath>
 #include <chrono>
 #include <immintrin.h>
+#include <cstddef>
+#include <cstdint>
 #include <thread>
 #include <map>
 #include <fstream>
@@ -5821,6 +5823,28 @@ template <typename T> double diff_mean(std::vector<T> &x) {
 //@E See below
 //@X
 
+inline size_t simd_count_newlines(const char* data, size_t size) noexcept {
+    const __m256i NL = _mm256_set1_epi8('\n');
+    const __m256i CR = _mm256_set1_epi8('\r');
+    size_t count = 0;
+
+    size_t i = 0;
+    for (; i + 32 <= size; i += 32) {
+        __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(data + i));
+        int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
+        int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
+        count += __builtin_popcount(mNL | mCR);
+        _mm_prefetch(data + i + 512, _MM_HINT_T0);
+    }
+
+    // tail loop for remaining bytes
+    for (; i < size; ++i)
+        if (data[i] == '\n' || data[i] == '\r')
+            ++count;
+
+    return count;
+}
+
 struct PairHash {
     using sv = std::string_view;
     std::size_t operator()(const std::pair<sv, sv>& p) const noexcept {
@@ -5829,56 +5853,6 @@ struct PairHash {
         return h1 ^ (h2 + 0x9e3779b97f4a7c15ULL + (h1 << 6) + (h1 >> 2));
     }
 };
-
-struct CsvMask {
-    std::vector<size_t> commas;
-    std::vector<size_t> newlines;
-    std::vector<size_t> quotes;
-};
-
-CsvMask simd_scan_csv(std::string_view data, char delim, char quote) {
-    CsvMask result;
-    const char* ptr = data.data();
-    const char* end = ptr + data.size();
-
-    __m256i d = _mm256_set1_epi8(delim);
-    __m256i q = _mm256_set1_epi8(quote);
-    __m256i n = _mm256_set1_epi8('\n');
-    __m256i r = _mm256_set1_epi8('\r');
-
-    for (size_t offset = 0; ptr + 32 <= end; ptr += 32, offset += 32) {
-        __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(ptr));
-
-        __m256i cmp_d = _mm256_cmpeq_epi8(chunk, d);
-        __m256i cmp_q = _mm256_cmpeq_epi8(chunk, q);
-        __m256i cmp_n = _mm256_cmpeq_epi8(chunk, n);
-        __m256i cmp_r = _mm256_cmpeq_epi8(chunk, r);
-
-        int mask_d = _mm256_movemask_epi8(cmp_d);
-        int mask_q = _mm256_movemask_epi8(cmp_q);
-        int mask_n = _mm256_movemask_epi8(cmp_n);
-        int mask_r = _mm256_movemask_epi8(cmp_r);
-
-        while (mask_d) { 
-          result.commas.push_back(offset + __builtin_ctz(mask_d)); 
-          mask_d &= mask_d - 1; 
-        };
-        while (mask_q) { 
-          result.quotes.push_back(offset + __builtin_ctz(mask_q)); 
-          mask_q &= mask_q - 1; 
-        };
-        while (mask_n) { 
-          result.newlines.push_back(offset + __builtin_ctz(mask_n)); 
-          mask_n &= mask_n - 1; 
-        };
-        while (mask_r) { 
-          result.newlines.push_back(offset + __builtin_ctz(mask_r)); 
-          mask_r &= mask_r - 1; 
-        };
-    };
-
-    return result;
-}
 
 class Dataframe{
   private:
@@ -5972,12 +5946,6 @@ class Dataframe{
       bool str_cxt = 0;
       tmp_val_refv.reserve(64);
 
-      //const char* ptr = csv_view.data();
-      //const char* end = ptr + csv_view.size();
-      //
-      //__m256i comma = _mm256_set1_epi8(',');
-      //__m256i newline = _mm256_set1_epi8('\n');
-
       if (header_name) {
 
         bool in_quotes = false;
@@ -6057,22 +6025,25 @@ class Dataframe{
 
       size_t header_end = csv_view.find_first_of("\r\n");
       if (header_end == std::string_view::npos) header_end = csv_view.size();
-        
+      
       std::string_view data_view = (header_end < csv_view.size())
-          ? csv_view.substr(header_end + ((header_end + 1 < csv_view.size() && csv_view[header_end] == '\r' && csv_view[header_end + 1] == '\n') ? 2 : 1))
+          ? csv_view.substr(header_end + ((header_end + 1 < csv_view.size() &&
+                                           csv_view[header_end] == '\r' &&
+                                           csv_view[header_end + 1] == '\n') ? 2 : 1))
           : std::string_view{};
       
-      size_t nrows_est = 0;
-      for (char ch : data_view) if (ch == '\n') ++nrows_est;
-      if (!data_view.empty() && data_view.back() != '\n' && data_view.back() != '\r') ++nrows_est; 
-      
+      size_t nrows_est = simd_count_newlines(data_view.data(), data_view.size());
+      if (!data_view.empty() && data_view.back() != '\n' && data_view.back() != '\r')
+          ++nrows_est;
+
       for (auto& col : tmp_val_refv) {
         col.reserve(nrows_est);
       };
 
       i += 1;
 
-        {
+      if constexpr (strt_row == 0 && end_row == 0) {
+ 
             const char* base = csv_view.data();
             const size_t N = csv_view.size();
         
@@ -6080,20 +6051,15 @@ class Dataframe{
             size_t field_start = i;
             verif_ncol = 0;
 
-        
-            //size_t pos = i;                 
-            //const char* ptr = base + pos;
-            //const char* end = base + N;
-            size_t remaining = N - i;
             size_t pos = i;
 
             __m256i D = _mm256_set1_epi8(delim);
             __m256i Q = _mm256_set1_epi8(str_context);
-            __m256i NL = _mm256_set1_epi8('\n');
-            __m256i CR = _mm256_set1_epi8('\r');
-    
+            static const __m256i NL = _mm256_set1_epi8('\n');
+            static const __m256i CR = _mm256_set1_epi8('\r');
 
             for (; pos + 32 <= N; ) {
+    
               __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
 
               int mD  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
@@ -6113,15 +6079,15 @@ class Dataframe{
                       in_quotes = !in_quotes;
                   }
                   else if (!in_quotes && c == delim) {
-                      // --- Field boundary ---
                       std::string_view field = csv_view.substr(field_start, idx - field_start);
+
                       tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
                       ++verif_ncol;
                       field_start = idx + 1;
                   }
                   else if (!in_quotes && (c == '\n' || c == '\r')) {
-                      // --- End of row ---
                       std::string_view field = csv_view.substr(field_start, idx - field_start);
+
                       tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
 
                       if (verif_ncol + 1 != ncol) {
@@ -6133,13 +6099,12 @@ class Dataframe{
                       ++nrow;
                       verif_ncol = 0;
 
-                      // Handle CRLF properly
                       size_t advance = 1;
                       if (c == '\r' && idx + 1 < N && base[idx + 1] == '\n')
                           ++advance;
 
                       field_start = idx + advance;
-                      pos = idx + advance; // realign main loop position
+                      pos = idx + advance; 
                       goto next_chunk;
                   }
 
@@ -6151,162 +6116,129 @@ class Dataframe{
                 continue;
           }
 
-            for (; pos < N; ++pos) {
-                char c = base[pos];
-                if (c == str_context) {
-                    in_quotes = !in_quotes;
-                } else if (!in_quotes && c == delim) {
-                    std::string_view field = csv_view.substr(field_start, pos - field_start);
-                    if (field.empty()) {
-                        tmp_val_refv[verif_ncol].push_back("NA");
-                    } else {
-                        tmp_val_refv[verif_ncol].emplace_back(field);
-                    }
-                    ++verif_ncol;
-                    field_start = pos + 1;
-                } else if (!in_quotes && (c == '\n' || c == '\r')) {
-                    if (verif_ncol + 1 != ncol) {
-                        std::cerr << "column number problem at row: " << nrow << " in readf\n";
-                        reinitiate();
-                        return;
-                    }
-                    std::string_view field = csv_view.substr(field_start, pos - field_start);
-                    if (field.empty()) {
-                        tmp_val_refv[verif_ncol].push_back("NA");
-                    } else {
-                        tmp_val_refv[verif_ncol].emplace_back(field);
-                    }
+          for (; pos < N; ++pos) {
+              char c = base[pos];
+              if (c == str_context) {
+                  in_quotes = !in_quotes;
+              } else if (!in_quotes && c == delim) {
+                  std::string_view field = csv_view.substr(field_start, pos - field_start);
+                  if (field.empty()) {
+                      tmp_val_refv[verif_ncol].push_back("NA");
+                  } else {
+                      tmp_val_refv[verif_ncol].emplace_back(field);
+                  }
+                  ++verif_ncol;
+                  field_start = pos + 1;
+              } else if (!in_quotes && (c == '\n' || c == '\r')) {
+                  if (verif_ncol + 1 != ncol) {
+                      std::cerr << "column number problem at row: " << nrow << " in readf\n";
+                      reinitiate();
+                      return;
+                  }
+                  std::string_view field = csv_view.substr(field_start, pos - field_start);
+                  if (field.empty()) {
+                      tmp_val_refv[verif_ncol].push_back("NA");
+                  } else {
+                      tmp_val_refv[verif_ncol].emplace_back(field);
+                  }
         
-                    ++nrow;
-                    verif_ncol = 0;
+                  ++nrow;
+                  verif_ncol = 0;
         
-                    if (pos + 1 < N && base[pos] == '\r' && base[pos + 1] == '\n') {
-                        ++pos;
-                    }
-                    field_start = pos + 1;
-                }
-            }
+                  if (pos + 1 < N && base[pos] == '\r' && base[pos + 1] == '\n') {
+                      ++pos;
+                  }
+                  field_start = pos + 1;
+              }
+          }
         
-        }
+        } else if constexpr (strt_row != 0 && end_row != 0) {
+    
+            size_t count = 0;
+            for (;count < strt_row ; i += 1) {
+              if (csv_view[i] == '\n') {
+                count += 1;
+              };
+            };
 
-        //bool in_quotes = false;
-        //i += 1;
-        //size_t field_start = i;
-        //verif_ncol = 0;
+            const char* base = csv_view.data();
+            const size_t N = csv_view.size();
+        
+            bool in_quotes = false;
+            size_t field_start = i;
+            verif_ncol = 0;
 
-        //for (; i < csv_view.size(); ++i) {
-        //    char c = csv_view[i];
-        //    if (c == '\n' || c == '\r') {
+            size_t pos = i;
 
-        //      if (verif_ncol + 1 != ncol) {
-        //          std::cerr << "column number problem at row: " << nrow << " in readf\n";
-        //          reinitiate();
-        //          return;
-        //      }
+            __m256i D = _mm256_set1_epi8(delim);
+            __m256i Q = _mm256_set1_epi8(str_context);
+            static const __m256i NL = _mm256_set1_epi8('\n');
+            static const __m256i CR = _mm256_set1_epi8('\r');
 
-        //      std::string_view field = csv_view.substr(field_start, i - field_start);
-        //      if (field.empty()) {
-        //          tmp_val_refv[verif_ncol].push_back("NA");
-        //      } else {
-        //          tmp_val_refv[verif_ncol].emplace_back(field);
-        //      }
+            for (; pos + 32 <= N; ) {
+    
+              __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
 
-        //      verif_ncol = 0;
+              int mD  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
+              int mQ  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, Q));
+              int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
+              int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
 
-        //      if (i + 1 < csv_view.size() && csv_view[i + 1] == '\n') {
-        //        ++i;
-        //      };
+              int mNL_any = (mNL | mCR);
+              int events  = (mD | mNL_any | mQ);
 
-        //      ++nrow;
-        //      field_start = i + 1;
-        //      continue;
-        //    } else if (c == str_context) {
-        //        in_quotes = !in_quotes;
-        //    } else if (c == delim && !in_quotes) {
-        //        std::string_view field = csv_view.substr(field_start, i - field_start);
-        //
-        //        tmp_val_refv[verif_ncol].emplace_back(field);
-        //        ++verif_ncol;
-        //        field_start = i + 1;
-        //    }
-        //}
+              while (events) {
+                  int bit = __builtin_ctz(events);
+                  size_t idx = pos + bit;
+                  char c = base[idx];
 
+                  if (c == str_context) {
+                      in_quotes = !in_quotes;
+                  }
+                  else if (!in_quotes && c == delim) {
+                      std::string_view field = csv_view.substr(field_start, idx - field_start);
 
-      //} else if constexpr (strt_row != 0 && end_row != 0) {
-      //
-      //  if (strt_row > end_row) {
-      //    std::cerr << "strt_row must be lower or equal than end_row\n";
-      //    return;
-      //  };
+                      tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+                      ++verif_ncol;
+                      field_start = idx + 1;
+                  }
+                  else if (!in_quotes && (c == '\n' || c == '\r')) {
+                      std::string_view field = csv_view.substr(field_start, idx - field_start);
 
-      //  unsigned int row_check = 0;
-      //  while (row_check < strt_row) {
-      //    getline(readfile, currow);
-      //    row_check += 1;
-      //  };
+                      tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
 
-      //  while (getline(readfile, currow)) {
-      //    verif_ncol = 1;
-      //    str_cxt = 0;
-      //    i = 0;
-      //    while (i < currow.length()) {
+                      if (verif_ncol + 1 != ncol) {
+                          std::cerr << "column number problem at row: " << nrow << "\n";
+                          reinitiate();
+                          return;
+                      }
 
-      //      if (currow[i] == '\r') {
-      //        break;
-      //      };
+                      ++nrow;
+                      if (nrow == end_row) {
+                        goto next_chunk2b;
+                      };
+                      verif_ncol = 0;
 
-      //      if (currow[i] == delim && !str_cxt) {
-      //        if (i == 0) {
-      //          if (longest_v[verif_ncol - 1] < 2) {
-      //            longest_v[verif_ncol - 1] = 2;
-      //          };
-      //          tmp_val_refv[0].push_back("NA");
-      //        } else if (currow[i - 1] == delim) {
-      //          if (longest_v[verif_ncol - 1] < 2) {
-      //            longest_v[verif_ncol - 1] = 2;
-      //          };
-      //          tmp_val_refv[verif_ncol - 1].push_back("NA");
-      //        } else {
-      //          if (longest_v[verif_ncol - 1] < cur_str.length()) {
-      //            longest_v[verif_ncol - 1] = cur_str.length();
-      //          };
-      //          tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-      //        };
-      //        cur_str = "";
-      //        verif_ncol += 1;
-      //      } else if (currow[i] == str_context_begin && !str_cxt) {
-      //        str_cxt = 1;
-      //      } else if (currow[i] == str_context_end) {
-      //        str_cxt = 0;
-      //      } else {
-      //        cur_str.push_back(currow[i]);
-      //      };
-      //      i += 1;
-      //    };
-      //    if (currow[i - 1] == delim) {
-      //      if (longest_v[verif_ncol - 1] < 2) {
-      //        longest_v[verif_ncol - 1] = 2;
-      //      };
-      //      tmp_val_refv[verif_ncol - 1].push_back("0");
-      //    } else {
-      //      if (longest_v[verif_ncol - 1] < cur_str.length()) {
-      //        longest_v[verif_ncol - 1] = cur_str.length();
-      //      };
-      //      tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-      //    };
-      //    cur_str = "";
-      //    if (verif_ncol != ncol) {
-      //      std::cout << "column number problem at row: " << nrow << "\n";
-      //      reinitiate();
-      //      return;
-      //    };
-      //    nrow += 1;
-      //    row_check += 1;
-      //    if (row_check > end_row) {
-      //      break;
-      //    };
-      //  };
+                      size_t advance = 1;
+                      if (c == '\r' && idx + 1 < N && base[idx + 1] == '\n')
+                          ++advance;
 
+                      field_start = idx + advance;
+                      pos = idx + advance; 
+                      goto next_chunk2;
+                  }
+
+                  events &= (events - 1);
+              }
+
+              pos += 32;
+              next_chunk2:
+                continue;
+              next_chunk2b:
+                break;
+          }
+          
+      };
       //} else if constexpr (strt_row != 0) {
 
       //  unsigned int row_check = 0;
@@ -8965,7 +8897,6 @@ class Dataframe{
       type_classification();
       name_v = cur_obj.get_colname();
       name_v_row = cur_obj.get_rowname(); 
-      longest_determine();
     };
 
     void get_dataframe_filter(std::vector<int> &cols, 
@@ -8999,7 +8930,6 @@ class Dataframe{
       type_classification();
       name_v = cur_obj.get_colname();
       name_v_row = cur_obj.get_rowname(); 
-      longest_determine();
     };
 
     void get_dataframe_filter_idx(std::vector<int> &cols, 
@@ -9038,7 +8968,6 @@ class Dataframe{
       type_classification();
       name_v = cur_obj.get_colname();
       name_v_row = cur_obj.get_rowname(); 
-      longest_determine();
     };
 
     void writef(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_bgn = '\'', char str_context_end = '\'') {
@@ -9776,7 +9705,6 @@ class Dataframe{
         };
       };
       type_classification();
-      longest_determine();
     };
 
     void transform_merge_inner2(Dataframe &obj, 
@@ -9953,7 +9881,6 @@ class Dataframe{
         };
       };
       ncol += ncol2;
-      longest_determine();
     };
 
     void transform_merge_inner2_clean(Dataframe &obj, 
@@ -10190,7 +10117,6 @@ class Dataframe{
                         dbl_v.begin() + pos_val + delta_col);
       };
       dbl_v.shrink_to_fit();
-      longest_determine();
     };
 
     void merge_inner2(Dataframe &obj1, Dataframe &obj2, bool colname, unsigned int &key1, unsigned int &key2) {
@@ -10244,7 +10170,6 @@ class Dataframe{
           };
         };
       };
-      longest_determine();
       type_classification();
     };
 
@@ -10323,7 +10248,6 @@ class Dataframe{
           };
         };
       };
-      longest_determine();
       type_classification();
     };
     
@@ -10507,7 +10431,6 @@ class Dataframe{
         };
       };
       ncol += ncol2;
-      longest_determine();
     };
 
     void transform_merge_excluding_clean(Dataframe &obj, 
@@ -10751,7 +10674,6 @@ class Dataframe{
                         dbl_v.begin() + pos_val + delta_col);
       };
       dbl_v.shrink_to_fit();
-      longest_determine();
     };
 
     void merge_excluding_both(Dataframe &obj1, 
@@ -10861,7 +10783,6 @@ class Dataframe{
           };
         };
       };
-      longest_determine();
       type_classification();
     };
 
@@ -10983,7 +10904,6 @@ class Dataframe{
           };
         };
       };
-      longest_determine();
       type_classification();
     };
 
@@ -11106,7 +11026,6 @@ class Dataframe{
           };
         };
       };
-      longest_determine();
       type_classification();
     };
 
@@ -11262,7 +11181,6 @@ class Dataframe{
       } else {
         name_v.resize(ncol);
       };
-      longest_determine();
     };
 
     void transform_filter(std::vector<bool>& mask) {
@@ -11497,7 +11415,6 @@ class Dataframe{
       };
       type_refv.push_back('u');
       ncol += 1;
-      longest_determine();
     };
 
     void pivot_int(Dataframe &obj, unsigned int &n1, unsigned int& n2, unsigned int& n3) {
@@ -11572,7 +11489,6 @@ class Dataframe{
       for (auto& [key_v, value] : idx_row) {
         name_v_row[value] = key_v;
       };
-      longest_determine();
     };
 
     void pivot_uint(Dataframe &obj, unsigned int &n1, unsigned int& n2, unsigned int& n3) {
@@ -11646,7 +11562,6 @@ class Dataframe{
       for (auto& [key_v, value] : idx_row) {
         name_v_row[value] = key_v;
       };
-      longest_determine();
     };
 
     void pivot_dbl(Dataframe &obj, unsigned int &n1, unsigned int& n2, unsigned int& n3) {
@@ -11722,7 +11637,6 @@ class Dataframe{
       for (auto& [key_v, value] : idx_row) {
         name_v_row[value] = key_v;
       };
-      longest_determine();
     };
 
     template <bool asc = 1>
@@ -12181,7 +12095,6 @@ class Dataframe{
         i += 1;
       };
 
-      longest_determine();
     };
 
     void set_colname(std::vector<std::string> &x) {
