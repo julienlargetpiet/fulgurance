@@ -6097,20 +6097,15 @@ class Dataframe{
     
     template <unsigned int strt_row = 0, unsigned int end_row = 0, bool MULTITHREADING = 0>
     void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context = '\'') {
-       
-      //std::ifstream file(file_name, std::ios::binary | std::ios::ate);
-      //size_t size = file.tellg();
-      //file.seekg(0);
-      //std::string buffer(size, '\0');
-      //file.read(buffer.data(), size);
-      //std::string_view csv_view(buffer);
-
+        
       int fd = open(file_name.c_str(), O_RDONLY);
       if (fd == -1) {
           perror("open");
           throw std::runtime_error("Failed to open file: " + file_name);
       }
       
+      posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
+
       size_t size = lseek(fd, 0, SEEK_END);
       if (size == (size_t)-1) {
           perror("lseek");
