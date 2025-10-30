@@ -18,6 +18,9 @@
 #include <regex>
 #include "include/ankerl/unordered_dense.h"
 #include <omp.h>
+#include <sys/mman.h>
+#include <sys/stat.h> 
+#include <fcntl.h>
 
 #if __cplusplus >= 202002L
 #include <variant>
@@ -5908,31 +5911,6 @@ inline SimdCountLines simd_count_newlines(const char* data, size_t size) noexcep
 //    return result;
 //}
 
-//inline bool simd_can_be_nb(const char* s, size_t len) noexcept {
-//    if (len == 0) return false;
-//
-//    static const __m256i zero = _mm256_set1_epi8('0');
-//    static const __m256i nine = _mm256_set1_epi8('9');
-//
-//    size_t i = 0;
-//    for (; i + 32 <= len; i += 32) {
-//        __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(s + i));
-//
-//        __m256i ge0 = _mm256_cmpgt_epi8(chunk, _mm256_sub_epi8(zero, _mm256_set1_epi8(1))); // >= '0'
-//        __m256i le9 = _mm256_cmpgt_epi8(_mm256_add_epi8(nine, _mm256_set1_epi8(1)), chunk); // <= '9'
-//        __m256i mask = _mm256_and_si256(ge0, le9);
-//
-//        if (_mm256_movemask_epi8(mask) != 0xFFFFFFFF)
-//            return false;
-//    }
-//
-//    for (; i < len; ++i)
-//        if ((unsigned char)s[i] < '0' || (unsigned char)s[i] > '9')
-//            return false;
-//
-//    return true;
-//}
-
 inline bool simd_can_be_nb(const char* s, size_t len) noexcept {
     if (len == 0) return false;
 
@@ -6120,13 +6098,36 @@ class Dataframe{
     template <unsigned int strt_row = 0, unsigned int end_row = 0, bool MULTITHREADING = 0>
     void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context = '\'') {
        
-      std::ifstream file(file_name, std::ios::binary | std::ios::ate);
-      size_t size = file.tellg();
-      file.seekg(0);
-      std::string buffer(size, '\0');
-      file.read(buffer.data(), size);
+      //std::ifstream file(file_name, std::ios::binary | std::ios::ate);
+      //size_t size = file.tellg();
+      //file.seekg(0);
+      //std::string buffer(size, '\0');
+      //file.read(buffer.data(), size);
+      //std::string_view csv_view(buffer);
 
-      std::string_view csv_view(buffer);
+      int fd = open(file_name.c_str(), O_RDONLY);
+      if (fd == -1) {
+          perror("open");
+          throw std::runtime_error("Failed to open file: " + file_name);
+      }
+      
+      size_t size = lseek(fd, 0, SEEK_END);
+      if (size == (size_t)-1) {
+          perror("lseek");
+          close(fd);
+          throw std::runtime_error("Failed to determine file size: " + file_name);
+      }
+      
+      void* mapped = mmap(nullptr, size, PROT_READ, MAP_PRIVATE, fd, 0);
+      if (mapped == MAP_FAILED) {
+          perror("mmap");
+          close(fd);
+          throw std::runtime_error("Failed to mmap file: " + file_name);
+      }
+      
+      close(fd); 
+      
+      std::string_view csv_view(static_cast<const char*>(mapped), size);
             
       ncol = 1;
       std::vector<std::string> ex_vec = {};
@@ -6223,12 +6224,14 @@ class Dataframe{
        
       auto lines_info = simd_count_newlines(csv_view.data(), csv_view.size());
       const auto& newline_pos = lines_info.positions;
-      size_t nrows_est = lines_info.count;
+
+      nrow = lines_info.count;
+
       if (!data_view.empty() && data_view.back() != '\n' && data_view.back() != '\r')
-          ++nrows_est;
+          ++nrow;
 
       for (auto& col : tmp_val_refv) {
-        col.reserve(nrows_est);
+        col.reserve(nrow);
       };
 
       i += 1;
@@ -6255,6 +6258,8 @@ class Dataframe{
 
               for (; pos + 32 <= N; ) {
     
+                _mm_prefetch(base + pos + 512, _MM_HINT_T0);
+                
                 __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
 
                 int mD  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
@@ -6291,7 +6296,6 @@ class Dataframe{
                             return;
                         }
 
-                        ++nrow;
                         verif_ncol = 0;
 
                         size_t advance = 1;
@@ -6326,7 +6330,7 @@ class Dataframe{
                     field_start = pos + 1;
                 } else if (!in_quotes && (c == '\n' || c == '\r')) {
                     if (verif_ncol + 1 != ncol) {
-                        std::cerr << "column number problem at row: " << nrow << " in readf\n";
+                        std::cerr << "column number problem in readf\n";
                         reinitiate();
                         return;
                     }
@@ -6337,7 +6341,6 @@ class Dataframe{
                         tmp_val_refv[verif_ncol].emplace_back(field);
                     }
           
-                    ++nrow;
                     verif_ncol = 0;
           
                     if (pos + 1 < N && base[pos] == '\r' && base[pos + 1] == '\n') {
@@ -6348,7 +6351,9 @@ class Dataframe{
             }
           
           } else if constexpr (strt_row != 0 && end_row != 0) {
-    
+
+              nrow = end_row - strt_row + 1;
+
               size_t count = 0;
               for (;count < strt_row ; i += 1) {
                 if (csv_view[i] == '\n') {
@@ -6410,7 +6415,7 @@ class Dataframe{
                             return;
                         }
 
-                        ++nrow;
+                        //++nrow;
                         if (nrow == end_row2) {
                           goto next_chunk2b;
                         };
@@ -6435,168 +6440,209 @@ class Dataframe{
                   break;
             }
 
-        } else if constexpr (strt_row != 0) {
+          } else if constexpr (strt_row != 0) {
 
-              size_t count = 0;
-              for (;count < strt_row ; i += 1) {
-                if (csv_view[i] == '\n') {
-                  count += 1;
+                size_t count = 0;
+                for (;count < strt_row ; i += 1) {
+                  if (csv_view[i] == '\n') {
+                    count += 1;
+                  };
                 };
-              };
 
-              const char* base = csv_view.data();
-              const size_t N = csv_view.size();
-          
-              bool in_quotes = false;
-              size_t field_start = i;
-              verif_ncol = 0;
+                nrow = nrow - strt_row + 1;
 
-              size_t pos = i;
+                const char* base = csv_view.data();
+                const size_t N = csv_view.size();
+            
+                bool in_quotes = false;
+                size_t field_start = i;
+                verif_ncol = 0;
 
-              __m256i D = _mm256_set1_epi8(delim);
-              __m256i Q = _mm256_set1_epi8(str_context);
-              static const __m256i NL = _mm256_set1_epi8('\n');
-              static const __m256i CR = _mm256_set1_epi8('\r');
+                size_t pos = i;
 
-              for (; pos + 32 <= N; ) {
+                __m256i D = _mm256_set1_epi8(delim);
+                __m256i Q = _mm256_set1_epi8(str_context);
+                static const __m256i NL = _mm256_set1_epi8('\n');
+                static const __m256i CR = _mm256_set1_epi8('\r');
+
+                for (; pos + 32 <= N; ) {
     
-                __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
+                  __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
 
-                int mD  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
-                int mQ  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, Q));
-                int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
-                int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
+                  int mD  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
+                  int mQ  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, Q));
+                  int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
+                  int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
 
-                int mNL_any = (mNL | mCR);
-                int events  = (mD | mNL_any | mQ);
+                  int mNL_any = (mNL | mCR);
+                  int events  = (mD | mNL_any | mQ);
 
-                while (events) {
-                    int bit = __builtin_ctz(events);
-                    size_t idx = pos + bit;
-                    char c = base[idx];
+                  while (events) {
+                      int bit = __builtin_ctz(events);
+                      size_t idx = pos + bit;
+                      char c = base[idx];
 
-                    if (c == str_context) {
-                        in_quotes = !in_quotes;
+                      if (c == str_context) {
+                          in_quotes = !in_quotes;
+                      }
+                      else if (!in_quotes && c == delim) {
+                          std::string_view field = csv_view.substr(field_start, idx - field_start);
+
+                          tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+                          ++verif_ncol;
+                          field_start = idx + 1;
+                      }
+                      else if (!in_quotes && (c == '\n' || c == '\r')) {
+                          std::string_view field = csv_view.substr(field_start, idx - field_start);
+
+                          tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+
+                          if (verif_ncol + 1 != ncol) {
+                              std::cerr << "column number problem at row: " << nrow << "\n";
+                              reinitiate();
+                              return;
+                          }
+
+                          //++nrow;
+                          verif_ncol = 0;
+
+                          size_t advance = 1;
+                          if (c == '\r' && idx + 1 < N && base[idx + 1] == '\n')
+                              ++advance;
+
+                          field_start = idx + advance;
+                          pos = idx + advance; 
+                          goto next_chunk3;
+                      }
+
+                      events &= (events - 1);
+                  }
+
+                  pos += 32;
+                  next_chunk3:
+                    continue;
+              }
+
+              for (; pos < N; ++pos) {
+                char c = base[pos];
+                if (c == str_context) {
+                    in_quotes = !in_quotes;
+                } else if (!in_quotes && c == delim) {
+                    std::string_view field = csv_view.substr(field_start, pos - field_start);
+                    if (field.empty()) {
+                        tmp_val_refv[verif_ncol].push_back("NA");
+                    } else {
+                        tmp_val_refv[verif_ncol].emplace_back(field);
                     }
-                    else if (!in_quotes && c == delim) {
-                        std::string_view field = csv_view.substr(field_start, idx - field_start);
-
-                        tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
-                        ++verif_ncol;
-                        field_start = idx + 1;
+                    ++verif_ncol;
+                    field_start = pos + 1;
+                } else if (!in_quotes && (c == '\n' || c == '\r')) {
+                    if (verif_ncol + 1 != ncol) {
+                        std::cerr << "column number problem in readf\n";
+                        reinitiate();
+                        return;
                     }
-                    else if (!in_quotes && (c == '\n' || c == '\r')) {
-                        std::string_view field = csv_view.substr(field_start, idx - field_start);
-
-                        tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
-
-                        if (verif_ncol + 1 != ncol) {
-                            std::cerr << "column number problem at row: " << nrow << "\n";
-                            reinitiate();
-                            return;
-                        }
-
-                        ++nrow;
-                        verif_ncol = 0;
-
-                        size_t advance = 1;
-                        if (c == '\r' && idx + 1 < N && base[idx + 1] == '\n')
-                            ++advance;
-
-                        field_start = idx + advance;
-                        pos = idx + advance; 
-                        goto next_chunk3;
+                    std::string_view field = csv_view.substr(field_start, pos - field_start);
+                    if (field.empty()) {
+                        tmp_val_refv[verif_ncol].push_back("NA");
+                    } else {
+                        tmp_val_refv[verif_ncol].emplace_back(field);
                     }
-
-                    events &= (events - 1);
+          
+                    verif_ncol = 0;
+          
+                    if (pos + 1 < N && base[pos] == '\r' && base[pos + 1] == '\n') {
+                        ++pos;
+                    }
+                    field_start = pos + 1;
                 }
-
-                pos += 32;
-                next_chunk3:
-                  continue;
             }
 
-        } else if constexpr (end_row != 0) {
+          } else if constexpr (end_row != 0) {
 
-              const char* base = csv_view.data();
-              const size_t N = csv_view.size();
-          
-              bool in_quotes = false;
-              size_t field_start = i;
-              verif_ncol = 0;
+                const char* base = csv_view.data();
+                const size_t N = csv_view.size();
+            
+                bool in_quotes = false;
+                size_t field_start = i;
+                verif_ncol = 0;
 
-              size_t pos = i;
+                nrow = end_row;
 
-              __m256i D = _mm256_set1_epi8(delim);
-              __m256i Q = _mm256_set1_epi8(str_context);
-              static const __m256i NL = _mm256_set1_epi8('\n');
-              static const __m256i CR = _mm256_set1_epi8('\r');
+                size_t pos = i;
 
-              for (; pos + 32 <= N; ) {
+                __m256i D = _mm256_set1_epi8(delim);
+                __m256i Q = _mm256_set1_epi8(str_context);
+                static const __m256i NL = _mm256_set1_epi8('\n');
+                static const __m256i CR = _mm256_set1_epi8('\r');
+
+                for (; pos + 32 <= N; ) {
     
-                __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
+                  __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
 
-                int mD  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
-                int mQ  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, Q));
-                int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
-                int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
+                  int mD  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
+                  int mQ  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, Q));
+                  int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
+                  int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
 
-                int mNL_any = (mNL | mCR);
-                int events  = (mD | mNL_any | mQ);
+                  int mNL_any = (mNL | mCR);
+                  int events  = (mD | mNL_any | mQ);
 
-                while (events) {
-                    int bit = __builtin_ctz(events);
-                    size_t idx = pos + bit;
-                    char c = base[idx];
+                  while (events) {
+                      int bit = __builtin_ctz(events);
+                      size_t idx = pos + bit;
+                      char c = base[idx];
 
-                    if (c == str_context) {
-                        in_quotes = !in_quotes;
-                    }
-                    else if (!in_quotes && c == delim) {
-                        std::string_view field = csv_view.substr(field_start, idx - field_start);
+                      if (c == str_context) {
+                          in_quotes = !in_quotes;
+                      }
+                      else if (!in_quotes && c == delim) {
+                          std::string_view field = csv_view.substr(field_start, idx - field_start);
 
-                        tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
-                        ++verif_ncol;
-                        field_start = idx + 1;
-                    }
-                    else if (!in_quotes && (c == '\n' || c == '\r')) {
-                        std::string_view field = csv_view.substr(field_start, idx - field_start);
+                          tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+                          ++verif_ncol;
+                          field_start = idx + 1;
+                      }
+                      else if (!in_quotes && (c == '\n' || c == '\r')) {
+                          std::string_view field = csv_view.substr(field_start, idx - field_start);
 
-                        tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+                          tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
 
-                        if (verif_ncol + 1 != ncol) {
-                            std::cerr << "column number problem at row: " << nrow << "\n";
-                            reinitiate();
-                            return;
-                        }
+                          if (verif_ncol + 1 != ncol) {
+                              std::cerr << "column number problem at row: " << nrow << "\n";
+                              reinitiate();
+                              return;
+                          }
 
-                        ++nrow;
-                        if (nrow == end_row) {
-                          goto next_chunk4b;
-                        };
-                        verif_ncol = 0;
+                          //++nrow;
+                          if (nrow == end_row) {
+                            goto next_chunk4b;
+                          };
+                          verif_ncol = 0;
 
-                        size_t advance = 1;
-                        if (c == '\r' && idx + 1 < N && base[idx + 1] == '\n')
-                            ++advance;
+                          size_t advance = 1;
+                          if (c == '\r' && idx + 1 < N && base[idx + 1] == '\n')
+                              ++advance;
 
-                        field_start = idx + advance;
-                        pos = idx + advance; 
-                        goto next_chunk4;
-                    }
+                          field_start = idx + advance;
+                          pos = idx + advance; 
+                          goto next_chunk4;
+                      }
 
-                    events &= (events - 1);
-                }
+                      events &= (events - 1);
+                  }
 
-                pos += 32;
-                next_chunk4:
-                  continue;
-                next_chunk4b:
-                  break;
-            }
+                  pos += 32;
+                  next_chunk4:
+                    continue;
+                  next_chunk4b:
+                    break;
+              }
 
-        };
+          };
       }
+
+      munmap((void*)csv_view.data(), csv_view.size());
       type_classification();
     };
 
