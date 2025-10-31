@@ -5827,6 +5827,146 @@ template <typename T> double diff_mean(std::vector<T> &x) {
 //@E See below
 //@X
 
+inline void parse_rows_range(
+    std::string_view csv_view,
+    size_t start_byte,
+    size_t end_byte,
+    std::vector<std::vector<std::string_view>>& columns,
+    char delim,
+    char str_context,
+    unsigned int ncol
+) noexcept
+{
+    const char* base = csv_view.data();
+    const size_t N = csv_view.size();
+    if (start_byte >= N) return;
+    end_byte = std::min(end_byte, N);
+
+    size_t pos = start_byte;
+    bool in_quotes = false;
+    size_t field_start = start_byte;
+    size_t verif_ncol = 0;
+
+    static const __m256i NL = _mm256_set1_epi8('\n');
+    static const __m256i CR = _mm256_set1_epi8('\r');
+    __m256i D = _mm256_set1_epi8(delim);
+    __m256i Q = _mm256_set1_epi8(str_context);
+
+    for (; pos + 32 <= N; ) {
+        _mm_prefetch(base + pos + 512, _MM_HINT_T0);
+        __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
+
+        int mD  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
+        int mQ  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, Q));
+        int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
+        int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
+
+        int mNL_any = (mNL | mCR);
+        int events  = (mD | mNL_any | mQ);
+
+        while (events) {
+            int bit = __builtin_ctz(events);
+            size_t idx = pos + bit;
+            char c = base[idx];
+
+            if (c == str_context) {
+                in_quotes = !in_quotes;
+            }
+            else if (!in_quotes && c == delim) {
+                std::string_view field = csv_view.substr(field_start, idx - field_start);
+                columns[verif_ncol].emplace_back(
+                    field.empty() ? std::string_view("NA") : field
+                );
+
+
+                ++verif_ncol;
+                field_start = idx + 1;
+            }
+            else if (!in_quotes && (c == '\n' || c == '\r')) {
+                std::string_view field = csv_view.substr(field_start, idx - field_start);
+                columns[verif_ncol].emplace_back(
+                    field.empty() ? std::string_view("NA") : field
+                );
+ 
+                if (verif_ncol + 1 != ncol) {
+                    std::cerr << "column number problem\n";
+                    return;
+                }
+
+                verif_ncol = 0;
+                size_t advance = (c == '\r' && idx + 1 < N && base[idx + 1] == '\n') ? 2 : 1;
+                field_start = idx + advance;
+                pos = idx + advance;
+                goto next_chunk;
+            }
+
+            events &= (events - 1);
+        }
+
+        pos += 32;
+        next_chunk:
+          continue;
+    }
+
+    for (; pos < N; ++pos) {
+        char c = base[pos];
+        if (c == str_context) {
+            in_quotes = !in_quotes;
+        } else if (!in_quotes && c == delim) {
+            std::string_view field = csv_view.substr(field_start, pos - field_start);
+            columns[verif_ncol].emplace_back(
+                field.empty() ? std::string_view("NA") : field
+            );
+
+            //if (field.length() > 200) {
+            //    std::cout << "incorrct \n";
+            //};
+
+            ++verif_ncol;
+            field_start = pos + 1;
+        } else if (!in_quotes && (c == '\n' || c == '\r')) {
+            std::string_view field = csv_view.substr(field_start, pos - field_start);
+            columns[verif_ncol].emplace_back(
+                field.empty() ? std::string_view("NA") : field
+            );
+
+            if (verif_ncol + 1 != ncol) {
+                std::cerr << "column number problem in readf\n";
+                return;
+            }
+
+            //if (field.length() > 200) {
+            //    std::cout << "incorrct \n";
+            //};
+
+
+            verif_ncol = 0;
+
+            if (c == '\r' && pos + 1 < N && base[pos + 1] == '\n')
+                ++pos;
+
+            field_start = pos + 1;
+        }
+    }
+
+    if (field_start < N) {
+        std::string_view field = csv_view.substr(field_start, N - field_start);
+        columns[verif_ncol].emplace_back(
+            field.empty() ? std::string_view("NA") : field
+        );
+    }
+
+
+    //if (field_start < N && verif_ncol + 1 == ncol) {
+    //    std::string_view field = csv_view.substr(field_start, N - field_start);
+    //
+    //    columns[verif_ncol].emplace_back(
+    //        field.empty() ? std::string_view("NA") : field
+    //    );
+    //}
+
+}
+
 struct SimdCountLines {
     size_t count;
     std::vector<size_t> positions;
@@ -5871,46 +6011,6 @@ inline SimdCountLines simd_count_newlines(const char* data, size_t size) noexcep
     return result;
 }
 
-//inline SimdCountLines simd_count_newlines(const char* data, size_t size) noexcept {
-//    SimdCountLines result;
-//    result.positions.reserve(size / 64); // rough heuristic
-//
-//    const __m256i NL = _mm256_set1_epi8('\n');
-//    const __m256i CR = _mm256_set1_epi8('\r');
-//
-//    size_t pos = 0;
-//    size_t count = 0;
-//
-//    for (; pos + 32 <= size; pos += 32) {
-//        __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(data + pos));
-//
-//        int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
-//        int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
-//
-//        int mask = mNL | mCR;
-//        while (mask) {
-//            int bit = __builtin_ctz(mask);
-//            result.positions.push_back(pos + bit);
-//            mask &= mask - 1;
-//            ++count;
-//        }
-//
-//        // optional prefetch next cache line
-//        _mm_prefetch(data + pos + 512, _MM_HINT_T0);
-//    }
-//
-//    // scalar tail for leftover bytes
-//    for (; pos < size; ++pos) {
-//        if (data[pos] == '\n' || data[pos] == '\r') {
-//            result.positions.push_back(pos);
-//            ++count;
-//        }
-//    }
-//
-//    result.count = count;
-//    return result;
-//}
-
 inline bool simd_can_be_nb(const char* s, size_t len) noexcept {
     if (len == 0) return false;
 
@@ -5924,28 +6024,24 @@ inline bool simd_can_be_nb(const char* s, size_t len) noexcept {
     for (; i + 32 <= len; i += 32) {
         __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(s + i));
 
-        // Compare to digits and dot
         __m256i ge0 = _mm256_cmpgt_epi8(chunk, _mm256_sub_epi8(zero, _mm256_set1_epi8(1))); // >= '0'
         __m256i le9 = _mm256_cmpgt_epi8(_mm256_add_epi8(nine, _mm256_set1_epi8(1)), chunk); // <= '9'
         __m256i is_digit = _mm256_and_si256(ge0, le9);
         __m256i is_dot   = _mm256_cmpeq_epi8(chunk, dot);
         __m256i allowed  = _mm256_or_si256(is_digit, is_dot);
 
-        // Check if all chars are allowed (digits or dot)
         int allowed_mask = _mm256_movemask_epi8(allowed);
         if (allowed_mask != 0xFFFFFFFF) return false;
 
-        // Count dots
         int dot_mask = _mm256_movemask_epi8(is_dot);
         int dot_count = __builtin_popcount(dot_mask);
         if (dot_count > 0) {
             if (dot_seen || dot_count > 1)
-                return false; // more than one dot total
+                return false;
             dot_seen = true;
         }
     }
 
-    // Handle tail (less than 32 chars)
     for (; i < len; ++i) {
         unsigned char c = s[i];
         if (c == '.') {
@@ -6021,6 +6117,7 @@ struct PairHash {
     }
 };
 
+template <unsigned int CORES = 1>
 class Dataframe{
   private:
     
@@ -6088,6 +6185,14 @@ class Dataframe{
         for (i2 = 0; i2 < nrow; ++i2) {
           if (tmp_val_refv[i][i2].length() > longest_v[i]) {
             longest_v[i] = tmp_val_refv[i][i2].length();
+
+            //if (longest_v[i] > 200) {
+            //    longest_v[i] = 10;
+            //    std::cout << "i :" << i << " i2: " << i2 << "\n"; 
+            //    std::cout << "nrow: " << nrow << "\n";
+            //    std::cout << "len: " << tmp_val_refv[i][i2].length() << "\n";
+            //}
+
           };
         };
       };
@@ -6095,7 +6200,7 @@ class Dataframe{
 
   public:
     
-    template <unsigned int strt_row = 0, unsigned int end_row = 0, bool MULTITHREADING = 0>
+    template <unsigned int strt_row = 0, unsigned int end_row = 0>
     void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context = '\'') {
         
       int fd = open(file_name.c_str(), O_RDONLY);
@@ -6104,14 +6209,16 @@ class Dataframe{
           throw std::runtime_error("Failed to open file: " + file_name);
       }
       
-      posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
-
       size_t size = lseek(fd, 0, SEEK_END);
       if (size == (size_t)-1) {
           perror("lseek");
           close(fd);
           throw std::runtime_error("Failed to determine file size: " + file_name);
       }
+
+      posix_fadvise(fd, 0, 0, POSIX_FADV_WILLNEED);
+      readahead(fd, 0, size);
+      posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
       
       void* mapped = mmap(nullptr, size, PROT_READ, MAP_PRIVATE, fd, 0);
       if (mapped == MAP_FAILED) {
@@ -6119,7 +6226,10 @@ class Dataframe{
           close(fd);
           throw std::runtime_error("Failed to mmap file: " + file_name);
       }
-      
+     
+      madvise(mapped, size, MADV_SEQUENTIAL | MADV_WILLNEED);
+      madvise(mapped, size, MADV_HUGEPAGE); // optional, if supported
+
       close(fd); 
       
       std::string_view csv_view(static_cast<const char*>(mapped), size);
@@ -6222,18 +6332,84 @@ class Dataframe{
 
       nrow = lines_info.count;
 
-      if (!data_view.empty() && data_view.back() != '\n' && data_view.back() != '\r')
-          ++nrow;
-
-      for (auto& col : tmp_val_refv) {
-        col.reserve(nrow);
+      if (header_name) {
+        nrow -= 1;
       };
 
+      if (!data_view.empty() && data_view.back() != '\n' && data_view.back() != '\r') {
+          ++nrow;
+      }
+  
       i += 1;
-      
-      if constexpr (MULTITHREADING) {
+     
+      if constexpr (CORES > 1) {
 
-      } else if constexpr (!MULTITHREADING) {
+        int nthreads = CORES;
+        size_t chunk = (nrow + nthreads - 1) / nthreads;
+
+        std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
+            nthreads, std::vector<std::vector<std::string_view>>(ncol)
+        );
+        
+        for (auto& thread : thread_columns) {
+            for (auto& col : thread)
+                col.reserve(chunk);
+        }
+ 
+        #pragma omp parallel for
+        for (int t = 0; t < nthreads; ++t) {
+
+            size_t start_row = t * chunk;
+            size_t end_row2   = std::min(start_row + chunk, static_cast<size_t>(nrow));
+        
+            if (start_row >= end_row2) continue;
+        
+            size_t start_byte = (start_row == 0) ? i : newline_pos[start_row - 1] + 1;
+            size_t end_byte   = newline_pos[end_row2 - 1];
+        
+            std::string_view subview(csv_view.data() + start_byte, 
+                                     end_byte - start_byte);
+
+            parse_rows_range(subview, 
+                            0, subview.size(), 
+                            thread_columns[t], 
+                            delim, str_context, ncol);
+        }
+
+        #pragma omp parallel for 
+        for (size_t c = 0; c < ncol; ++c) {
+            size_t total = 0;
+            for (int t = 0; t < nthreads; ++t)
+                total += thread_columns[t][c].size();
+        
+            auto& dst = tmp_val_refv[c];
+            dst.reserve(dst.size() + total);  
+        
+            for (int t = 0; t < nthreads; ++t) {
+                auto& src = thread_columns[t][c];
+                dst.insert(dst.end(), src.begin(), src.end());
+
+            }
+        }
+ 
+        //for (auto& el : tmp_val_refv) {
+        //  std::cout << el.back() << " ";
+        //}
+        //std::cout << "\n";
+        if (nrow > tmp_val_refv[0].size()) {
+          nrow -= 1;
+        };
+        //std::cout << tmp_val_refv[0].size() << "\n";
+
+      } else if constexpr (CORES == 1) {
+
+        for (auto& col : tmp_val_refv) {
+          col.reserve(nrow);
+        };
+
+        if (header_name) {
+          nrow -= 1;
+        }
 
         if constexpr (strt_row == 0 && end_row == 0) {
           
@@ -6253,7 +6429,7 @@ class Dataframe{
 
               for (; pos + 32 <= N; ) {
     
-                _mm_prefetch(base + pos + 512, _MM_HINT_T0);
+                _mm_prefetch(base + pos + 1024, _MM_HINT_T0);
                 
                 __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
 
@@ -6637,1410 +6813,12 @@ class Dataframe{
           };
       }
 
-      munmap((void*)csv_view.data(), csv_view.size());
+      madvise(mapped, size, MADV_DONTNEED);
+      munmap(mapped, size);
+
+      //munmap((void*)csv_view.data(), csv_view.size());
+ 
       type_classification();
-    };
-
-    template <unsigned int strt_row = 0, unsigned int end_row = 0>
-    void readf_trim(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'') {
-      std::string currow;
-      std::string cur_str = "";
-      std::fstream readfile(file_name);
-      getline(readfile, currow);
-      ncol = 1;
-      std::vector<std::string> ex_vec = {};
-      std::vector<unsigned int> matr_unknown_vec = {};
-      unsigned int i = 0;
-      unsigned int verif_ncol;
-      unsigned int max_lngth;
-      bool str_cxt = 0;
-      if (header_name) {
-        while (i < currow.length()) {
-          if (currow[i] == delim && !str_cxt) {
-            if (i == 0) {
-              max_lngth = 2;
-              name_v.push_back("NA");
-            } else if (currow[i - 1] == delim) {
-              max_lngth = 2;
-              name_v.push_back("NA");
-            } else {
-              max_lngth = cur_str.length();
-              name_v.push_back(cur_str);
-            };
-            tmp_val_refv.push_back(ex_vec);
-            ncol += 1;
-            cur_str = "";
-            longest_v.push_back(max_lngth);
-          } else if (currow[i] == str_context_begin) {
-            str_cxt = 1; 
-          } else if (currow[i] == str_context_end) {
-            str_cxt = 0;
-          } else {
-            cur_str.push_back(currow[i]);
-          };
-          i += 1;
-        };
-        if (currow[i - 1] == delim) {
-          max_lngth = 2;
-          name_v.push_back("NA");
-        } else {
-          max_lngth = cur_str.length();
-          name_v.push_back(cur_str);
-        };
-        tmp_val_refv.push_back(ex_vec);
-        cur_str = "";
-        longest_v.push_back(max_lngth);
-      } else {
-        while (i < currow.length()) {
-          if (currow[i] == delim && !str_cxt) {
-            if (i == 0) {
-              max_lngth = 2;
-            } else if (currow[i - 1] == delim) {
-              max_lngth = 2;
-            } else {
-              max_lngth = cur_str.length();
-              ex_vec.push_back(cur_str);
-              tmp_val_refv.push_back(ex_vec);
-              ex_vec = {};
-            };
-            ncol += 1;
-            cur_str = "";
-            longest_v.push_back(max_lngth);
-          } else if (currow[i] == str_context_begin) {
-            str_cxt = 1;
-          } else if (currow[i] == str_context_end) {
-            str_cxt = 0;
-          } else {
-            cur_str.push_back(currow[i]);
-          };
-          i += 1;
-        };
-        if (currow[i - 1] == delim) {
-          max_lngth = 2;
-        } else {
-          max_lngth = cur_str.length();
-          ex_vec.push_back(cur_str);
-          tmp_val_refv.push_back(ex_vec);
-          ex_vec = {};
-        };
-        cur_str = "";
-        longest_v.push_back(max_lngth);
-        nrow += 1;
-      };
-      type_refv.reserve(ncol);
-      if constexpr (strt_row == 0 && end_row == 0) {
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                
-                while (!(cur_str.empty()) && cur_str.back() == ' ') {
-                  cur_str.pop_back();
-                };
-
-                size_t start = 0;
-
-                while (!(cur_str.empty()) && cur_str[start] == ' ') {
-                  start += 1;
-                };
-
-                cur_str.erase(0, start);
-
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("NA");
-          } else {
-          
-            while (!(cur_str.empty()) && cur_str.back() == ' ') {
-              cur_str.pop_back();
-            };
-
-            size_t start = 0;
-
-            while (!(cur_str.empty()) && cur_str[start] == ' ') {
-              start += 1;
-            };
-
-            cur_str.erase(0, start);
-
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-        };
-      } else if constexpr (strt_row != 0 && end_row != 0) {
-
-        if (strt_row > end_row) {
-          std::cerr << "strt_row must be lower or equal than end_row\n";
-          return;
-        };
-
-        unsigned int row_check = 0;
-        while (row_check < strt_row) {
-          getline(readfile, currow);
-          row_check += 1;
-        };
-
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                
-                while (!(cur_str.empty()) && cur_str.back() == ' ') {
-                  cur_str.pop_back();
-                };
-
-                size_t start = 0;
-
-                while (!(cur_str.empty()) && cur_str[start] == ' ') {
-                  start += 1;
-                };
-
-                cur_str.erase(0, start);
-
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("NA");
-          } else {
-          
-            while (!(cur_str.empty()) && cur_str.back() == ' ') {
-              cur_str.pop_back();
-            };
-
-            size_t start = 0;
-
-            while (!(cur_str.empty()) && cur_str[start] == ' ') {
-              start += 1;
-            };
-
-            cur_str.erase(0, start);
-
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          row_check += 1;
-          nrow += 1;
-          if (row_check > end_row) {
-            break;
-          };
-        };
-
-      } else if constexpr (strt_row != 0) {
-
-        unsigned int row_check = 0;
-        while (row_check < strt_row) {
-          getline(readfile, currow);
-          row_check += 1;
-        };
-
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                
-                while (!(cur_str.empty()) && cur_str.back() == ' ') {
-                  cur_str.pop_back();
-                };
-
-                size_t start = 0;
-
-                while (!(cur_str.empty()) && cur_str[start] == ' ') {
-                  start += 1;
-                };
-
-                cur_str.erase(0, start);
-
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("NA");
-          } else {
-          
-            while (!(cur_str.empty()) && cur_str.back() == ' ') {
-              cur_str.pop_back();
-            };
-
-            size_t start = 0;
-
-            while (!(cur_str.empty()) && cur_str[start] == ' ') {
-              start += 1;
-            };
-
-            cur_str.erase(0, start);
-
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-        };
-
-      } else if constexpr (end_row != 0) {
-
-        unsigned int row_check = 0;
-
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                
-                while (!(cur_str.empty()) && cur_str.back() == ' ') {
-                  cur_str.pop_back();
-                };
-
-                size_t start = 0;
-
-                while (!(cur_str.empty()) && cur_str[start] == ' ') {
-                  start += 1;
-                };
-
-                cur_str.erase(0, start);
-
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("NA");
-          } else {
-          
-            while (!(cur_str.empty()) && cur_str.back() == ' ') {
-              cur_str.pop_back();
-            };
-
-            size_t start = 0;
-
-            while (!(cur_str.empty()) && cur_str[start] == ' ') {
-              start += 1;
-            };
-
-            cur_str.erase(0, start);
-
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-          row_check += 1;
-          if (row_check > end_row) {
-            break;
-          };
-        };
-
-      };
-      type_classification();
-    };
-
-    template <unsigned int strt_row = 0, unsigned int end_row = 0>
-    void readf_lambda(std::string &file_name, 
-                    void (&f)(std::string&),
-                    char delim = ',', 
-                    bool header_name = 1, 
-                    char str_context_begin = '\'', 
-                    char str_context_end = '\'') {
-      std::string currow;
-      std::string cur_str = "";
-      std::fstream readfile(file_name);
-      getline(readfile, currow);
-      ncol = 1;
-      std::vector<std::string> ex_vec = {};
-      std::vector<unsigned int> matr_unknown_vec = {};
-      unsigned int i = 0;
-      unsigned int verif_ncol;
-      unsigned int max_lngth;
-      bool str_cxt = 0;
-      if (header_name) {
-        while (i < currow.length()) {
-          if (currow[i] == delim && !str_cxt) {
-            if (i == 0) {
-              max_lngth = 2;
-              name_v.push_back("NA");
-            } else if (currow[i - 1] == delim) {
-              max_lngth = 2;
-              name_v.push_back("NA");
-            } else {
-              max_lngth = cur_str.length();
-              name_v.push_back(cur_str);
-            };
-            tmp_val_refv.push_back(ex_vec);
-            ncol += 1;
-            cur_str = "";
-            longest_v.push_back(max_lngth);
-          } else if (currow[i] == str_context_begin) {
-            str_cxt = 1; 
-          } else if (currow[i] == str_context_end) {
-            str_cxt = 0;
-          } else {
-            cur_str.push_back(currow[i]);
-          };
-          i += 1;
-        };
-        if (currow[i - 1] == delim) {
-          max_lngth = 2;
-          name_v.push_back("NA");
-        } else {
-          max_lngth = cur_str.length();
-          name_v.push_back(cur_str);
-        };
-        tmp_val_refv.push_back(ex_vec);
-        cur_str = "";
-        longest_v.push_back(max_lngth);
-      } else {
-        while (i < currow.length()) {
-          if (currow[i] == delim && !str_cxt) {
-            if (i == 0) {
-              max_lngth = 2;
-            } else if (currow[i - 1] == delim) {
-              max_lngth = 2;
-            } else {
-              max_lngth = cur_str.length();
-              ex_vec.push_back(cur_str);
-              tmp_val_refv.push_back(ex_vec);
-              ex_vec = {};
-            };
-            ncol += 1;
-            cur_str = "";
-            longest_v.push_back(max_lngth);
-          } else if (currow[i] == str_context_begin) {
-            str_cxt = 1;
-          } else if (currow[i] == str_context_end) {
-            str_cxt = 0;
-          } else {
-            cur_str.push_back(currow[i]);
-          };
-          i += 1;
-        };
-        if (currow[i - 1] == delim) {
-          max_lngth = 2;
-        } else {
-          max_lngth = cur_str.length();
-          ex_vec.push_back(cur_str);
-          tmp_val_refv.push_back(ex_vec);
-          ex_vec = {};
-        };
-        cur_str = "";
-        longest_v.push_back(max_lngth);
-        nrow += 1;
-      };
-      type_refv.reserve(ncol);
-      if constexpr (strt_row == 0 && end_row == 0) {
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                
-                f(cur_str);
-
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("NA");
-          } else {
-          
-            f(cur_str);
-            
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-        };
-      } else if constexpr (strt_row != 0 && end_row != 0) {
-
-        unsigned int row_check = 0;
-        while (row_check < strt_row) {
-          getline(readfile, currow);
-          row_check += 1;
-        };
-
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                
-                f(cur_str);
-
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("NA");
-          } else {
-          
-            f(cur_str);
-            
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-          row_check += 1;
-          if (row_check > end_row) {
-            break;
-          };
-        };
-      } else if constexpr (strt_row != 0) {
-
-        unsigned int row_check = 0;
-        while (row_check < strt_row) {
-          getline(readfile, currow);
-          row_check += 1;
-        };
-
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                
-                f(cur_str);
-
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("NA");
-          } else {
-          
-            f(cur_str);
-            
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-        };
-
-      } else if (end_row != 0) {
-
-        unsigned int row_check = 0;
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                
-                f(cur_str);
-
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("NA");
-          } else {
-          
-            f(cur_str);
-            
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-          row_check += 1;
-          if (row_check > end_row) {
-            break;
-          };
-        };
-
-      };
-      type_classification();
-    };
-
-    template <unsigned int strt_row = 0, unsigned int end_row = 0>
-    void readf_alrd(std::string &file_name, 
-                    std::string& dtype,
-                    char delim = ',', 
-                    bool header_name = 1, 
-                    char str_context_begin = '\'', 
-                    char str_context_end = '\'') {
-      std::string currow;
-      std::string cur_str = "";
-      std::fstream readfile(file_name);
-      getline(readfile, currow);
-      ncol = 1;
-      std::vector<std::string> ex_vec = {};
-      std::vector<unsigned int> matr_unknown_vec = {};
-      unsigned int i;
-      for (i = 0; i < dtype.size(); i += 1) {
-        switch (dtype[i]) {
-          case 's' : { matr_idx[0].push_back(i);
-                       type_refv.push_back('s');
-                       break;
-                       };
-          case 'c' : { matr_idx[1].push_back(i);
-                       type_refv.push_back('c');
-                       break;
-                       };
-          case 'b' : { matr_idx[2].push_back(i);
-                       type_refv.push_back('b');
-                       break;
-                        };
-          case 'i' : { matr_idx[3].push_back(i);
-                       type_refv.push_back('i');
-                       break;
-                       };
-          case 'u' : { matr_idx[4].push_back(i);
-                       type_refv.push_back('u');
-                       break;
-                        };
-          case 'd' : { matr_idx[5].push_back(i);
-                       type_refv.push_back('d');
-                       break;
-                        };
-        };
-      };
-      i = 0;
-      unsigned int verif_ncol;
-      unsigned int max_lngth;
-      bool str_cxt = 0;
-      if (header_name) {
-        while (i < currow.length()) {
-          if (currow[i] == delim && !str_cxt) {
-            if (i == 0) {
-              max_lngth = 2;
-              name_v.push_back("NA");
-            } else if (currow[i - 1] == delim) {
-              max_lngth = 2;
-              name_v.push_back("NA");
-            } else {
-              max_lngth = cur_str.length();
-              name_v.push_back(cur_str);
-            };
-            tmp_val_refv.push_back(ex_vec);
-            ncol += 1;
-            cur_str = "";
-            longest_v.push_back(max_lngth);
-          } else if (currow[i] == str_context_begin) {
-            str_cxt = 1; 
-          } else if (currow[i] == str_context_end) {
-            str_cxt = 0;
-          } else {
-            cur_str.push_back(currow[i]);
-          };
-          i += 1;
-        };
-        if (currow[i - 1] == delim) {
-          max_lngth = 2;
-          name_v.push_back("NA");
-        } else {
-          max_lngth = cur_str.length();
-          name_v.push_back(cur_str);
-        };
-        tmp_val_refv.push_back(ex_vec);
-        cur_str = "";
-        longest_v.push_back(max_lngth);
-      } else {
-        while (i < currow.length()) {
-          if (currow[i] == delim && !str_cxt) {
-            if (i == 0) {
-              max_lngth = 2;
-            } else if (currow[i - 1] == delim) {
-              max_lngth = 2;
-            } else {
-              max_lngth = cur_str.length();
-              ex_vec.push_back(cur_str);
-              tmp_val_refv.push_back(ex_vec);
-              ex_vec = {};
-            };
-            ncol += 1;
-            cur_str = "";
-            longest_v.push_back(max_lngth);
-          } else if (currow[i] == str_context_begin) {
-            str_cxt = 1;
-          } else if (currow[i] == str_context_end) {
-            str_cxt = 0;
-          } else {
-            cur_str.push_back(currow[i]);
-          };
-          i += 1;
-        };
-        if (currow[i - 1] == delim) {
-          max_lngth = 2;
-        } else {
-          max_lngth = cur_str.length();
-          ex_vec.push_back(cur_str);
-          tmp_val_refv.push_back(ex_vec);
-          ex_vec = {};
-        };
-        cur_str = "";
-        longest_v.push_back(max_lngth);
-        nrow += 1;
-      };
-      type_refv.reserve(ncol);
-      if constexpr (strt_row == 0 && end_row == 0) {
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-                switch (dtype[verif_ncol - 1]) {
-                  case 's' : 
-                          str_v.push_back(cur_str);
-                          break;
-                  case 'c' : 
-                          chr_v.push_back(cur_str[0]);
-                          break;
-                  case 'b' : 
-                          bool_v.push_back(std::stoi(cur_str));
-                          break;
-                  case 'i' : 
-                          int_v.push_back(std::stoi(cur_str));
-                          break;
-                  case 'u' : 
-                          uint_v.push_back(std::stoi(cur_str));
-                          break;
-                  case 'd' : 
-                          dbl_v.push_back(std::stoi(cur_str));
-                          break;
-                  default:
-                        std::cerr << "Unknown dtype: " << dtype[verif_ncol - 1] << "\n";
-                        break;
-                };
-
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("NA");
-          } else {
-          
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-            switch (dtype[verif_ncol - 1]) {
-              case 's' : 
-                      str_v.push_back(cur_str);
-                      break;
-              case 'c' : 
-                      chr_v.push_back(cur_str[0]);
-                      break;
-              case 'b' : 
-                      bool_v.push_back(std::stoi(cur_str));
-                      break;
-              case 'i' : 
-                      int_v.push_back(std::stoi(cur_str));
-                      break;
-              case 'u' : 
-                      uint_v.push_back(std::stoi(cur_str));
-                      break;
-              case 'd' : 
-                      dbl_v.push_back(std::stoi(cur_str));
-                      break;
-              default:
-                  std::cerr << "Unknown dtype: " << dtype[verif_ncol - 1] << "\n";
-                  break;
-            };
-
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-        };
-      } else if constexpr (strt_row != 0 && end_row != 0) {
-
-        unsigned int row_check = 0;
-        while (row_check < strt_row) {
-          getline(readfile, currow);
-          row_check += 1;
-        };
-
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-                switch (dtype[verif_ncol - 1]) {
-                  case 's' : 
-                          str_v.push_back(cur_str);
-                          break;
-                  case 'c' : 
-                          chr_v.push_back(cur_str[0]);
-                          break;
-                  case 'b' : 
-                          bool_v.push_back(std::stoi(cur_str));
-                          break;
-                  case 'i' : 
-                          int_v.push_back(std::stoi(cur_str));
-                          break;
-                  case 'u' : 
-                          uint_v.push_back(std::stoi(cur_str));
-                          break;
-                  case 'd' : 
-                          dbl_v.push_back(std::stoi(cur_str));
-                          break;
-                  default:
-                        std::cerr << "Unknown dtype: " << dtype[verif_ncol - 1] << "\n";
-                        break;
-                };
-
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("NA");
-          } else {
-          
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-            switch (dtype[verif_ncol - 1]) {
-              case 's' : 
-                      str_v.push_back(cur_str);
-                      break;
-              case 'c' : 
-                      chr_v.push_back(cur_str[0]);
-                      break;
-              case 'b' : 
-                      bool_v.push_back(std::stoi(cur_str));
-                      break;
-              case 'i' : 
-                      int_v.push_back(std::stoi(cur_str));
-                      break;
-              case 'u' : 
-                      uint_v.push_back(std::stoi(cur_str));
-                      break;
-              case 'd' : 
-                      dbl_v.push_back(std::stoi(cur_str));
-                      break;
-              default:
-                  std::cerr << "Unknown dtype: " << dtype[verif_ncol - 1] << "\n";
-                  break;
-            };
-
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-          row_check += 1;
-          if (row_check > end_row) {
-            break;
-          };
-        };
-
-      } else if constexpr (strt_row != 0) {
-
-        unsigned int row_check = 0;
-        while (row_check < strt_row) {
-          getline(readfile, currow);
-          row_check += 1;
-        };
-
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-                switch (dtype[verif_ncol - 1]) {
-                  case 's' : 
-                          str_v.push_back(cur_str);
-                          break;
-                  case 'c' : 
-                          chr_v.push_back(cur_str[0]);
-                          break;
-                  case 'b' : 
-                          bool_v.push_back(std::stoi(cur_str));
-                          break;
-                  case 'i' : 
-                          int_v.push_back(std::stoi(cur_str));
-                          break;
-                  case 'u' : 
-                          uint_v.push_back(std::stoi(cur_str));
-                          break;
-                  case 'd' : 
-                          dbl_v.push_back(std::stoi(cur_str));
-                          break;
-                  default:
-                        std::cerr << "Unknown dtype: " << dtype[verif_ncol - 1] << "\n";
-                        break;
-                };
-
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("NA");
-          } else {
-          
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-            switch (dtype[verif_ncol - 1]) {
-              case 's' : 
-                      str_v.push_back(cur_str);
-                      break;
-              case 'c' : 
-                      chr_v.push_back(cur_str[0]);
-                      break;
-              case 'b' : 
-                      bool_v.push_back(std::stoi(cur_str));
-                      break;
-              case 'i' : 
-                      int_v.push_back(std::stoi(cur_str));
-                      break;
-              case 'u' : 
-                      uint_v.push_back(std::stoi(cur_str));
-                      break;
-              case 'd' : 
-                      dbl_v.push_back(std::stoi(cur_str));
-                      break;
-              default:
-                  std::cerr << "Unknown dtype: " << dtype[verif_ncol - 1] << "\n";
-                  break;
-            };
-
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-        };
-
-      } else if constexpr (end_row != 0) {
-
-        unsigned int row_check = 0;
-
-        while (getline(readfile, currow)) {
-          verif_ncol = 1;
-          str_cxt = 0;
-          i = 0;
-          while (i < currow.length()) {
-            if (currow[i] == delim && !str_cxt) {
-              if (i == 0) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[0].push_back("NA");
-              } else if (currow[i - 1] == delim) {
-                if (longest_v[verif_ncol - 1] < 2) {
-                  longest_v[verif_ncol - 1] = 2;
-                };
-                tmp_val_refv[verif_ncol - 1].push_back("NA");
-              } else {
-                
-                if (longest_v[verif_ncol - 1] < cur_str.length()) {
-                  longest_v[verif_ncol - 1] = cur_str.length();
-                };
-
-                tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-                switch (dtype[verif_ncol - 1]) {
-                  case 's' : 
-                          str_v.push_back(cur_str);
-                          break;
-                  case 'c' : 
-                          chr_v.push_back(cur_str[0]);
-                          break;
-                  case 'b' : 
-                          bool_v.push_back(std::stoi(cur_str));
-                          break;
-                  case 'i' : 
-                          int_v.push_back(std::stoi(cur_str));
-                          break;
-                  case 'u' : 
-                          uint_v.push_back(std::stoi(cur_str));
-                          break;
-                  case 'd' : 
-                          dbl_v.push_back(std::stoi(cur_str));
-                          break;
-                  default:
-                        std::cerr << "Unknown dtype: " << dtype[verif_ncol - 1] << "\n";
-                        break;
-                };
-
-              };
-              cur_str = "";
-              verif_ncol += 1;
-            } else if (currow[i] == str_context_begin) {
-              str_cxt = 1;
-            } else if (currow[i] == str_context_end) {
-              str_cxt = 0;
-            } else {
-              cur_str.push_back(currow[i]);
-            };
-            i += 1;
-          };
-          if (currow[i - 1] == delim) {
-            if (longest_v[verif_ncol - 1] < 2) {
-              longest_v[verif_ncol - 1] = 2;
-            };
-            tmp_val_refv[verif_ncol - 1].push_back("NA");
-          } else {
-          
-            if (longest_v[verif_ncol - 1] < cur_str.length()) {
-              longest_v[verif_ncol - 1] = cur_str.length();
-            };
-
-            tmp_val_refv[verif_ncol - 1].push_back(cur_str);
-
-            switch (dtype[verif_ncol - 1]) {
-              case 's' : 
-                      str_v.push_back(cur_str);
-                      break;
-              case 'c' : 
-                      chr_v.push_back(cur_str[0]);
-                      break;
-              case 'b' : 
-                      bool_v.push_back(std::stoi(cur_str));
-                      break;
-              case 'i' : 
-                      int_v.push_back(std::stoi(cur_str));
-                      break;
-              case 'u' : 
-                      uint_v.push_back(std::stoi(cur_str));
-                      break;
-              case 'd' : 
-                      dbl_v.push_back(std::stoi(cur_str));
-                      break;
-              default:
-                  std::cerr << "Unknown dtype: " << dtype[verif_ncol - 1] << "\n";
-                  break;
-            };
-
-          };
-          cur_str = "";
-          if (verif_ncol != ncol) {
-            std::cout << "column number problem at row: " << nrow << "\n";
-            reinitiate();
-            return;
-          };
-          nrow += 1;
-          row_check += 1;
-          if (row_check > end_row) {
-            break;
-          };
-        };
-
-      };
     };
 
     void type_classification() {
@@ -8073,108 +6851,6 @@ class Dataframe{
       }
       
     };
-
-    //void type_classification() {
-    //  unsigned int i;
-    //  unsigned int i2;
-    //  bool is_nb;
-    //  bool is_flt_dbl;
-    //  bool is_unsigned = 1;
-    //  bool is_bool;
-    //  std::string cur_str;
-    //  std::string cur_str2;
-    //  for (i = 0; i < ncol; ++i) {
-
-    //    std::cout << "ncol: " << i << "\n";
-
-    //    is_bool = 1;
-    //    i2 = 0;
-    //    while (i2 < nrow) {
-    //      cur_str = tmp_val_refv[i][i2];
-
-    //      std::cout << cur_str << " - " << cur_str.length() << " - " << i2 << "\n";
-
-    //      cur_str2 = cur_str;
-    //      if (cur_str[0] == '-' && cur_str.length() > 1) {
-    //        cur_str2.erase(cur_str2.begin());
-    //      };
-    //      is_nb = can_be_nb(cur_str2);
-    //      if (!is_nb) {
-    //        if (cur_str.length() > 1) {
-    //          type_refv.push_back('s');
-    //          matr_idx[0].push_back(i);
-    //          break;
-    //        };
-    //      } else {
-    //        is_flt_dbl = can_be_flt_dbl(cur_str2);
-    //        if (is_flt_dbl) {
-    //          type_refv.push_back('d');
-    //          matr_idx[5].push_back(i);
-    //          break;
-    //        };
-    //        if (is_unsigned) {
-    //          if (cur_str[0] == '-') {
-    //            is_unsigned = 0;
-    //          };
-    //        };
-    //        if (is_bool) {
-    //          if (cur_str != "0" & cur_str != "1") {
-    //            is_bool = 0;
-    //          };
-    //        };
-    //      };
-    //      i2 += 1;
-    //    };
-    //    if (i2 == nrow) {
-    //      if (!is_nb) {
-    //        type_refv.push_back('c');
-    //        matr_idx[1].push_back(i);
-    //      } else if (is_bool) {
-    //        type_refv.push_back('b');
-    //        matr_idx[2].push_back(i);
-    //      } else if (!is_unsigned) {
-    //        type_refv.push_back('i');
-    //        matr_idx[3].push_back(i);
-    //      } else {
-    //        type_refv.push_back('u');
-    //        matr_idx[4].push_back(i);
-    //      };
-    //    };
-    //  };
-    //  for (i = 0; i < ncol; ++i) {
-    //    if (type_refv[i] == 's') {
-    //      for (i2 = 0; i2 < nrow; ++i2) {
-    //        cur_str = tmp_val_refv[i][i2];
-    //        str_v.push_back(cur_str);
-    //      };
-    //    } else if (type_refv[i] == 'c') {
-    //      for (i2 = 0; i2 < nrow; ++i2) {
-    //        cur_str = tmp_val_refv[i][i2];
-    //        chr_v.push_back(cur_str[0]);
-    //      };
-    //    } else if (type_refv[i] == 'b') {
-    //      for (i2 = 0; i2 < nrow; ++i2) {
-    //        cur_str = tmp_val_refv[i][i2];
-    //        bool_v.push_back(std::stoi(cur_str));
-    //      };
-    //    } else if (type_refv[i] == 'i') {
-    //      for (i2 = 0; i2 < nrow; ++i2) {
-    //        cur_str = tmp_val_refv[i][i2];
-    //        int_v.push_back(std::stoi(cur_str));
-    //      };
-    //    } else if (type_refv[i] == 'u') {
-    //      for (i2 = 0; i2 < nrow; ++i2) {
-    //        cur_str = tmp_val_refv[i][i2];
-    //        uint_v.push_back(std::stoi(cur_str));
-    //      };
-    //    } else {
-    //      for (i2 = 0; i2 < nrow; ++i2) {
-    //        cur_str = tmp_val_refv[i][i2];
-    //        dbl_v.push_back(std::stoi(cur_str));
-    //      };
-    //    };
-    //  };
-    //};
 
     void display_filter(std::vector<bool> &x, std::vector<int> &colv) {
       longest_determine();
@@ -8317,7 +6993,7 @@ class Dataframe{
           x[i2b] = i2b;
         };
       };
-
+ 
       unsigned int max_nblngth = 0;
       if (name_v_row.size() == 0) {
         max_nblngth = std::to_string(nrow).length();
@@ -8332,6 +7008,7 @@ class Dataframe{
       for (i2b = 0; i2b < max_nblngth + 2; ++i2b) {
         std::cout << " ";
       };
+
       std::string cur_str;
       for (auto& i2 : colv) {
         if (type_refv[i2] == 's') {
@@ -8366,11 +7043,14 @@ class Dataframe{
           };
         };
         std::cout << cur_str << " ";  
+
+
         for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
           std::cout << " ";
-        };
-      };
+        }; 
 
+      }; 
+ 
       std::cout << "\n";
       for (i2b = 0; i2b < max_nblngth + 2; ++i2b) {
         std::cout << " ";
@@ -8382,6 +7062,7 @@ class Dataframe{
           for (i4 = cur_str.length(); i4 < longest_v[i2]; ++i4) {
             std::cout << " ";
           };
+
         };
       } else {
         for (auto& i2 : colv) {
@@ -8401,14 +7082,15 @@ class Dataframe{
             std::cout << " ";
           };
           for (auto& i2 : colv) {
-            cur_str = tmp_val_refv[i2][el];
-            std::cout << cur_str << " ";
+            cur_str = tmp_val_refv[i2][el]; 
+            std::cout << cur_str << " "; 
             for (i3 = cur_str.length(); i3 < longest_v[i2]; ++i3) {
               std::cout << " ";
             };
           };
           std::cout << "\n";
           i4 += 1;
+
         };
       } else {
         for (const auto& el : x) {
