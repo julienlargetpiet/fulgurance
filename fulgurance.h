@@ -6276,7 +6276,7 @@ class Dataframe{
 
   public:
     
-    template <unsigned int strt_row = 0, unsigned int end_row = 0, unsigned int CORES = 1, bool WARMING = 0, bool CLEAN = 0>
+    template <unsigned int strt_row = 0, unsigned int end_row = 0, unsigned int CORES = 1, bool WARMING = 0, bool CLEAN = 0, bool MEM_CLEAN = 0>
     void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context = '\'') {
         
       int fd = open(file_name.c_str(), O_RDONLY);
@@ -7150,10 +7150,6 @@ class Dataframe{
                   break;
             }
 
-            std::cout << "nrow: " << nrow << " " << tmp_val_refv[0].size() << "\n";
-            std::this_thread::sleep_for(std::chrono::seconds(2));
-
-
           } else if constexpr (strt_row != 0) {
 
                 size_t count = 0;
@@ -7361,6 +7357,12 @@ class Dataframe{
 
       madvise(mapped, size, MADV_DONTNEED);
       munmap(mapped, size);
+
+      if constexpr (MEM_CLEAN) {
+        for (auto& el : tmp_val_refv) {
+          el.shrink_to_fit();
+        };
+      };
 
       type_classification();
     };
