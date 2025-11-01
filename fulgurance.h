@@ -6117,7 +6117,6 @@ struct PairHash {
     }
 };
 
-template <unsigned int CORES = 1>
 class Dataframe{
   private:
     
@@ -6200,7 +6199,7 @@ class Dataframe{
 
   public:
     
-    template <unsigned int strt_row = 0, unsigned int end_row = 0>
+    template <unsigned int strt_row = 0, unsigned int end_row = 0, unsigned int CORES = 1>
     void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context = '\'') {
         
       int fd = open(file_name.c_str(), O_RDONLY);
@@ -6392,14 +6391,9 @@ class Dataframe{
             }
         }
  
-        //for (auto& el : tmp_val_refv) {
-        //  std::cout << el.back() << " ";
-        //}
-        //std::cout << "\n";
         if (nrow > tmp_val_refv[0].size()) {
           nrow -= 1;
         };
-        //std::cout << tmp_val_refv[0].size() << "\n";
 
       } else if constexpr (CORES == 1) {
 
