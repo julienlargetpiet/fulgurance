@@ -6489,7 +6489,7 @@ class Dataframe{
 
           } else if constexpr (strt_row != 0 && end_row != 0) {
 
-            nrow = end_row - strt_row + 1;
+            nrow = end_row - strt_row;
             int nthreads = CORES;
             size_t chunk = (nrow + nthreads - 1) / nthreads;
 
@@ -6561,7 +6561,7 @@ class Dataframe{
           } else if constexpr (strt_row != 0) {
 
             unsigned int nrow_lst = nrow;
-            nrow = nrow_lst - strt_row + 1;
+            nrow = nrow_lst - strt_row;
             nrow_lst += ((header_name) ? 1 : 0);
             int nthreads = CORES;
             size_t chunk = (nrow + nthreads - 1) / nthreads;
@@ -6632,7 +6632,7 @@ class Dataframe{
     
           } else if constexpr (end_row != 0) {
 
-            nrow = end_row + 1;
+            nrow = end_row;
             int nthreads = CORES;
             size_t chunk = (nrow + nthreads - 1) / nthreads;
 
@@ -6762,7 +6762,7 @@ class Dataframe{
           } else if constexpr (strt_row != 0 && end_row != 0) {
 
             int nthreads = CORES;
-            nrow = end_row - strt_row + 1;
+            nrow = end_row - strt_row;
             size_t chunk = (nrow + nthreads - 1) / nthreads;
 
             std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
@@ -6822,7 +6822,7 @@ class Dataframe{
 
             int nthreads = CORES;
             unsigned int nrow_lst = nrow;
-            nrow = nrow - strt_row + 1;
+            nrow = nrow - strt_row;
             size_t chunk = (nrow + nthreads - 1) / nthreads;
 
             std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
