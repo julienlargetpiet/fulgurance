@@ -5827,6 +5827,90 @@ template <typename T> double diff_mean(std::vector<T> &x) {
 //@E See below
 //@X
 
+inline void parse_rows_range_cached(
+    std::string_view local_view,        // read from this (local_buf)
+    const char*      orig_base,         // emit views from here (mmapped)
+    size_t           orig_start_byte,   // byte offset in the original file for local_view[0]
+    std::vector<std::vector<std::string_view>>& columns,
+    char delim, char str_context, unsigned int ncol
+) noexcept
+{
+    const char* base_local = local_view.data();
+    const size_t N = local_view.size();
+    size_t pos = 0;                    // local offsets
+    size_t field_start = 0;
+    bool in_quotes = false;
+    size_t verif_ncol = 0;
+
+    const __m256i NL = _mm256_set1_epi8('\n');
+    const __m256i CR = _mm256_set1_epi8('\r');
+    __m256i D = _mm256_set1_epi8(delim);
+    __m256i Q = _mm256_set1_epi8(str_context);
+
+    auto emit_field = [&](size_t start, size_t end) {
+        size_t len = end - start;
+        const char* emit_ptr = orig_base + orig_start_byte + start; // map local offset to original
+        std::string_view field(emit_ptr, len);
+        columns[verif_ncol].emplace_back(field.empty() ? std::string_view("NA") : field);
+    };
+
+    for (; pos + 32 <= N; ) {
+        _mm_prefetch(base_local + pos + 512, _MM_HINT_T0);
+        __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base_local + pos));
+        int mD  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
+        int mQ  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, Q));
+        int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
+        int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
+        int mNL_any = (mNL | mCR);
+        int events  = (mD | mNL_any | mQ);
+
+        while (events) {
+            int bit = __builtin_ctz(events);
+            size_t idx = pos + bit;
+            char c = base_local[idx];
+
+            if (c == str_context) {
+                in_quotes = !in_quotes;
+            } else if (!in_quotes && c == delim) {
+                emit_field(field_start, idx);
+                ++verif_ncol;
+                field_start = idx + 1;
+            } else if (!in_quotes && (c == '\n' || c == '\r')) {
+                emit_field(field_start, idx);
+                if (verif_ncol + 1 != ncol) { std::cerr << "column number problem\n"; return; }
+                verif_ncol = 0;
+                size_t adv = (c == '\r' && idx + 1 < N && base_local[idx + 1] == '\n') ? 2 : 1;
+                field_start = idx + adv;
+                pos = idx + adv;
+                goto next_chunk;
+            }
+            events &= (events - 1);
+        }
+        pos += 32;
+        next_chunk: continue;
+    }
+
+    for (; pos < N; ++pos) {
+        char c = base_local[pos];
+        if (c == str_context) {
+            in_quotes = !in_quotes;
+        } else if (!in_quotes && c == delim) {
+            emit_field(field_start, pos);
+            ++verif_ncol;
+            field_start = pos + 1;
+        } else if (!in_quotes && (c == '\n' || c == '\r')) {
+            emit_field(field_start, pos);
+            if (verif_ncol + 1 != ncol) { std::cerr << "column number problem in readf\n"; return; }
+            verif_ncol = 0;
+            if (c == '\r' && pos + 1 < N && base_local[pos + 1] == '\n') ++pos;
+            field_start = pos + 1;
+        }
+    }
+    if (field_start < N) {
+        emit_field(field_start, N);
+    }
+}
+
 inline void parse_rows_range(
     std::string_view csv_view,
     size_t start_byte,
@@ -6185,13 +6269,6 @@ class Dataframe{
           if (tmp_val_refv[i][i2].length() > longest_v[i]) {
             longest_v[i] = tmp_val_refv[i][i2].length();
 
-            //if (longest_v[i] > 200) {
-            //    longest_v[i] = 10;
-            //    std::cout << "i :" << i << " i2: " << i2 << "\n"; 
-            //    std::cout << "nrow: " << nrow << "\n";
-            //    std::cout << "len: " << tmp_val_refv[i][i2].length() << "\n";
-            //}
-
           };
         };
       };
@@ -6199,7 +6276,7 @@ class Dataframe{
 
   public:
     
-    template <unsigned int strt_row = 0, unsigned int end_row = 0, unsigned int CORES = 1>
+    template <unsigned int strt_row = 0, unsigned int end_row = 0, unsigned int CORES = 1, bool WARMING = 0, bool CLEAN = 0>
     void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context = '\'') {
         
       int fd = open(file_name.c_str(), O_RDONLY);
@@ -6341,59 +6418,220 @@ class Dataframe{
   
       i += 1;
      
-      if constexpr (CORES > 1) {
+      if constexpr (CORES > 1) { 
+        
+        if constexpr (WARMING) {
 
-        int nthreads = CORES;
-        size_t chunk = (nrow + nthreads - 1) / nthreads;
+          if (strt_row == 0 && end_row == 0) {
 
-        std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
-            nthreads, std::vector<std::vector<std::string_view>>(ncol)
-        );
-        
-        for (auto& thread : thread_columns) {
-            for (auto& col : thread)
-                col.reserve(chunk);
-        }
- 
-        #pragma omp parallel for
-        for (int t = 0; t < nthreads; ++t) {
+            int nthreads = CORES;
+            size_t chunk = (nrow + nthreads - 1) / nthreads;
 
-            size_t start_row = t * chunk;
-            size_t end_row2   = std::min(start_row + chunk, static_cast<size_t>(nrow));
-        
-            if (start_row >= end_row2) continue;
-        
-            size_t start_byte = (start_row == 0) ? i : newline_pos[start_row - 1] + 1;
-            size_t end_byte   = newline_pos[end_row2 - 1];
-        
-            std::string_view subview(csv_view.data() + start_byte, 
-                                     end_byte - start_byte);
+            std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
+                nthreads, std::vector<std::vector<std::string_view>>(ncol)
+            );
+            
+            for (auto& thread : thread_columns)
+                for (auto& col : thread)
+                    col.reserve(chunk);
 
-            parse_rows_range(subview, 
-                            0, subview.size(), 
-                            thread_columns[t], 
-                            delim, str_context, ncol);
-        }
-
-        #pragma omp parallel for 
-        for (size_t c = 0; c < ncol; ++c) {
-            size_t total = 0;
-            for (int t = 0; t < nthreads; ++t)
-                total += thread_columns[t][c].size();
-        
-            auto& dst = tmp_val_refv[c];
-            dst.reserve(dst.size() + total);  
-        
+            #pragma omp parallel for
             for (int t = 0; t < nthreads; ++t) {
-                auto& src = thread_columns[t][c];
-                dst.insert(dst.end(), src.begin(), src.end());
+                size_t start_row = t * chunk;
+                size_t end_row2  = std::min(start_row + chunk, static_cast<size_t>(nrow));
+                if (start_row >= end_row2) continue;
 
+                size_t start_byte = (start_row == 0) ? i : newline_pos[start_row - 1] + 1;
+                size_t end_byte   = newline_pos[end_row2 - 1];
+                size_t slice_size = end_byte - start_byte;
+
+                const char* src_ptr = csv_view.data() + start_byte;
+
+                char* local_buf = nullptr;
+                posix_memalign((void**)&local_buf, 64, slice_size); // 64 makes sur the starting pointer is divisible by 64
+                                                                    // so at max 63 more bytes reserved, handled automatically
+
+                const size_t V = 32;
+                size_t j = 0;
+                for (; j + V <= slice_size; j += V) {
+                    __m256i v = _mm256_loadu_si256((const __m256i*)(src_ptr + j));
+                    _mm256_storeu_si256((__m256i*)(local_buf + j), v);  
+                }
+                for (; j < slice_size; ++j) local_buf[j] = src_ptr[j];
+
+                std::string_view local_view(local_buf, slice_size);
+                const char* orig_base = csv_view.data();           
+                size_t orig_start_byte = start_byte;                
+                parse_rows_range_cached(local_view, orig_base, orig_start_byte,
+                            thread_columns[t], delim, str_context, ncol);
+
+                free(local_buf);
             }
-        }
+
+            #pragma omp parallel for 
+            for (size_t c = 0; c < ncol; ++c) {
+                size_t total = 0;
+                for (int t = 0; t < nthreads; ++t)
+                    total += thread_columns[t][c].size();
+
+                auto& dst = tmp_val_refv[c];
+                dst.reserve(dst.size() + total);  
+
+                for (int t = 0; t < nthreads; ++t) {
+                    auto& src = thread_columns[t][c];
+                    dst.insert(dst.end(), src.begin(), src.end());
+                }
+            }
+
+            if (nrow > tmp_val_refv[0].size()) {
+                nrow -= 1;
+            }
+
+          } else if constexpr (strt_row != 0 && end_row != 0) {
+
+            nrow = end_row - strt_row + 1;
+            int nthreads = CORES;
+            size_t chunk = (nrow + nthreads - 1) / nthreads;
+
+            std::cout << "chunk: " << chunk << "\n";
+
+            std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
+                nthreads, std::vector<std::vector<std::string_view>>(ncol)
+            );
+            
+            for (auto& thread : thread_columns)
+                for (auto& col : thread)
+                    col.reserve(chunk);
+            
+            const unsigned int h_add = (header_name) ? 1 : 0;
+
+            //#pragma omp parallel for
+            for (int t = 0; t < nthreads; ++t) {
+                size_t start_row = t * chunk + strt_row + h_add;
+                size_t end_row2  = std::min(start_row + chunk, 
+                                static_cast<size_t>(nrow + 1 + h_add));
+                if (start_row >= end_row2) continue;
+
+                std::cout << start_row << " : " << end_row2 << "\n";
+
+                size_t start_byte = newline_pos[start_row - 1] + 1;
+                size_t end_byte   = newline_pos[end_row2 - 1];
+                size_t slice_size = end_byte - start_byte;
+
+                const char* src_ptr = csv_view.data() + start_byte;
+
+                char* local_buf = nullptr;
+                posix_memalign((void**)&local_buf, 64, slice_size); // 64 makes sur the starting pointer is divisible by 64
+                                                                    // so at max 63 more bytes reserved, handled automatically
+
+                const size_t V = 32;
+                size_t j = 0;
+                for (; j + V <= slice_size; j += V) {
+                    __m256i v = _mm256_loadu_si256((const __m256i*)(src_ptr + j));
+                    _mm256_storeu_si256((__m256i*)(local_buf + j), v);  
+                }
+                for (; j < slice_size; ++j) local_buf[j] = src_ptr[j];
+
+                std::string_view local_view(local_buf, slice_size);
+                const char* orig_base = csv_view.data();           
+                size_t orig_start_byte = start_byte;
+
+            std::cout << "ok\n";
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+
+
+                parse_rows_range_cached(local_view, orig_base, orig_start_byte,
+                            thread_columns[t], delim, str_context, ncol);
+
+                free(local_buf);
+            }
+
+            std::cout << "end\n";
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+
+            #pragma omp parallel for 
+            for (size_t c = 0; c < ncol; ++c) {
+                size_t total = 0;
+                for (int t = 0; t < nthreads; ++t)
+                    total += thread_columns[t][c].size();
+
+                auto& dst = tmp_val_refv[c];
+                dst.reserve(dst.size() + total);  
+
+                for (int t = 0; t < nthreads; ++t) {
+                    auto& src = thread_columns[t][c];
+                    dst.insert(dst.end(), src.begin(), src.end());
+                }
+            }
+
+            if (nrow > tmp_val_refv[0].size()) {
+                nrow -= 2;
+            }
+
+            std::cout << tmp_val_refv[0].size() << " : " << nrow << " end2\n";
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+
+          } else if constexpr (strt_row != 0) {
+
+          } else if constexpr (end_row != 0) {
+
+          }
+
+        } else if constexpr (!WARMING) {
+
+          int nthreads = CORES;
+          size_t chunk = (nrow + nthreads - 1) / nthreads;
+
+          std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
+              nthreads, std::vector<std::vector<std::string_view>>(ncol)
+          );
+          
+          for (auto& thread : thread_columns) {
+              for (auto& col : thread)
+                  col.reserve(chunk);
+          }
  
-        if (nrow > tmp_val_refv[0].size()) {
-          nrow -= 1;
-        };
+          #pragma omp parallel for
+          for (int t = 0; t < nthreads; ++t) {
+
+              size_t start_row = t * chunk;
+              size_t end_row2   = std::min(start_row + chunk, static_cast<size_t>(nrow));
+          
+              if (start_row >= end_row2) continue;
+          
+              size_t start_byte = (start_row == 0) ? i : newline_pos[start_row - 1] + 1;
+              size_t end_byte   = newline_pos[end_row2 - 1];
+          
+              std::string_view subview(csv_view.data() + start_byte, 
+                                       end_byte - start_byte);
+
+              parse_rows_range(subview, 
+                              0, subview.size(), 
+                              thread_columns[t], 
+                              delim, str_context, ncol);
+          }
+
+          #pragma omp parallel for 
+          for (size_t c = 0; c < ncol; ++c) {
+              size_t total = 0;
+              for (int t = 0; t < nthreads; ++t)
+                  total += thread_columns[t][c].size();
+          
+              auto& dst = tmp_val_refv[c];
+              dst.reserve(dst.size() + total);  
+          
+              for (int t = 0; t < nthreads; ++t) {
+                  auto& src = thread_columns[t][c];
+                  dst.insert(dst.end(), src.begin(), src.end());
+
+              }
+          }
+ 
+          if (nrow > tmp_val_refv[0].size()) {
+            nrow -= 1;
+          };
+
+        }
 
       } else if constexpr (CORES == 1) {
 
@@ -6517,7 +6755,7 @@ class Dataframe{
           
           } else if constexpr (strt_row != 0 && end_row != 0) {
 
-              nrow = end_row - strt_row + 1;
+              nrow = (header_name) ? 1 : 0;
 
               size_t count = 0;
               for (;count < strt_row ; i += 1) {
@@ -6540,7 +6778,7 @@ class Dataframe{
               static const __m256i NL = _mm256_set1_epi8('\n');
               static const __m256i CR = _mm256_set1_epi8('\r');
 
-              const size_t end_row2 = end_row - strt_row;
+              const size_t end_row2 = end_row - strt_row + ((header_name) ? 1 : 0);
 
               for (; pos + 32 <= N; ) {
     
@@ -6580,8 +6818,9 @@ class Dataframe{
                             return;
                         }
 
-                        //++nrow;
+                        ++nrow;
                         if (nrow == end_row2) {
+                          nrow -= 1;
                           goto next_chunk2b;
                         };
                         verif_ncol = 0;
@@ -6605,6 +6844,10 @@ class Dataframe{
                   break;
             }
 
+            std::cout << "nrow: " << nrow << " " << tmp_val_refv[0].size() << "\n";
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+
+
           } else if constexpr (strt_row != 0) {
 
                 size_t count = 0;
@@ -6615,7 +6858,7 @@ class Dataframe{
                 };
 
                 nrow = nrow - strt_row + 1;
-
+                
                 const char* base = csv_view.data();
                 const size_t N = csv_view.size();
             
@@ -6732,7 +6975,7 @@ class Dataframe{
                 size_t field_start = i;
                 verif_ncol = 0;
 
-                nrow = end_row;
+                nrow = (header_name) ? 1 : 0;
 
                 size_t pos = i;
 
@@ -6740,6 +6983,8 @@ class Dataframe{
                 __m256i Q = _mm256_set1_epi8(str_context);
                 static const __m256i NL = _mm256_set1_epi8('\n');
                 static const __m256i CR = _mm256_set1_epi8('\r');
+
+                const unsigned int end_row2 = end_row + ((header_name) ? 1 : 0);
 
                 for (; pos + 32 <= N; ) {
     
@@ -6779,8 +7024,9 @@ class Dataframe{
                               return;
                           }
 
-                          //++nrow;
-                          if (nrow == end_row) {
+                          ++nrow;
+                          if (nrow == end_row2) {
+                            nrow -= 1;
                             goto next_chunk4b;
                           };
                           verif_ncol = 0;
