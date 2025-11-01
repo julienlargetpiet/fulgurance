@@ -6493,8 +6493,6 @@ class Dataframe{
             int nthreads = CORES;
             size_t chunk = (nrow + nthreads - 1) / nthreads;
 
-            std::cout << "chunk: " << chunk << "\n";
-
             std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
                 nthreads, std::vector<std::vector<std::string_view>>(ncol)
             );
@@ -6503,16 +6501,15 @@ class Dataframe{
                 for (auto& col : thread)
                     col.reserve(chunk);
             
-            const unsigned int h_add = (header_name) ? 1 : 0;
+            const unsigned int strt_row2 = (header_name) ? strt_row + 1 : strt_row;
+            const unsigned int end_rowb = (header_name) ? end_row + 1 : end_row;
 
-            //#pragma omp parallel for
+            #pragma omp parallel for
             for (int t = 0; t < nthreads; ++t) {
-                size_t start_row = t * chunk + strt_row + h_add;
+                size_t start_row = t * chunk + strt_row2;
                 size_t end_row2  = std::min(start_row + chunk, 
-                                static_cast<size_t>(nrow + 1 + h_add));
+                                static_cast<size_t>(end_rowb));
                 if (start_row >= end_row2) continue;
-
-                std::cout << start_row << " : " << end_row2 << "\n";
 
                 size_t start_byte = newline_pos[start_row - 1] + 1;
                 size_t end_byte   = newline_pos[end_row2 - 1];
@@ -6536,18 +6533,11 @@ class Dataframe{
                 const char* orig_base = csv_view.data();           
                 size_t orig_start_byte = start_byte;
 
-            std::cout << "ok\n";
-            std::this_thread::sleep_for(std::chrono::seconds(2));
-
-
                 parse_rows_range_cached(local_view, orig_base, orig_start_byte,
                             thread_columns[t], delim, str_context, ncol);
 
                 free(local_buf);
             }
-
-            std::cout << "end\n";
-            std::this_thread::sleep_for(std::chrono::seconds(2));
 
             #pragma omp parallel for 
             for (size_t c = 0; c < ncol; ++c) {
@@ -6565,16 +6555,152 @@ class Dataframe{
             }
 
             if (nrow > tmp_val_refv[0].size()) {
-                nrow -= 2;
+                nrow -= 1;
             }
-
-            std::cout << tmp_val_refv[0].size() << " : " << nrow << " end2\n";
-            std::this_thread::sleep_for(std::chrono::seconds(2));
 
           } else if constexpr (strt_row != 0) {
 
+            unsigned int nrow_lst = nrow;
+            nrow = nrow_lst - strt_row + 1;
+            nrow_lst += ((header_name) ? 1 : 0);
+            int nthreads = CORES;
+            size_t chunk = (nrow + nthreads - 1) / nthreads;
+
+            std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
+                nthreads, std::vector<std::vector<std::string_view>>(ncol)
+            );
+            
+            for (auto& thread : thread_columns)
+                for (auto& col : thread)
+                    col.reserve(chunk);
+            
+            const unsigned int strt_row2 = (header_name) ? strt_row + 1 : strt_row;
+
+            #pragma omp parallel for
+            for (int t = 0; t < nthreads; ++t) {
+                size_t start_row = t * chunk + strt_row2;
+                size_t end_row2  = std::min(start_row + chunk, 
+                                static_cast<size_t>(nrow_lst));
+                if (start_row >= end_row2) continue;
+
+                size_t start_byte = newline_pos[start_row - 1] + 1;
+                size_t end_byte   = newline_pos[end_row2 - 1];
+                size_t slice_size = end_byte - start_byte;
+
+                const char* src_ptr = csv_view.data() + start_byte;
+
+                char* local_buf = nullptr;
+                posix_memalign((void**)&local_buf, 64, slice_size); // 64 makes sur the starting pointer is divisible by 64
+                                                                    // so at max 63 more bytes reserved, handled automatically
+
+                const size_t V = 32;
+                size_t j = 0;
+                for (; j + V <= slice_size; j += V) {
+                    __m256i v = _mm256_loadu_si256((const __m256i*)(src_ptr + j));
+                    _mm256_storeu_si256((__m256i*)(local_buf + j), v);  
+                }
+                for (; j < slice_size; ++j) local_buf[j] = src_ptr[j];
+
+                std::string_view local_view(local_buf, slice_size);
+                const char* orig_base = csv_view.data();           
+                size_t orig_start_byte = start_byte;
+
+                parse_rows_range_cached(local_view, orig_base, orig_start_byte,
+                            thread_columns[t], delim, str_context, ncol);
+
+                free(local_buf);
+            }
+
+            #pragma omp parallel for 
+            for (size_t c = 0; c < ncol; ++c) {
+                size_t total = 0;
+                for (int t = 0; t < nthreads; ++t)
+                    total += thread_columns[t][c].size();
+
+                auto& dst = tmp_val_refv[c];
+                dst.reserve(dst.size() + total);  
+
+                for (int t = 0; t < nthreads; ++t) {
+                    auto& src = thread_columns[t][c];
+                    dst.insert(dst.end(), src.begin(), src.end());
+                }
+            }
+
+            if (nrow > tmp_val_refv[0].size()) {
+                nrow -= 1;
+            }
+    
           } else if constexpr (end_row != 0) {
 
+            nrow = end_row + 1;
+            int nthreads = CORES;
+            size_t chunk = (nrow + nthreads - 1) / nthreads;
+
+            std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
+                nthreads, std::vector<std::vector<std::string_view>>(ncol)
+            );
+            
+            for (auto& thread : thread_columns)
+                for (auto& col : thread)
+                    col.reserve(chunk);
+            
+            const unsigned int end_rowb = (header_name) ? end_row + 1 : end_row;
+
+            #pragma omp parallel for
+            for (int t = 0; t < nthreads; ++t) {
+                size_t start_row = t * chunk;
+                size_t end_row2  = std::min(start_row + chunk, 
+                                static_cast<size_t>(end_rowb));
+
+                if (start_row >= end_row2) continue; 
+
+                size_t start_byte = (start_row == 0) ? i : newline_pos[start_row - 1] + 1;
+                size_t end_byte   = newline_pos[end_row2 - 1];
+                size_t slice_size = end_byte - start_byte;
+
+                const char* src_ptr = csv_view.data() + start_byte;
+
+                char* local_buf = nullptr;
+                posix_memalign((void**)&local_buf, 64, slice_size); // 64 makes sur the starting pointer is divisible by 64
+                                                                    // so at max 63 more bytes reserved, handled automatically
+
+                const size_t V = 32;
+                size_t j = 0;
+                for (; j + V <= slice_size; j += V) {
+                    __m256i v = _mm256_loadu_si256((const __m256i*)(src_ptr + j));
+                    _mm256_storeu_si256((__m256i*)(local_buf + j), v);  
+                }
+                for (; j < slice_size; ++j) local_buf[j] = src_ptr[j];
+
+                std::string_view local_view(local_buf, slice_size);
+                const char* orig_base = csv_view.data();           
+                size_t orig_start_byte = start_byte;
+
+                parse_rows_range_cached(local_view, orig_base, orig_start_byte,
+                            thread_columns[t], delim, str_context, ncol);
+
+                free(local_buf);
+            }
+
+            #pragma omp parallel for 
+            for (size_t c = 0; c < ncol; ++c) {
+                size_t total = 0;
+                for (int t = 0; t < nthreads; ++t)
+                    total += thread_columns[t][c].size();
+
+                auto& dst = tmp_val_refv[c];
+                dst.reserve(dst.size() + total);  
+
+                for (int t = 0; t < nthreads; ++t) {
+                    auto& src = thread_columns[t][c];
+                    dst.insert(dst.end(), src.begin(), src.end());
+                }
+            }
+
+            if (nrow > tmp_val_refv[0].size()) {
+                nrow -= 1;
+            }
+    
           }
 
         } else if constexpr (!WARMING) {
@@ -7056,8 +7182,6 @@ class Dataframe{
       madvise(mapped, size, MADV_DONTNEED);
       munmap(mapped, size);
 
-      //munmap((void*)csv_view.data(), csv_view.size());
- 
       type_classification();
     };
 
