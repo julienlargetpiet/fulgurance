@@ -6945,10 +6945,6 @@ class Dataframe{
           col.reserve(nrow);
         };
 
-        if (header_name) {
-          nrow -= 1;
-        }
-
         if constexpr (strt_row == 0 && end_row == 0) {
           
               const char* base = csv_view.data();
