@@ -7360,9 +7360,10 @@ class Dataframe{
         };
       };
 
-      type_classification();
+      type_classification<CORES>();
     };
 
+    template <unsigned int CORES = 1>
     void type_classification() {
       unsigned int i;
       unsigned int i2;
@@ -7376,7 +7377,7 @@ class Dataframe{
         el.reserve(6);
       };
 
-      omp_set_num_threads(4);
+      omp_set_num_threads(CORES);
 
       #pragma omp parallel
       {
@@ -11518,8 +11519,14 @@ class Dataframe{
 #if 0
 
 //@T Dataframe.readf
-//@U template<unsigned int strt_row = 0, unsigned int end_row = 0>
-//@U void readf(std::string &file_name, char delim = ',', bool header_name = 1, char str_context_begin = '\'', char str_context_end = '\'')
+//@U template <unsigned int strt_row = 0, 
+//@U          unsigned int end_row = 0, 
+//@U          unsigned int CORES = 1, 
+//@U          bool WARMING = 0, 
+//@U          bool CLEAN = 0, 
+//@U          bool MEM_CLEAN = 0>
+//@U     void readf(std::string &file_name, char delim = ',', 
+//@U                     bool header_name = 1, char str_context = '\'')
 //@X
 //@D Import a csv as a Dataframe object.
 //@A file_name : is the file_name of the csv to read
@@ -11529,6 +11536,9 @@ class Dataframe{
 //@A str_context_end : is the end symbol for a quote context
 //@A strt_row : is the first row to read, defaults to 0
 //@A end_row : is the last row to read, defaults to max (value of 0)
+//@A CORES : are the number of cores used for parsing and type inference
+//@A WARMING : enables cache warming, might help if a lot of delimiters by column
+//@A MEM_CLEAN : free unnused memory, might be slower
 //@X
 //@E Dataframe obj1;
 //@E std::string file_name = "teste_dataframe.csv";
