@@ -6139,58 +6139,236 @@ inline bool simd_can_be_nb(const char* s, size_t len) noexcept {
     return true;
 }
 
-inline char classify_column(
+struct ColumnResult {
+    char type;
+    std::vector<std::string> str_v;
+    std::vector<char> chr_v;
+    std::vector<bool> bool_v;
+    std::vector<int> int_v;
+    std::vector<unsigned int> uint_v;
+    std::vector<double> dbl_v;
+    std::vector<unsigned int> matr_idx[6];
+};
+
+inline ColumnResult classify_column(
     const std::vector<std::string>& col_values,
-    std::array<std::vector<unsigned int>, 6>& matr_idx,
-    unsigned int col_idx)
+    unsigned int col_idx,
+    unsigned int nrow)
 {
+    ColumnResult result;
     bool is_bool = true;
     bool is_unsigned = true;
 
-    for (size_t i = 0; i < std::min<size_t>(col_values[0].size(), 10); ++i) {
+    size_t check_count = std::min<size_t>(col_values.size(), 10);
+
+    for (size_t i = 0; i < check_count; ++i) {
         const std::string& s = col_values[i];
 
         if (!simd_can_be_nb(s.data(), s.size())) {
             if (s.size() > 1) {
-                matr_idx[0].push_back(col_idx);
-                return 's'; 
+                result.matr_idx[0].push_back(col_idx);
+                result.str_v.reserve(nrow);
+                result.str_v.insert(result.str_v.end(),
+                                    col_values.begin(), col_values.end());
+                result.type = 's';
+                return result;
             } else {
-                matr_idx[1].push_back(col_idx);
-                return 'c'; 
+                result.matr_idx[1].push_back(col_idx);
+                result.chr_v.reserve(nrow);
+                for (const auto& el : col_values)
+                    result.chr_v.emplace_back(el.front());
+                result.type = 'c';
+                return result;
             }
         }
 
-        if (std::find(s.begin(), s.end(), '.') != s.end()) {
-            matr_idx[5].push_back(col_idx);
-            return 'd'; 
+        if (s.find('.') != std::string::npos) {
+            result.matr_idx[5].push_back(col_idx);
+            result.dbl_v.reserve(nrow);
+            for (const auto& el : col_values) {
+                double val;
+                auto [ptr, ec] = std::from_chars(el.data(),
+                                                 el.data() + el.size(), val);
+                result.dbl_v.push_back(ec == std::errc() ? val : 0.0);
+            }
+            result.type = 'd';
+            return result;
         }
 
-        if (is_unsigned && s[0] == '-') {
+        if (is_unsigned && !s.empty() && s[0] == '-') {
             is_unsigned = false;
-            matr_idx[3].push_back(col_idx);
-            return 'i'; 
+            result.matr_idx[3].push_back(col_idx);
+            result.int_v.reserve(nrow);
+            for (const auto& el : col_values) {
+                int val;
+                auto [ptr, ec] = std::from_chars(el.data(),
+                                                 el.data() + el.size(), val);
+                result.int_v.push_back(ec == std::errc() ? val : 0);
+            }
+            result.type = 'i';
+            return result;
         }
 
-        if (s != "0" && s != "1") {
-          is_bool = 0;
-        };
-
-        if (is_bool && i > 10) {
-            matr_idx[2].push_back(col_idx);
-            return 'b'; 
-        }
+        // check if it looks boolean
+        if (s != "0" && s != "1")
+            is_bool = false;
     }
 
+    // After scanning 10 rows → decide final type
     if (is_bool) {
-        matr_idx[2].push_back(col_idx);
-        return 'b';
+        result.matr_idx[2].push_back(col_idx);
+        result.bool_v.reserve(nrow);
+        for (const auto& el : col_values) {
+            int tmp;
+            auto [ptr, ec] = std::from_chars(el.data(),
+                                             el.data() + el.size(), tmp);
+            result.bool_v.push_back(ec == std::errc() ? (tmp != 0) : false);
+        }
+        result.type = 'b';
     } else if (is_unsigned) {
-        matr_idx[4].push_back(col_idx);
-        return 'u';
+        result.matr_idx[4].push_back(col_idx);
+        result.uint_v.reserve(nrow);
+        for (const auto& el : col_values) {
+            unsigned int val;
+            auto [ptr, ec] = std::from_chars(el.data(),
+                                             el.data() + el.size(), val);
+            result.uint_v.push_back(ec == std::errc() ? val : 0u);
+        }
+        result.type = 'u';
+    } else {
+        result.matr_idx[3].push_back(col_idx);
+        result.int_v.reserve(nrow);
+        for (const auto& el : col_values) {
+            int val;
+            auto [ptr, ec] = std::from_chars(el.data(),
+                                             el.data() + el.size(), val);
+            result.int_v.push_back(ec == std::errc() ? val : 0);
+        }
+        result.type = 'i';
     }
-    matr_idx[3].push_back(col_idx);
-    return 'i';
+
+    return result;
 }
+
+//inline ColumnResult classify_column(
+//    const std::vector<std::string>& col_values,
+//    std::vector<std::vector<unsigned int>> matr_idx,
+//    unsigned int col_idx, 
+//    unsigned int& nrow,
+//    std::vector<std::string> str_v,
+//    std::vector<char> chr_v,
+//    std::vector<bool> bool_v,
+//    std::vector<int> int_v,
+//    std::vector<unsigned int> uint_v,
+//    std::vector<double> dbl_v)
+//{
+//    bool is_bool = true;
+//    bool is_unsigned = true;
+//
+//    for (size_t i = 0; i < std::min<size_t>(col_values.size(), 10); ++i) {
+//        const std::string& s = col_values[i];
+//
+//        if (!simd_can_be_nb(s.data(), s.size())) {
+//            if (s.size() > 1) {
+//                matr_idx[0].push_back(col_idx);
+//                str_v.reserve(str_v.size() + nrow);
+//                str_v.insert(str_v.end(), col_values.begin(), col_values.end());
+//                return {'s', str_v, chr_v, bool_v, int_v, uint_v, dbl_v, matr_idx}; 
+//            } else {
+//                matr_idx[1].push_back(col_idx);
+//                chr_v.reserve(chr_v.size() + nrow);
+//                for (const auto& el : col_values) {
+//                  chr_v.emplace_back(el.front());
+//                }
+//                return {'c', str_v, chr_v, bool_v, int_v, uint_v, dbl_v, matr_idx}; 
+//            }
+//        }
+//
+//        if (std::find(s.begin(), s.end(), '.') != s.end()) {
+//            dbl_v.reserve(dbl_v.size() + nrow);
+//            for (const auto &s : col_values) {
+//                double val;
+//                auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), val);
+//                if (ec == std::errc()) [[likely]]
+//                    dbl_v.push_back(val);
+//                else
+//                    dbl_v.push_back(0.0); 
+//            }
+//            matr_idx[5].push_back(col_idx);
+//            return {'d', str_v, chr_v, bool_v, int_v, uint_v, dbl_v, matr_idx}; 
+//        }
+//
+//        if (is_unsigned && s[0] == '-') {
+//            is_unsigned = false;
+//            matr_idx[3].push_back(col_idx);
+//            int_v.reserve(int_v.size() + nrow);
+//            for (const auto &s : col_values) {
+//                int val;
+//                auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), val);
+//                if (ec == std::errc()) [[likely]]
+//                    int_v.push_back(val);
+//                else
+//                    int_v.push_back(0); 
+//            }
+//            return {'i', str_v, chr_v, bool_v, int_v, uint_v, dbl_v, matr_idx}; 
+//        }
+//
+//        if (s != "0" && s != "1") {
+//          is_bool = 0;
+//        };
+//
+//        if (is_bool && i > 10) {
+//            matr_idx[2].push_back(col_idx);
+//            bool_v.reserve(bool_v.size() + nrow);
+//            for (const auto &s : col_values) {
+//                int tmp;
+//                auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), tmp);
+//                if (ec == std::errc()) [[likely]]
+//                    bool_v.push_back(tmp != 0);
+//                else
+//                    bool_v.push_back(false);
+//            }
+//            return {'b', str_v, chr_v, bool_v, int_v, uint_v, dbl_v, matr_idx}; 
+//        }
+//    }
+//
+//    if (is_bool) {
+//        matr_idx[2].push_back(col_idx);
+//        bool_v.reserve(bool_v.size() + nrow);
+//        for (const auto &s : col_values) {
+//            int tmp;
+//            auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), tmp);
+//            if (ec == std::errc()) [[likely]]
+//                bool_v.push_back(tmp != 0);
+//            else
+//                bool_v.push_back(false);
+//        }
+//        return {'b', str_v, chr_v, bool_v, int_v, uint_v, dbl_v, matr_idx};
+//    } else if (is_unsigned) {
+//        matr_idx[4].push_back(col_idx);
+//        uint_v.reserve(uint_v.size() + nrow);
+//        for (const auto &s : col_values) {
+//            unsigned int val;
+//            auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), val);
+//            if (ec == std::errc()) [[likely]]
+//                uint_v.push_back(val);
+//            else
+//                uint_v.push_back(0); 
+//        }
+//        return {'u', str_v, chr_v, bool_v, int_v, uint_v, dbl_v, matr_idx};
+//    }
+//    matr_idx[3].push_back(col_idx);
+//    uint_v.reserve(uint_v.size() + nrow);
+//    for (const auto &s : col_values) {
+//        int val;
+//        auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), val);
+//        if (ec == std::errc()) [[likely]]
+//            int_v.push_back(val);
+//        else
+//            int_v.push_back(0); 
+//    }
+//    return {'i', str_v, chr_v, bool_v, int_v, uint_v, dbl_v, matr_idx};
+//}
 
 struct PairHash {
     using sv = std::string_view;
@@ -7360,10 +7538,1118 @@ class Dataframe{
         };
       };
 
-      type_classification<CORES>();
+      type_classification();
     };
 
-    template <unsigned int CORES = 1>
+    //template <unsigned int strt_row = 0, 
+    //         unsigned int end_row = 0, 
+    //         unsigned int CORES = 1, 
+    //         bool WARMING = 0, 
+    //         bool CLEAN = 0, 
+    //         bool MEM_CLEAN = 0>
+    //void readf_alrd(std::string &file_name, 
+    //                char delim = ',', 
+    //                bool header_name = 1, 
+    //                char str_context = '\'',
+    //                std::vector<char> dtype) {
+    //    
+    //  int fd = open(file_name.c_str(), O_RDONLY);
+    //  if (fd == -1) {
+    //      perror("open");
+    //      throw std::runtime_error("Failed to open file: " + file_name);
+    //  }
+    //  
+    //  size_t size = lseek(fd, 0, SEEK_END);
+    //  if (size == (size_t)-1) {
+    //      perror("lseek");
+    //      close(fd);
+    //      throw std::runtime_error("Failed to determine file size: " + file_name);
+    //  }
+
+    //  posix_fadvise(fd, 0, 0, POSIX_FADV_WILLNEED);
+    //  readahead(fd, 0, size);
+    //  posix_fadvise(fd, 0, 0, POSIX_FADV_SEQUENTIAL);
+    //  
+    //  void* mapped = mmap(nullptr, size, PROT_READ, MAP_PRIVATE, fd, 0);
+    //  if (mapped == MAP_FAILED) {
+    //      perror("mmap");
+    //      close(fd);
+    //      throw std::runtime_error("Failed to mmap file: " + file_name);
+    //  }
+    // 
+    //  madvise(mapped, size, MADV_SEQUENTIAL | MADV_WILLNEED);
+    //  madvise(mapped, size, MADV_HUGEPAGE); // optional, if supported
+
+    //  close(fd); 
+    //  
+    //  std::string_view csv_view(static_cast<const char*>(mapped), size);
+    //        
+    //  ncol = 1;
+    //  std::vector<std::string> ex_vec = {};
+    //  unsigned int i = 0;
+    //  unsigned int verif_ncol;
+    //  bool str_cxt = 0;
+    //  tmp_val_refv.reserve(64);
+
+    //  if (header_name) {
+
+    //    bool in_quotes = false;
+    //    size_t field_start = 0;
+    //    
+    //    for (; i < csv_view.size(); ++i) {
+    //        char c = csv_view[i];
+    //        if (c == '\n' || c == '\r') {
+    //          if (i + 1 < csv_view.size() && csv_view[i + 1] == '\n') {
+    //            ++i;
+    //          };
+    //          break;
+    //        };
+    //        if (c == str_context) {
+    //            in_quotes = !in_quotes;
+    //        } else if (c == delim && !in_quotes) {
+    //            std::string_view field = csv_view.substr(field_start, i - field_start);
+    //    
+    //            if (field.empty()) {
+    //                name_v.emplace_back("NA");
+    //            } else {
+    //                name_v.emplace_back(field);
+    //            }
+    //    
+    //            tmp_val_refv.emplace_back(std::move(ex_vec));
+    //            ++ncol;
+    //            field_start = i + 1;
+    //        }
+    //    }
+
+    //    std::string_view field = csv_view.substr(field_start, i - field_start);
+    //    if (field.empty()) {
+    //        name_v.emplace_back("NA");
+    //    } else {
+    //        name_v.emplace_back(field);
+    //    }
+    //    tmp_val_refv.emplace_back(std::move(ex_vec));
+    //    ex_vec.clear();
+    //    
+    //  } else {
+
+    //    bool in_quotes = false;
+    //    size_t field_start = 0;
+    //    
+    //    for (; i < csv_view.size(); ++i) {
+    //        char c = csv_view[i];
+    //        if (c == '\n' || c == '\r') {
+    //          if (i + 1 < csv_view.size() && csv_view[i + 1] == '\n') {
+    //            ++i;
+    //          };
+    //          break;
+    //        };
+    //        if (c == str_context) {
+    //            in_quotes = !in_quotes;
+    //        } else if (c == delim && !in_quotes) {
+    //            std::string_view field = csv_view.substr(field_start, i - field_start);
+    //    
+    //            ex_vec.emplace_back(field);
+    //            tmp_val_refv.emplace_back(std::move(ex_vec));
+    //            ex_vec = {};
+    //            ++ncol;
+    //            field_start = i + 1;
+    //        }
+    //    }
+ 
+    //    std::string_view field = csv_view.substr(field_start, i - field_start);
+    //    if (field.empty()) {
+    //        ex_vec = {"NA"};
+    //    } else {
+    //        ex_vec.emplace_back(field);
+    //    }
+    //    tmp_val_refv.emplace_back(std::move(ex_vec));
+    //    ex_vec.clear();
+    //    nrow += 1;
+    //  };
+    //  type_refv.reserve(ncol);
+
+    //  size_t header_end = csv_view.find_first_of("\r\n");
+    //  if (header_end == std::string_view::npos) header_end = csv_view.size();
+    //  
+    //  std::string_view data_view = (header_end < csv_view.size())
+    //      ? csv_view.substr(header_end + ((header_end + 1 < csv_view.size() &&
+    //                                       csv_view[header_end] == '\r' &&
+    //                                       csv_view[header_end + 1] == '\n') ? 2 : 1))
+    //      : std::string_view{};
+    //   
+    //  auto lines_info = simd_count_newlines(csv_view.data(), csv_view.size());
+    //  const auto& newline_pos = lines_info.positions;
+
+    //  nrow = lines_info.count;
+
+    //  if (header_name) {
+    //    nrow -= 1;
+    //  };
+
+    //  if (!data_view.empty() && data_view.back() != '\n' && data_view.back() != '\r') {
+    //      ++nrow;
+    //  }
+  
+    //  i += 1;
+    // 
+    //  if constexpr (CORES > 1) { 
+    //    
+    //    if constexpr (WARMING) {
+
+    //      if (strt_row == 0 && end_row == 0) {
+
+    //        int nthreads = CORES;
+    //        size_t chunk = (nrow + nthreads - 1) / nthreads;
+
+    //        std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
+    //            nthreads, std::vector<std::vector<std::string_view>>(ncol)
+    //        );
+    //        
+    //        for (auto& thread : thread_columns)
+    //            for (auto& col : thread)
+    //                col.reserve(chunk);
+
+    //        #pragma omp parallel for
+    //        for (int t = 0; t < nthreads; ++t) {
+    //            size_t start_row = t * chunk;
+    //            size_t end_row2  = std::min(start_row + chunk, static_cast<size_t>(nrow));
+    //            if (start_row >= end_row2) continue;
+
+    //            size_t start_byte = (start_row == 0) ? i : newline_pos[start_row - 1] + 1;
+    //            size_t end_byte   = newline_pos[end_row2 - 1];
+    //            size_t slice_size = end_byte - start_byte;
+
+    //            const char* src_ptr = csv_view.data() + start_byte;
+
+    //            char* local_buf = nullptr;
+    //            posix_memalign((void**)&local_buf, 64, slice_size); // 64 makes sur the starting pointer is divisible by 64
+    //                                                                // so at max 63 more bytes reserved, handled automatically
+
+    //            const size_t V = 32;
+    //            size_t j = 0;
+    //            for (; j + V <= slice_size; j += V) {
+    //                __m256i v = _mm256_loadu_si256((const __m256i*)(src_ptr + j));
+    //                _mm256_storeu_si256((__m256i*)(local_buf + j), v);  
+    //            }
+    //            for (; j < slice_size; ++j) local_buf[j] = src_ptr[j];
+
+    //            std::string_view local_view(local_buf, slice_size);
+    //            const char* orig_base = csv_view.data();           
+    //            size_t orig_start_byte = start_byte;                
+    //            parse_rows_range_cached(local_view, orig_base, orig_start_byte,
+    //                        thread_columns[t], delim, str_context, ncol);
+
+    //            free(local_buf);
+    //        }
+
+    //        #pragma omp parallel for 
+    //        for (size_t c = 0; c < ncol; ++c) {
+    //            size_t total = 0;
+    //            for (int t = 0; t < nthreads; ++t)
+    //                total += thread_columns[t][c].size();
+
+    //            auto& dst = tmp_val_refv[c];
+    //            dst.reserve(dst.size() + total);  
+
+    //            for (int t = 0; t < nthreads; ++t) {
+    //                auto& src = thread_columns[t][c];
+    //                dst.insert(dst.end(), src.begin(), src.end());
+    //            }
+    //        }
+
+    //        if (nrow > tmp_val_refv[0].size()) {
+    //            nrow -= 1;
+    //        }
+
+    //      } else if constexpr (strt_row != 0 && end_row != 0) {
+
+    //        nrow = end_row - strt_row;
+    //        int nthreads = CORES;
+    //        size_t chunk = (nrow + nthreads - 1) / nthreads;
+
+    //        std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
+    //            nthreads, std::vector<std::vector<std::string_view>>(ncol)
+    //        );
+    //        
+    //        for (auto& thread : thread_columns)
+    //            for (auto& col : thread)
+    //                col.reserve(chunk);
+    //        
+    //        const unsigned int strt_row2 = (header_name) ? strt_row + 1 : strt_row;
+    //        const unsigned int end_rowb = (header_name) ? end_row + 1 : end_row;
+
+    //        #pragma omp parallel for
+    //        for (int t = 0; t < nthreads; ++t) {
+    //            size_t start_row = t * chunk + strt_row2;
+    //            size_t end_row2  = std::min(start_row + chunk, 
+    //                            static_cast<size_t>(end_rowb));
+    //            if (start_row >= end_row2) continue;
+
+    //            size_t start_byte = newline_pos[start_row - 1] + 1;
+    //            size_t end_byte   = newline_pos[end_row2 - 1];
+    //            size_t slice_size = end_byte - start_byte;
+
+    //            const char* src_ptr = csv_view.data() + start_byte;
+
+    //            char* local_buf = nullptr;
+    //            posix_memalign((void**)&local_buf, 64, slice_size); // 64 makes sur the starting pointer is divisible by 64
+    //                                                                // so at max 63 more bytes reserved, handled automatically
+
+    //            const size_t V = 32;
+    //            size_t j = 0;
+    //            for (; j + V <= slice_size; j += V) {
+    //                __m256i v = _mm256_loadu_si256((const __m256i*)(src_ptr + j));
+    //                _mm256_storeu_si256((__m256i*)(local_buf + j), v);  
+    //            }
+    //            for (; j < slice_size; ++j) local_buf[j] = src_ptr[j];
+
+    //            std::string_view local_view(local_buf, slice_size);
+    //            const char* orig_base = csv_view.data();           
+    //            size_t orig_start_byte = start_byte;
+
+    //            parse_rows_range_cached(local_view, orig_base, orig_start_byte,
+    //                        thread_columns[t], delim, str_context, ncol);
+
+    //            free(local_buf);
+    //        }
+
+    //        #pragma omp parallel for 
+    //        for (size_t c = 0; c < ncol; ++c) {
+    //            size_t total = 0;
+    //            for (int t = 0; t < nthreads; ++t)
+    //                total += thread_columns[t][c].size();
+
+    //            auto& dst = tmp_val_refv[c];
+    //            dst.reserve(dst.size() + total);  
+
+    //            for (int t = 0; t < nthreads; ++t) {
+    //                auto& src = thread_columns[t][c];
+    //                dst.insert(dst.end(), src.begin(), src.end());
+    //            }
+    //        }
+
+    //        if (nrow > tmp_val_refv[0].size()) {
+    //            nrow -= 1;
+    //        }
+
+    //      } else if constexpr (strt_row != 0) {
+
+    //        unsigned int nrow_lst = nrow;
+    //        nrow = nrow_lst - strt_row;
+    //        nrow_lst += ((header_name) ? 1 : 0);
+    //        int nthreads = CORES;
+    //        size_t chunk = (nrow + nthreads - 1) / nthreads;
+
+    //        std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
+    //            nthreads, std::vector<std::vector<std::string_view>>(ncol)
+    //        );
+    //        
+    //        for (auto& thread : thread_columns)
+    //            for (auto& col : thread)
+    //                col.reserve(chunk);
+    //        
+    //        const unsigned int strt_row2 = (header_name) ? strt_row + 1 : strt_row;
+
+    //        #pragma omp parallel for
+    //        for (int t = 0; t < nthreads; ++t) {
+    //            size_t start_row = t * chunk + strt_row2;
+    //            size_t end_row2  = std::min(start_row + chunk, 
+    //                            static_cast<size_t>(nrow_lst));
+    //            if (start_row >= end_row2) continue;
+
+    //            size_t start_byte = newline_pos[start_row - 1] + 1;
+    //            size_t end_byte   = newline_pos[end_row2 - 1];
+    //            size_t slice_size = end_byte - start_byte;
+
+    //            const char* src_ptr = csv_view.data() + start_byte;
+
+    //            char* local_buf = nullptr;
+    //            posix_memalign((void**)&local_buf, 64, slice_size); // 64 makes sur the starting pointer is divisible by 64
+    //                                                                // so at max 63 more bytes reserved, handled automatically
+
+    //            const size_t V = 32;
+    //            size_t j = 0;
+    //            for (; j + V <= slice_size; j += V) {
+    //                __m256i v = _mm256_loadu_si256((const __m256i*)(src_ptr + j));
+    //                _mm256_storeu_si256((__m256i*)(local_buf + j), v);  
+    //            }
+    //            for (; j < slice_size; ++j) local_buf[j] = src_ptr[j];
+
+    //            std::string_view local_view(local_buf, slice_size);
+    //            const char* orig_base = csv_view.data();           
+    //            size_t orig_start_byte = start_byte;
+
+    //            parse_rows_range_cached(local_view, orig_base, orig_start_byte,
+    //                        thread_columns[t], delim, str_context, ncol);
+
+    //            free(local_buf);
+    //        }
+
+    //        #pragma omp parallel for 
+    //        for (size_t c = 0; c < ncol; ++c) {
+    //            size_t total = 0;
+    //            for (int t = 0; t < nthreads; ++t)
+    //                total += thread_columns[t][c].size();
+
+    //            auto& dst = tmp_val_refv[c];
+    //            dst.reserve(dst.size() + total);  
+
+    //            for (int t = 0; t < nthreads; ++t) {
+    //                auto& src = thread_columns[t][c];
+    //                dst.insert(dst.end(), src.begin(), src.end());
+    //            }
+    //        }
+
+    //        if (nrow > tmp_val_refv[0].size()) {
+    //            nrow -= 1;
+    //        }
+    //
+    //      } else if constexpr (end_row != 0) {
+
+    //        nrow = end_row;
+    //        int nthreads = CORES;
+    //        size_t chunk = (nrow + nthreads - 1) / nthreads;
+
+    //        std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
+    //            nthreads, std::vector<std::vector<std::string_view>>(ncol)
+    //        );
+    //        
+    //        for (auto& thread : thread_columns)
+    //            for (auto& col : thread)
+    //                col.reserve(chunk);
+    //        
+    //        const unsigned int end_rowb = (header_name) ? end_row + 1 : end_row;
+
+    //        #pragma omp parallel for
+    //        for (int t = 0; t < nthreads; ++t) {
+    //            size_t start_row = t * chunk;
+    //            size_t end_row2  = std::min(start_row + chunk, 
+    //                            static_cast<size_t>(end_rowb));
+
+    //            if (start_row >= end_row2) continue; 
+
+    //            size_t start_byte = (start_row == 0) ? i : newline_pos[start_row - 1] + 1;
+    //            size_t end_byte   = newline_pos[end_row2 - 1];
+    //            size_t slice_size = end_byte - start_byte;
+
+    //            const char* src_ptr = csv_view.data() + start_byte;
+
+    //            char* local_buf = nullptr;
+    //            posix_memalign((void**)&local_buf, 64, slice_size); // 64 makes sur the starting pointer is divisible by 64
+    //                                                                // so at max 63 more bytes reserved, handled automatically
+
+    //            const size_t V = 32;
+    //            size_t j = 0;
+    //            for (; j + V <= slice_size; j += V) {
+    //                __m256i v = _mm256_loadu_si256((const __m256i*)(src_ptr + j));
+    //                _mm256_storeu_si256((__m256i*)(local_buf + j), v);  
+    //            }
+    //            for (; j < slice_size; ++j) local_buf[j] = src_ptr[j];
+
+    //            std::string_view local_view(local_buf, slice_size);
+    //            const char* orig_base = csv_view.data();           
+    //            size_t orig_start_byte = start_byte;
+
+    //            parse_rows_range_cached(local_view, orig_base, orig_start_byte,
+    //                        thread_columns[t], delim, str_context, ncol);
+
+    //            free(local_buf);
+    //        }
+
+    //        #pragma omp parallel for 
+    //        for (size_t c = 0; c < ncol; ++c) {
+    //            size_t total = 0;
+    //            for (int t = 0; t < nthreads; ++t)
+    //                total += thread_columns[t][c].size();
+
+    //            auto& dst = tmp_val_refv[c];
+    //            dst.reserve(dst.size() + total);  
+
+    //            for (int t = 0; t < nthreads; ++t) {
+    //                auto& src = thread_columns[t][c];
+    //                dst.insert(dst.end(), src.begin(), src.end());
+    //            }
+    //        }
+
+    //        if (nrow > tmp_val_refv[0].size()) {
+    //            nrow -= 1;
+    //        }
+    //
+    //      }
+
+    //    } else if constexpr (!WARMING) {
+
+    //      if constexpr (strt_row == 0 && end_row == 0) {
+
+    //        int nthreads = CORES;
+    //        size_t chunk = (nrow + nthreads - 1) / nthreads;
+
+    //        std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
+    //            nthreads, std::vector<std::vector<std::string_view>>(ncol)
+    //        );
+    //        
+    //        for (auto& thread : thread_columns) {
+    //            for (auto& col : thread)
+    //                col.reserve(chunk);
+    //        }
+ 
+    //        #pragma omp parallel for
+    //        for (int t = 0; t < nthreads; ++t) {
+
+    //            size_t start_row = t * chunk;
+    //            size_t end_row2   = std::min(start_row + chunk, static_cast<size_t>(nrow));
+    //        
+    //            if (start_row >= end_row2) continue;
+    //        
+    //            size_t start_byte = (start_row == 0) ? i : newline_pos[start_row - 1] + 1;
+    //            size_t end_byte   = newline_pos[end_row2 - 1];
+    //        
+    //            std::string_view subview(csv_view.data() + start_byte, 
+    //                                     end_byte - start_byte);
+
+    //            parse_rows_range(subview, 
+    //                            0, subview.size(), 
+    //                            thread_columns[t], 
+    //                            delim, str_context, ncol);
+    //        }
+
+    //        #pragma omp parallel for 
+    //        for (size_t c = 0; c < ncol; ++c) {
+    //            size_t total = 0;
+    //            for (int t = 0; t < nthreads; ++t)
+    //                total += thread_columns[t][c].size();
+    //        
+    //            auto& dst = tmp_val_refv[c];
+    //            dst.reserve(dst.size() + total);  
+    //        
+    //            for (int t = 0; t < nthreads; ++t) {
+    //                auto& src = thread_columns[t][c];
+    //                dst.insert(dst.end(), src.begin(), src.end());
+
+    //            }
+    //        }
+ 
+    //        if (nrow > tmp_val_refv[0].size()) {
+    //          nrow -= 1;
+    //        };
+
+    //      } else if constexpr (strt_row != 0 && end_row != 0) {
+
+    //        int nthreads = CORES;
+    //        nrow = end_row - strt_row;
+    //        size_t chunk = (nrow + nthreads - 1) / nthreads;
+
+    //        std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
+    //            nthreads, std::vector<std::vector<std::string_view>>(ncol)
+    //        );
+    //        
+    //        for (auto& thread : thread_columns) {
+    //            for (auto& col : thread)
+    //                col.reserve(chunk);
+    //        }
+ 
+    //        const unsigned int strt_row2 = (header_name) ? strt_row + 1 : strt_row; 
+    //        const unsigned int end_rowb = (header_name) ? end_row + 1 : end_row;
+
+    //        #pragma omp parallel for
+    //        for (int t = 0; t < nthreads; ++t) {
+
+    //            size_t start_row = t * chunk + strt_row2;
+    //            size_t end_row2 = std::min(start_row + chunk, 
+    //                            static_cast<size_t>(end_rowb));
+    //        
+    //            if (start_row >= end_row2) continue;
+    //        
+    //            size_t start_byte = (start_row == 0) ? i : newline_pos[start_row - 1] + 1;
+    //            size_t end_byte   = newline_pos[end_row2 - 1];
+    //        
+    //            std::string_view subview(csv_view.data() + start_byte, 
+    //                                     end_byte - start_byte);
+
+    //            parse_rows_range(subview, 
+    //                            0, subview.size(), 
+    //                            thread_columns[t], 
+    //                            delim, str_context, ncol);
+    //        }
+
+    //        #pragma omp parallel for 
+    //        for (size_t c = 0; c < ncol; ++c) {
+    //            size_t total = 0;
+    //            for (int t = 0; t < nthreads; ++t)
+    //                total += thread_columns[t][c].size();
+    //        
+    //            auto& dst = tmp_val_refv[c];
+    //            dst.reserve(dst.size() + total);  
+    //        
+    //            for (int t = 0; t < nthreads; ++t) {
+    //                auto& src = thread_columns[t][c];
+    //                dst.insert(dst.end(), src.begin(), src.end());
+
+    //            }
+    //        }
+ 
+    //        if (nrow > tmp_val_refv[0].size()) {
+    //          nrow -= 1;
+    //        };
+
+    //      } else if constexpr (strt_row != 0) {
+
+    //        int nthreads = CORES;
+    //        unsigned int nrow_lst = nrow;
+    //        nrow = nrow - strt_row;
+    //        size_t chunk = (nrow + nthreads - 1) / nthreads;
+
+    //        std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
+    //            nthreads, std::vector<std::vector<std::string_view>>(ncol)
+    //        );
+    //        
+    //        for (auto& thread : thread_columns) {
+    //            for (auto& col : thread)
+    //                col.reserve(chunk);
+    //        }
+ 
+    //        const unsigned int strt_row2 = (header_name) ? strt_row + 1 : strt_row; 
+    //        nrow_lst = (header_name) ? nrow_lst + 1 : nrow_lst; 
+
+    //        #pragma omp parallel for
+    //        for (int t = 0; t < nthreads; ++t) {
+
+    //            size_t start_row = t * chunk + strt_row2;
+    //            size_t end_row2 = std::min(start_row + chunk, 
+    //                            static_cast<size_t>(nrow_lst));
+    //        
+    //            if (start_row >= end_row2) continue;
+    //        
+    //            size_t start_byte = (start_row == 0) ? i : newline_pos[start_row - 1] + 1;
+    //            size_t end_byte   = newline_pos[end_row2 - 1];
+    //        
+    //            std::string_view subview(csv_view.data() + start_byte, 
+    //                                     end_byte - start_byte);
+
+    //            parse_rows_range(subview, 
+    //                            0, subview.size(), 
+    //                            thread_columns[t], 
+    //                            delim, str_context, ncol);
+    //        }
+
+    //        #pragma omp parallel for 
+    //        for (size_t c = 0; c < ncol; ++c) {
+    //            size_t total = 0;
+    //            for (int t = 0; t < nthreads; ++t)
+    //                total += thread_columns[t][c].size();
+    //        
+    //            auto& dst = tmp_val_refv[c];
+    //            dst.reserve(dst.size() + total);  
+    //        
+    //            for (int t = 0; t < nthreads; ++t) {
+    //                auto& src = thread_columns[t][c];
+    //                dst.insert(dst.end(), src.begin(), src.end());
+
+    //            }
+    //        }
+ 
+    //        if (nrow > tmp_val_refv[0].size()) {
+    //          nrow -= 1;
+    //        };
+
+    //      } else if constexpr (end_row != 0) {
+
+    //        int nthreads = CORES;
+    //        nrow = end_row;
+    //        size_t chunk = (nrow + nthreads - 1) / nthreads;
+
+    //        std::vector<std::vector<std::vector<std::string_view>>> thread_columns(
+    //            nthreads, std::vector<std::vector<std::string_view>>(ncol)
+    //        );
+    //        
+    //        for (auto& thread : thread_columns) {
+    //            for (auto& col : thread)
+    //                col.reserve(chunk);
+    //        }
+ 
+    //        const unsigned int end_rowb = (header_name) ? end_row + 1 : end_row; 
+
+    //        #pragma omp parallel for
+    //        for (int t = 0; t < nthreads; ++t) {
+
+    //            size_t start_row = t * chunk;
+    //            size_t end_row2 = std::min(start_row + chunk, 
+    //                            static_cast<size_t>(end_rowb));
+    //        
+    //            if (start_row >= end_row2) continue;
+    //        
+    //            size_t start_byte = (start_row == 0) ? i : newline_pos[start_row - 1] + 1;
+    //            size_t end_byte   = newline_pos[end_row2 - 1];
+    //        
+    //            std::string_view subview(csv_view.data() + start_byte, 
+    //                                     end_byte - start_byte);
+
+    //            parse_rows_range(subview, 
+    //                            0, subview.size(), 
+    //                            thread_columns[t], 
+    //                            delim, str_context, ncol);
+    //        }
+
+    //        #pragma omp parallel for 
+    //        for (size_t c = 0; c < ncol; ++c) {
+    //            size_t total = 0;
+    //            for (int t = 0; t < nthreads; ++t)
+    //                total += thread_columns[t][c].size();
+    //        
+    //            auto& dst = tmp_val_refv[c];
+    //            dst.reserve(dst.size() + total);  
+    //        
+    //            for (int t = 0; t < nthreads; ++t) {
+    //                auto& src = thread_columns[t][c];
+    //                dst.insert(dst.end(), src.begin(), src.end());
+
+    //            }
+    //        }
+ 
+    //        if (nrow > tmp_val_refv[0].size()) {
+    //          nrow -= 1;
+    //        };
+
+    //      }
+    //    }
+
+    //  } else if constexpr (CORES == 1) {
+
+    //    for (auto& col : tmp_val_refv) {
+    //      col.reserve(nrow);
+    //    };
+
+    //    if constexpr (strt_row == 0 && end_row == 0) {
+    //      
+    //          const char* base = csv_view.data();
+    //          const size_t N = csv_view.size();
+    //      
+    //          bool in_quotes = false;
+    //          size_t field_start = i;
+    //          verif_ncol = 0;
+
+    //          size_t pos = i;
+
+    //          __m256i D = _mm256_set1_epi8(delim);
+    //          __m256i Q = _mm256_set1_epi8(str_context);
+    //          static const __m256i NL = _mm256_set1_epi8('\n');
+    //          static const __m256i CR = _mm256_set1_epi8('\r');
+
+    //          for (; pos + 32 <= N; ) {
+    //
+    //            _mm_prefetch(base + pos + 1024, _MM_HINT_T0);
+    //            
+    //            __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
+
+    //            int mD  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
+    //            int mQ  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, Q));
+    //            int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
+    //            int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
+
+    //            int mNL_any = (mNL | mCR);
+    //            int events  = (mD | mNL_any | mQ);
+
+    //            while (events) {
+    //                int bit = __builtin_ctz(events);
+    //                size_t idx = pos + bit;
+    //                char c = base[idx];
+
+    //                if (c == str_context) {
+    //                    in_quotes = !in_quotes;
+    //                }
+    //                else if (!in_quotes && c == delim) {
+    //                    std::string_view field = csv_view.substr(field_start, idx - field_start);
+
+    //                    tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+    //                    ++verif_ncol;
+    //                    field_start = idx + 1;
+    //                }
+    //                else if (!in_quotes && (c == '\n' || c == '\r')) {
+    //                    std::string_view field = csv_view.substr(field_start, idx - field_start);
+
+    //                    tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+
+    //                    if (verif_ncol + 1 != ncol) {
+    //                        std::cerr << "column number problem at row: " << nrow << "\n";
+    //                        reinitiate();
+    //                        return;
+    //                    }
+
+    //                    verif_ncol = 0;
+
+    //                    size_t advance = 1;
+    //                    if (c == '\r' && idx + 1 < N && base[idx + 1] == '\n')
+    //                        ++advance;
+
+    //                    field_start = idx + advance;
+    //                    pos = idx + advance; 
+    //                    goto next_chunk;
+    //                }
+
+    //                events &= (events - 1);
+    //            }
+
+    //            pos += 32;
+    //            next_chunk:
+    //              continue;
+    //        }
+
+    //        for (; pos < N; ++pos) {
+    //            char c = base[pos];
+    //            if (c == str_context) {
+    //                in_quotes = !in_quotes;
+    //            } else if (!in_quotes && c == delim) {
+    //                std::string_view field = csv_view.substr(field_start, pos - field_start);
+    //                if (field.empty()) {
+    //                    tmp_val_refv[verif_ncol].push_back("NA");
+    //                } else {
+    //                    tmp_val_refv[verif_ncol].emplace_back(field);
+    //                }
+    //                ++verif_ncol;
+    //                field_start = pos + 1;
+    //            } else if (!in_quotes && (c == '\n' || c == '\r')) {
+    //                if (verif_ncol + 1 != ncol) {
+    //                    std::cerr << "column number problem in readf\n";
+    //                    reinitiate();
+    //                    return;
+    //                }
+    //                std::string_view field = csv_view.substr(field_start, pos - field_start);
+    //                if (field.empty()) {
+    //                    tmp_val_refv[verif_ncol].push_back("NA");
+    //                } else {
+    //                    tmp_val_refv[verif_ncol].emplace_back(field);
+    //                }
+    //      
+    //                verif_ncol = 0;
+    //      
+    //                if (pos + 1 < N && base[pos] == '\r' && base[pos + 1] == '\n') {
+    //                    ++pos;
+    //                }
+    //                field_start = pos + 1;
+    //            }
+    //        }
+    //      
+    //      } else if constexpr (strt_row != 0 && end_row != 0) {
+
+    //          nrow = (header_name) ? 1 : 0;
+
+    //          size_t count = 0;
+    //          for (;count < strt_row ; i += 1) {
+    //            if (csv_view[i] == '\n') {
+    //              count += 1;
+    //            };
+    //          };
+
+    //          const char* base = csv_view.data();
+    //          const size_t N = csv_view.size();
+    //      
+    //          bool in_quotes = false;
+    //          size_t field_start = i;
+    //          verif_ncol = 0;
+
+    //          size_t pos = i;
+
+    //          __m256i D = _mm256_set1_epi8(delim);
+    //          __m256i Q = _mm256_set1_epi8(str_context);
+    //          static const __m256i NL = _mm256_set1_epi8('\n');
+    //          static const __m256i CR = _mm256_set1_epi8('\r');
+
+    //          const size_t end_row2 = end_row - strt_row + ((header_name) ? 1 : 0);
+
+    //          for (; pos + 32 <= N; ) {
+    //
+    //            __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
+
+    //            int mD  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
+    //            int mQ  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, Q));
+    //            int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
+    //            int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
+
+    //            int mNL_any = (mNL | mCR);
+    //            int events  = (mD | mNL_any | mQ);
+
+    //            while (events) {
+    //                int bit = __builtin_ctz(events);
+    //                size_t idx = pos + bit;
+    //                char c = base[idx];
+
+    //                if (c == str_context) {
+    //                    in_quotes = !in_quotes;
+    //                }
+    //                else if (!in_quotes && c == delim) {
+    //                    std::string_view field = csv_view.substr(field_start, idx - field_start);
+
+    //                    tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+    //                    ++verif_ncol;
+    //                    field_start = idx + 1;
+    //                }
+    //                else if (!in_quotes && (c == '\n' || c == '\r')) {
+    //                    std::string_view field = csv_view.substr(field_start, idx - field_start);
+
+    //                    tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+
+    //                    if (verif_ncol + 1 != ncol) {
+    //                        std::cerr << "column number problem at row: " << nrow << "\n";
+    //                        reinitiate();
+    //                        return;
+    //                    }
+
+    //                    ++nrow;
+    //                    if (nrow == end_row2) {
+    //                      nrow -= 1;
+    //                      goto next_chunk2b;
+    //                    };
+    //                    verif_ncol = 0;
+
+    //                    size_t advance = 1;
+    //                    if (c == '\r' && idx + 1 < N && base[idx + 1] == '\n')
+    //                        ++advance;
+
+    //                    field_start = idx + advance;
+    //                    pos = idx + advance; 
+    //                    goto next_chunk2;
+    //                }
+
+    //                events &= (events - 1);
+    //            }
+
+    //            pos += 32;
+    //            next_chunk2:
+    //              continue;
+    //            next_chunk2b:
+    //              break;
+    //        }
+
+    //      } else if constexpr (strt_row != 0) {
+
+    //            size_t count = 0;
+    //            for (;count < strt_row ; i += 1) {
+    //              if (csv_view[i] == '\n') {
+    //                count += 1;
+    //              };
+    //            };
+
+    //            nrow = nrow - strt_row + 1;
+    //            
+    //            const char* base = csv_view.data();
+    //            const size_t N = csv_view.size();
+    //        
+    //            bool in_quotes = false;
+    //            size_t field_start = i;
+    //            verif_ncol = 0;
+
+    //            size_t pos = i;
+
+    //            __m256i D = _mm256_set1_epi8(delim);
+    //            __m256i Q = _mm256_set1_epi8(str_context);
+    //            static const __m256i NL = _mm256_set1_epi8('\n');
+    //            static const __m256i CR = _mm256_set1_epi8('\r');
+
+    //            for (; pos + 32 <= N; ) {
+    //
+    //              __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
+
+    //              int mD  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
+    //              int mQ  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, Q));
+    //              int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
+    //              int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
+
+    //              int mNL_any = (mNL | mCR);
+    //              int events  = (mD | mNL_any | mQ);
+
+    //              while (events) {
+    //                  int bit = __builtin_ctz(events);
+    //                  size_t idx = pos + bit;
+    //                  char c = base[idx];
+
+    //                  if (c == str_context) {
+    //                      in_quotes = !in_quotes;
+    //                  }
+    //                  else if (!in_quotes && c == delim) {
+    //                      std::string_view field = csv_view.substr(field_start, idx - field_start);
+
+    //                      tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+    //                      ++verif_ncol;
+    //                      field_start = idx + 1;
+    //                  }
+    //                  else if (!in_quotes && (c == '\n' || c == '\r')) {
+    //                      std::string_view field = csv_view.substr(field_start, idx - field_start);
+
+    //                      tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+
+    //                      if (verif_ncol + 1 != ncol) {
+    //                          std::cerr << "column number problem at row: " << nrow << "\n";
+    //                          reinitiate();
+    //                          return;
+    //                      }
+
+    //                      //++nrow;
+    //                      verif_ncol = 0;
+
+    //                      size_t advance = 1;
+    //                      if (c == '\r' && idx + 1 < N && base[idx + 1] == '\n')
+    //                          ++advance;
+
+    //                      field_start = idx + advance;
+    //                      pos = idx + advance; 
+    //                      goto next_chunk3;
+    //                  }
+
+    //                  events &= (events - 1);
+    //              }
+
+    //              pos += 32;
+    //              next_chunk3:
+    //                continue;
+    //          }
+
+    //          for (; pos < N; ++pos) {
+    //            char c = base[pos];
+    //            if (c == str_context) {
+    //                in_quotes = !in_quotes;
+    //            } else if (!in_quotes && c == delim) {
+    //                std::string_view field = csv_view.substr(field_start, pos - field_start);
+    //                if (field.empty()) {
+    //                    tmp_val_refv[verif_ncol].push_back("NA");
+    //                } else {
+    //                    tmp_val_refv[verif_ncol].emplace_back(field);
+    //                }
+    //                ++verif_ncol;
+    //                field_start = pos + 1;
+    //            } else if (!in_quotes && (c == '\n' || c == '\r')) {
+    //                if (verif_ncol + 1 != ncol) {
+    //                    std::cerr << "column number problem in readf\n";
+    //                    reinitiate();
+    //                    return;
+    //                }
+    //                std::string_view field = csv_view.substr(field_start, pos - field_start);
+    //                if (field.empty()) {
+    //                    tmp_val_refv[verif_ncol].push_back("NA");
+    //                } else {
+    //                    tmp_val_refv[verif_ncol].emplace_back(field);
+    //                }
+    //      
+    //                verif_ncol = 0;
+    //      
+    //                if (pos + 1 < N && base[pos] == '\r' && base[pos + 1] == '\n') {
+    //                    ++pos;
+    //                }
+    //                field_start = pos + 1;
+    //            }
+    //        }
+
+    //      } else if constexpr (end_row != 0) {
+
+    //            const char* base = csv_view.data();
+    //            const size_t N = csv_view.size();
+    //        
+    //            bool in_quotes = false;
+    //            size_t field_start = i;
+    //            verif_ncol = 0;
+
+    //            nrow = (header_name) ? 1 : 0;
+
+    //            size_t pos = i;
+
+    //            __m256i D = _mm256_set1_epi8(delim);
+    //            __m256i Q = _mm256_set1_epi8(str_context);
+    //            static const __m256i NL = _mm256_set1_epi8('\n');
+    //            static const __m256i CR = _mm256_set1_epi8('\r');
+
+    //            const unsigned int end_row2 = end_row + ((header_name) ? 1 : 0);
+
+    //            for (; pos + 32 <= N; ) {
+    //
+    //              __m256i chunk = _mm256_loadu_si256(reinterpret_cast<const __m256i*>(base + pos));
+
+    //              int mD  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, D));
+    //              int mQ  = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, Q));
+    //              int mNL = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, NL));
+    //              int mCR = _mm256_movemask_epi8(_mm256_cmpeq_epi8(chunk, CR));
+
+    //              int mNL_any = (mNL | mCR);
+    //              int events  = (mD | mNL_any | mQ);
+
+    //              while (events) {
+    //                  int bit = __builtin_ctz(events);
+    //                  size_t idx = pos + bit;
+    //                  char c = base[idx];
+
+    //                  if (c == str_context) {
+    //                      in_quotes = !in_quotes;
+    //                  }
+    //                  else if (!in_quotes && c == delim) {
+    //                      std::string_view field = csv_view.substr(field_start, idx - field_start);
+
+    //                      tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+    //                      ++verif_ncol;
+    //                      field_start = idx + 1;
+    //                  }
+    //                  else if (!in_quotes && (c == '\n' || c == '\r')) {
+    //                      std::string_view field = csv_view.substr(field_start, idx - field_start);
+
+    //                      tmp_val_refv[verif_ncol].emplace_back(field.empty() ? "NA" : std::string(field));
+
+    //                      if (verif_ncol + 1 != ncol) {
+    //                          std::cerr << "column number problem at row: " << nrow << "\n";
+    //                          reinitiate();
+    //                          return;
+    //                      }
+
+    //                      ++nrow;
+    //                      if (nrow == end_row2) {
+    //                        nrow -= 1;
+    //                        goto next_chunk4b;
+    //                      };
+    //                      verif_ncol = 0;
+
+    //                      size_t advance = 1;
+    //                      if (c == '\r' && idx + 1 < N && base[idx + 1] == '\n')
+    //                          ++advance;
+
+    //                      field_start = idx + advance;
+    //                      pos = idx + advance; 
+    //                      goto next_chunk4;
+    //                  }
+
+    //                  events &= (events - 1);
+    //              }
+
+    //              pos += 32;
+    //              next_chunk4:
+    //                continue;
+    //              next_chunk4b:
+    //                break;
+    //          }
+
+    //      };
+    //  }
+
+    //  madvise(mapped, size, MADV_DONTNEED);
+    //  munmap(mapped, size);
+
+    //  if constexpr (MEM_CLEAN) {
+    //    for (auto& el : tmp_val_refv) {
+    //      el.shrink_to_fit();
+    //    };
+    //  };
+
+    //  //type_classification<CORES>();
+    //  for (size_t el = 0: el < dtype.size(); el += 1) {
+    //    switch(dtype[el]) {
+    //      case 's': {
+    //            matr_idx[0].push_back(el);
+    //            str_v.reserve(str_v.size() + nrow);
+    //            str_v.insert(str_v.end(), 
+    //                            tmp_val_refv[el].begin(), 
+    //                            tmp_val_refv[el].end());
+    //            break;
+    //                }
+    //      case 'c'
+    //    }
+    //  };
+    //};
+
     void type_classification() {
       unsigned int i;
       unsigned int i2;
@@ -7374,25 +8660,32 @@ class Dataframe{
       type_refv.resize(ncol);
 
       for (auto& el : matr_idx) {
-        el.reserve(6);
+        el.reserve(ncol);
       };
 
-      omp_set_num_threads(CORES);
-
-      #pragma omp parallel
-      {
-          std::array<std::vector<unsigned int>, 6> local_idx;
-          #pragma omp for nowait
-          for (int i = 0; i < ncol; ++i) {
-              type_refv[i] = classify_column(tmp_val_refv[i], local_idx, i);
-          }
+      std::vector<ColumnResult> results(ncol);
+      omp_set_num_threads(4);
+      #pragma omp parallel for  
+      for (int i = 0; i < ncol; ++i)
+          results[i] = classify_column(tmp_val_refv[i], i, nrow);
      
-          #pragma omp critical
-          for (int k = 0; k < 6; ++k)
-              matr_idx[k].insert(matr_idx[k].end(),
-                                 local_idx[k].begin(), local_idx[k].end());
-      }
-      
+     for (size_t i = 0; i < results.size(); ++i) {
+         const auto &r = results[i];
+         type_refv[i] = r.type; 
+     
+         for (size_t t = 0; t < 6; ++t) {
+             matr_idx[t].insert(matr_idx[t].end(),
+                                r.matr_idx[t].begin(), r.matr_idx[t].end());
+         }
+     
+         str_v.insert(str_v.end(), r.str_v.begin(), r.str_v.end());
+         chr_v.insert(chr_v.end(), r.chr_v.begin(), r.chr_v.end());
+         bool_v.insert(bool_v.end(), r.bool_v.begin(), r.bool_v.end());
+         int_v.insert(int_v.end(), r.int_v.begin(), r.int_v.end());
+         uint_v.insert(uint_v.end(), r.uint_v.begin(), r.uint_v.end());
+         dbl_v.insert(dbl_v.end(), r.dbl_v.begin(), r.dbl_v.end());
+     }
+
     };
 
     void display_filter(std::vector<bool> &x, std::vector<int> &colv) {
@@ -11536,7 +12829,7 @@ class Dataframe{
 //@A str_context_end : is the end symbol for a quote context
 //@A strt_row : is the first row to read, defaults to 0
 //@A end_row : is the last row to read, defaults to max (value of 0)
-//@A CORES : are the number of cores used for parsing and type inference
+//@A CORES : are the number of cores used for parsing
 //@A WARMING : enables cache warming, might help if a lot of delimiters by column
 //@A MEM_CLEAN : free unnused memory, might be slower
 //@X
