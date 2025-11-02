@@ -8658,7 +8658,7 @@ class Dataframe{
       bool is_flt_dbl;
       bool is_unsigned;
       bool is_bool;
-      type_refv.resize(ncol);
+      type_refv.reserve(ncol);
 
       for (auto& el : matr_idx) {
         el.reserve(ncol);
@@ -8676,9 +8676,10 @@ class Dataframe{
       std::vector<ColumnResult> results(ncol);
       omp_set_num_threads(CORES);
       #pragma omp parallel for  
-      for (int i = 0; i < ncol; ++i)
+      for (int i = 0; i < ncol; ++i) {
           results[i] = classify_column(tmp_val_refv[i], i, nrow);
-    
+      }
+   
       for (auto& r : results) {
           str_v.insert(str_v.end(),
                        std::make_move_iterator(r.str_v.begin()),
@@ -8703,7 +8704,7 @@ class Dataframe{
                                r.matr_idx[t].begin(), r.matr_idx[t].end());
           }
       
-          type_refv[i] = r.type; 
+          type_refv.push_back(r.type); 
       }
     
     };
