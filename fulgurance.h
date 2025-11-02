@@ -8664,6 +8664,15 @@ class Dataframe{
         el.reserve(ncol);
       };
 
+      static const unsigned int rs_vl = ncol * nrow / 2;
+      str_v.reserve(rs_vl);
+      chr_v.reserve(rs_vl);
+      bool_v.reserve(rs_vl);
+      int_v.reserve(rs_vl);
+      uint_v.reserve(rs_vl);
+      dbl_v.reserve(rs_vl);
+
+
       std::vector<ColumnResult> results(ncol);
       omp_set_num_threads(CORES);
       #pragma omp parallel for  
