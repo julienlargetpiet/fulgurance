@@ -8664,7 +8664,7 @@ class Dataframe{
         el.reserve(ncol);
       };
 
-      static const unsigned int rs_vl = ncol * nrow / 2;
+      static const unsigned int rs_vl = ncol * nrow / 10;
       str_v.reserve(rs_vl);
       chr_v.reserve(rs_vl);
       bool_v.reserve(rs_vl);
@@ -8678,24 +8678,34 @@ class Dataframe{
       #pragma omp parallel for  
       for (int i = 0; i < ncol; ++i)
           results[i] = classify_column(tmp_val_refv[i], i, nrow);
-     
-     for (size_t i = 0; i < results.size(); ++i) {
-         const auto &r = results[i];
-         type_refv[i] = r.type; 
-     
-         for (size_t t = 0; t < 6; ++t) {
-             matr_idx[t].insert(matr_idx[t].end(),
-                                r.matr_idx[t].begin(), r.matr_idx[t].end());
-         }
-     
-         str_v.insert(str_v.end(), r.str_v.begin(), r.str_v.end());
-         chr_v.insert(chr_v.end(), r.chr_v.begin(), r.chr_v.end());
-         bool_v.insert(bool_v.end(), r.bool_v.begin(), r.bool_v.end());
-         int_v.insert(int_v.end(), r.int_v.begin(), r.int_v.end());
-         uint_v.insert(uint_v.end(), r.uint_v.begin(), r.uint_v.end());
-         dbl_v.insert(dbl_v.end(), r.dbl_v.begin(), r.dbl_v.end());
-     }
-
+    
+      for (auto& r : results) {
+          str_v.insert(str_v.end(),
+                       std::make_move_iterator(r.str_v.begin()),
+                       std::make_move_iterator(r.str_v.end()));
+          chr_v.insert(chr_v.end(),
+                           std::make_move_iterator(r.chr_v.begin()),
+                           std::make_move_iterator(r.chr_v.end()));
+          bool_v.insert(bool_v.end(),
+                           std::make_move_iterator(r.bool_v.begin()),
+                           std::make_move_iterator(r.bool_v.end()));
+          int_v.insert(int_v.end(),
+                           std::make_move_iterator(r.int_v.begin()),
+                           std::make_move_iterator(r.int_v.end()));
+          uint_v.insert(uint_v.end(),
+                           std::make_move_iterator(r.uint_v.begin()),
+                           std::make_move_iterator(r.uint_v.end()));
+          dbl_v.insert(dbl_v.end(),
+                           std::make_move_iterator(r.dbl_v.begin()),
+                           std::make_move_iterator(r.dbl_v.end()));
+          for (size_t t = 0; t < 6; ++t) {
+            matr_idx[t].insert(matr_idx[t].end(),
+                               r.matr_idx[t].begin(), r.matr_idx[t].end());
+          }
+      
+          type_refv[i] = r.type; 
+      }
+    
     };
 
     void display_filter(std::vector<bool> &x, std::vector<int> &colv) {
