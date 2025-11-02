@@ -7538,7 +7538,7 @@ class Dataframe{
         };
       };
 
-      type_classification();
+      type_classification<CORES>();
     };
 
     //template <unsigned int strt_row = 0, 
@@ -8650,6 +8650,7 @@ class Dataframe{
     //  };
     //};
 
+    template <unsigned int CORES = 1>
     void type_classification() {
       unsigned int i;
       unsigned int i2;
@@ -8664,7 +8665,7 @@ class Dataframe{
       };
 
       std::vector<ColumnResult> results(ncol);
-      omp_set_num_threads(4);
+      omp_set_num_threads(CORES);
       #pragma omp parallel for  
       for (int i = 0; i < ncol; ++i)
           results[i] = classify_column(tmp_val_refv[i], i, nrow);
@@ -12829,7 +12830,7 @@ class Dataframe{
 //@A str_context_end : is the end symbol for a quote context
 //@A strt_row : is the first row to read, defaults to 0
 //@A end_row : is the last row to read, defaults to max (value of 0)
-//@A CORES : are the number of cores used for parsing
+//@A CORES : are the number of cores used for parsing and type inference
 //@A WARMING : enables cache warming, might help if a lot of delimiters by column
 //@A MEM_CLEAN : free unnused memory, might be slower
 //@X
